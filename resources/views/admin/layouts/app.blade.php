@@ -26,6 +26,15 @@
   <link rel="stylesheet" href="{{ asset('assets') }}/plugins/daterangepicker/daterangepicker.css">
   <!-- summernote -->
   <link rel="stylesheet" href="{{ asset('assets') }}/plugins/summernote/summernote-bs4.min.css">
+<style>
+  label{
+    font-size: 14px;
+    margin: 0rem !important;
+  }
+  .form-group {
+    margin-bottom: 0.5rem !important;
+}
+</style>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -79,7 +88,7 @@
         <!-- Messages Dropdown Menu -->
         <li class="nav-item dropdown">
           <a class="nav-link" data-toggle="dropdown" href="#">
-        Profile
+            Profile
             <span class="badge badge-danger navbar-badge"></span>
           </a>
           <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
@@ -235,11 +244,33 @@ document.getElementById('logout-form').submit();">
     </aside>
 
 
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h5 class="m-0">@yield('page_heading')</h5>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}">Home</a></li>
+                <li class="breadcrumb-item active">@yield('page_heading')</li>
+              </ol>
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+      </div>
+      <!-- /.content-header -->
 
+      <section class="content">
+        <div class="container-fluid">
 
-    @yield('content')
-
-
+          @yield('content')
+        </div>
+      </section>
+    </div>
 
 
     <footer class="main-footer">

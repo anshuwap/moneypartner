@@ -25,7 +25,7 @@
     </li>
 
     <li class="nav-header">MULTI LEVEL EXAMPLE</li>
-    <li class="nav-item">
+    <!-- <li class="nav-item">
       <a href="#" class="nav-link">
         <i class="fas fa-circle nav-icon"></i>
         <p>Level 1</p>
@@ -82,7 +82,7 @@
           </a>
         </li>
       </ul>
-    </li>
+    </li> -->
 
   </ul>
 </nav>
