@@ -26,6 +26,9 @@
   <link rel="stylesheet" href="{{ asset('assets') }}/plugins/daterangepicker/daterangepicker.css">
   <!-- summernote -->
   <link rel="stylesheet" href="{{ asset('assets') }}/plugins/summernote/summernote-bs4.min.css">
+
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
+
 <style>
   label{
     font-size: 14px;
@@ -42,7 +45,8 @@
 
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
-      <img class="animation__shake" src="{{ asset('profile/37.jpg') }}" alt="AdminLTELogo" height="60" width="60">
+      <img class="animation__shake" src="{{ asset('assets/profile/loader.gif') }}" alt="AdminLTELogo" style="height: 180px;
+    width: 245px;">
     </div>
 
     <!-- Navbar -->
@@ -246,24 +250,8 @@ document.getElementById('logout-form').submit();">
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-      <!-- Content Header (Page header) -->
-      <div class="content-header">
-        <div class="container-fluid">
-          <div class="row mb-2">
-            <div class="col-sm-6">
-              <h5 class="m-0">@yield('page_heading')</h5>
-            </div><!-- /.col -->
-            <div class="col-sm-6">
-              <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active">@yield('page_heading')</li>
-              </ol>
-            </div><!-- /.col -->
-          </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-      </div>
-      <!-- /.content-header -->
 
+      <!-- /.content-header -->
       <section class="content">
         <div class="container-fluid">
 
@@ -323,6 +311,13 @@ document.getElementById('logout-form').submit();">
   <script src="{{ asset('assets') }}/dist/js/demo.js"></script>
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
   <script src="{{ asset('assets') }}/dist/js/pages/dashboard.js"></script>
+
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+  <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+
+  @stack('custom-script')
 </body>
 
 </html>
