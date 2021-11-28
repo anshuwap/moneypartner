@@ -25,76 +25,8 @@
     {{ method_field('PUT') }}
     @csrf
     <div class="row">
-        <div class="col-md-3">
-            <!-- Form Element sizes -->
-            <div class="card card-secondary">
-                <div class="card-header card-custom-header">
-                    <h3 class="card-title">Basic Information</h3>
-                </div>
 
-                <div class="card-body">
-                    <div class="form-group">
-                        <label>Outlet Type</label>
-                        <select class="form-control form-control-sm" name="outlet_type">
-                            <option value="">Select</option>
-                            <option value="retailer" {{ ($outlet->outlet_type == 'retailer')?"selected" : '' }}>Retailer</option>
-                            <option value="distributor" {{ ($outlet->outlet_type == 'distributor')?"selected" : '' }}>Distributor</option>
-                        </select>
-                        <span id="outlet_type_msg" class="custom-text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label>User Type</label>
-                        <select class="form-control form-control-sm" name="user_type">
-                            <option value="">Select</option>
-                            <option value="retailer" {{ ($outlet->user_type == 'retailer')?"selected" : '' }}>Retailer</option>
-                            <option value="distributor" {{ ($outlet->user_type == 'distributor')?"selected" : '' }}>Distributor</option>
-                        </select>
-                        <span id="user_type_msg" class="custom-text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Mobile Number</label>
-                        <input type="text" name="mobile_no" value="{{ $outlet->mobile_no }}" class="form-control form-control-sm" placeholder="Mobile No">
-                        <span id="mobile_no_msg" class="custom-text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Alternate Number</label>
-                        <input type="text" name="alternate_number" value="{{ $outlet->alternate_number }}" class="form-control form-control-sm" placeholder="Alternate No">
-                        <span id="alternate_number_msg" class="custom-text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label>Retailer Name</label>
-                        <input type="text" name="retailer_name" value="{{ $outlet->retailer_name }}" class="form-control form-control-sm" placeholder="Retailer Name">
-                        <span id="retailer_name_msg" class="custom-text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label>Email Id</label>
-                        <input type="text" name="email" value="{{ $outlet->email }}" class="form-control form-control-sm" placeholder="Enter Email">
-                        <span id="email_msg" class="custom-text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label>Gender</label>
-                        <select class="form-control form-control-sm" name="gender">
-                            <option value="">Select</option>
-                            <option value="male" {{ ($outlet->gender == 'male')?"selected" : '' }}>Male</option>
-                            <option value="female" {{ ($outlet->gender == 'female')?"selected" : '' }}>Female</option>
-                            <option value="other" {{ ($outlet->gender == 'other')?"selected" : '' }}>Other</option>
-                        </select>
-                        <span id="gender_msg" class="custom-text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label>Permanent Address</label>
-                        <textarea class="form-control form-control-sm" name="permanent_address" placeholder="Enter Address">{{ $outlet->permanent_address }}</textarea>
-                        <span id="permanent_address_msg" class="custom-text-danger"></span>
-                    </div>
-                </div>
-                <!-- /.card-body -->
-            </div>
-        </div>
-
-        <div class="col-md-3">
+    <div class="col-md-3">
             <!-- Form Element sizes -->
             <div class="card card-secondary">
                 <div class="card-header card-custom-header">
@@ -192,6 +124,83 @@
             </div>
         </div>
 
+
+        <div class="col-md-3">
+            <!-- Form Element sizes -->
+            <div class="card card-secondary">
+                <div class="card-header card-custom-header">
+                    <h3 class="card-title">Personal Information</h3>
+                </div>
+
+                <div class="card-body">
+
+                <div class="text-center">
+                        <img class="profile-user-img img-fluid img-circle" id="avatar" src="{{ (!empty($outlet->profile_image))?asset('attachment/').'/'.$outlet->profile_image:asset('assets').'/dist/img/user4-128x128.jpg' }} " alt="User profile picture">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Profile Image</label>
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" name="profile_image" class="custom-file-input custom-file-input-sm" id="imgInp" accept="image/png, image/gif, image/jpeg">
+                                <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                            </div>
+                        </div>
+                        <span id="office_address_proff_msg" class="custom-text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Retailer Name</label>
+                        <input type="text" name="retailer_name" value="{{ $outlet->retailer_name }}" class="form-control form-control-sm" placeholder="Retailer Name">
+                        <span id="retailer_name_msg" class="custom-text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mobile Number</label>
+                        <input type="text" name="mobile_no" value="{{ $outlet->mobile_no }}" class="form-control form-control-sm" placeholder="Mobile No">
+                        <span id="mobile_no_msg" class="custom-text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Alternate Number</label>
+                        <input type="text" name="alternate_number" value="{{ $outlet->alternate_number }}" class="form-control form-control-sm" placeholder="Alternate No">
+                        <span id="alternate_number_msg" class="custom-text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Id</label>
+                        <input type="text" name="email" value="{{ $outlet->email }}" class="form-control form-control-sm" placeholder="Enter Email">
+                        <span id="email_msg" class="custom-text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select class="form-control form-control-sm" name="gender">
+                            <option value="">Select</option>
+                            <option value="male" {{ ($outlet->gender == 'male')?"selected" : '' }}>Male</option>
+                            <option value="female" {{ ($outlet->gender == 'female')?"selected" : '' }}>Female</option>
+                            <option value="other" {{ ($outlet->gender == 'other')?"selected" : '' }}>Other</option>
+                        </select>
+                        <span id="gender_msg" class="custom-text-danger"></span>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>User Type</label>
+                        <select class="form-control form-control-sm" name="user_type">
+                            <option value="">Select</option>
+                            <option value="retailer" {{ ($outlet->user_type == 'retailer')?"selected" : '' }}>Retailer</option>
+                            <option value="distributor" {{ ($outlet->user_type == 'distributor')?"selected" : '' }}>Distributor</option>
+                        </select>
+                        <span id="user_type_msg" class="custom-text-danger"></span>
+                    </div>
+
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </div>
+
+
         <div class="col-md-3">
             <!-- Form Element sizes -->
             <div class="card card-secondary">
@@ -200,26 +209,19 @@
                 </div>
 
                 <div class="card-body">
-                    <div class="form-group">
-                        <label>User Photo </label>
-                        <div class="input-group">
-                            <div class="custom-file">
-                                <input type="file" name="user_photo" class="custom-file-input custom-file-input-sm" id="exampleInputFile">
-                                <label class="custom-file-label" for="exampleInputFile">Choose file</label>
-                            </div>
-                        </div>
-                        <span id="user_photo_msg" class="custom-text-danger"></span>
-                    </div>
+
                     <div class="form-group">
                         <label>Date of Birth</label>
                         <input type="date" name="date_of_birth" value="{{ $outlet->date_of_birth }}"  class="form-control form-control-sm" placeholder="Date Of Birth">
                         <span id="date_of_birth_msg" class="custom-text-danger"></span>
                     </div>
+
                     <div class="form-group">
-                        <label>Outlet Address</label>
-                        <textarea class="form-control form-control-sm" name="outlet_address" placeholder="Enter Address">{{ $outlet->outlet_address }}</textarea>
-                        <span id="outlet_address_msg" class="custom-text-danger"></span>
+                        <label>Permanent Address</label>
+                        <textarea class="form-control form-control-sm" name="permanent_address" placeholder="Enter Address">{{ $outlet->permanent_address }}</textarea>
+                        <span id="permanent_address_msg" class="custom-text-danger"></span>
                     </div>
+
                     <div class="form-group">
                         <label>Id Proff</label>
                         <select class="form-control form-control-sm" name="id_proff">
@@ -254,7 +256,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Uploade Address</label>
+                        <label>Uploade Address Proff</label>
                         <div class="input-group">
                             <div class="custom-file">
                                 <input type="file" name="upload_address" class="custom-file-input custom-file-input-sm" id="">
@@ -266,16 +268,9 @@
 
                     <div class="form-group">
                         <label>Pan Card No.</label>
-                        <input type="text" name="pancard" value="{{ $outlet->pancard }}"   class="form-control form-control-sm" placeholder="Company Pan Card No.">
+                        <input type="text" name="pancard" value="{{ $outlet->pancard }}"   class="form-control form-control-sm" placeholder="Pan Card No.">
                         <span id="pancard_msg" class="custom-text-danger"></span>
                     </div>
-
-                    <div class="form-group">
-                        <label>GST No.</label>
-                        <input type="text" name="gst_number" value="{{ $outlet->gst_number }}"  class="form-control form-control-sm" placeholder="GST Certificate No.">
-                        <span id="gst_number_msg" class="custom-text-danger"></span>
-                    </div>
-
 
                 </div>
                 <!-- /.card-body -->
@@ -286,23 +281,18 @@
             <!-- Form Element sizes -->
             <div class="card card-secondary">
                 <div class="card-header card-custom-header">
-                    <h3 class="card-title">Option Setting</h3>
+                    <h3 class="card-title">Services</h3>
                 </div>
 
                 <div class="card-body">
 
-                    <div class="form-group">
-
-                        <label>Money Transfer Otion</label><br>
-                        <input type="checkbox" name="money_transfer_otion['hypo']" <?=(!empty($outlet->money_transfer_otion["'hypo'"]) && $outlet->money_transfer_otion["'hypo'"] ==1)?"checked":"" ?> value="1">&nbsp;&nbsp;HYPO<br>
-                        <input type="checkbox" name="money_transfer_otion['offline']" <?=(!empty($outlet->money_transfer_otion["'hypo'"]) && $outlet->money_transfer_otion["'offline'"] ==1)?"checked":"" ?> value="1">&nbsp;&nbsp;Offline
+                <div class="form-group">
+                        <label>Money Transfer Otions</label><br>
+                        <input type="checkbox" name="money_transfer_otion['transfer_online']" <?=(!empty($outlet->money_transfer_otion["'transfer_online'"]) && $outlet->money_transfer_otion["'transfer_online'"] ==1)?"checked":"" ?> value="1">&nbsp;&nbsp;Money Transfer offline<br>
+                        <input type="checkbox" name="money_transfer_otion['transfer_offline']" <?=(!empty($outlet->money_transfer_otion["'transfer_offline'"]) && $outlet->money_transfer_otion["'transfer_offline'"] ==1)?"checked":"" ?> value="1">&nbsp;&nbsp;Money Transfer online<br>
+                        <input type="checkbox" name="money_transfer_otion['transfer_online_api']" <?=(!empty($outlet->money_transfer_otion["'transfer_online_api'"]) && $outlet->money_transfer_otion["'transfer_online_api'"] ==1)?"checked":"" ?>  value="1">&nbsp;&nbsp;Money Transfer offline Api<br>
+                        <input type="checkbox" name="money_transfer_otion['transfer_online_api']" <?=(!empty($outlet->money_transfer_otion["'transfer_online_api'"]) && $outlet->money_transfer_otion["'transfer_online_api'"] ==1)?"checked":"" ?> value="1">&nbsp;&nbsp;Money Transfer online Api<br>
                         <span id="money_transfer_otion_msg" class="custom-text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Payout Otion</label><br>
-                        <input type="checkbox" name="payout_option['offile_payout']" <?=(!empty($outlet->payout_option["'offile_payout'"]) && $outlet->payout_option["'offile_payout'"] ==1)?"checked":"" ?> value="1">&nbsp;&nbsp;OFFILE PAYOUT
-                        <span id="payout_option_msg" class="custom-text-danger"></span>
                     </div>
 
                     <div class="">
@@ -339,32 +329,12 @@
             success: function(res) {
                 //hide loader
                 $('.has-loader').removeClass('has-loader-active');
+
                 /*Start Validation Error Message*/
-                if (res.mobile_no) {
-                    $('#mobileMsg').html(res.mobile_no);
-                } else {
-                    $('#mobileMsg').html('');
-                }
-                if (res.ivr_no) {
-                    $('#ivrMsg').html(res.ivr_no);
-                } else {
-                    $('#ivrMsg').html('');
-                }
-                if (res.name) {
-                    $('#nameMsg').html(res.name);
-                } else {
-                    $('#nameMsg').html('');
-                }
-                if (res.email) {
-                    $('#emailMsg').html(res.email);
-                } else {
-                    $('#emailMsg').html('');
-                }
-                if (res.password) {
-                    $('#passwordMsg').html(res.password);
-                } else {
-                    $('#passwordMsg').html('');
-                }
+                $('span.custom-text-danger').html('');
+                $.each(res.validation, (index, msg) => {
+                    $(`#${index}_msg`).html(`${msg}`);
+                })
                 /*Start Validation Error Message*/
 
                 /*Start Status message*/
