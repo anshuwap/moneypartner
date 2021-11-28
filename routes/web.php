@@ -14,6 +14,12 @@ use Illuminate\Support\Facades\Route;
 });
 
 
+Route::group(['middleware' => 'retailerRedirect'], function () {
+    Route::get('/', [RetailerLogin::class, 'index']);
+    Route::resource('/login', RetailerLogin::class);
+    Route::resource('/register', RegisterController::class);
+});
+
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::resource('dashboard', AdminDashboard::class);
 
@@ -24,4 +30,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('outlets-ajax', [AdminOutlet::class,'ajaxList']);
 
     Route::post('logout',  [AdminLogin::class, 'logout']);
+});
+
+
+Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
+    Route::resource('dashboard', RetailerDashboard::class);
+
+    Route::post('logout',  [RetailerLogin::class, 'logout']);
 });
