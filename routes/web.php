@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::resource('dashboard', AdminDashboard::class);
     Route::resource('outlets', AdminOutlet::class);
+    Route::post('outlets-status', [AdminOutlet::class,'outletStatus']);
+    Route::get('outlets-ajax', [AdminOutlet::class,'ajaxList']);
 
     Route::post('logout',  [AdminLogin::class, 'logout']);
 });

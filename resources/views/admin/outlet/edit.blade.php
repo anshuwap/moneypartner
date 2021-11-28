@@ -1,26 +1,28 @@
 @extends('admin.layouts.app')
 
 @section('content')
-@section('page_heading', 'Create Outlet')
+@section('page_heading', 'Edit Outlet')
 
 <!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h5 class="m-0">Create Outlet</h5>
+                <h5 class="m-0">Edit Outlet</h5>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}">Home</a></li>
-                    <li class="breadcrumb-item active">Create Outlet</li>
+                    <li class="breadcrumb-item active">Edit Outlet</li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
 </div>
 
-<form id="add-outlet" action="{{ url('admin/outlets') }}" method="post" enctype="multipart/form-data">
+<form id="edit-outlet" action="{{ url('admin/outlets/'.$outlet->_id) }}" method="POST" enctype="multipart/form-data">
+
+    {{ method_field('PUT') }}
     @csrf
     <div class="row">
         <div class="col-md-3">
@@ -35,52 +37,56 @@
                         <label>Outlet Type</label>
                         <select class="form-control form-control-sm" name="outlet_type">
                             <option value="">Select</option>
-                            <option value="retailer">Retailer</option>
-                            <option value="distributor">Distributor</option>
+                            <option value="retailer" {{ ($outlet->outlet_type == 'retailer')?"selected" : '' }}>Retailer</option>
+                            <option value="distributor" {{ ($outlet->outlet_type == 'distributor')?"selected" : '' }}>Distributor</option>
                         </select>
                         <span id="outlet_type_msg" class="custom-text-danger"></span>
                     </div>
+
                     <div class="form-group">
                         <label>User Type</label>
                         <select class="form-control form-control-sm" name="user_type">
                             <option value="">Select</option>
-                            <option value="retailer">Retailer</option>
-                            <option value="distributor">Distributor</option>
+                            <option value="retailer" {{ ($outlet->user_type == 'retailer')?"selected" : '' }}>Retailer</option>
+                            <option value="distributor" {{ ($outlet->user_type == 'distributor')?"selected" : '' }}>Distributor</option>
                         </select>
                         <span id="user_type_msg" class="custom-text-danger"></span>
                     </div>
+
                     <div class="form-group">
                         <label>Mobile Number</label>
-                        <input type="text" name="mobile_no" class="form-control form-control-sm" placeholder="Mobile No">
+                        <input type="text" name="mobile_no" value="{{ $outlet->mobile_no }}" class="form-control form-control-sm" placeholder="Mobile No">
                         <span id="mobile_no_msg" class="custom-text-danger"></span>
                     </div>
+
                     <div class="form-group">
                         <label>Alternate Number</label>
-                        <input type="text" name="alternate_number" class="form-control form-control-sm" placeholder="Alternate No">
+                        <input type="text" name="alternate_number" value="{{ $outlet->alternate_number }}" class="form-control form-control-sm" placeholder="Alternate No">
                         <span id="alternate_number_msg" class="custom-text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label>Retailer Name</label>
-                        <input type="text" name="retailer_name" class="form-control form-control-sm" placeholder="Retailer Name">
+                        <input type="text" name="retailer_name" value="{{ $outlet->retailer_name }}" class="form-control form-control-sm" placeholder="Retailer Name">
                         <span id="retailer_name_msg" class="custom-text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label>Email Id</label>
-                        <input type="text" name="email" class="form-control form-control-sm" placeholder="Enter Email">
+                        <input type="text" name="email" value="{{ $outlet->email }}" class="form-control form-control-sm" placeholder="Enter Email">
                         <span id="email_msg" class="custom-text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label>Gender</label>
                         <select class="form-control form-control-sm" name="gender">
                             <option value="">Select</option>
-                            <option value="retailer">Male</option>
-                            <option value="distributor">Female</option>
+                            <option value="male" {{ ($outlet->gender == 'male')?"selected" : '' }}>Male</option>
+                            <option value="female" {{ ($outlet->gender == 'female')?"selected" : '' }}>Female</option>
+                            <option value="other" {{ ($outlet->gender == 'other')?"selected" : '' }}>Other</option>
                         </select>
                         <span id="gender_msg" class="custom-text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label>Permanent Address</label>
-                        <textarea class="form-control form-control-sm" name="permanent_address" placeholder="Enter Address"></textarea>
+                        <textarea class="form-control form-control-sm" name="permanent_address" placeholder="Enter Address">{{ $outlet->permanent_address }}</textarea>
                         <span id="permanent_address_msg" class="custom-text-danger"></span>
                     </div>
                 </div>
@@ -100,45 +106,45 @@
                         <label>Outlet Type</label>
                         <select class="form-control form-control-sm" name="outlet_outlet_type">
                             <option value="">Select</option>
-                            <option value="retailer">Retailer</option>
-                            <option value="distributor">Distributor</option>
+                            <option value="retailer" {{ ($outlet->outlet_outlet_type == 'retailer')?"selected" : '' }}>Retailer</option>
+                            <option value="distributor" {{ ($outlet->outlet_outlet_type == 'distributor')?"selected" : '' }}>Distributor</option>
                         </select>
                         <span id="outlet_outlet_type_msg" class="custom-text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label>Outlet Name</label>
-                        <input type="text" name="outlet_name" class="form-control form-control-sm" placeholder="Outlet Name">
+                        <input type="text" name="outlet_name" value="{{ $outlet->outlet_name }}" class="form-control form-control-sm" placeholder="Outlet Name">
                         <span id="outlet_name_msg" class="custom-text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label>Outlet Address</label>
-                        <textarea class="form-control form-control-sm" name="outlet_address" placeholder="Enter Address"></textarea>
+                        <textarea class="form-control form-control-sm" name="outlet_address" placeholder="Enter Address">{{ $outlet->outlet_address }}</textarea>
                         <span id="outlet_address_msg" class="custom-text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label>State</label>
                         <select class="form-control form-control-sm" name="state">
                             <option value="">Select</option>
-                            <option value="retailer">Retailer</option>
-                            <option value="distributor">Distributor</option>
+                            <option value="up" {{ ($outlet->state == 'up')?"selected" : '' }}>Retailer</option>
+                            <option value="delhi" {{ ($outlet->state == 'delhi')?"selected" : '' }}>Distributor</option>
                         </select>
                         <span id="state_msg" class="custom-text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label>City</label>
-                        <input type="text" name="city" class="form-control form-control-sm" placeholder="City">
+                        <input type="text" name="city" value="{{ $outlet->city }}" class="form-control form-control-sm" placeholder="City">
                         <span id="city_msg" class="custom-text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label>Pincode </label>
-                        <input type="number" name="pincode" class="form-control form-control-sm" placeholder="Pincode">
+                        <input type="number" name="pincode" value="{{ $outlet->pincode }}" class="form-control form-control-sm" placeholder="Pincode">
                         <span id="pincode_msg" class="custom-text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label>Office Photo </label>
                         <div class="input-group">
                             <div class="custom-file">
-                                <input type="file" naem="office_photo" class="custom-file-input custom-file-input-sm" id="exampleInputFile">
+                                <input type="file" name="office_photo" class="custom-file-input custom-file-input-sm" id="exampleInputFile">
                                 <label class="custom-file-label" for="exampleInputFile">Choose file</label>
                             </div>
                         </div>
@@ -146,19 +152,19 @@
                     </div>
                     <div class="form-group">
                         <label>Incorporation Date</label>
-                        <input type="date" name="incorporation_date" class="form-control form-control-sm" placeholder="Incorporation Date">
+                        <input type="date" name="incorporation_date" value="{{ $outlet->incorporation_date }}" class="form-control form-control-sm" placeholder="Incorporation Date">
                         <span id="incorporation_date_msg" class="custom-text-danger"></span>
                     </div>
 
                     <div class="form-group">
                         <label>Company Pan Card No.</label>
-                        <input type="text" name="company_pancard" class="form-control form-control-sm" placeholder="Company Pan Card No.">
+                        <input type="text" name="company_pancard" value="{{ $outlet->company_pancard }}" class="form-control form-control-sm" placeholder="Company Pan Card No.">
                         <span id="company_pancard_msg" class="custom-text-danger"></span>
                     </div>
 
                     <div class="form-group">
                         <label>GST Certificate No.</label>
-                        <input type="text" name="gst_number" class="form-control form-control-sm" placeholder="GST Certificate No.">
+                        <input type="text" name="outlet_gst_number" value="{{ $outlet->outlet_gst_number }}" class="form-control form-control-sm" placeholder="GST Certificate No.">
                         <span id="gst_number_msg" class="custom-text-danger"></span>
                     </div>
 
@@ -166,7 +172,7 @@
                         <label>Office Address Proff</label>
                         <div class="input-group">
                             <div class="custom-file">
-                                <input type="file" name="office_address_proff" class="custom-file-input custom-file-input-sm" id="exampleInputFile">
+                                <input type="file" name="office_address_proff" value="{{ $outlet->office_address_proff }}" class="custom-file-input custom-file-input-sm" id="exampleInputFile">
                                 <label class="custom-file-label" for="exampleInputFile">Choose file</label>
                             </div>
                         </div>
@@ -175,8 +181,8 @@
                     <div class="form-group">
                         <label>Account Status</label>
                         <select class="form-control form-control-sm" name="account_status">
-                            <option value="1">Active</option>
-                            <option value="0">Inactive</option>
+                            <option value="1" {{ ($outlet->account_status == '1')?"selected" : '' }}>Active</option>
+                            <option value="0" {{ ($outlet->account_status == '0')?"selected" : '' }}>Inactive</option>
                         </select>
                         <span id="account_status_msg" class="custom-text-danger"></span>
                     </div>
@@ -206,21 +212,21 @@
                     </div>
                     <div class="form-group">
                         <label>Date of Birth</label>
-                        <input type="date" name="date_of_birth" class="form-control form-control-sm" placeholder="Date Of Birth">
+                        <input type="date" name="date_of_birth" value="{{ $outlet->date_of_birth }}"  class="form-control form-control-sm" placeholder="Date Of Birth">
                         <span id="date_of_birth_msg" class="custom-text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label>Outlet Address</label>
-                        <textarea class="form-control form-control-sm" name="outlet_address" placeholder="Enter Address"></textarea>
+                        <textarea class="form-control form-control-sm" name="outlet_address" placeholder="Enter Address">{{ $outlet->outlet_address }}</textarea>
                         <span id="outlet_address_msg" class="custom-text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label>Id Proff</label>
                         <select class="form-control form-control-sm" name="id_proff">
                             <option value="">Select</option>
-                            <option value="addhar_card">Addhar Card</option>
-                            <option value="pan_card">Pan Card</option>
-                            <option value="driver_licence">Driver Licence</option>
+                            <option value="addhar_card" {{ ($outlet->id_proff == 'addhar_card')?"selected" : '' }}>Addhar Card</option>
+                            <option value="pan_card" {{ ($outlet->id_proff == 'pan_card')?"selected" : '' }}>Pan Card</option>
+                            <option value="driver_licence" {{ ($outlet->id_proff == 'driver_licence')?"selected" : '' }}>Driver Licence</option>
                         </select>
                         <span id="id_proff_msg" class="custom-text-danger"></span>
                     </div>
@@ -229,7 +235,7 @@
                         <label>Uploade Id</label>
                         <div class="input-group">
                             <div class="custom-file">
-                                <input type="file" naeme="uploade_id" class="custom-file-input custom-file-input-sm" id="">
+                                <input type="file" name="upload_id" class="custom-file-input custom-file-input-sm" id="">
                                 <label class="custom-file-label" for="">Choose file</label>
                             </div>
                         </div>
@@ -240,9 +246,9 @@
                         <label>Address Proff</label>
                         <select class="form-control form-control-sm" name="address_proff">
                             <option value="">Select</option>
-                            <option value="addhar_card">Addhar Card</option>
-                            <option value="pan_card">Pan Card</option>
-                            <option value="driver_licence">Driver Licence</option>
+                            <option value="addhar_card" {{ ($outlet->address_proff == 'addhar_card')?"selected" : '' }}>Addhar Card</option>
+                            <option value="pan_card" {{ ($outlet->address_proff == 'pan_card')?"selected" : '' }}>Pan Card</option>
+                            <option value="driver_licence" {{ ($outlet->address_proff == 'driver_licence')?"selected" : '' }}>Driver Licence</option>
                         </select>
                         <span id="address_proff_msg" class="custom-text-danger"></span>
                     </div>
@@ -251,7 +257,7 @@
                         <label>Uploade Address</label>
                         <div class="input-group">
                             <div class="custom-file">
-                                <input type="file" naeme="uploade_address" class="custom-file-input custom-file-input-sm" id="">
+                                <input type="file" name="upload_address" class="custom-file-input custom-file-input-sm" id="">
                                 <label class="custom-file-label" for="">Choose file</label>
                             </div>
                         </div>
@@ -260,13 +266,13 @@
 
                     <div class="form-group">
                         <label>Pan Card No.</label>
-                        <input type="text" name="pancard" class="form-control form-control-sm" placeholder="Company Pan Card No.">
+                        <input type="text" name="pancard" value="{{ $outlet->pancard }}"   class="form-control form-control-sm" placeholder="Company Pan Card No.">
                         <span id="pancard_msg" class="custom-text-danger"></span>
                     </div>
 
                     <div class="form-group">
                         <label>GST No.</label>
-                        <input type="text" name="gst_number" class="form-control form-control-sm" placeholder="GST Certificate No.">
+                        <input type="text" name="gst_number" value="{{ $outlet->gst_number }}"  class="form-control form-control-sm" placeholder="GST Certificate No.">
                         <span id="gst_number_msg" class="custom-text-danger"></span>
                     </div>
 
@@ -286,21 +292,22 @@
                 <div class="card-body">
 
                     <div class="form-group">
+
                         <label>Money Transfer Otion</label><br>
-                        <input type="checkbox" name="money_transfer_otion['hypo']" value="1">&nbsp;&nbsp;HYPO<br>
-                        <input type="checkbox" name="money_transfer_otion['offline']" value="1">&nbsp;&nbsp;Offline
+                        <input type="checkbox" name="money_transfer_otion['hypo']" <?=(!empty($outlet->money_transfer_otion["'hypo'"]) && $outlet->money_transfer_otion["'hypo'"] ==1)?"checked":"" ?> value="1">&nbsp;&nbsp;HYPO<br>
+                        <input type="checkbox" name="money_transfer_otion['offline']" <?=(!empty($outlet->money_transfer_otion["'hypo'"]) && $outlet->money_transfer_otion["'offline'"] ==1)?"checked":"" ?> value="1">&nbsp;&nbsp;Offline
                         <span id="money_transfer_otion_msg" class="custom-text-danger"></span>
                     </div>
 
                     <div class="form-group">
                         <label>Payout Otion</label><br>
-                        <input type="checkbox" name="payout_option['offile_payout']" value="1">&nbsp;&nbsp;OFFILE PAYOUT
+                        <input type="checkbox" name="payout_option['offile_payout']" <?=(!empty($outlet->payout_option["'offile_payout'"]) && $outlet->payout_option["'offile_payout'"] ==1)?"checked":"" ?> value="1">&nbsp;&nbsp;OFFILE PAYOUT
                         <span id="payout_option_msg" class="custom-text-danger"></span>
                     </div>
 
                     <div class="">
-                        <input type="submit" value="Submit" class="btn btn-sm btn-success">
-                        <a href="{{ url('admin/outlets') }}" class="btn btn-sm btn-warning">Back</a>
+                        <input type="submit" value="Update" class="btn btn-sm btn-success">
+                         <a href="{{ url('admin/outlets') }}" class="btn btn-sm btn-warning">Back</a>
                     </div>
                 </div>
                 <!-- /.card-body -->
@@ -314,7 +321,7 @@
 @push('custom-script')
 <script>
     /*start form submit functionality*/
-    $("form#add-outlet").submit(function(e) {
+    $("form#edit-outlet").submit(function(e) {
         e.preventDefault();
         formData = new FormData(this);
         var url = $(this).attr('action');
@@ -332,12 +339,32 @@
             success: function(res) {
                 //hide loader
                 $('.has-loader').removeClass('has-loader-active');
-
                 /*Start Validation Error Message*/
-                $('span.custom-text-danger').html('');
-                $.each(res.validation, (index, msg) => {
-                    $(`#${index}_msg`).html(`${msg}`);
-                })
+                if (res.mobile_no) {
+                    $('#mobileMsg').html(res.mobile_no);
+                } else {
+                    $('#mobileMsg').html('');
+                }
+                if (res.ivr_no) {
+                    $('#ivrMsg').html(res.ivr_no);
+                } else {
+                    $('#ivrMsg').html('');
+                }
+                if (res.name) {
+                    $('#nameMsg').html(res.name);
+                } else {
+                    $('#nameMsg').html('');
+                }
+                if (res.email) {
+                    $('#emailMsg').html(res.email);
+                } else {
+                    $('#emailMsg').html('');
+                }
+                if (res.password) {
+                    $('#passwordMsg').html(res.password);
+                } else {
+                    $('#passwordMsg').html('');
+                }
                 /*Start Validation Error Message*/
 
                 /*Start Status message*/

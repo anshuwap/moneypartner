@@ -37,6 +37,17 @@
   .form-group {
     margin-bottom: 0.5rem !important;
 }
+span.custom-text-danger{
+  font-weight: 500;
+    color: red!important;
+    font-size: 14px;
+}
+.bg-custom-sidebar{
+  background: #191b2a !important;
+}
+.card-custom-header{
+  background: #2fc296!important;
+}
 </style>
 </head>
 
@@ -45,8 +56,8 @@
 
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
-      <img class="animation__shake" src="{{ asset('assets/profile/loader.gif') }}" alt="AdminLTELogo" style="height: 180px;
-    width: 245px;">
+      <img class="" src="{{ asset('assets/profile/loader.gif') }}" alt="AdminLTELogo" style="height: 140px;
+    width: 144px;">
     </div>
 
     <!-- Navbar -->
@@ -222,7 +233,7 @@ document.getElementById('logout-form').submit();">
     <!-- /.navbar -->
 
     <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <aside class="main-sidebar sidebar-dark-primary elevation-4 bg-custom-sidebar">
       <!-- Brand Logo -->
       <a href="index3.html" class="brand-link">
         <img src="{{ asset('assets') }}/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
@@ -269,11 +280,7 @@ document.getElementById('logout-form').submit();">
       </div>
     </footer>
 
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-      <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- /.control-sidebar -->
+
   </div>
   <!-- ./wrapper -->
 
