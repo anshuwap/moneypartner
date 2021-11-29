@@ -4,6 +4,14 @@ use App\Http\Controllers\Admin\LoginController as AdminLogin;
 use App\Http\Controllers\Admin\RegisterController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
 use App\Http\Controllers\Admin\OutletController as AdminOutlet;
+use App\Http\Controllers\Admin\PaymentMode\BankAccountController as AdminBankAccount;
+use App\Http\Controllers\Admin\PaymentMode\QrCodeController as AdminQrCode;
+use App\Http\Controllers\Admin\PaymentMode\UpiController as AdminUpi;
+
+
+use App\Http\Controllers\Retailer\LoginController as RetailerLogin;
+use App\Http\Controllers\Retailer\DashboardController as RetailerDashboard;
+
 use Illuminate\Support\Facades\Route;
 
 
@@ -15,9 +23,10 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::group(['middleware' => 'retailerRedirect'], function () {
-    Route::get('/', [RetailerLogin::class, 'index']);
-    Route::resource('/login', RetailerLogin::class);
-    Route::resource('/register', RegisterController::class);
+    // Route::resource('/', RetailerLogin::class);
+    Route::get('/retailer/login',[RetailerLogin::class,'index']);
+
+    Route::post('retailer/login',[RetailerLogin::class,'store']);
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
@@ -29,12 +38,18 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::post('outlet-bank', [AdminOutlet::class,'outletBank']);
     Route::get('outlets-ajax', [AdminOutlet::class,'ajaxList']);
 
+    Route::resource('bank-account', AdminBankAccount::class);
+
+    Route::resource('upi', AdminUpi::class);
+
+    Route::resource('qr-code', AdminQrCode::class);
+
     Route::post('logout',  [AdminLogin::class, 'logout']);
 });
 
 
 Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
-    Route::resource('dashboard', RetailerDashboard::class);
 
+    Route::get('dashboard',  [RetailerDashboard::class, 'index']);
     Route::post('logout',  [RetailerLogin::class, 'logout']);
 });

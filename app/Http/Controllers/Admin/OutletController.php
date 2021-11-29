@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Validation\OutletValidation;
 use App\Models\Outlet;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class OutletController extends Controller
 {
@@ -61,6 +63,8 @@ class OutletController extends Controller
         $outlet->status               = $request->status;
         $outlet->account_status       = $request->account_status;
 
+        $this->createUser($outlet->_id,$request);
+
         //for office photo
         if (!empty($request->file('office_photo')))
             $outlet->office_photo  = singleFile($request->file('office_photo'), 'attachment');
@@ -83,6 +87,19 @@ class OutletController extends Controller
 
         if ($outlet->save())
             return response(['status' => 'success', 'msg' => 'Outlet Created Successfully!']);
+    }
+
+
+
+    private function createUser($retailer_id,$request)
+    {
+        $user = new User();
+        $user->full_name = $request->retailer_name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->role  = 'retailer';
+        $user->retialter_id = $retailer_id;
+        $user->save();
     }
 
     public function show(outlet $outlet)
@@ -177,25 +194,24 @@ class OutletController extends Controller
         }
     }
 
-    public function outletBankGet($id){
+    public function outletBankGet($id)
+    {
 
         try {
             $outlet = Outlet::select('bank_charges')->find($id);
             $data = [
                 'id' => $outlet->_id,
-                'sl'=>(!empty($outlet->bank_charges['sl']))?$outlet->bank_charges['sl']:'',
-                'from_amount'=>(!empty($outlet->bank_charges['from_amount']))?$outlet->bank_charges['from_amount']:'',
-                'to_amount'=>(!empty($outlet->bank_charges['to_amount']))?$outlet->bank_charges['to_amount']:'',
-                'type'=>(!empty($outlet->bank_charges['type']))?$outlet->bank_charges['type']:'',
-                'charges'=>(!empty($outlet->bank_charges['charges']))?$outlet->bank_charges['charges']:''
+                'sl' => (!empty($outlet->bank_charges['sl'])) ? $outlet->bank_charges['sl'] : '',
+                'from_amount' => (!empty($outlet->bank_charges['from_amount'])) ? $outlet->bank_charges['from_amount'] : '',
+                'to_amount' => (!empty($outlet->bank_charges['to_amount'])) ? $outlet->bank_charges['to_amount'] : '',
+                'type' => (!empty($outlet->bank_charges['type'])) ? $outlet->bank_charges['type'] : '',
+                'charges' => (!empty($outlet->bank_charges['charges'])) ? $outlet->bank_charges['charges'] : ''
             ];
             if (!empty($data))
-                return response(['status' => 'success', 'data' =>$data]);
-
+                return response(['status' => 'success', 'data' => $data]);
         } catch (Exception $e) {
-            return response(['status' => 'error', 'msg' =>$e->getMessage()]);
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
         }
-
     }
 
     public function outletBank(Request $request)
@@ -247,7 +263,7 @@ class OutletController extends Controller
         $i = 1;
 
         foreach ($data as $val) {
-            $action = '<a href="javascript:void(0);" class="text-orange banckModal"  data-toggle="tooltip" data-placement="bottom" title="Bank Charges" outlet_id="'.$val->_id.'"><i class="fas fa-piggy-bank"></i></a>&nbsp;&nbsp;';
+            $action = '<a href="javascript:void(0);" class="text-orange banckModal"  data-toggle="tooltip" data-placement="bottom" title="Bank Charges" outlet_id="' . $val->_id . '"><i class="fas fa-piggy-bank"></i></a>&nbsp;&nbsp;';
             $action .= '<a href="' . url('admin/outlets/' . $val->_id . '/edit') . '" class="text-info" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="far fa-edit"></i></a>';
 
             if ($val->account_status == 1) {

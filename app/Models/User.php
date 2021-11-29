@@ -32,8 +32,8 @@ class User extends Authenticatable
         return $this->role === 'admin';
      }
 
-     public function isAgent() {
-        return $this->role === 'agent';
+     public function isRetailer() {
+        return $this->role === 'retailer';
      }
 
 

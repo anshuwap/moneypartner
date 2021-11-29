@@ -111,12 +111,12 @@ span.custom-text-danger{
               <!-- Message Start -->
               <ul>
                 <li>
-                  <a class="btn btn-danger logout-button" href="{{ url('admin/logout') }}" onclick="event.preventDefault();
+                  <a class="btn btn-danger logout-button" href="{{ url('retailer/logout') }}" onclick="event.preventDefault();
 
 document.getElementById('logout-form').submit();">
                     <span class="icon is-small"> <i data-feather="log-out"></i> </span>
 
-                    <form id="logout-form" action="{{ url('admin/logout') }}" method="POST" class="d-none">
+                    <form id="logout-form" action="{{ url('retailer/logout') }}" method="POST" class="d-none">
                       @csrf
                     </form>
                     <span>Logout</span>

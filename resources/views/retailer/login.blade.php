@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AdminLTE 3 | Log in (v2)</title>
+  <title>Retailer Login</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -21,7 +21,7 @@
     <!-- /.login-logo -->
     <div class="card card-outline card-primary">
       <div class="card-header text-center">
-        <a href="{{ url('/dashboard') }}" class="h1"><b>Admin</b>LTE</a>
+        <a href="{{ url('/dashboard') }}" class="h1"><b>Retailer</b>Login</a>
       </div>
       <div class="card-body">
 
@@ -36,7 +36,7 @@
         </div>
         @endif
 
-        <p class="login-box-msg">Sign in to start your session</p>
+        <!-- <p class="login-box-msg">Sign in to start your session</p> -->
 
         <form action="{{ url('login') }}" method="post">
           @csrf
@@ -67,14 +67,14 @@
             @enderror
           </div>
           <div class="row">
-            <div class="col-12">
+            <!-- <div class="col-12">
               <div class="icheck-primary">
                 <input type="checkbox" id="remember">
                 <label for="remember">
                   Remember Me
                 </label>
               </div>
-            </div>
+            </div> -->
             <!-- /.col -->
             <div class="col-12">
               <button type="submit" class="btn btn-primary btn-block">Sign In</button>
@@ -84,12 +84,12 @@
         </form>
 
 
-        <p class="mb-1">
+        <!-- <p class="mb-1">
           <a href="forgot-password.html">I forgot my password</a>
         </p>
         <p class="mb-0">
           <a href="{{ url('register') }}" class="text-center">Register a new membership</a>
-        </p>
+        </p> -->
       </div>
       <!-- /.card-body -->
     </div>
