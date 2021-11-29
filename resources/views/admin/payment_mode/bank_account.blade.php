@@ -9,7 +9,7 @@
       <div class="card-header">
         <h3 class="card-title">Outlet List</h3>
         <div class="card-tools">
-          <a href="{{ url('admin/outlets/create') }}" class="btn btn-sm btn-success mr-4"><i class="fas fa-plus-circle"></i>&nbsp;Add</a>
+          <a href="javascript:void(0);" class="btn btn-sm btn-success mr-4" id="create_bank_account"><i class="fas fa-plus-circle"></i>&nbsp;Add</a>
         </div>
       </div>
 
@@ -168,57 +168,58 @@
 @push('modal')
 
 <!-- Modal -->
-<div class="modal fade" id="banckModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="add_bank_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Bank Charges/Commission</h5>
+        <h5 class="modal-title" id="heading_bank">Add Bank Account</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form id="bankModal" action="{{ url('admin/outlet-bank') }}" method="post">
+        <form id="add_bank_account" action="{{ url('admin/bank-account') }}" method="post">
           @csrf
           <input type="hidden" name="id" id="outlet_id">
           <div class="row">
             <div class="col-md-12">
               <div class="form-group">
-                <label>Sl.</label>
-                <input type="text" placeholder="Enter Sl."  id="sl" required name="sl" class="form-control form-control-sm">
-                <span id="sl_msg" class="custom-text-danger"></span>
+                <label>Bank Account Name</label>
+                <input type="text" placeholder="Enter Bank Name" id="sl" required name="bank_name" class="form-control form-control-sm">
+                <span id="bank_name_msg" class="custom-text-danger"></span>
               </div>
               <div class="form-row">
                 <div class="form-group col-md-6">
-                  <label>From Amount</label>
-                  <input type="number" name="from_amount" id="from_amount" required class="form-control form-control-sm" placeholder="Enter Amount">
-                  <span id="from_amount_msg" class="custom-text-danger"></span>
+                  <label>Account Number</label>
+                  <input type="number" name="account_number" id="account_number" required class="form-control form-control-sm" placeholder="Enter Account Name">
+                  <span id="account_number_msg" class="custom-text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
-                  <label>To Amount</label>
-                  <input type="number" name="to_amount" id="to_amount" required class="form-control form-control-sm" placeholder="Enter Amount">
-                  <span id="to_amount_msg" class="custom-text-danger"></span>
+                  <label>IFSC Code</label>
+                  <input type="text" name="ifsc_code" id="ifsc_code" required class="form-control form-control-sm" placeholder="Enter IFSC Code">
+                  <span id="ifsc_code_msg" class="custom-text-danger"></span>
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group col-md-6">
-                  <label>Type</label>
-                  <select class="form-control form-control-sm" id="type" name="type">
-                    <option value="persantage">Persantage(%)</option>
-                    <option value="inr">INR</option>
-                  </select>
-                  <span id="type_msg" class="custom-text-danger"></span>
+                  <label>Account Holder Name</label>
+                  <input type="text" required name="account_holder_name" id="account_holder_name" class="form-control form-control-sm" placeholder="Enter Account Holder Name">
+                  <span id="account_holder_name_msg" class="custom-text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
-                  <label>Charges</label>
-                  <input type="number" required name="charges" id="charges" class="form-control form-control-sm" placeholder="Enter Charges">
-                  <span id="charges_msg" class="custom-text-danger"></span>
+                  <label>Status</label>
+                  <select class="form-control form-control-sm" id="status" name="status">
+                    <option value="1">Active</option>
+                    <option value="0">Inactive</option>
+                  </select>
+                  <span id="status_msg" class="custom-text-danger"></span>
                 </div>
+
               </div>
 
               <div class="form-group text-center">
-                <input type="submit" class="btn btn-success btn-sm" value="Submit" t>
+                <input type="submit" class="btn btn-success btn-sm" id="submit_bank_account" value="Submit">
               </div>
             </div>
           </div>
@@ -230,28 +231,53 @@
 
 
 <script>
-  $(document).on('click', '.banckModal', function() {
-    var id = $(this).attr('outlet_id');
-    $.ajax({
-      url: '{{ url("admin/outlet-bank-get") }}/' + id,
-      type: "GET",
-      data: {},
-      dataType: "JSON",
-      success: function(res) {
-        $('#outlet_id').val(id);
-        $('#sl').val(res.data.sl);
-        $('#to_amount').val(res.data.to_amount);
-        $('#from_amount').val(res.data.from_amount);
-        $('#type').val(res.data.type);
-        $('#charges').val(res.data.charges);
-        $('#banckModal').modal('show');
-      }
-    })
-
+  $('#create_bank_account').click(function(e) {
+    e.preventDefault();
+    $('form#add_bank_account')[0].reset();
+    let url = '{{ url("admin/bank-account") }}';
+    $('#heading_bank').html('Add Bank Account');
+    $('#put').html('');
+    $('form#add_bank_account').attr('action', url);
+    $('#submit_bank_account').val('Submit');
+    $('#nameMsg').html('');
+    $('#add_bank_modal').modal('show');
   })
 
+
+  $(".edit_bank_account").click(function(e) {
+    e.preventDefault();
+    var id = $(this).attr('bankAcoountId');
+    var url = "{{ url('admin/bank-account') }}/" + id + "/edit";
+    $.ajax({
+      url: url,
+      method: 'GET',
+      dataType: "JSON",
+      data: {
+        id: id,
+      },
+      success: function(res) {
+        $('#name').val(res.name);
+        $('#email').val(res.email);
+        $('#mobile_no').val(res.mobile_no);
+        $('#Checkbox').html(res.agent);
+
+        let urlU = '{{ url("admin/group") }}/' + id;
+        $('#heading-group').html('Edit Group');
+        $('#put').html('<input type="hidden" name="_method" value="PUT">');
+        $('form#add-group').attr('action', urlU);
+        $('#submit-group').val('Update');
+        $('#nameMsg').html('');
+        $('#add-group-modal').addClass('is-active');
+      },
+
+      error: function(error) {
+        console.log(error)
+      }
+    });
+  });
+
   /*start form submit functionality*/
-  $("form#bankModal").submit(function(e) {
+  $("form#add_bank_account").submit(function(e) {
     e.preventDefault();
     formData = new FormData(this);
     var url = $(this).attr('action');
@@ -289,7 +315,7 @@
 
         //for reset all field
         if (res.status == 'success') {
-          $('form#add-outlet')[0].reset();
+          $('form#add_bank_account')[0].reset();
         }
       }
     });
