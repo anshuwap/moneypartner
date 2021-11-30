@@ -23,6 +23,7 @@
               <th>Account No.</th>
               <th>IFSC</th>
               <th>Holder Name</th>
+              <th>Created Date</th>
               <th>Status</th>
               <th>Action</th>
             </tr>
@@ -45,43 +46,12 @@
 <script type="text/javascript">
   $(document).ready(function() {
 
-
-    // function deleteRecord(id) {
-    //   // var id = $(this).attr('_id');
-    //   var parent = $(this).parent().parent();
-    //   swal({
-    //       title: "Are you sure?",
-    //       text: "Once deleted, you will not be able to recover this record!",
-    //       icon: "warning",
-    //       buttons: true,
-    //       dangerMode: true,
-    //     })
-    //     .then((willDelete) => {
-    //       $.ajax({
-    //         type: "POST",
-    //         url: "" + id,
-    //         data: {
-    //           'id': id
-    //         },
-    //         dataType: 'json',
-    //         success: function(res) {
-    //           if (res.status == 'success') {
-    //             location.reload();
-    //           }
-    //         }
-    //       });
-    //       if (willDelete) {
-    //         var iconClass = 'danger';
-    //         if (res.status == 'success')
-    //           var iconClass = 'success';
-    //         swal(`${res.msg}`, {
-    //           icon: iconClass,
-    //         });
-    //       } else {
-    //         swal("Your record is safe!");
-    //       }
-    //     });
-    // }
+    $(document).on('click','.remove_bank_account',function() {
+            var id = $(this).attr('bank_account_id');
+            var url = "{{ url('admin/bank-account') }}/" + id;
+            var tr = $(this).parent().parent();
+            removeRecord(tr, url);
+        })
 
     $('#table').DataTable({
       lengthMenu: [
@@ -95,7 +65,7 @@
       scrollCollapse: true,
       'ajax': {
         "dataType": "json",
-        url: "{{ url('admin/outlets-ajax') }}",
+        url: "{{ url('admin/bank-account-ajax') }}",
         data: {}
       },
       columns: [{
@@ -114,6 +84,9 @@
           data: 'holder_name'
         },
         {
+          data: "created_date"
+        },
+        {
           data: "status"
         },
         {
@@ -123,7 +96,7 @@
 
       columnDefs: [{
         orderable: false,
-        targets: [0, 1, 2, 3, 4, 5, 6]
+        targets: [0, 1, 2, 3, 4, 5, 6,7]
       }],
     });
 
@@ -131,7 +104,7 @@
       var id = $(this).attr('_id');
       var val = $(this).attr('val');
       $.ajax({
-        'url': "{{ url('admin/outlets-status') }}",
+        'url': "{{ url('admin/bank-account-status') }}",
         data: {
           "_token": "{{ csrf_token() }}",
           'id': id,
@@ -180,12 +153,12 @@
       <div class="modal-body">
         <form id="add_bank_account" action="{{ url('admin/bank-account') }}" method="post">
           @csrf
-          <input type="hidden" name="id" id="outlet_id">
+        <div id="put"></div>
           <div class="row">
             <div class="col-md-12">
               <div class="form-group">
                 <label>Bank Account Name</label>
-                <input type="text" placeholder="Enter Bank Name" id="sl" required name="bank_name" class="form-control form-control-sm">
+                <input type="text" placeholder="Enter Bank Name" id="bank_name" required name="bank_name" class="form-control form-control-sm">
                 <span id="bank_name_msg" class="custom-text-danger"></span>
               </div>
               <div class="form-row">
@@ -239,14 +212,13 @@
     $('#put').html('');
     $('form#add_bank_account').attr('action', url);
     $('#submit_bank_account').val('Submit');
-    $('#nameMsg').html('');
     $('#add_bank_modal').modal('show');
   })
 
 
-  $(".edit_bank_account").click(function(e) {
+  $(document).on('click','.edit_bank_account',function(e) {
     e.preventDefault();
-    var id = $(this).attr('bankAcoountId');
+    var id = $(this).attr('bank_account_id');
     var url = "{{ url('admin/bank-account') }}/" + id + "/edit";
     $.ajax({
       url: url,
@@ -256,18 +228,18 @@
         id: id,
       },
       success: function(res) {
-        $('#name').val(res.name);
-        $('#email').val(res.email);
-        $('#mobile_no').val(res.mobile_no);
-        $('#Checkbox').html(res.agent);
+        $('#bank_name').val(res.bank_name);
+        $('#account_number').val(res.account_number);
+        $('#ifsc_code').val(res.ifsc_code);
+        $('#account_holder_name').val(res.account_holder_name);
+        $('#status').val(res.status);
 
-        let urlU = '{{ url("admin/group") }}/' + id;
-        $('#heading-group').html('Edit Group');
+        let urlU = '{{ url("admin/bank-account") }}/' + id;
+        $('#heading-group').html('Edit Bank Account');
         $('#put').html('<input type="hidden" name="_method" value="PUT">');
-        $('form#add-group').attr('action', urlU);
-        $('#submit-group').val('Update');
-        $('#nameMsg').html('');
-        $('#add-group-modal').addClass('is-active');
+        $('form#add_bank_account').attr('action', urlU);
+        $('#submit_bank_account').val('Update');
+        $('#add_bank_modal').modal('show');
       },
 
       error: function(error) {

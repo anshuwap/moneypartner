@@ -39,10 +39,17 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('outlets-ajax', [AdminOutlet::class,'ajaxList']);
 
     Route::resource('bank-account', AdminBankAccount::class);
-
-    Route::resource('upi', AdminUpi::class);
+    Route::get('bank-account-ajax', [AdminBankAccount::class,'ajaxList']);
+    Route::post('bank-account-status', [AdminBankAccount::class,'bankAccountStatus']);
 
     Route::resource('qr-code', AdminQrCode::class);
+    Route::get('qr-code-ajax', [AdminQrCode::class,'ajaxList']);
+    Route::post('qr-code-status', [AdminQrCode::class,'qrCodeStatus']);
+
+    Route::resource('upi', AdminUpi::class);
+    Route::get('upi-ajax', [AdminUpi::class,'ajaxList']);
+    Route::post('upi-status', [AdminUpi::class,'upiStatus']);
+
 
     Route::post('logout',  [AdminLogin::class, 'logout']);
 });

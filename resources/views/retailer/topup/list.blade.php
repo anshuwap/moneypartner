@@ -1,15 +1,15 @@
 @extends('admin.layouts.app')
 
 @section('content')
-@section('page_heading', 'QR Code List')
+@section('page_heading', 'Topup List')
 
 <div class="row">
     <div class="col-12 mt-2">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">QR Code List</h3>
+                <h3 class="card-title">Topup List</h3>
                 <div class="card-tools">
-                    <a href="javascript:void(0);" class="btn btn-sm btn-success mr-4" id="create_qr_code"><i class="fas fa-plus-circle"></i>&nbsp;Add</a>
+                    <a href="javascript:void(0);" class="btn btn-sm btn-success mr-4" id="create_upi_id"><i class="fas fa-plus-circle"></i>&nbsp;Add</a>
                 </div>
             </div>
 
@@ -20,7 +20,7 @@
                         <tr>
                             <th>Sl No.</th>
                             <th>Name</th>
-                            <th>QR Code</th>
+                            <th>Upi Id</th>
                             <th>Created Date</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -44,9 +44,9 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
-        $(document).on('click', '.remove_qr_code', function() {
-            var id = $(this).attr('qr_code_id');
-            var url = "{{ url('admin/qr-code') }}/" + id;
+        $(document).on('click', '.remove_upi_id', function() {
+            var id = $(this).attr('upi_id_id');
+            var url = "{{ url('admin/upi') }}/" + id;
             var tr = $(this).parent().parent();
             removeRecord(tr, url);
         })
@@ -63,7 +63,7 @@
             scrollCollapse: true,
             'ajax': {
                 "dataType": "json",
-                url: "{{ url('admin/qr-code-ajax') }}",
+                url: "{{ url('admin/upi-ajax') }}",
                 data: {}
             },
             columns: [{
@@ -73,7 +73,7 @@
                     data: 'name'
                 },
                 {
-                    data: "qr_code"
+                    data: "upi_id"
                 },
                 {
                     data: "created_date"
@@ -96,7 +96,7 @@
             var id = $(this).attr('_id');
             var val = $(this).attr('val');
             $.ajax({
-                'url': "{{ url('admin/qr-code-status') }}",
+                'url': "{{ url('admin/upi-status') }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
                     'id': id,
@@ -133,40 +133,45 @@
 @push('modal')
 
 <!-- Modal -->
-<div class="modal fade" id="add_qr_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="add_upi_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="heading_qr">Add Qr Code</h5>
+                <h5 class="modal-title" id="heading_totup">Request For Topup</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form id="add_qr_code" action="{{ url('admin/qr-code') }}" method="post">
+                <form id="add_upi_id" action="{{ url('admin/upi') }}" method="post">
                     @csrf
                     <div id="put"></div>
                     <div class="row">
                         <div class="col-md-12">
-
-                            <div class="text-center">
-                                <img class="profile-user-img img-fluid" style="width: 250px;" id="avatar" src="{{ asset('assets') }}/profile/qrcode.png" alt="User profile picture">
+                            <div class="form-group">
+                                <label>Payment Mode</label>
+                                <select class="form-control form-control-sm" id="payment" name="payment_mode">
+                                    <option value="bank_account">Bank Account</option>
+                                    <option value="upi_id">UPI ID</option>
+                                    <option value="qr_code">QR Code</option>
+                                </select>
+                                <span id="payment_mode_msg" class="custom-text-danger"></span>
                             </div>
 
                             <div class="form-group">
-                                <label>Office Photo </label>
-                                <div class="input-group">
-                                    <div class="custom-file">
-                                        <input type="file" name="qr_code" class="custom-file-input custom-file-input-sm" id="qr_code">
-                                        <label class="custom-file-label" for="exampleInputFile">Choose file</label>
-                                    </div>
-                                </div>
-                                <span id="qr_code_msg" class="custom-text-danger"></span>
+                            <label>Select</label>
+                            <select class="form-control form-control-sm" id="payment" name="payment_mode">
+                                    <option value="bank_account">Bank Account</option>
+                                    <option value="upi_id">UPI ID</option>
+                                    <option value="qr_code">QR Code</option>
+                                </select>
+                                <span id="payment_mode_msg" class="custom-text-danger"></span>
                             </div>
+
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label>QR Code Name</label>
-                                    <input type="text" placeholder="Enter QR Code Name" id="name" required name="name" class="form-control form-control-sm">
+                                    <label></label>
+                                    <input type="text" placeholder="Enter UPI Name" id="name" required name="name" class="form-control form-control-sm">
                                     <span id="name_msg" class="custom-text-danger"></span>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -177,11 +182,10 @@
                                     </select>
                                     <span id="status_msg" class="custom-text-danger"></span>
                                 </div>
-
                             </div>
 
                             <div class="form-group text-center">
-                                <input type="submit" class="btn btn-success btn-sm" id="submit_qr_code" value="Submit">
+                                <input type="submit" class="btn btn-success btn-sm" id="submit_upi_id" value="Submit">
                             </div>
                         </div>
                     </div>
@@ -193,22 +197,22 @@
 
 
 <script>
-    $('#create_qr_code').click(function(e) {
+    $('#create_upi_id').click(function(e) {
         e.preventDefault();
-        $('form#add_qr_code')[0].reset();
-        let url = '{{ url("admin/qr-code") }}';
-        $('#heading_qr').html('Add QR Code');
+        $('form#add_upi_id')[0].reset();
+        let url = '{{ url("admin/upi") }}';
+        $('#heading_upi').html('Add UPI ID');
         $('#put').html('');
-        $('form#add_qr_code').attr('action', url);
-        $('#submit_qr_code').val('Submit');
-        $('#add_qr_modal').modal('show');
+        $('form#add_upi_id').attr('action', url);
+        $('#submit_upi_id').val('Submit');
+        $('#add_upi_modal').modal('show');
     })
 
 
-    $(document).on('click', '.edit_qr_code', function(e) {
+    $(document).on('click', '.edit_upi_id', function(e) {
         e.preventDefault();
-        var id = $(this).attr('qr_code_id');
-        var url = "{{ url('admin/qr-code') }}/" + id + "/edit";
+        var id = $(this).attr('upi_id_id');
+        var url = "{{ url('admin/upi') }}/" + id + "/edit";
         $.ajax({
             url: url,
             method: 'GET',
@@ -217,17 +221,17 @@
                 id: id,
             },
             success: function(res) {
-                var url = "{{ asset('attachment/payment_mode/')}}/"+res.qr_code;
+                var url = "{{ asset('attachment/payment_mode/')}}/" + res.upi_id;
                 $('#name').val(res.name);
-                $('#avatar').attr('src',url);
+                $('#upi_id').val(res.upi_id);
                 $('#status').val(res.status);
 
-                let urlU = '{{ url("admin/qr-code") }}/' + id;
-                $('#heading_qr').html('Edit QR Code');
+                let urlU = '{{ url("admin/upi") }}/' + id;
+                $('#heading_upi').html('Edit UPI ID');
                 $('#put').html('<input type="hidden" name="_method" value="PUT">');
-                $('form#add_qr_code').attr('action', urlU);
-                $('#submit_qr_code').val('Update');
-                $('#add_qr_modal').modal('show');
+                $('form#add_upi_id').attr('action', urlU);
+                $('#submit_upi_id').val('Update');
+                $('#add_upi_modal').modal('show');
             },
 
             error: function(error) {
@@ -237,7 +241,7 @@
     });
 
     /*start form submit functionality*/
-    $("form#add_qr_code").submit(function(e) {
+    $("form#add_upi_id").submit(function(e) {
         e.preventDefault();
         formData = new FormData(this);
         var url = $(this).attr('action');
@@ -275,24 +279,13 @@
 
                 //for reset all field
                 if (res.status == 'success') {
-                    $('form#add_qr_code')[0].reset();
+                    $('form#add_upi_id')[0].reset();
                 }
             }
         });
     });
 
     /*end form submit functionality*/
-
-    /*start single image preview*/
-    $(document).on('change','#qr_code',function(){
-        var fileName = qr_code.files[0].name;
-        const [file] = qr_code.files
-        if (file) {
-            $('#avatar').show();
-            avatar.src = URL.createObjectURL(file)
-        }
-      });
-    /*end single image preview*/
 </script>
 
 @endpush

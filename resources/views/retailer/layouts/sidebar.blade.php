@@ -12,9 +12,9 @@
       </a>
     </li>
     <li class="nav-item">
-      <a href="{{ url('admin/outlets') }}" class="nav-link">
+      <a href="{{ url('admin/topup') }}" class="nav-link">
         <i class="nav-icon far fa-circle text-warning"></i>
-        <p>Outlets</p>
+        <p>Topup List</p>
       </a>
     </li>
     <li class="nav-item">
