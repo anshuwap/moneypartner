@@ -6,13 +6,13 @@
 
 
     <li class="nav-item">
-      <a href="{{ url('admin/dashboard') }}" class="nav-link">
+      <a href="{{ url('retailer/dashboard') }}" class="nav-link">
         <i class="nav-icon far fa-circle text-danger"></i>
         <p class="text">Dashboard</p>
       </a>
     </li>
     <li class="nav-item">
-      <a href="{{ url('admin/topup') }}" class="nav-link">
+      <a href="{{ url('retailer/topup') }}" class="nav-link">
         <i class="nav-icon far fa-circle text-warning"></i>
         <p>Topup List</p>
       </a>

@@ -154,7 +154,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Office Photo </label>
+                                <label>QR Code</label>
                                 <div class="input-group">
                                     <div class="custom-file">
                                         <input type="file" name="qr_code" class="custom-file-input custom-file-input-sm" id="qr_code">

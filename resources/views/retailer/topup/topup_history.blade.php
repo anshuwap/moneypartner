@@ -1,16 +1,16 @@
 @extends('retailer.layouts.app')
 
 @section('content')
-@section('page_heading', 'Topup List')
+@section('page_heading', 'Topup History')
 
 <div class="row">
     <div class="col-12 mt-2">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Topup List</h3>
+                <h3 class="card-title">Topup History</h3>
                 <div class="card-tools">
-                    <a href="javascript:void(0);" class="btn btn-sm btn-success mr-4" id="create_topup"><i class="fas fa-hand-holding-usd"></i>&nbsp;Request for Topup</a>
-                    <a href="{{ url('retailer/topup-history') }}" class="btn btn-sm btn-info mr-4"><i class="fas fa-history"></i>&nbsp;Topup History</a>
+                    <a href="javascript:void(0);" class="btn btn-sm btn-success mr-2" id="create_topup"><i class="fas fa-hand-holding-usd"></i>&nbsp;Request for Topup</a>
+                    <a href="{{ url('retailer/topup') }}" class="btn btn-sm btn-warning mr-4" id=""><i class="fas fa-arrow-alt-circle-left"></i>&nbsp;Back</a>
                 </div>
             </div>
 
@@ -152,7 +152,7 @@
                             <div class="form-group">
                                 <label>Payment Mode</label>
                                 <select class="form-control form-control-sm" required id="payment_mode" name="payment_mode">
-                                    <option value="">Select</option>
+                                <option value="">Select</option>
                                     <option value="bank_account">Bank Account</option>
                                     <option value="upi_id">UPI ID</option>
                                     <option value="qr_code">QR Code</option>

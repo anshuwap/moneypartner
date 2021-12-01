@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\PaymentMode\UpiController as AdminUpi;
 
 use App\Http\Controllers\Retailer\LoginController as RetailerLogin;
 use App\Http\Controllers\Retailer\DashboardController as RetailerDashboard;
+use App\Http\Controllers\Retailer\TopupController as RetailerTopup;
 
 use Illuminate\Support\Facades\Route;
 
@@ -58,5 +59,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
 
     Route::get('dashboard',  [RetailerDashboard::class, 'index']);
+
+
+    Route::resource('topup', RetailerTopup::class);
+    Route::get('outlet-payment-mode',  [RetailerTopup::class, 'outletPaymentMode']);
+    Route::get('payment-details',  [RetailerTopup::class, 'paymentDetails']);
+    Route::get('topup-history',  [RetailerTopup::class, 'topupHistory']);
+    Route::get('topup-history-ajax',  [RetailerTopup::class, 'topupHistoryAjax']);
+
     Route::post('logout',  [RetailerLogin::class, 'logout']);
 });
