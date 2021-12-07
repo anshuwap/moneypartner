@@ -485,8 +485,8 @@
  var comment = $('#comment-'+id).val();
  $.ajax({
    url:'',
-   data:{},
-   type:'GET',
+   data:{'id':id,},
+   type:'POST',
    dataType:'JSON',
    success:function(res){
 
