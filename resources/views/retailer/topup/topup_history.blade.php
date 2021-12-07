@@ -19,12 +19,13 @@
                 <table id="table" class="table table-hover text-nowrap">
                     <thead>
                         <tr>
-                            <th>Sl No.</th>
-                            <th>Name</th>
-                            <th>topup Id</th>
-                            <th>Created Date</th>
+                            <th>Sr No.</th>
+                            <th>Paymnet Id</th>
+                            <th>Payment Mode</th>
+                            <th>Amount</th>
                             <th>Status</th>
-                            <th>Action</th>
+                            <th>Payment Date</th>
+                            <th>Requested Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -45,13 +46,6 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
-        $(document).on('click', '.remove_topup_id', function() {
-            var id = $(this).attr('topup_id_id');
-            var url = "{{ url('admin/topup') }}/" + id;
-            var tr = $(this).parent().parent();
-            removeRecord(tr, url);
-        })
-
         $('#table').DataTable({
             lengthMenu: [
                 [10, 30, 50, 100, 500],
@@ -64,32 +58,37 @@
             scrollCollapse: true,
             'ajax': {
                 "dataType": "json",
-                url: "{{ url('retailer/topup-ajax') }}",
+                url: "{{ url('retailer/topup-history-ajax') }}",
                 data: {}
             },
             columns: [{
-                    data: "sl_no"
+                    data: "sr_no"
                 },
                 {
-                    data: 'name'
+                    data: 'payment_has_code'
                 },
                 {
-                    data: "topup_id"
+                    data: "payment_mode"
                 },
                 {
-                    data: "created_date"
+                    data:"amount",
                 },
                 {
                     data: "status"
                 },
                 {
-                    data: "action"
-                }
+                    data: "payment_date"
+                },
+                {
+                    data: "created_date"
+                },
+
+
             ],
 
             columnDefs: [{
                 orderable: false,
-                targets: [0, 1, 2, 3, 4, 5]
+                targets: [0, 1, 2, 3, 4, 5,6]
             }],
         });
 
@@ -193,6 +192,11 @@
                                     </div>
                                 </div>
                                 <span id="attachment_msg" class="custom-text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Payment Data & Time</label>
+                                <input type="datetime-local" id="payment_date" name="payment_date" class="form-control form-control-sm datetimepicker-input" data-target="#reservationdatetime"  value="<?= date('Y-m-d\TH:i') ?>" min="<?= date('Y-m-d\TH:i') ?>" max="2030-06-14T00:00">
                             </div>
 
                             <div class="form-group text-center">

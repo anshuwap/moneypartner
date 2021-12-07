@@ -8,4 +8,8 @@ $(document).ready(function(){
      $('form#filter-form').find("input[type=text],input[type=email],input[type=password],input[type=number],input[type=date],textarea,select,checkbox,radio").val("");
      window.location.href = url;
     });
+
+
+
+
 });

@@ -1,0 +1,93 @@
+*,
+::after,
+::before {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: grid;
+  place-content: center;
+  min-height: 100vh;
+}
+
+.tooltip-container {
+  position: relative;
+}
+
+.tooltip-container .tooltip-icon {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.tooltip-wrapper {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #fff;
+  display: none;
+  padding: 30px 20px;
+  width: 350px;
+  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2), 1px 0px 3px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.tooltip-wrapper::before {
+  content: "";
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0px;
+  height: 0px;
+  border-top: 0px solid transparent;
+  border-right: 15px solid transparent;
+  border-bottom: 15px solid rgb(235, 235, 235);
+  border-left: 15px solid transparent;
+
+}
+
+.tooltip-content .tooltip-title p {
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.tooltip-content .tooltip-input {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid lightgray;
+  padding: 0px 10px;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+.tooltip-content .tooltip-input:focus {
+  outline: 0;
+  border-color: lightblue;
+}
+
+.tooltip-btn-container {
+  display: flex;
+  align-items: center;
+}
+.tooltip-btn-container .tooltip-btn {
+  border: 1px solid #007bff;
+  background-color: #fff;
+  outline: 0;
+  width: 80px;
+  height: 30px;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+.tooltip-btn-container .tooltip-btn.save-btn {
+  background-color: #007bff;
+  color: #fff;
+  margin-right: 20px;
+}
+
+.tooltip-wrapper.active {
+  display: block;
+}

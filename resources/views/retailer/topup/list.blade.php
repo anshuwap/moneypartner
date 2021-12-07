@@ -40,6 +40,10 @@
 </div>
 <!-- /.row -->
 
+
+
+
+
 @push('custom-script')
 
 <script type="text/javascript">
@@ -163,8 +167,8 @@
                             <div class="form-group">
                                 <label>Select</label>
                                 <select class="form-control form-control-sm" required disabled id="payment_reference" name="payment_reference_id">
-                            <option>Select</option>
-                            </select>
+                                    <option>Select</option>
+                                </select>
                                 <span id="payment_reference_id_msg" class="custom-text-danger"></span>
                             </div>
 
@@ -195,6 +199,11 @@
                                 <span id="attachment_msg" class="custom-text-danger"></span>
                             </div>
 
+                            <div class="form-group">
+                                <label>Payment Data & Time</label>
+                                <input type="datetime-local" id="payment_date" name="payment_date" class="form-control form-control-sm datetimepicker-input" data-target="#reservationdatetime" value="<?= date('Y-m-d\TH:i') ?>" min="<?= date('Y-m-d\TH:i') ?>" max="2030-06-14T00:00">
+                            </div>
+
                             <div class="form-group text-center">
                                 <input type="submit" class="btn btn-success btn-sm" id="submit_topup_id" value="Submit">
                             </div>
@@ -218,7 +227,7 @@
             type: 'GET',
             dataType: 'JSON',
             success: function(res) {
-               $('#payment_reference').removeAttr('disabled');
+                $('#payment_reference').removeAttr('disabled');
                 $('#payment_reference').html(res);
             }
         })

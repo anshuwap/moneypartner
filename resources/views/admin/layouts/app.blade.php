@@ -30,6 +30,8 @@
 
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
 
+  <link rel="stylesheet" href="{{ asset('assets') }}/custom/custom.css">
+
 <style>
   label{
     font-size: 14px;
@@ -320,13 +322,11 @@ document.getElementById('logout-form').submit();">
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
   <script src="{{ asset('assets') }}/dist/js/pages/dashboard.js"></script>
 
-  <script src="{{ asset('assets') }}/custom/custom_function.js"></script>
-
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
 
   <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
-
+  <script src="{{ asset('assets') }}/custom/custom_function.js"></script>
   <script>
 -
 $(document).ready(function(){

@@ -1,15 +1,15 @@
 @extends('admin.layouts.app')
 
 @section('content')
-@section('page_heading', 'Outlet List')
+@section('page_heading', 'Bank Charges Link')
 
 <div class="row">
   <div class="col-12 mt-2">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">Outlet List</h3>
+        <h3 class="card-title">Bank Charges Link</h3>
         <div class="card-tools">
-          <a href="{{ url('admin/outlets/create') }}" class="btn btn-sm btn-success mr-4"><i class="fas fa-plus-circle"></i>&nbsp;Add</a>
+          <a href="javascript:void(0);" outlet_id='{{ $id }}' class="btn btn-sm btn-success mr-4" id="add_bank_charges"><i class="fas fa-plus-circle"></i>&nbsp;Add</a>
         </div>
       </div>
 
@@ -19,20 +19,41 @@
           <thead>
             <tr>
               <th>Sl No.</th>
-              <th>Outlet No./Code</th>
-              <th>Name</th>
-              <th>Mobile No.</th>
-              <th>Outlet Name</th>
-              <th>State/City</th>
-              <th>Available Balance</th>
-              <th>Created Date</th>
+              <th>From Amount</th>
+              <th>To Amount</th>
+              <th>Type</th>
+              <th>Charges</th>
               <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-          </tbody>
+            @if(!empty($bank_charges))
+            @php
+            $i =0;
+            @endphp
+            @foreach($bank_charges as $key=>$bank)
+            <tr>
+              <td>{{ ++$i }}</td>
+              <td>{{ (!empty($bank['from_amount']))?$bank['from_amount']:'' }}</td>
+              <td>{{ (!empty($bank['from_amount']))?$bank['to_amount']:'' }}</td>
+              <td>{{ (!empty($bank['from_amount']))?ucwords($bank['type']):'' }}</td>
+              <td>{{ (!empty($bank['from_amount']))?$bank['charges']:'' }}</td>
+              <td>
+                @if (!empty($bank['status']) && $bank['status'] == 1)
 
+                <a href="javascript:void(0);"><span class="badge badge-success activeVer" key="{{ $key }}" id="active_{{ $key }}" _id="{{ $id }}" val="0">Active</span></a>
+                @else
+                <a href="javascript:void(0)"><span class="badge badge-danger activeVer" key="{{ $key }}" id="active_{{ $key }}" _id="{{ $id }}" val="1">Inactive</span></a>
+                @endif
+              </td>
+              <td>
+                <a href="javascript:void(0);" class="text-info edit_bank_account" bank_account_id="{{ $id }}" key="{{ $key }}" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="far fa-edit"></i></a>
+              </td>
+            </tr>
+            @endforeach
+            @endif
+          </tbody>
         </table>
       </div>
       <!-- /.card-body -->
@@ -42,102 +63,6 @@
   </div>
 </div>
 <!-- /.row -->
-
-@push('custom-script')
-
-<script type="text/javascript">
-  $(document).ready(function() {
-
-    $('#table').DataTable({
-      lengthMenu: [
-        [10, 30, 50, 100, 500],
-        [10, 30, 50, 100, 500]
-      ], // page length options
-
-      bProcessing: true,
-      serverSide: true,
-      scrollY: "auto",
-      scrollCollapse: true,
-      'ajax': {
-        "dataType": "json",
-        url: "{{ url('admin/outlets-ajax') }}",
-        data: {}
-      },
-      columns: [{
-          data: "sl_no"
-        },
-        {
-          data: 'outlet_no'
-        },
-        {
-          data: "name"
-        },
-        {
-          data: 'mobile_no'
-        },
-        {
-          data: 'outlet_name'
-        },
-        {
-          data: "state"
-        },
-        {
-          data: "available_blance"
-        },
-        {
-          data: "created_date"
-        },
-        {
-          data: "status"
-        },
-        {
-          data: "action"
-        }
-      ],
-
-      columnDefs: [{
-        orderable: false,
-        targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-      }],
-    });
-
-    $(document).on('click', '.activeVer', function() {
-      var id = $(this).attr('_id');
-      var val = $(this).attr('val');
-      $.ajax({
-        'url': "{{ url('admin/outlets-status') }}",
-        data: {
-          "_token": "{{ csrf_token() }}",
-          'id': id,
-          'status': val
-        },
-        type: 'POST',
-        dataType: 'json',
-        success: function(res) {
-          if (res.val == 1) {
-            $('#active_' + id).text('Active');
-            $('#active_' + id).attr('val', '0');
-            $('#active_' + id).removeClass('badge-danger');
-            $('#active_' + id).addClass('badge-success');
-          } else {
-            $('#active_' + id).text('Inactive');
-            $('#active_' + id).attr('val', '1');
-            $('#active_' + id).removeClass('badge-success');
-            $('#active_' + id).addClass('badge-danger');
-          }
-          Swal.fire(
-            `${res.status}!`,
-            res.msg,
-            `${res.status}`,
-          )
-        }
-      })
-
-    })
-
-  });
-</script>
-@endpush
 
 @push('modal')
 
@@ -152,9 +77,10 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="bankModal" action="{{ url('admin/outlet-bank') }}" method="post">
+        <form id="add_bank_charges" action="{{ url('admin/outlet-add-bank-charges') }}" method="post">
           @csrf
-          <input type="hidden" name="id" id="outlet_id">
+          <input type="hidden" value="{{ $id }}" name="id" id="outlet_id">
+          <div id="put"></div>
           <div class="row">
             <div class="col-md-12">
               <div class="form-row">
@@ -187,7 +113,7 @@
               </div>
 
               <div class="form-group text-center">
-                <input type="submit" class="btn btn-success btn-sm" value="Submit" t>
+                <input type="submit" class="btn btn-success btn-sm" id="submit_bank_charges" value="Submit">
               </div>
             </div>
           </div>
@@ -198,28 +124,53 @@
 </div>
 
 <script>
-  $(document).on('click', '.banckModal', function() {
-    var id = $(this).attr('outlet_id');
-    $.ajax({
-      url: '{{ url("admin/outlet-bank-get") }}/' + id,
-      type: "GET",
-      data: {},
-      dataType: "JSON",
-      success: function(res) {
-        $('#outlet_id').val(id);
-        $('#sl').val(res.data.sl);
-        $('#to_amount').val(res.data.to_amount);
-        $('#from_amount').val(res.data.from_amount);
-        $('#type').val(res.data.type);
-        $('#charges').val(res.data.charges);
-        $('#banckModal').modal('show');
-      }
-    })
-
+  $('#add_bank_charges').click(function(e) {
+    e.preventDefault();
+    $('form#add_bank_charges')[0].reset();
+    let url = '{{ url("admin/outlet-add-bank-charges") }}';
+    $('#heading_bank').html('Add Bank Charges');
+    $('#put').html('');
+    $('form#add_bank_charges').attr('action', url);
+    $('#submit_bank_charges').val('Submit');
+    $('#banckModal').modal('show');
   })
 
+
+  $(document).on('click', '.edit_bank_account', function(e) {
+    e.preventDefault();
+    var id = $(this).attr('bank_account_id');
+    var key = $(this).attr('key');
+    var url = "{{ url('admin/outlet-edit-bank-charges') }}/" + id;
+    $.ajax({
+      url: url,
+      method: 'GET',
+      dataType: "JSON",
+      data: {
+        'key':key
+      },
+      success: function(res) {
+        $('#from_amount').val(res.data.from_amount);
+        $('#to_amount').val(res.data.to_amount);
+        $('#type').val(res.data.type);
+        $('#charges').val(res.data.charges);
+
+        let urlU = '{{ url("admin/outlet-update-bank-charges") }}';
+        $('#heading_bank').html('Edit Bank Account Charges');
+        $('#put').html('<input type="hidden" name="key" value="'+key+'">');
+        $('form#add_bank_charges').attr('action', urlU);
+        $('#submit_bank_charges').val('Update');
+        $('#banckModal').modal('show');
+      },
+
+      error: function(error) {
+        console.log(error)
+      }
+    });
+  });
+
+
   /*start form submit functionality*/
-  $("form#bankModal").submit(function(e) {
+  $("form#add_bank_charges").submit(function(e) {
     e.preventDefault();
     formData = new FormData(this);
     var url = $(this).attr('action');
@@ -264,6 +215,38 @@
   });
 
   /*end form submit functionality*/
+
+  $(document).on('click', '.activeVer', function() {
+            var id = $(this).attr('_id');
+            var val = $(this).attr('val');
+            var key = $(this).attr('key');
+
+            $.ajax({
+                'url': "{{ url('admin/outlet-charges-status') }}/" + id + "/" + key + "/" + val,
+                data: {},
+                type: 'GET',
+                dataType: 'json',
+                success: function(res) {
+                    if (res.val == 1) {
+                        $('#active_' + key).text('Active');
+                        $('#active_' + key).attr('val', '0');
+                        $('#active_' + key).removeClass('badge-danger');
+                        $('#active_' + key).addClass('badge-success');
+                    } else {
+                        $('#active_' + key).text('Inactive');
+                        $('#active_' + key).attr('val', '1');
+                        $('#active_' + key).removeClass('badge-success');
+                        $('#active_' + key).addClass('badge-danger');
+                    }
+                    Swal.fire(
+                        `${res.status}!`,
+                        res.msg,
+                        `${res.status}`,
+                    )
+                }
+            })
+        });
+
 </script>
 
 @endpush

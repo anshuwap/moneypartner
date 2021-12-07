@@ -63,7 +63,7 @@ class OutletController extends Controller
         $outlet->status               = $request->status;
         $outlet->account_status       = $request->account_status;
 
-        $this->createUser($outlet->_id,$request);
+        $this->createUser($outlet->_id, $request);
 
         //for office photo
         if (!empty($request->file('office_photo')))
@@ -91,7 +91,7 @@ class OutletController extends Controller
 
 
 
-    private function createUser($retailer_id,$request)
+    private function createUser($retailer_id, $request)
     {
         $user = new User();
         $user->full_name = $request->retailer_name;
@@ -194,47 +194,124 @@ class OutletController extends Controller
         }
     }
 
-    public function outletBankGet($id)
+
+
+    public function outletBankCharges($id)
     {
 
         try {
-            $outlet = Outlet::select('bank_charges')->find($id);
-            $data = [
-                'id' => $outlet->_id,
-                'sl' => (!empty($outlet->bank_charges['sl'])) ? $outlet->bank_charges['sl'] : '',
-                'from_amount' => (!empty($outlet->bank_charges['from_amount'])) ? $outlet->bank_charges['from_amount'] : '',
-                'to_amount' => (!empty($outlet->bank_charges['to_amount'])) ? $outlet->bank_charges['to_amount'] : '',
-                'type' => (!empty($outlet->bank_charges['type'])) ? $outlet->bank_charges['type'] : '',
-                'charges' => (!empty($outlet->bank_charges['charges'])) ? $outlet->bank_charges['charges'] : ''
+            $outlet = Outlet::find($id);
+            if (!empty($outlet)) {
+                $data['bank_charges'] = $outlet->bank_charges;
+                $data['id'] = $outlet->_id;
+                return view('admin.outlet.bank_charges', $data);
+            }
+            return redirect('500');
+        } catch (Exception $e) {
+            return redirect('500');
+        }
+    }
+
+
+    public function outletAddBankCharges(Request $request)
+    {
+        try {
+            $outlet_id = $request->id;
+            $outlet = Outlet::find($outlet_id);
+
+            $bank_charges_val = array();
+            if (!empty($outlet->bank_charges) && is_array($outlet->bank_charges))
+                $bank_charges_val = $outlet->bank_charges;
+
+            $bank_charges_val[] = [
+                'from_amount' => $request->from_amount,
+                'to_amount'   => $request->to_amount,
+                'type'        => $request->type,
+                'charges'     => $request->charges,
+                'status'      => 1
             ];
-            if (!empty($data))
-                return response(['status' => 'success', 'data' => $data]);
+
+            $outlet->bank_charges = $bank_charges_val;
+            if ($outlet->save())
+                return response(['status' => 'success', 'msg' => 'Bank Charges Added Successfully!']);
+
+            return response(['status' => 'error', 'msg' => 'Bank Charges not Added Successfully!']);
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => 'Something went wrong!']);
+        }
+    }
+
+
+    public function outletEditBankCharges(Request $request,$id)
+    {
+        try {
+            $outlet = Outlet::select('bank_charges')->find($id);
+            $key = $request->key;
+            $bank_charges = $outlet->bank_charges[$key];
+
+            return response(['status' => 'success', 'data' => $bank_charges]);
         } catch (Exception $e) {
             return response(['status' => 'error', 'msg' => $e->getMessage()]);
         }
     }
 
-    public function outletBank(Request $request)
+
+    public function outletUpdateBankCharges(Request $request)
     {
+        // try {
+             $key = $request->key;
 
+            $id = $request->id;
+            $campaign = Outlet::find($id);
+
+            $bank_charge = array();
+            if (!empty($campaign->bank_charges) && is_array($campaign->bank_charges))
+                $bank_charge = $campaign->bank_charges;
+
+            //check name and value is not empry
+            $bank_charge[$key]['from_amount']= $request->from_amount;
+            $bank_charge[$key]['to_amount']  = $request->to_amount;
+            $bank_charge[$key]['type']       = $request->type;
+            $bank_charge[$key]['charges']    = $request->charges;
+
+            $campaign->bank_charges          = $bank_charge;
+
+            if ($campaign->save())
+                return response(['status' => 'success', 'msg' => 'Field Updated successfully!']);
+
+
+            return response(['status' => 'error', 'msg' => 'Field not Updated Field!']);
+        // } catch (Exception $e) {
+        //     return response(['status' => 'error', 'msg' => 'Something went wrong!!']);
+        // }
+    }
+
+
+    public function bankChargesStatus($id, $key, $status)
+    {
         try {
-            $outlet = Outlet::find($request->id);
-            $outlet->bank_charges = [
-                'sl' => $request->sl,
-                'from_amount' => $request->from_amount,
-                'to_amount' => $request->to_amount,
-                'type' => $request->type,
-                'charges' => $request->charges
-            ];
+            $outlet = Outlet::find($id);
 
-            if ($outlet->save())
-                return response(['status' => 'success', 'msg' => 'Bank Charges added!']);
+            $bank_charge = array();
+            if (!empty($outlet->bank_charges) && is_array($outlet->bank_charges))
+                $bank_charge = $outlet->bank_charges;
 
-            return response(['status' => 'success', 'msg' => 'Bank Charges not added!']);
+            $bank_charge[$key]['status']   = (int)$status;
+
+            $outlet->bank_charges          = $bank_charge;
+
+            $outlet->save();
+
+            if ($bank_charge[$key]['status'] == 1)
+                return response(['status' => 'success', 'msg' => 'Bank Charges is Active!', 'val' => $bank_charge[$key]['status']]);
+
+            return response(['status' => 'success', 'msg' => 'Bank Charges is Inactive!', 'val' => $bank_charge[$key]['status']]);
         } catch (Exception $e) {
             return response(['status' => 'error', 'msg' => 'Something went wrong!!']);
         }
     }
+
+
 
     public function ajaxList(Request $request)
     {
@@ -263,7 +340,8 @@ class OutletController extends Controller
         $i = 1;
 
         foreach ($data as $val) {
-            $action = '<a href="javascript:void(0);" class="text-orange banckModal"  data-toggle="tooltip" data-placement="bottom" title="Bank Charges" outlet_id="' . $val->_id . '"><i class="fas fa-piggy-bank"></i></a>&nbsp;&nbsp;';
+            // $action = '<a href="javascript:void(0);" class="text-orange banckModal"  data-toggle="tooltip" data-placement="bottom" title="Bank Charges" outlet_id="' . $val->_id . '"><i class="fas fa-piggy-bank"></i></a>&nbsp;&nbsp;';
+            $action = '<a href="' . url('admin/outlet-bank-charges/' . $val->_id) . '" class="text-orange"  data-toggle="tooltip" data-placement="bottom" title="Bank Charges"><i class="fas fa-piggy-bank"></i></a>&nbsp;&nbsp;';
             $action .= '<a href="' . url('admin/outlets/' . $val->_id . '/edit') . '" class="text-info" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="far fa-edit"></i></a>';
 
             if ($val->account_status == 1) {

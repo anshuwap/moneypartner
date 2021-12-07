@@ -25,4 +25,10 @@ class Topup extends BaseModel
             $query->where('name', 'like', "%$val%");
             return $query->get();
         }
+
+
+        public function RetailerName(){
+
+            return $this->belongsTo('App\Models\User', 'retailer_id', '_id')->select('name');
+        }
 }
