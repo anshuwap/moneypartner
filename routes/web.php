@@ -7,12 +7,16 @@ use App\Http\Controllers\Admin\OutletController as AdminOutlet;
 use App\Http\Controllers\Admin\PaymentMode\BankAccountController as AdminBankAccount;
 use App\Http\Controllers\Admin\PaymentMode\QrCodeController as AdminQrCode;
 use App\Http\Controllers\Admin\PaymentMode\UpiController as AdminUpi;
-use App\Http\Controllers\Admin\PaymentMode\TopupRequestController as AdminTopupRequest;
+use App\Http\Controllers\Admin\TopupRequestController as AdminTopupRequest;
+use App\Http\Controllers\Admin\Transaction\CustomerTransController as AdminCustomerTrans;
+use App\Http\Controllers\Admin\Transaction\RetailerTransController as AdminRetailerTrans;
 
 
 use App\Http\Controllers\Retailer\LoginController as RetailerLogin;
 use App\Http\Controllers\Retailer\DashboardController as RetailerDashboard;
 use App\Http\Controllers\Retailer\TopupController as RetailerTopup;
+use App\Http\Controllers\Retailer\Transaction\CustomerTransController as RetailerCustomerTrans;
+use App\Http\Controllers\Retailer\Transaction\RetailerTransController as RetailerRetailerTrans;
 
 use Illuminate\Support\Facades\Route;
 
@@ -58,8 +62,17 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('upi-ajax', [AdminUpi::class,'ajaxList']);
     Route::post('upi-status', [AdminUpi::class,'upiStatus']);
 
+
+    Route::get('topup-list', [AdminTopupRequest::class,'index']);
+
     Route::post('topup-request', [AdminTopupRequest::class,'topupRequest']);
     Route::get('topup-request-details/{id}', [AdminTopupRequest::class,'topupRequestDetials']);
+
+    Route::resource('a-customer-trans', AdminCustomerTrans::class);
+    Route::get('a-customer-trans-ajax', [AdminCustomerTrans::class,'ajaxList']);
+
+    Route::resource('a-retailer-trans', AdminRetailerTrans::class);
+    Route::get('a-retailer-trans-ajax', [AdminRetailerTrans::class,'ajaxList']);
 
     Route::post('logout',  [AdminLogin::class, 'logout']);
 });
@@ -75,6 +88,14 @@ Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
     Route::get('payment-details',  [RetailerTopup::class, 'paymentDetails']);
     Route::get('topup-history',  [RetailerTopup::class, 'topupHistory']);
     Route::get('topup-history-ajax',  [RetailerTopup::class, 'topupHistoryAjax']);
+
+    Route::resource('customer-trans', RetailerCustomerTrans::class);
+    Route::get('verify-mobile',       [RetailerCustomerTrans::class,'verifyMobile']);
+    Route::get('send-otp',            [RetailerCustomerTrans::class,'sendOtp']);
+    Route::get('customer-trans-ajax', [RetailerCustomerTrans::class,'ajaxList']);
+
+    Route::resource('retailer-trans', RetailerRetailerTrans::class);
+    Route::get('retailer-trans-ajax', [RetailerRetailerTrans::class,'ajaxList']);
 
     Route::post('logout',  [RetailerLogin::class, 'logout']);
 });

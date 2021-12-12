@@ -7,7 +7,7 @@
   <div class="col-12 mt-2">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">Outlet List</h3>
+        <h3 class="card-title">Bank List</h3>
         <div class="card-tools">
           <a href="javascript:void(0);" class="btn btn-sm btn-success mr-4" id="create_bank_account"><i class="fas fa-plus-circle"></i>&nbsp;Add</a>
         </div>

@@ -17,11 +17,31 @@
         <p>Topup List</p>
       </a>
     </li>
+
     <li class="nav-item">
-      <a href="#" class="nav-link">
+      <a href="javascript:void(0);" class="nav-link">
         <i class="nav-icon far fa-circle text-info"></i>
-        <p>Informational</p>
+        <p>Transaction
+        <i class="right fas fa-angle-left"></i>
+        </p>
       </a>
+      <ul class="nav nav-treeview">
+        <li class="nav-item">
+          <a href="{{ url('retailer/customer-trans') }}" class="nav-link">
+            <i class="far fa-circle nav-icon"></i>
+            <p>Customer Transaction</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url('retailer/retailer-trans') }}" class="nav-link">
+            <i class="far fa-circle nav-icon"></i>
+            <p>
+            Retailer Transaction
+            </p>
+          </a>
+        </li>
+
+      </ul>
     </li>
 
     <li class="nav-header">MULTI LEVEL EXAMPLE</li>

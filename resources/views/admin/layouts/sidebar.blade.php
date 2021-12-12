@@ -11,6 +11,9 @@
         <p class="text">Dashboard</p>
       </a>
     </li>
+
+
+
     <li class="nav-item">
       <a href="{{ url('admin/outlets') }}" class="nav-link">
         <i class="nav-icon far fa-circle text-warning"></i>
@@ -45,6 +48,39 @@
             <p>QR Code</p>
           </a>
         </li>
+      </ul>
+    </li>
+
+    <li class="nav-item">
+      <a href="{{ url('admin/topup-list') }}" class="nav-link">
+        <i class="nav-icon far fa-circle text-danger"></i>
+        <p class="text">Topup Request</p>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a href="javascript:void(0);" class="nav-link">
+        <i class="nav-icon far fa-circle text-info"></i>
+        <p>Transaction
+        <i class="right fas fa-angle-left"></i>
+        </p>
+      </a>
+      <ul class="nav nav-treeview">
+        <li class="nav-item">
+          <a href="{{ url('admin/a-customer-trans') }}" class="nav-link">
+            <i class="far fa-circle nav-icon"></i>
+            <p>Customer Transaction</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url('admin/a-retailer-trans') }}" class="nav-link">
+            <i class="far fa-circle nav-icon"></i>
+            <p>
+            Retailer Transaction
+            </p>
+          </a>
+        </li>
+
       </ul>
     </li>
 

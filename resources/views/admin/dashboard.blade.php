@@ -128,28 +128,38 @@
                     <td>{{ $topup->amount }}</td>
                     <td>{{ $topup->payment_mode }}</td>
                     <td>{{ $topup->payment_date }}</td>
-                    <td>
+                    <td id="status-{{ $topup->id }}">
                       {{ $topup->status }}
                     </td>
                     <td>
                       <div class="d-flex">
                         <a href="javascript:void(0);" class="text-success view-topup-request" topup_id="{{ $topup->id }}" data-toggle="tooltip" data-placement="bottom" title="View Details"><i class="fas fa-eye"></i></i></a>&nbsp;
                         <div class="tooltip-container">
-                          <div class="tooltip-icon">
+                          <div class="tooltip-icon" topup_id="{{ $topup->id }}">
                             <i class="fas fa-sort-down"></i>
                           </div>
-                          <div class="tooltip-wrapper">
+                          <div class="tooltip-wrapper" id="tooltip-wrapper-{{ $topup->id }}">
                             <div class="tooltip-content">
-                              <div class="tooltip-title">
-                                <p>Place a Comment</p>
-                              </div>
-                              <div class="form-group">
-                              <textarea name="comment" id="comment-{{ $topup->id }}" class="form-control" rows="5" placeholder="Enter Comment Here"></textarea>
-                              </div>
-                              <div class="form-group">
-                                <a class="btn-sm btn btn-info approved" topup_id="{{ $topup->id }}">Approved</a>
-                                <a class="btn-sm btn btn-danger reject" topup_id="{{ $topup->id }}">Reject</a>
-                              </div>
+                              <form action="{{ url('admin/topup-request') }}" id="topup-request" method="post">
+                                <div class="tooltip-title">
+                                  <p>Place a Comment</p>
+                                </div>
+                                <input type="hidden" name="id" value="{{ $topup->id }}">
+                                <div class="form-group">
+                                  <select name="status" class="form-control control-sm" required='required'>
+                                    <option value="">Select</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="rejected">Rejected</option>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <textarea name="comment" rqueired="required" id="comment-{{ $topup->id }}" class="form-control" rows="5" placeholder="Enter Comment Here"></textarea>
+                                </div>
+                                <div class="form-group">
+                                  <input type="submit" class="btn-sm btn btn-info" value="Submit">
+                                  <a class="btn-sm btn btn-danger" id="cancel">Cancel</a>
+                                </div>
+                              </form>
                             </div>
                           </div>
                         </div>
@@ -473,42 +483,135 @@
 <!-- /.content -->
 
 @push('custom-script')
+
+
+<!-- Modal -->
+<div class="modal fade" id="topup-request-details" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Topup Request Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="dataVal">
+
+        </div>
+        <div>
+          <a href="javascript:void(0)" class="btn-sm btn-info" id="action1">Action</a>
+          <div class="row" id="placeComment" style="display: none;">
+            <div class="col-md-12 border mt-2">
+              <form action="{{ url('admin/topup-request') }}" id="topup-request" method="post">
+                <div class="tooltip-title">
+                  <h6>Place a Comment</h6>
+                </div>
+                <input type="hidden" name="id" id="topup_id" value="">
+                <div class="form-group">
+                  <select name="status" class="form-control control-sm" required='required'>
+                    <option value="">Select</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <textarea name="comment" rqueired="required" id="comment-" class="form-control" rows="5" placeholder="Enter Comment Here"></textarea>
+                </div>
+                <div class="form-group">
+                  <input type="submit" class="btn-sm btn btn-success" value="Submit">
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   $(document).ready(function() {
 
     $(".tooltip-icon").on("click", function() {
+      var id = $(this).attr('topup_id');
+      $("#tooltip-wrapper-"+id).toggleClass("active");
+
+    });
+
+    $("#cancel").on("click", function() {
       $(".tooltip-wrapper").toggleClass("active");
     });
+    /*start form submit functionality*/
+    $("form#topup-request").submit(function(e) {
+      e.preventDefault();
+      formData = new FormData(this);
+      var url = $(this).attr('action');
+      $.ajax({
+        data: formData,
+        type: "POST",
+        url: url,
+        dataType: 'json',
+        cache: false,
+        contentType: false,
+        processData: false,
+        beforeSend: function() {
+          $('.has-loader').addClass('has-loader-active');
+        },
+        success: function(res) {
+          //hide loader
+          $('.has-loader').removeClass('has-loader-active');
 
-    $('.approved').click(function(){
- var id = $(this).attr('topup_id');
- var comment = $('#comment-'+id).val();
- $.ajax({
-   url:'',
-   data:{'id':id,},
-   type:'POST',
-   dataType:'JSON',
-   success:function(res){
+          /*Start Validation Error Message*/
+          $('span.custom-text-danger').html('');
+          $.each(res.validation, (index, msg) => {
+            $(`#${index}_msg`).html(`${msg}`);
+          })
+          /*Start Validation Error Message*/
 
-   }
- })
+          /*Start Status message*/
+          if (res.status == 'success' || res.status == 'error') {
+            Swal.fire(
+              `${res.status}!`,
+              res.msg,
+              `${res.status}`,
+            )
+          }
+          /*End Status message*/
 
-
+          //for reset all field
+          if (res.status == 'success') {
+            $('#status-' + res.id).html(res.status_msg);
+            $('form#topup-request')[0].reset();
+            $('.tooltip-wrapper').removeClass('active');
+          }
+        }
+      });
     });
+    /*end form submit functionality*/
+
 
     $('.view-topup-request').click(function() {
       var topup_id = $(this).attr('topup_id');
+      $('#topup_id').val(topup_id);
       $.ajax({
-        url: "{{ url('admin/topup-request-details') }}/" + id,
+        url: "{{ url('admin/topup-request-details') }}/" + topup_id,
         type: 'GET',
         dataType: 'JSON',
         success: function(res) {
+          $('#dataVal').html(res);
           $('#topup-request-details').modal('show');
         }
       })
     })
+
+    $('#action1').click(function() {
+      $('#placeComment').toggle();
+    })
   });
 </script>
+
 @endpush
 
 @endsection

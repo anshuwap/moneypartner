@@ -38,5 +38,6 @@ if (!function_exists('singleFile')) {
         echo "<pre>";
 print_r($data);
         echo '</pre>';
+        die;
     }
 }

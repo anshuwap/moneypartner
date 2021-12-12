@@ -114,6 +114,7 @@ class TopupController extends Controller
         $topup->amount                 = $request->amount;
         $topup->comment                = $request->comment;
         $topup->attachment             = $request->attachment;
+        $topup->status                 = 'pending';
         $topup->payment_date           = strtotime($request->payment_date);
         //for file uploade
         if (!empty($request->file('attachment')))
@@ -282,18 +283,24 @@ class TopupController extends Controller
         foreach ($data as $val) {
             $action = '<a href="javascript:void(0);" class="text-info edit_qr_code" data-toggle="tooltip" data-placement="bottom" title="Edit" qr_code_id="' . $val->_id . '"><i class="far fa-edit"></i></a>&nbsp;&nbsp;';
             $action .= '<a href="javascript:void(0);" class="text-danger remove_qr_code"  data-toggle="tooltip" data-placement="bottom" title="Remove" qr_code_id="' . $val->_id . '"><i class="fas fa-trash"></i></a>';
-            if ($val->status == 1) {
-                $status = ' <a href="javascript:void(0);"><span class="badge badge-success activeVer" id="active_' . $val->_id . '" _id="' . $val->_id . '" val="0">Active</span></a>';
-            } else {
-                $status = ' <a href="javascript:void(0)"><span class="badge badge-danger activeVer" id="active_' . $val->_id . '" _id="' . $val->_id . '" val="1">Inactive</span></a>';
+
+            if ($val->status == 'approved') {
+                $payment_has_code = '<a href="javacript:void(0);" class="text-success" data-toggle="tooltip" data-placement="bottom" title="'.$val->admin_comment.'">'.$val->payment_has_code.'</a>';
+                $status = '<strong class="text-success">'.ucwords($val->status).'</strong>';
+            } else if($val->status =='rejected') {
+                $payment_has_code = '<a href="javacript:void(0);" class="text-danger" data-toggle="tooltip" data-placement="bottom" title="'.$val->admin_comment.'">'.$val->payment_has_code.'</a>';
+                $status = '<strong class="text-danger">'.ucwords($val->status).'</strong>';
+            }else if($val->status == 'pending'){
+             $payment_has_code = '<a href="javacript:void(0);" class="text-warning" data-toggle="tooltip" data-placement="bottom" title="'.$val->admin_comment.'">'.$val->payment_has_code.'</a>';
+             $status = '<strong class="text-warning">'.ucwords($val->status).'</strong>';
             }
 
             $dataArr[] = [
                 'sr_no'            => $i,
-                'payment_has_code' => $val->payment_has_code,
+                'payment_has_code' => $payment_has_code,
                 'payment_mode'     => ucwords(str_replace('_',' ',$val->payment_mode)),
                 'amount'           => $val->amount,
-                'status'           => 'Pending',
+                'status'           => $status,
                 'payment_date'     => date('Y-m-d h:i:s A', $val->payment_date),
                 'created_date'     => date('Y-m-d', $val->created),
                // 'action'            => $action

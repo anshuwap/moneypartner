@@ -15,8 +15,9 @@ class DashboardController extends Controller
 
         try {
 
-            $topups = Topup::get();
+            $topups = Topup::where('status','pending')->get();
 
+            $topup_request = [];
             foreach ($topups as $topup) {
 
                 $topup_request[] = (object)[
@@ -24,7 +25,7 @@ class DashboardController extends Controller
                     'retailer_name'=> $topup->RetailerName['name'],
                     'amount'       => $topup->amount,
                     'payment_mode' => ucwords(str_replace('_'," ",$topup->payment_mode)),
-                    'status'       => 'Pending',
+                    'status'       => ucwords($topup->status),
                     'payment_date' => date('y-m-d h:i:s A', $topup->payment_date),
                     'comment'      => $topup->comment
                 ];
