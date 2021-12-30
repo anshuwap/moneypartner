@@ -36,7 +36,7 @@
                     <div class="form-group">
                         <label>Outlet Type</label>
                         <select class="form-control form-control-sm" name="outlet_type">
-                            <option value="">Select</option>
+                            <option value=" ">Select</option>
                             <option value="retailer">Retailer</option>
                             <option value="distributor">Distributor</option>
                         </select>
@@ -55,9 +55,46 @@
                     <div class="form-group">
                         <label>State</label>
                         <select class="form-control form-control-sm" name="state">
-                            <option value="">Select</option>
-                            <option value="retailer">Retailer</option>
-                            <option value="distributor">Distributor</option>
+                            <?php  $states = [ "Andhra Pradesh",
+                "Arunachal Pradesh",
+                "Assam",
+                "Bihar",
+                "Chhattisgarh",
+                "Goa",
+                "Gujarat",
+                "Haryana",
+                "Himachal Pradesh",
+                "Jammu and Kashmir",
+                "Jharkhand",
+                "Karnataka",
+                "Kerala",
+                "Madhya Pradesh",
+                "Maharashtra",
+                "Manipur",
+                "Meghalaya",
+                "Mizoram",
+                "Nagaland",
+                "Odisha",
+                "Punjab",
+                "Rajasthan",
+                "Sikkim",
+                "Tamil Nadu",
+                "Telangana",
+                "Tripura",
+                "Uttarakhand",
+                "Uttar Pradesh",
+                "West Bengal",
+                "Andaman and Nicobar Islands",
+                "Chandigarh",
+                "Dadra and Nagar Haveli",
+                "Daman and Diu",
+                "Delhi",
+                "Lakshadweep",
+                "Puducherry"]; ?>
+                            <option value=" ">Select</option>
+                            @foreach($states as $state)
+                                <option value="{{ $state }}">{{ $state }}</option>
+                            @endforeach
                         </select>
                         <span id="state_msg" class="custom-text-danger"></span>
                     </div>
@@ -88,15 +125,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Company Pan Card No.</label>
-                        <input type="text" name="company_pancard" class="form-control form-control-sm" placeholder="Company Pan Card No.">
-                        <span id="company_pancard_msg" class="custom-text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
                         <label>GST Certificate No.</label>
-                        <input type="text" name="gst_number" class="form-control form-control-sm" placeholder="GST Certificate No.">
-                        <span id="gst_number_msg" class="custom-text-danger"></span>
+                        <input type="text" name="outlet_gst_number" class="form-control form-control-sm" placeholder="GST Certificate No.">
+                        <span id="outlet_gst_number_msg" class="custom-text-danger"></span>
                     </div>
 
                     <div class="form-group">
@@ -176,8 +207,9 @@
                         <label>Gender</label>
                         <select class="form-control form-control-sm" name="gender">
                             <option value="">Select</option>
-                            <option value="retailer">Male</option>
-                            <option value="distributor">Female</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
                         </select>
                         <span id="gender_msg" class="custom-text-danger"></span>
                     </div>
@@ -353,6 +385,7 @@
                 //for reset all field
                 if (res.status == 'success') {
                     $('form#add-outlet')[0].reset();
+                    $('#custom-file-label').html('');
                 }
             }
         });

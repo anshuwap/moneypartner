@@ -1,15 +1,16 @@
 @extends('admin.layouts.app')
 
 @section('content')
-@section('page_heading', 'Bank Charges Link')
+@section('page_heading', 'Bank Charges List')
 
 <div class="row">
   <div class="col-12 mt-2">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">Bank Charges Link</h3>
+        <h3 class="card-title">Bank Charges List</h3>
         <div class="card-tools">
-          <a href="javascript:void(0);" outlet_id='{{ $id }}' class="btn btn-sm btn-success mr-4" id="add_bank_charges"><i class="fas fa-plus-circle"></i>&nbsp;Add</a>
+          <a href="javascript:void(0);" outlet_id='{{ $id }}' class="btn btn-sm btn-success mr-2" id="add_bank_charges"><i class="fas fa-plus-circle"></i>&nbsp;Add</a>
+          <a href="{{ url('admin/outlets') }}" class="btn btn-sm btn-warning"><i class="fas fa-arrow-alt-circle-left"></i>&nbsp;Back</a>
         </div>
       </div>
 
@@ -35,10 +36,10 @@
             @foreach($bank_charges as $key=>$bank)
             <tr>
               <td>{{ ++$i }}</td>
-              <td>{{ (!empty($bank['from_amount']))?$bank['from_amount']:'' }}</td>
-              <td>{{ (!empty($bank['from_amount']))?$bank['to_amount']:'' }}</td>
+              <td>{!! (!empty($bank['from_amount']))?mSign($bank['from_amount']):'' !!}</td>
+              <td>{!! (!empty($bank['from_amount']))?mSign($bank['to_amount']):'' !!}</td>
               <td>{{ (!empty($bank['from_amount']))?ucwords($bank['type']):'' }}</td>
-              <td>{{ (!empty($bank['from_amount']))?$bank['charges']:'' }}</td>
+              <td>{!! (!empty($bank['from_amount']))?mSign($bank['charges']):'' !!}</td>
               <td>
                 @if (!empty($bank['status']) && $bank['status'] == 1)
 
@@ -208,7 +209,11 @@
 
         //for reset all field
         if (res.status == 'success') {
-          $('form#add-outlet')[0].reset();
+          $('form#add_bank_charges')[0].reset();
+          setTimeout(function(){
+            location.reload();
+          },2000)
+
         }
       }
     });

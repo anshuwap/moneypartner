@@ -36,7 +36,7 @@
                   <tr>
                     <td>{{ ++$i }}</td>
                     <td><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="{{ $topup->comment }}">{{ $topup->retailer_name }}</a></td>
-                    <td>{{ $topup->amount }}</td>
+                    <td>{!! $topup->amount !!}</td>
                     <td>{{ $topup->payment_mode }}</td>
                     <td>{{ $topup->payment_date }}</td>
                     <td id="status-{{ $topup->id }}">
@@ -46,7 +46,8 @@
                     <div class="d-flex">
                         <a href="javascript:void(0);" class="text-success view-topup-request" topup_id="{{ $topup->id }}" data-toggle="tooltip" data-placement="bottom" title="View Details"><i class="fas fa-eye"></i></i></a>&nbsp;
                         <div class="tooltip-container">
-                          <div class="tooltip-icon" topup_id="{{ $topup->id }}">
+
+                            <div class="tooltip-icon" topup_id="{{ $topup->id }}" style="<?=($topup->status == 'approved')?'pointer-events:none':''?>">
                             <i class="fas fa-sort-down"></i>
                           </div>
                           <div class="tooltip-wrapper" id="tooltip-wrapper-{{ $topup->id }}">

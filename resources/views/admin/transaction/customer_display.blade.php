@@ -7,107 +7,97 @@
     <div class="col-12 mt-2">
         <div class="card">
 
-            <ul class="nav nav-tabs mr-auto" role="tablist">
-                <li class="nav-item">
-                    <a href="{{ url('admin/a-customer-trans') }}" class="nav-link active">Customer Transaction</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url('admin/a-retailer-trans') }}" class="nav-link">Retailer Transaction</a>
-                </li>
-            </ul>
-            <!-- <ul class="nav nav-tabs ml-auto" role="tablist">
-                <li class="nav-item">
-                    <a href="javascript:void(0);" class="btn btn-sm btn-success mr-4" id="create_customer"><i class="fas fa-plus-circle"></i>&nbsp;Add</a>
-                </li>
-            </ul> -->
+            <div class="covertabs-btn __web-inspector-hide-shortcut__">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a href="{{ url('admin/a-customer-trans') }}" class="nav-link active">Customer Transaction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url('admin/a-retailer-trans') }}" class="nav-link">Retailer Transaction</a>
+                    </li>
+                </ul>
 
-            <!-- /.card-header -->
+            </div>
+
+
             <div class="card-body table-responsive py-4 table-sm">
-                <table id="table" class="table table-hover text-nowrap">
+                <table class="table table-hover">
                     <thead>
                         <tr>
                             <th>Sr No.</th>
-                            <th>Sender Name</th>
+                            <th>Customer Name</th>
                             <th>Mobile No.</th>
-                            <th>Amount</th>
-                            <th>Receiver Name</th>
-                            <th>Payment Mode</th>
-                            <th>Status</th>
                             <th>Created Date</th>
-                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                    </tbody>
 
+                        @foreach($customer_trans as $key=>$trans)
+                        <tr data-widget="expandable-table" aria-expanded="false">
+                            <td>{{ ++$key }}</td>
+                            <td>{{ ucwords($trans->customer_name) }}</td>
+                            <td>{{ $trans->mobile_number }}</td>
+                            <td>{{ date('Y-m-d',$trans->created) }}</td>
+                        </tr>
+
+                        <tr class="expandable-body d-none">
+                            <td colspan="8">
+                                <p style="display: none; margin-top: -41px;">
+                                <table class="table table-sm bg-secondary" style="font-size: 13px;">
+                                    <tr>
+                                        <th>Sr. No.</th>
+                                        <th>Sender Name</th>
+                                        <th>Amount</th>
+                                        <th>Receiver Name</th>
+                                        <th>Payment Mode</th>
+                                        <th>Status</th>
+                                        <th>Created Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    <?php
+                                    if (!empty($trans->trans_details)) {
+                                        $i = 0;
+                                        foreach ($trans->trans_details as $ke => $detail) {
+
+                                            if ($detail['status'] == 'approved') {
+                                                $status = '<strong class="text-success">' . ucwords($detail['status']) . '</strong>';
+                                            } else if ($detail['status'] == 'rejected') {
+                                                $status = '<strong class="text-danger">' . ucwords($detail['status']) . '</strong>';
+                                            } else {
+                                                $status = '<strong class="text-warning">' . ucwords($detail['status']) . '</strong>';
+                                            }
+                                    ?>
+                                            <tr>
+                                                <td>{{ ++$ke }}</td>
+                                                <td>{{ ucwords($detail['sender_name'] ) }}</td>
+                                                <td>{!! mSign($detail['amount']) !!}</td>
+                                                <td>{{ ucwords($detail['receiver_name'] ) }}</td>
+                                                <td>{{ ucwords(str_replace('_', ' ', $detail['payment_mode'])) }}</td>
+                                                <td><?= $status ?></td>
+                                                <td>{{ date('Y-m-d',$detail['created'])}}</td>
+                                                <td><a href="javascript:void(0);" class="btn btn-info btn-sm customer_trans" trans_id="{{ $trans->_id }}" _id="{{ $i }}">Action</a></td>
+                                            </tr>
+                                    <?php $i++;
+                                        }
+                                    } ?>
+                                </table>
+                                </p>
+                            </td>
+                        </tr>
+
+
+
+                        @endforeach
+
+                    </tbody>
                 </table>
             </div>
-            <!-- /.card-body -->
-
         </div>
         <!-- /.card -->
     </div>
 </div>
 <!-- /.row -->
 
-@push('custom-script')
-
-<script type="text/javascript">
-    $(document).ready(function() {
-
-        $('#table').DataTable({
-            lengthMenu: [
-                [10, 30, 50, 100, 500],
-                [10, 30, 50, 100, 500]
-            ], // page length options
-
-            bProcessing: true,
-            serverSide: true,
-            scrollY: "auto",
-            scrollCollapse: true,
-            'ajax': {
-                "dataType": "json",
-                url: "{{ url('admin/a-customer-trans-ajax') }}",
-                data: {}
-            },
-            columns: [{
-                    data: "sl_no"
-                },
-                {
-                    data: 'sender_name'
-                },
-                {
-                    data: "mobile_number"
-                },
-                {
-                    data: 'amount'
-                },
-                {
-                    data: 'receiver_name'
-                },
-                {
-                    data: "payment_mode"
-                },
-                {
-                    data: "status",
-                },
-                {
-                    data: "created_date"
-                },
-                {
-                    data: "action"
-                }
-            ],
-
-            columnDefs: [{
-                orderable: false,
-                targets: [0, 1, 2, 3, 4, 5, 6, 7]
-            }],
-        });
-
-    });
-</script>
-@endpush
 
 @push('modal')
 
@@ -127,6 +117,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <input type="hidden" id="trans_id" name="trans_id">
+                            <input type="hidden" id="key" name="key">
 
                             <div class="form-group">
                                 <label>Action</label>
@@ -162,12 +153,13 @@
 
 
 <script>
-    $(document).on('click', '.customer_trans',function(e){
+    $(document).on('click', '.customer_trans', function(e) {
         e.preventDefault();
 
-        $('#trans_id').val($(this).attr('_id'));
+        $('#trans_id').val($(this).attr('trans_id'));
+        $('#key').val($(this).attr('_id'));
         $('#approve_modal').modal('show');
-    })
+    });
 
     $('#status-select').change(() => {
         let status = $('#status-select').val();
@@ -187,7 +179,7 @@
                                 </select>
                                 <span id="payment_channel_msg" class="custom-text-danger"></span>
                             </div>`);
-        }else{
+        } else {
             $('#approved').html(``);
         }
     })

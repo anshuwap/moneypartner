@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\Transaction\RetailerTransController as AdminRetai
 
 
 use App\Http\Controllers\Retailer\LoginController as RetailerLogin;
+use App\Http\Controllers\Retailer\ProfileController as RetailerProfile;
 use App\Http\Controllers\Retailer\DashboardController as RetailerDashboard;
 use App\Http\Controllers\Retailer\TopupController as RetailerTopup;
 use App\Http\Controllers\Retailer\Transaction\CustomerTransController as RetailerCustomerTrans;
@@ -22,15 +23,14 @@ use Illuminate\Support\Facades\Route;
 
 
  Route::group(['middleware' => 'adminRedirect'], function () {
-    Route::get('/', [AdminLogin::class, 'index']);
+    Route::get('/',[AdminLogin::class,'index']);
     Route::resource('/login', AdminLogin::class);
     Route::resource('/register', RegisterController::class);
 });
 
 
 Route::group(['middleware' => 'retailerRedirect'], function () {
-    // Route::resource('/', RetailerLogin::class);
-    Route::get('/retailer/login',[RetailerLogin::class,'index']);
+    Route::get('/retailer',      [RetailerLogin::class,'index']);
 
     Route::post('retailer/login',[RetailerLogin::class,'store']);
 });
@@ -38,16 +38,18 @@ Route::group(['middleware' => 'retailerRedirect'], function () {
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::resource('dashboard', AdminDashboard::class);
 
+    // Route::resource('profile', RetailerProfile::class);
+
     Route::resource('outlets', AdminOutlet::class);
     Route::post('outlets-status', [AdminOutlet::class,'outletStatus']);
     // Route::get('outlet-bank-get/{id}', [AdminOutlet::class,'outletBankGet']);
     // Route::post('outlet-bank', [AdminOutlet::class,'outletBank']);
-    Route::get('outlets-ajax', [AdminOutlet::class,'ajaxList']);
-    Route::get('outlet-bank-charges/{id}', [AdminOutlet::class,'outletBankCharges']);
-    Route::get('outlet-bank-charges-list', [AdminOutlet::class,'outletBankChargesList']);
-    Route::post('outlet-add-bank-charges', [AdminOutlet::class,'outletAddBankCharges']);
+    Route::get('outlets-ajax',                  [AdminOutlet::class,'ajaxList']);
+    Route::get('outlet-bank-charges/{id}',      [AdminOutlet::class,'outletBankCharges']);
+    Route::get('outlet-bank-charges-list',      [AdminOutlet::class,'outletBankChargesList']);
+    Route::post('outlet-add-bank-charges',      [AdminOutlet::class,'outletAddBankCharges']);
     Route::get('outlet-edit-bank-charges/{id}', [AdminOutlet::class,'outletEditBankCharges']);
-    Route::post('outlet-update-bank-charges', [AdminOutlet::class,'outletUpdateBankCharges']);
+    Route::post('outlet-update-bank-charges',   [AdminOutlet::class,'outletUpdateBankCharges']);
     Route::get('outlet-charges-status/{id}/{key}/{status}', [AdminOutlet::class,'bankChargesStatus']);
 
     Route::resource('bank-account', AdminBankAccount::class);
@@ -78,21 +80,26 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 });
 
 
+
+
 Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
+
+    Route::resource('profile', RetailerProfile::class);
 
     Route::get('dashboard',  [RetailerDashboard::class, 'index']);
 
-
     Route::resource('topup', RetailerTopup::class);
     Route::get('outlet-payment-mode',  [RetailerTopup::class, 'outletPaymentMode']);
-    Route::get('payment-details',  [RetailerTopup::class, 'paymentDetails']);
-    Route::get('topup-history',  [RetailerTopup::class, 'topupHistory']);
-    Route::get('topup-history-ajax',  [RetailerTopup::class, 'topupHistoryAjax']);
+    Route::get('payment-details',      [RetailerTopup::class, 'paymentDetails']);
+    Route::get('topup-history',        [RetailerTopup::class, 'topupHistory']);
+    Route::get('transaction-history',  [RetailerTopup::class, 'transactionHistory']);
+    Route::get('topup-history-ajax',   [RetailerTopup::class, 'topupHistoryAjax']);
 
     Route::resource('customer-trans', RetailerCustomerTrans::class);
     Route::get('verify-mobile',       [RetailerCustomerTrans::class,'verifyMobile']);
     Route::get('send-otp',            [RetailerCustomerTrans::class,'sendOtp']);
     Route::get('customer-trans-ajax', [RetailerCustomerTrans::class,'ajaxList']);
+    Route::get('fee-details',         [RetailerCustomerTrans::class,'feeDetails']);
 
     Route::resource('retailer-trans', RetailerRetailerTrans::class);
     Route::get('retailer-trans-ajax', [RetailerRetailerTrans::class,'ajaxList']);

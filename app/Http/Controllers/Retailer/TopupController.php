@@ -7,6 +7,7 @@ use App\Models\PaymentMode\BankAccount;
 use App\Models\PaymentMode\QrCode;
 use App\Models\PaymentMode\Upi;
 use App\Models\Topup;
+use App\Models\TransferHistory;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -108,6 +109,7 @@ class TopupController extends Controller
     {
         $topup = new Topup();
         $topup->retailer_id            = Auth::user()->_id;
+        $topup->outlet_id              = Auth::user()->outlet_id;
         $topup->payment_has_code       = uniqCode(16);
         $topup->payment_mode           = $request->payment_mode;
         $topup->payment_reference_id   = $request->payment_reference_id;
@@ -192,7 +194,8 @@ class TopupController extends Controller
     }
 
 
-    public function ajaxList(Request $request)
+
+    public function transactionHistory(Request $request)
     {
 
         $draw = $request->draw;
@@ -202,36 +205,27 @@ class TopupController extends Controller
         $searchValue = $search_arr['value'];
 
         // count all data
-        $totalRecords = Topup::AllCount();
+        $totalRecords = TransferHistory::AllCount();
 
         if (!empty($searchValue)) {
             // count all data
-            $totalRecordswithFilter = Topup::LikeColumn($searchValue);
-            $data = Topup::GetResult($searchValue);
+            $totalRecordswithFilter = TransferHistory::LikeColumn($searchValue);
+            $data = TransferHistory::GetResult($searchValue);
         } else {
             // get per page data
             $totalRecordswithFilter = $totalRecords;
-            $data = Topup::offset($start)->limit($length)->orderBy('created', 'DESC')->get();
+            $data = TransferHistory::offset($start)->limit($length)->orderBy('created', 'DESC')->get();
         }
         $dataArr = [];
         $i = 1;
 
         foreach ($data as $val) {
-            $action = '<a href="javascript:void(0);" class="text-info edit_qr_code" data-toggle="tooltip" data-placement="bottom" title="Edit" qr_code_id="' . $val->_id . '"><i class="far fa-edit"></i></a>&nbsp;&nbsp;';
-            $action .= '<a href="javascript:void(0);" class="text-danger remove_qr_code"  data-toggle="tooltip" data-placement="bottom" title="Remove" qr_code_id="' . $val->_id . '"><i class="fas fa-trash"></i></a>';
-            if ($val->status == 1) {
-                $status = ' <a href="javascript:void(0);"><span class="badge badge-success activeVer" id="active_' . $val->_id . '" _id="' . $val->_id . '" val="0">Active</span></a>';
-            } else {
-                $status = ' <a href="javascript:void(0)"><span class="badge badge-danger activeVer" id="active_' . $val->_id . '" _id="' . $val->_id . '" val="1">Inactive</span></a>';
-            }
-            $url = asset('attachment/payment_mode/' . $val->qr_code);
             $dataArr[] = [
                 'sl_no'             => $i,
-                'name'              => ucwords($val->name),
-                'qr_code'           => '<img src="' . $url . '" style="height: 50px; width: 55px;">',
-                'created_date'      => date('Y-m-d', $val->created),
-                'status'            => $status,
-                'action'            => $action
+                'used_amount'       => mSign($val->amount),
+                'reciever_name'     => ucwords($val->receiver_name),
+                'payment_date'      => date('Y-m-d', $val->payment_date),
+                'status'            => $val->status
             ];
             $i++;
         }
@@ -299,7 +293,7 @@ class TopupController extends Controller
                 'sr_no'            => $i,
                 'payment_has_code' => $payment_has_code,
                 'payment_mode'     => ucwords(str_replace('_',' ',$val->payment_mode)),
-                'amount'           => $val->amount,
+                'amount'           => mSign($val->amount),
                 'status'           => $status,
                 'payment_date'     => date('Y-m-d h:i:s A', $val->payment_date),
                 'created_date'     => date('Y-m-d', $val->created),

@@ -23,15 +23,28 @@ class RetailerTransController extends Controller
 
     public function store(Request $request){
 
-        $CustomerTrans = RetailerTrans::find($request->trans_id);
-        $CustomerTrans->status       = $request->status;
-        $CustomerTrans->admin_action = $request->admin_action;
+        $retailerTrans = RetailerTrans::find($request->trans_id);
+        $retailerTrans->status       = $request->status;
+        $retailerTrans->admin_action = $request->admin_action;
 
-        if( $CustomerTrans->save())
-        return response(['status' => 'success', 'msg' => 'Transaction '.ucwords($CustomerTrans->status).' Successfully!']);
-
+        if( !$retailerTrans->save())
         return response(['status' => 'error', 'msg' => 'Transaction Request not  Created!']);
 
+        if($retailerTrans->status == 'approved'){
+            $amount = $retailerTrans->amount;
+            $receiver_name = $retailerTrans->receiver_name;
+            $payment_date = $retailerTrans->created;
+            $status = $retailerTrans->status;
+            $retailer_id = $retailerTrans->_id;
+            transferHistory($retailer_id,$amount, $receiver_name, $payment_date, $status);
+            }else{
+            //add toupup amount here
+            $retailer_id = $retailerTrans->retailer_id;
+            $transaction_fees = $retailerTrans->transaction_fees;
+            $amount       = $retailerTrans->amount;
+            addTopupAmount($retailer_id,$amount,$transaction_fees,1);
+            }
+        return response(['status' => 'success', 'msg' => 'Transaction '.ucwords($retailerTrans->status).' Successfully!']);
     }
 
 
@@ -76,7 +89,7 @@ class RetailerTransController extends Controller
                 'sl_no'             => $i,
                 'sender_name'       => ucwords($val->sender_name),
                 'mobile_number'     => $val->mobile_number,
-                'amount'            => $val->amount,
+                'amount'            => mSign($val->amount),
                 'receiver_name'     => $val->receiver_name,
                 'payment_mode'      => ucwords(str_replace('_',' ',$val->payment_mode)),
                 'status'            => $status,

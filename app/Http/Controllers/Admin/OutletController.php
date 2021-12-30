@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Validation\BankChargesValidation;
+use App\Http\Validation\CreateOutletValidation;
 use App\Http\Validation\OutletValidation;
+use App\Http\Validation\UpdateOutletValidation;
 use App\Models\Outlet;
 use App\Models\User;
 use Exception;
@@ -33,7 +36,7 @@ class OutletController extends Controller
         }
     }
 
-    public function store(OutletValidation $request)
+    public function store(CreateOutletValidation $request)
     {
 
         $outlet = new Outlet();
@@ -53,7 +56,6 @@ class OutletController extends Controller
         $outlet->city                 = $request->city;
         $outlet->pincode              = $request->pincode;
         $outlet->incorporation_date   = $request->incorporation_date;
-        $outlet->company_pancard      = $request->company_pancard;
         $outlet->date_of_birth        = $request->date_of_birth;
         $outlet->id_proff             = $request->id_proff;
         $outlet->address_proff        = $request->address_proff;
@@ -87,18 +89,21 @@ class OutletController extends Controller
 
         if ($outlet->save())
             return response(['status' => 'success', 'msg' => 'Outlet Created Successfully!']);
+
+        return response(['status' => 'error', 'msg' => 'Outlet Not Created!']);
     }
 
 
 
-    private function createUser($retailer_id, $request)
+    private function createUser($outlet_id, $request)
     {
         $user = new User();
         $user->full_name = $request->retailer_name;
         $user->email = $request->email;
+        $user->mobile_number = $request->mobile_no;
         $user->password = Hash::make($request->password);
         $user->role  = 'retailer';
-        $user->retialter_id = $retailer_id;
+        $user->outlet_id = $outlet_id;
         $user->save();
     }
 
@@ -118,10 +123,18 @@ class OutletController extends Controller
     }
 
 
-    public function update(Request $request, $id)
+    public function update(UpdateOutletValidation $request, $id)
     {
 
         $outlet = Outlet::find($id);
+
+        $count = $outlet->where('mobile_no', $request->mobile_no)->where('_id', '!=', $id)->count();
+        if ($count > 0)
+            return response(json_encode(array('validation' => ['mobile_no' => 'This Mobile Number used by Other.'])));
+
+        $count = $outlet->where('mobile_no', $request->mobile_no)->where('_id', '!=', $id)->count();
+        if ($count > 0)
+            return response(json_encode(array('validation' => ['mobile_no' => 'This Mobile Number used by Other.'])));
 
         $outlet->outlet_type          = $request->outlet_type;
         $outlet->user_type            = $request->user_type;
@@ -169,6 +182,8 @@ class OutletController extends Controller
 
         if ($outlet->save())
             return response(['status' => 'success', 'msg' => 'Outlet Updated Successfully!']);
+
+        return response(['status' => 'error', 'msg' => 'Outlet not Updated!']);
     }
 
 
@@ -213,11 +228,18 @@ class OutletController extends Controller
     }
 
 
-    public function outletAddBankCharges(Request $request)
+    public function outletAddBankCharges(BankChargesValidation $request)
     {
         try {
+
             $outlet_id = $request->id;
             $outlet = Outlet::find($outlet_id);
+
+            $bank_changes = $outlet->bank_charges;
+            foreach ($bank_changes as $charge) {
+                if ($charge['from_amount'] == $request->from_amount && $charge['to_amount'] == $request->to_amount)
+                    return response(['status' => 'error', 'msg' => 'This Amount Slab is already Added.']);
+            }
 
             $bank_charges_val = array();
             if (!empty($outlet->bank_charges) && is_array($outlet->bank_charges))
@@ -237,12 +259,12 @@ class OutletController extends Controller
 
             return response(['status' => 'error', 'msg' => 'Bank Charges not Added Successfully!']);
         } catch (Exception $e) {
-            return response(['status' => 'error', 'msg' => 'Something went wrong!']);
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
         }
     }
 
 
-    public function outletEditBankCharges(Request $request,$id)
+    public function outletEditBankCharges(Request $request, $id)
     {
         try {
             $outlet = Outlet::select('bank_charges')->find($id);
@@ -256,34 +278,41 @@ class OutletController extends Controller
     }
 
 
-    public function outletUpdateBankCharges(Request $request)
+    public function outletUpdateBankCharges(BankChargesValidation $request)
     {
-        // try {
-             $key = $request->key;
+        try {
+            $key = $request->key;
 
             $id = $request->id;
-            $campaign = Outlet::find($id);
+            $outlet = Outlet::find($id);
+
+            $bank_changes = $outlet->bank_charges;
+
+            foreach ($bank_changes as $nkey => $charge) {
+                if ($charge['from_amount'] == $request->from_amount && $charge['to_amount'] == $request->to_amount && $key != $nkey)
+                    return response(['status' => 'error', 'msg' => 'This Amount Slab is already Exist.']);
+            }
 
             $bank_charge = array();
-            if (!empty($campaign->bank_charges) && is_array($campaign->bank_charges))
-                $bank_charge = $campaign->bank_charges;
+            if (!empty($outlet->bank_charges) && is_array($outlet->bank_charges))
+                $bank_charge = $outlet->bank_charges;
 
             //check name and value is not empry
-            $bank_charge[$key]['from_amount']= $request->from_amount;
+            $bank_charge[$key]['from_amount'] = $request->from_amount;
             $bank_charge[$key]['to_amount']  = $request->to_amount;
             $bank_charge[$key]['type']       = $request->type;
             $bank_charge[$key]['charges']    = $request->charges;
 
-            $campaign->bank_charges          = $bank_charge;
+            $outlet->bank_charges          = $bank_charge;
 
-            if ($campaign->save())
+            if ($outlet->save())
                 return response(['status' => 'success', 'msg' => 'Field Updated successfully!']);
 
 
             return response(['status' => 'error', 'msg' => 'Field not Updated Field!']);
-        // } catch (Exception $e) {
-        //     return response(['status' => 'error', 'msg' => 'Something went wrong!!']);
-        // }
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
+        }
     }
 
 
@@ -350,6 +379,12 @@ class OutletController extends Controller
                 $status = ' <a href="javascript:void(0)"><span class="badge badge-danger activeVer" id="active_' . $val->_id . '" _id="' . $val->_id . '" val="1">Inactive</span></a>';
             }
 
+            $amount = User::select('available_amount')->where('outlet_id', $val->_id)->first();
+
+            $available_amount = 0;
+            if (!empty($amount))
+            $available_amount = $amount->available_amount;
+
             $dataArr[] = [
                 'sl_no'             => $i,
                 'outlet_no'         => $val->outlet_no,
@@ -357,7 +392,7 @@ class OutletController extends Controller
                 'mobile_no'         => $val->mobile_no,
                 'outlet_name'       => $val->outlet_name,
                 'state'             => $val->state,
-                'available_blance'  => '',
+                'available_blance'  => (!empty($available_amount)) ? mSign($available_amount) : mSign(0),
 
                 'created_date'      => date('Y-m-d', $val->created),
                 'status'            => $status,

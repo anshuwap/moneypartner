@@ -22,7 +22,7 @@ class DashboardController extends Controller
 
                 $topup_request[] = (object)[
                     'id'           => $topup->_id,
-                    'retailer_name'=> $topup->RetailerName['name'],
+                    'retailer_name'=> $topup->RetailerName['full_name'],
                     'amount'       => $topup->amount,
                     'payment_mode' => ucwords(str_replace('_'," ",$topup->payment_mode)),
                     'status'       => ucwords($topup->status),

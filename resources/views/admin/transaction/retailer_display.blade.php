@@ -7,14 +7,17 @@
     <div class="col-12 mt-2">
         <div class="card">
 
-            <ul class="nav nav-tabs mr-auto" role="tablist">
-                <li class="nav-item">
-                    <a href="{{ url('admin/a-customer-trans') }}" class="nav-link " >Customer Transaction</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url('admin/a-retailer-trans') }}" class="nav-link active" >Retailer Transaction</a>
-                </li>
-            </ul>
+        <div class="covertabs-btn __web-inspector-hide-shortcut__">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a href="{{ url('admin/a-customer-trans') }}" class="nav-link ">Customer Transaction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url('admin/a-retailer-trans') }}" class="nav-link active">Retailer Transaction</a>
+                    </li>
+                </ul>
+
+            </div>
 
 
             <!-- /.card-header -->
@@ -170,13 +173,13 @@
         if (status == 'approved') {
             $('#approved').html(`<div class="form-group">
                                 <label>UTR/Transaction</label>
-                                <input type="text" placeholder="UTR/Transaction" id="utr" name="admin['utr_transaction']" class="form-control form-control-sm">
+                                <input type="text" placeholder="UTR/Transaction" id="utr" name="admin_action['utr_transaction']" class="form-control form-control-sm">
                                 <span id="utr_transaction_msg" class="custom-text-danger"></span>
                             </div>
 
                             <div class="form-group">
                                 <label>Select Payment Channel</label>
-                                <select name="admin['payment_mode']" class="form-control form-control-sm" id="payment_channel" >
+                                <select name="admin_action['payment_mode']" class="form-control form-control-sm" id="payment_channel" >
                                     <option value="">Select</option>
                                     <option value="bank_account">Bank Account</option>
                                     <option value="upi">UPI</option>

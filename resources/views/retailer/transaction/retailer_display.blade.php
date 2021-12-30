@@ -6,20 +6,20 @@
 <div class="row">
     <div class="col-12 mt-2">
         <div class="card">
-
-            <ul class="nav nav-tabs mr-auto" role="tablist">
-                <li class="nav-item">
-                    <a href="{{ url('retailer/customer-trans') }}" class="nav-link ">Customer Transaction</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url('retailer/retailer-trans') }}" class="nav-link active">Retailer Transaction</a>
-                </li>
-            </ul>
-            <ul class="nav nav-tabs ml-auto" role="tablist">
-                <li class="nav-item">
+            <div class="covertabs-btn __web-inspector-hide-shortcut__">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a href="{{ url('retailer/customer-trans') }}" class="nav-link ">Customer Transaction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url('retailer/retailer-trans') }}" class="nav-link active">Retailer Transaction</a>
+                    </li>
+                </ul>
+                <div class="add-btn">
                     <a href="javascript:void(0);" class="btn btn-sm btn-success mr-4" id="create_retailer"><i class="fas fa-plus-circle"></i>&nbsp;Add</a>
-                </li>
-            </ul>
+                </div>
+            </div>
+
 
             <!-- /.card-header -->
             <div class="card-body table-responsive py-4 table-sm">
@@ -101,40 +101,6 @@
             }],
         });
 
-        $(document).on('click', '.activeVer', function() {
-            var id = $(this).attr('_id');
-            var val = $(this).attr('val');
-            $.ajax({
-                'url': "{{ url('retailer/retailer-trans-status') }}",
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    'id': id,
-                    'status': val
-                },
-                type: 'POST',
-                dataType: 'json',
-                success: function(res) {
-                    if (res.val == 1) {
-                        $('#active_' + id).text('Active');
-                        $('#active_' + id).attr('val', '0');
-                        $('#active_' + id).removeClass('badge-danger');
-                        $('#active_' + id).addClass('badge-success');
-                    } else {
-                        $('#active_' + id).text('Inactive');
-                        $('#active_' + id).attr('val', '1');
-                        $('#active_' + id).removeClass('badge-success');
-                        $('#active_' + id).addClass('badge-danger');
-                    }
-                    Swal.fire(
-                        `${res.status}!`,
-                        res.msg,
-                        `${res.status}`,
-                    )
-                }
-            })
-
-        })
-
     });
 </script>
 @endpush
@@ -165,9 +131,9 @@
                                     <input type="number" placeholder="Enter Amount" id="amount" required name="amount" class="form-control form-control-sm">
                                     <span id="amount_msg" class="custom-text-danger"></span>
                                 </div>
-                                <div id="upload_docs">
 
-                                </div>
+                                <div id="charges"></div>
+                                <div id="upload_docs"></div>
 
                                 <div class="form-group">
                                     <label>Receiver Name</label>
@@ -237,7 +203,9 @@
         e.preventDefault();
 
         var amount = $(this).val();
-        if (amount > 2500) {
+        transactionFeeDetails(amount);
+
+        if (amount >= 25000 && amount < 200000) {
             $('#upload_docs').html(`<div class="form-group">
             <label>Pancard Number</label>
             <input type="text" name="pancard_no" class=" form-control form-control-sm" placeholder="Enter Pancard Number" required>
@@ -252,11 +220,44 @@
             </div>
             <span id="attachment_msg" class="custom-text-danger"></span>
             </div>`);
-
+        } else if (amount > 200000) {
+            $('#add_customer input,select').attr('disabled', 'disabled');
+            $('#amount_msg').html('Alowed only 2 lakh Per Month.');
+            $('#amount').removeAttr('disabled');
         } else {
             $('#upload_docs').html(``);
+            $('#amount_msg').html(``);
+            $('#add_customer input,select').removeAttr('disabled');
         }
     })
+
+
+    //for check retailer fee detials
+    function transactionFeeDetails(amount) {
+
+        var amount = (amount) ? amount : 0;
+        $.ajax({
+            url: "<?= url('retailer/fee-details') ?>",
+            data: {
+                'amount': amount
+            },
+            dataType: "JSON",
+            type: "GET",
+            success: function(res) {
+
+                if (res.status == 'success') {
+                    $('#charges').html(`Rs. ${res.charges} Transaction Fees
+        <div class="form-group">
+        <label>Transaction Amount</label>
+        <input type="text" readonly name="" value="${parseInt(amount)+ parseInt(res.charges)}" class="form-control form-control-sm">
+        </div>`);
+
+                } else if (res.status == 'error') {
+                    $('#charges').html(res.msg);
+                }
+            }
+        })
+    }
 
 
     $('#create_retailer').click(function(e) {

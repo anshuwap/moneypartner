@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Outlet;
 use App\Models\PaymentMode\BankAccount;
 use App\Models\PaymentMode\QrCode;
 use App\Models\PaymentMode\Upi;
 use App\Models\Topup;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,9 +28,9 @@ class TopupRequestController extends Controller
 
                 $topup_request[] = (object)[
                     'id'           => $topup->_id,
-                    'retailer_name'=> $topup->RetailerName['name'],
-                    'amount'       => $topup->amount,
-                    'payment_mode' => ucwords(str_replace('_'," ",$topup->payment_mode)),
+                    'retailer_name' => $topup->RetailerName['full_name'],
+                    'amount'       => mSign($topup->amount),
+                    'payment_mode' => ucwords(str_replace('_', " ", $topup->payment_mode)),
                     'status'       => ucwords($topup->status),
                     'payment_date' => date('y-m-d h:i:s A', $topup->payment_date),
                     'comment'      => $topup->comment
@@ -46,24 +48,36 @@ class TopupRequestController extends Controller
     public function topupRequest(Request $request)
     {
         try {
-            $topup = Topup::Find($request->id);
+            $topup = Topup::find($request->id);
             $topup->status = $request->status;
             $topup->admin_comment = $request->comment;
             $topup->save();
-            if($topup->status =='approved'){
-            return response(['status'=>'success','msg'=>'Topup Request Approved','status_msg'=>ucwords($topup->status),'id'=>$topup->id]);
-            }else if($topup->status =='rejected'){
-            return response(['status'=>'success','msg'=>'Topup Request Rejected','status_msg'=>ucwords($topup->status),'id'=>$topup->id]);
-            }else{
-            return response(['status'=>'error','msg'=>'Something Went Wrong']);
+            if ($topup->status == 'approved') {
+
+                $topups = Topup::select('amount')->where('status','approved')->where('outlet_id', $topup->outlet_id)->get();
+
+                $amount = 0;
+                foreach ($topups as $topupa) {
+                $amount += $topupa->amount;
+                }
+
+                //add topup amount in retailer wallet
+                addTopupAmount($topup->retailer_id,$amount);
+
+                return response(['status' => 'success', 'msg' => 'Topup Request Approved', 'status_msg' => ucwords($topup->status), 'id' => $topup->id]);
+            } else if ($topup->status == 'rejected') {
+                return response(['status' => 'success', 'msg' => 'Topup Request Rejected', 'status_msg' => ucwords($topup->status), 'id' => $topup->id]);
+            } else {
+                return response(['status' => 'error', 'msg' => 'Something Went Wrong']);
             }
         } catch (Exception $e) {
-            return response(['status'=>'error','msg'=>config('error.codeException')]);
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
         }
     }
 
 
-    public function topupRequestDetials($id){
+    public function topupRequestDetials($id)
+    {
 
         try {
             $topup = Topup::find($id);
@@ -75,38 +89,38 @@ class TopupRequestController extends Controller
                     <table class="table table-sm table-bordered">
                     <tr>
                         <th>Payment Mode</th>
-                        <td>'.ucwords(str_replace('_',' ',$topup->payment_mode)).'</td>
+                        <td>' . ucwords(str_replace('_', ' ', $topup->payment_mode)) . '</td>
                     </tr>
                     <tr>
                         <th>Bnak Name</th>
-                        <td>'.ucwords($payment->bank_name).'</td>
+                        <td>' . ucwords($payment->bank_name) . '</td>
                     </tr>
                     <tr>
                         <th>Amount</th>
-                        <td>'.$topup->amount.'</td>
+                        <td>' . $topup->amount . '</td>
                     </tr>
                     <tr>
                     <th>Comment</th>
-                    <td>'.$topup->comment.'</td>
+                    <td>' . $topup->comment . '</td>
                 </tr>
                 <tr>
                 <th>Attachment</th>
-                <td><img style="height: 100px;width: 100px;" src"'.asset('attachment/payment_request_proff/'.$topup->attachment).'"></td>
+                <td><img style="height: 100px;width: 100px;" src"' . asset('attachment/payment_request_proff/' . $topup->attachment) . '"></td>
             </tr>
                 </table>
                     <div><h6>Destination Details</h6></div>
                     <table class="table table-sm table-bordered">
                     <tr>
                         <th>Bank Name</th>
-                        <td>'.ucwords($payment->bank_name).'</td>
+                        <td>' . ucwords($payment->bank_name) . '</td>
                     </tr>
                     <tr>
                         <th>Account Number</th>
-                        <td>'.$payment->account_number.'</td>
+                        <td>' . $payment->account_number . '</td>
                     </tr>
                     <tr>
                         <th>IFSC Code</th>
-                        <td>'.$payment->ifsc_code.'</td>
+                        <td>' . $payment->ifsc_code . '</td>
                     </tr>
                 </table>';
                     break;
@@ -117,65 +131,65 @@ class TopupRequestController extends Controller
                     <table class="table table-sm table-bordered">
                     <tr>
                         <th>Payment Mode</th>
-                        <td>'.ucwords(str_replace('_',' ',$topup->payment_mode)).'</td>
+                        <td>' . ucwords(str_replace('_', ' ', $topup->payment_mode)) . '</td>
                     </tr>
                     <tr>
                         <th>UPI Name</th>
-                        <td>'.ucwords($payment->name).'</td>
+                        <td>' . ucwords($payment->name) . '</td>
                     </tr>
                     <tr>
                         <th>Amount</th>
-                        <td>'.$topup->amount.'</td>
+                        <td>' . $topup->amount . '</td>
                     </tr>
                     <tr>
                     <th>Comment</th>
-                    <td>'.$topup->comment.'</td>
+                    <td>' . $topup->comment . '</td>
                 </tr>
                 <tr>
                 <th>Attachment</th>
-                <td><img style="height: 100px;width: 100px;" src="'.asset('attachment/payment_request_proff/'.$topup->attachment).'"></td>
+                <td><img style="height: 100px;width: 100px;" src="' . asset('attachment/payment_request_proff/' . $topup->attachment) . '"></td>
             </tr>
                 </table>
                     <div><h6>Destination Details</h6></div><table class="table table-sm table-bordered">
                     <tr>
                         <th>UPI ID Name</th>
-                        <td>'.ucwords($payment->name).'</td>
+                        <td>' . ucwords($payment->name) . '</td>
                     </tr>
                     <tr>
                         <th>UPI ID</th>
-                        <td>'.$payment->upi_id.'</td>
+                        <td>' . $payment->upi_id . '</td>
                     </tr>
                 </table>';
                     break;
                 case "qr_code":
-                     $payment = QrCode::find($topup->payment_reference_id);
+                    $payment = QrCode::find($topup->payment_reference_id);
                     $data = '<div>Request Details</div>
                     <table class="table table-sm table-bordered">
                     <tr>
                         <th>Payment Mode</th>
-                        <td>'.ucwords(str_replace('_',' ',$topup->payment_mode)).'</td>
+                        <td>' . ucwords(str_replace('_', ' ', $topup->payment_mode)) . '</td>
                     </tr>
                     <tr>
                         <th>Qrcode Name Name</th>
-                        <td>'.ucwords($payment->qr_code).'</td>
+                        <td>' . ucwords($payment->qr_code) . '</td>
                     </tr>
                     <tr>
                         <th>Amount</th>
-                        <td>'.$topup->amount.'</td>
+                        <td>' . $topup->amount . '</td>
                     </tr>
                     <tr>
                     <th>Comment</th>
-                    <td>'.$topup->comment.'</td>
+                    <td>' . $topup->comment . '</td>
                 </tr>
                 <tr>
                 <th>Attachment</th>
-                <td><img style="height: 100px;width: 100px;" src="'.asset('attachment/payment_request_proff/'.$topup->attachment).'"></td>
+                <td><img style="height: 100px;width: 100px;" src="' . asset('attachment/payment_request_proff/' . $topup->attachment) . '"></td>
             </tr>
                 </table>
                     <div><h6>Destination Details</h6></div>
                     <div class="card w-50 py-4 m-auto">
-                    <img src="'.asset('attachment/payment_mode/'.$payment->qr_code).'">
-                    <div class="text-center"><span>'.ucwords($payment->name).'</span></div>
+                    <img src="' . asset('attachment/payment_mode/' . $payment->qr_code) . '">
+                    <div class="text-center"><span>' . ucwords($payment->name) . '</span></div>
                     </div>';
                     break;
                 default:
@@ -184,9 +198,9 @@ class TopupRequestController extends Controller
             }
 
 
-             die(json_encode($data));
+            die(json_encode($data));
         } catch (Exception $e) {
-            return response(['status'=>'error','msg'=>config('custom_errorlist.error.codeException')]);
+            return response(['status' => 'error', 'msg' => config('custom_errorlist.error.codeException')]);
         }
     }
 }

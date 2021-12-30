@@ -26,7 +26,7 @@
     @csrf
     <div class="row">
 
-    <div class="col-md-3">
+        <div class="col-md-3">
             <!-- Form Element sizes -->
             <div class="card card-secondary">
                 <div class="card-header card-custom-header">
@@ -37,11 +37,11 @@
                     <div class="form-group">
                         <label>Outlet Type</label>
                         <select class="form-control form-control-sm" name="outlet_outlet_type">
-                            <option value="">Select</option>
+                            <option value=''>Select</option>
                             <option value="retailer" {{ ($outlet->outlet_outlet_type == 'retailer')?"selected" : '' }}>Retailer</option>
                             <option value="distributor" {{ ($outlet->outlet_outlet_type == 'distributor')?"selected" : '' }}>Distributor</option>
                         </select>
-                        <span id="outlet_outlet_type_msg" class="custom-text-danger"></span>
+                        <span id="outlet_type_msg" class="custom-text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label>Outlet Name</label>
@@ -56,9 +56,49 @@
                     <div class="form-group">
                         <label>State</label>
                         <select class="form-control form-control-sm" name="state">
-                            <option value="">Select</option>
-                            <option value="up" {{ ($outlet->state == 'up')?"selected" : '' }}>Retailer</option>
-                            <option value="delhi" {{ ($outlet->state == 'delhi')?"selected" : '' }}>Distributor</option>
+                            <?php $states = [
+                                "Andhra Pradesh",
+                                "Arunachal Pradesh",
+                                "Assam",
+                                "Bihar",
+                                "Chhattisgarh",
+                                "Goa",
+                                "Gujarat",
+                                "Haryana",
+                                "Himachal Pradesh",
+                                "Jammu and Kashmir",
+                                "Jharkhand",
+                                "Karnataka",
+                                "Kerala",
+                                "Madhya Pradesh",
+                                "Maharashtra",
+                                "Manipur",
+                                "Meghalaya",
+                                "Mizoram",
+                                "Nagaland",
+                                "Odisha",
+                                "Punjab",
+                                "Rajasthan",
+                                "Sikkim",
+                                "Tamil Nadu",
+                                "Telangana",
+                                "Tripura",
+                                "Uttarakhand",
+                                "Uttar Pradesh",
+                                "West Bengal",
+                                "Andaman and Nicobar Islands",
+                                "Chandigarh",
+                                "Dadra and Nagar Haveli",
+                                "Daman and Diu",
+                                "Delhi",
+                                "Lakshadweep",
+                                "Puducherry"
+                            ]; ?>
+                            <option value=''>Select</option>
+                            @foreach($states as $state)
+                            <option value="{{ $state }}" {{ ($outlet->state == $state)?"selected" : '' }}>{{ $state }}</option>
+                            @endforeach
+                        </select>
                         </select>
                         <span id="state_msg" class="custom-text-danger"></span>
                     </div>
@@ -134,7 +174,7 @@
 
                 <div class="card-body">
 
-                <div class="text-center">
+                    <div class="text-center">
                         <img class="profile-user-img img-fluid img-circle" id="avatar" src="{{ (!empty($outlet->profile_image))?asset('attachment/').'/'.$outlet->profile_image:asset('assets').'/dist/img/user4-128x128.jpg' }} " alt="User profile picture">
                     </div>
 
@@ -176,7 +216,7 @@
                     <div class="form-group">
                         <label>Gender</label>
                         <select class="form-control form-control-sm" name="gender">
-                            <option value="">Select</option>
+                            <option value=''>Select</option>
                             <option value="male" {{ ($outlet->gender == 'male')?"selected" : '' }}>Male</option>
                             <option value="female" {{ ($outlet->gender == 'female')?"selected" : '' }}>Female</option>
                             <option value="other" {{ ($outlet->gender == 'other')?"selected" : '' }}>Other</option>
@@ -188,7 +228,7 @@
                     <div class="form-group">
                         <label>User Type</label>
                         <select class="form-control form-control-sm" name="user_type">
-                            <option value="">Select</option>
+                            <option value=''>Select</option>
                             <option value="retailer" {{ ($outlet->user_type == 'retailer')?"selected" : '' }}>Retailer</option>
                             <option value="distributor" {{ ($outlet->user_type == 'distributor')?"selected" : '' }}>Distributor</option>
                         </select>
@@ -212,7 +252,7 @@
 
                     <div class="form-group">
                         <label>Date of Birth</label>
-                        <input type="date" name="date_of_birth" value="{{ $outlet->date_of_birth }}"  class="form-control form-control-sm" placeholder="Date Of Birth">
+                        <input type="date" name="date_of_birth" value="{{ $outlet->date_of_birth }}" class="form-control form-control-sm" placeholder="Date Of Birth">
                         <span id="date_of_birth_msg" class="custom-text-danger"></span>
                     </div>
 
@@ -225,7 +265,7 @@
                     <div class="form-group">
                         <label>Id Proff</label>
                         <select class="form-control form-control-sm" name="id_proff">
-                            <option value="">Select</option>
+                            <option value=''>Select</option>
                             <option value="addhar_card" {{ ($outlet->id_proff == 'addhar_card')?"selected" : '' }}>Addhar Card</option>
                             <option value="pan_card" {{ ($outlet->id_proff == 'pan_card')?"selected" : '' }}>Pan Card</option>
                             <option value="driver_licence" {{ ($outlet->id_proff == 'driver_licence')?"selected" : '' }}>Driver Licence</option>
@@ -247,7 +287,7 @@
                     <div class="form-group">
                         <label>Address Proff</label>
                         <select class="form-control form-control-sm" name="address_proff">
-                            <option value="">Select</option>
+                            <option value=''>Select</option>
                             <option value="addhar_card" {{ ($outlet->address_proff == 'addhar_card')?"selected" : '' }}>Addhar Card</option>
                             <option value="pan_card" {{ ($outlet->address_proff == 'pan_card')?"selected" : '' }}>Pan Card</option>
                             <option value="driver_licence" {{ ($outlet->address_proff == 'driver_licence')?"selected" : '' }}>Driver Licence</option>
@@ -268,7 +308,7 @@
 
                     <div class="form-group">
                         <label>Pan Card No.</label>
-                        <input type="text" name="pancard" value="{{ $outlet->pancard }}"   class="form-control form-control-sm" placeholder="Pan Card No.">
+                        <input type="text" name="pancard" value="{{ $outlet->pancard }}" class="form-control form-control-sm" placeholder="Pan Card No.">
                         <span id="pancard_msg" class="custom-text-danger"></span>
                     </div>
 
@@ -286,18 +326,18 @@
 
                 <div class="card-body">
 
-                <div class="form-group">
+                    <div class="form-group">
                         <label>Money Transfer Otions</label><br>
-                        <input type="checkbox" name="money_transfer_otion['transfer_online']" <?=(!empty($outlet->money_transfer_otion["'transfer_online'"]) && $outlet->money_transfer_otion["'transfer_online'"] ==1)?"checked":"" ?> value="1">&nbsp;&nbsp;Money Transfer offline<br>
-                        <input type="checkbox" name="money_transfer_otion['transfer_offline']" <?=(!empty($outlet->money_transfer_otion["'transfer_offline'"]) && $outlet->money_transfer_otion["'transfer_offline'"] ==1)?"checked":"" ?> value="1">&nbsp;&nbsp;Money Transfer online<br>
-                        <input type="checkbox" name="money_transfer_otion['transfer_online_api']" <?=(!empty($outlet->money_transfer_otion["'transfer_online_api'"]) && $outlet->money_transfer_otion["'transfer_online_api'"] ==1)?"checked":"" ?>  value="1">&nbsp;&nbsp;Money Transfer offline Api<br>
-                        <input type="checkbox" name="money_transfer_otion['transfer_online_api']" <?=(!empty($outlet->money_transfer_otion["'transfer_online_api'"]) && $outlet->money_transfer_otion["'transfer_online_api'"] ==1)?"checked":"" ?> value="1">&nbsp;&nbsp;Money Transfer online Api<br>
+                        <input type="checkbox" name="money_transfer_otion['transfer_online']" <?= (!empty($outlet->money_transfer_otion["'transfer_online'"]) && $outlet->money_transfer_otion["'transfer_online'"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Money Transfer offline<br>
+                        <input type="checkbox" name="money_transfer_otion['transfer_offline']" <?= (!empty($outlet->money_transfer_otion["'transfer_offline'"]) && $outlet->money_transfer_otion["'transfer_offline'"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Money Transfer online<br>
+                        <input type="checkbox" name="money_transfer_otion['transfer_online_api']" <?= (!empty($outlet->money_transfer_otion["'transfer_online_api'"]) && $outlet->money_transfer_otion["'transfer_online_api'"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Money Transfer offline Api<br>
+                        <input type="checkbox" name="money_transfer_otion['transfer_online_api']" <?= (!empty($outlet->money_transfer_otion["'transfer_online_api'"]) && $outlet->money_transfer_otion["'transfer_online_api'"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Money Transfer online Api<br>
                         <span id="money_transfer_otion_msg" class="custom-text-danger"></span>
                     </div>
 
                     <div class="">
                         <input type="submit" value="Update" class="btn btn-sm btn-success">
-                         <a href="{{ url('admin/outlets') }}" class="btn btn-sm btn-warning">Back</a>
+                        <a href="{{ url('admin/outlets') }}" class="btn btn-sm btn-warning">Back</a>
                     </div>
                 </div>
                 <!-- /.card-body -->

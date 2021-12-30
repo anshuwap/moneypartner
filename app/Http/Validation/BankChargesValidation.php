@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Foundation\Http\FormRequest;
 
-class OutletValidation extends FormRequest
+class BankChargesValidation extends FormRequest
 {
 
     public function authorize()
@@ -17,17 +17,19 @@ class OutletValidation extends FormRequest
     public function rules()
     {
         return [
-            'retailer_name' => 'required|string|max:30',
-            'mobile_no' =>'required'
+            'from_amount'   => 'required|numeric',
+            'to_amount'     => 'required|numeric',
+            'type'          => 'required',
+            'charges'       => 'required'
         ];
     }
     public function messages()
     {
         return [
-            'retailer_name.required' => 'Retailer Name field is Required.',
-            'retailer_name.string'=>'Retailer Name should be string.',
-            'retailer_name.max'=>'Retailer Name should not be maximum 30 Character.',
-            'mobile_no.required'=>'Mobile Number field is Required.',
+            'form_account.required' =>'From Account field is Required.',
+            'to_account.required'   =>'To Account field is Required.',
+            'type.required'         =>'Type field is Required.',
+            'charges.required'      =>'Charges field is Requierd.',
         ];
     }
 

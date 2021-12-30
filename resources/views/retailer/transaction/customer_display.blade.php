@@ -7,19 +7,19 @@
     <div class="col-12 mt-2">
         <div class="card">
 
-            <ul class="nav nav-tabs mr-auto" role="tablist">
-                <li class="nav-item">
-                    <a href="{{ url('retailer/customer-trans') }}" class="nav-link active">Customer Transaction</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url('retailer/retailer-trans') }}" class="nav-link">Retailer Transaction</a>
-                </li>
-            </ul>
-            <ul class="nav nav-tabs ml-auto" role="tablist">
-                <li class="nav-item">
-                    <a href="javascript:void(0);" class="btn btn-sm btn-success mr-4" id="create_customer"><i class="fas fa-plus-circle"></i>&nbsp;Add</a>
-                </li>
-            </ul>
+            <div class="covertabs-btn __web-inspector-hide-shortcut__">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a href="{{ url('retailer/customer-trans') }}" class="nav-link active">Customer Transaction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url('retailer/retailer-trans') }}" class="nav-link">Retailer Transaction</a>
+                    </li>
+                </ul>
+                <div class="add-btn">
+                <a href="javascript:void(0);" class="btn btn-sm btn-success mr-4" id="create_customer"><i class="fas fa-plus-circle"></i>&nbsp;Add</a>
+                </div>
+            </div>
 
 
             <div class="card-body table-responsive py-4 table-sm">
@@ -35,7 +35,6 @@
                     <tbody>
 
                         @foreach($customer_trans as $key=>$trans)
-
                         <tr data-widget="expandable-table" aria-expanded="false">
                             <td>{{ ++$key }}</td>
                             <td>{{ ucwords($trans->customer_name) }}</td>
@@ -57,6 +56,7 @@
                                         <th>Created Date</th>
                                     </tr>
                                     <?php
+                                    if(!empty($trans->trans_details)){
                                     foreach($trans->trans_details as $ke=>$detail){
 
                                     if ($detail['status'] == 'approved'){
@@ -70,13 +70,13 @@
                                     <tr>
                                         <td>{{ ++$ke }}</td>
                                         <td>{{ ucwords($detail['sender_name'] ) }}</td>
-                                        <td>{{ $detail['amount'] }}</td>
+                                        <td>{!! mSign($detail['amount']) !!}</td>
                                         <td>{{ ucwords($detail['receiver_name'] ) }}</td>
                                         <td>{{ ucwords(str_replace('_', ' ', $detail['payment_mode'])) }}</td>
                                         <td><?=$status ?></td>
                                         <td>{{ date('Y-m-d',$detail['created'])}}</td>
                                     </tr>
-                                <?php } ?>
+                                <?php } } ?>
                                 </table>
                                 </p>
                             </td>
@@ -94,96 +94,6 @@
     </div>
 </div>
 <!-- /.row -->
-
-@push('custom-script')
-
-<script type="text/javascript">
-    $(document).ready(function() {
-
-        $('#table').DataTable({
-            lengthMenu: [
-                [10, 30, 50, 100, 500],
-                [10, 30, 50, 100, 500]
-            ], // page length options
-
-            bProcessing: true,
-            serverSide: true,
-            scrollY: "auto",
-            scrollCollapse: true,
-            'ajax': {
-                "dataType": "json",
-                url: "{{ url('retailer/customer-trans-ajax') }}",
-                data: {}
-            },
-            columns: [{
-                    data: "sl_no"
-                },
-                {
-                    data: 'sender_name'
-                },
-                {
-                    data: "mobile_number"
-                },
-                {
-                    data: 'amount'
-                },
-                {
-                    data: 'receiver_name'
-                },
-                {
-                    data: "payment_mode"
-                },
-                {
-                    data: "status",
-                },
-                {
-                    data: "created_date"
-                }
-            ],
-
-            columnDefs: [{
-                orderable: false,
-                targets: [0, 1, 2, 3, 4, 5, 6]
-            }],
-        });
-
-        $(document).on('click', '.activeVer', function() {
-            var id = $(this).attr('_id');
-            var val = $(this).attr('val');
-            $.ajax({
-                'url': "{{ url('retailer/customer-trans-status') }}",
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    'id': id,
-                    'status': val
-                },
-                type: 'POST',
-                dataType: 'json',
-                success: function(res) {
-                    if (res.val == 1) {
-                        $('#active_' + id).text('Active');
-                        $('#active_' + id).attr('val', '0');
-                        $('#active_' + id).removeClass('badge-danger');
-                        $('#active_' + id).addClass('badge-success');
-                    } else {
-                        $('#active_' + id).text('Inactive');
-                        $('#active_' + id).attr('val', '1');
-                        $('#active_' + id).removeClass('badge-success');
-                        $('#active_' + id).addClass('badge-danger');
-                    }
-                    Swal.fire(
-                        `${res.status}!`,
-                        res.msg,
-                        `${res.status}`,
-                    )
-                }
-            })
-
-        })
-
-    });
-</script>
-@endpush
 
 @push('modal')
 
@@ -241,6 +151,7 @@
                                     <span id="amount_msg" class="custom-text-danger"></span>
                                 </div>
 
+                                <div id="charges"></div>
                                 <div id="upload_docs">
 
                                 </div>
@@ -264,6 +175,7 @@
                                 <div id="payment_channel_field">
 
                                 </div>
+
                             </div>
 
                         </div>
@@ -312,6 +224,8 @@
         e.preventDefault();
 
         var amount = $(this).val();
+        transactionFeeDetails(amount);
+
         if (amount >= 25000 && amount < 200000) {
             $('#upload_docs').html(`<div class="form-group">
             <label>Pancard Number</label>
@@ -338,6 +252,32 @@
             $('#add_customer input,select').removeAttr('disabled');
         }
     })
+
+
+function transactionFeeDetails(amount){
+
+    var amount = (amount)?amount:0;
+    $.ajax({
+        url:"<?=url('retailer/fee-details')?>",
+        data:{'amount':amount},
+        dataType:"JSON",
+        type:"GET",
+        success:function(res){
+
+            if(res.status =='success'){
+            $('#charges').html(`Rs. ${res.charges} Transaction Fees
+            <div class="form-group">
+            <label>Transaction Amount</label>
+            <input type="text" readonly name="" value="${parseInt(amount)+ parseInt(res.charges)}" class="form-control form-control-sm">
+            </div>`);
+
+            }else if(res.status =='error'){
+                $('#charges').html(res.msg);
+            }
+        }
+    })
+}
+
 
     /*start otp varifaction functionality*/
     $('#send_otp').click(function() {
@@ -474,37 +414,7 @@
     })
 
 
-    $(document).on('click', '.edit_customer', function(e) {
-        e.preventDefault();
-        var id = $(this).attr('customer_id');
-        var url = "{{ url('retailer/customer') }}/" + id + "/edit";
-        $.ajax({
-            url: url,
-            method: 'GET',
-            dataType: "JSON",
-            data: {
-                id: id,
-            },
-            success: function(res) {
-                $('#bank_name').val(res.bank_name);
-                $('#account_number').val(res.account_number);
-                $('#ifsc_code').val(res.ifsc_code);
-                $('#account_holder_name').val(res.account_holder_name);
-                $('#status').val(res.status);
 
-                let urlU = '{{ url("retailer/customer") }}/' + id;
-                $('#heading-group').html('Edit Bank Account');
-                $('#put').html('<input type="hidden" name="_method" value="PUT">');
-                $('form#add_customer').attr('action', urlU);
-                $('#submit_customer').val('Update');
-                $('#add_bank_modal').modal('show');
-            },
-
-            error: function(error) {
-                console.log(error)
-            }
-        });
-    });
 
     /*start form submit functionality*/
     $("form#add_customer").submit(function(e) {
@@ -521,11 +431,12 @@
             processData: false,
             beforeSend: function() {
                 $('.has-loader').addClass('has-loader-active');
+                $('#submit_customer').val(`Saving...`);
             },
             success: function(res) {
                 //hide loader
                 $('.has-loader').removeClass('has-loader-active');
-
+                $('#submit_customer').val(`Submit`);
                 /*Start Validation Error Message*/
                 $('span.custom-text-danger').html('');
                 $.each(res.validation, (index, msg) => {
