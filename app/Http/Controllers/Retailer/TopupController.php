@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Retailer;
 
 use App\Http\Controllers\Controller;
+use App\Http\Validation\TopupValidation;
 use App\Models\PaymentMode\BankAccount;
 use App\Models\PaymentMode\QrCode;
 use App\Models\PaymentMode\Upi;
@@ -105,7 +106,7 @@ class TopupController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(TopupValidation $request)
     {
         $topup = new Topup();
         $topup->retailer_id            = Auth::user()->_id;

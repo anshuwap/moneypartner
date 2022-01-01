@@ -27,6 +27,7 @@
   <!-- Theme style -->
 
   <link rel="stylesheet" href="{{ asset('assets') }}/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="{{ asset('assets') }}/custom/custom.css">
 
 </head>
 
@@ -38,7 +39,7 @@
 
     <!-- /.login-logo -->
 
-    <div class="card card-outline card-primary">
+    <div class="card card-outline card-success">
 
       <div class="card-header text-center">
 
@@ -136,9 +137,9 @@
 
             <div class="col-12">
 
-              <div class="icheck-primary">
+              <div class="icheck-success">
 
-                <input type="checkbox" id="remember">
+                <input type="checkbox" name="remember_me" id="remember">
 
                 <label for="remember">
 
@@ -154,7 +155,7 @@
 
             <div class="col-12">
 
-              <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+              <button type="submit" class="btn btn-success btn-block">Sign In</button>
 
             </div>
 

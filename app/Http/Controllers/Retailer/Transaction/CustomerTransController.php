@@ -66,7 +66,7 @@ class CustomerTransController extends Controller
                 $trans_details[] = [
                     'sender_name'     => $request->sender_name,
                     'amount'          => $request->amount,
-                    'transaction_fees' => $charges,
+                    'transaction_fees'=> $charges,
                     'receiver_name'   => $request->receiver_name,
                     'payment_mode'    => $request->payment_mode,
                     'payment_channel' => $request->payment_channel,

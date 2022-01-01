@@ -8,13 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class RetailerMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
-     */
+
     public function handle(Request $request, Closure $next)
     {
         if( Auth::check() )
@@ -28,6 +22,10 @@ class RetailerMiddleware
 
             // allow admin to proceed with request
             else if ( Auth::user()->isRetailer() ) {
+
+                //check otp retailer otp verify or not
+                if(empty(Auth::user()->verify_otp) || !Auth::user()->verify_otp)
+                return redirect(url('otp-sent'));
 
                  return $next($request);
             }else{

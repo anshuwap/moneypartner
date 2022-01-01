@@ -35,10 +35,11 @@ Route::group(['middleware' => 'retailerRedirect'], function () {
     Route::post('retailer/login',[RetailerLogin::class,'store']);
 });
 
+Route::get('otp-sent',       [AdminLogin::class,'otpSent']);
+Route::post('verify-mobile', [AdminLogin::class,'verifyMobile']);
+
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::resource('dashboard', AdminDashboard::class);
-
-    // Route::resource('profile', RetailerProfile::class);
 
     Route::resource('outlets', AdminOutlet::class);
     Route::post('outlets-status', [AdminOutlet::class,'outletStatus']);

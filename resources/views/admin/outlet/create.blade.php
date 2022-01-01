@@ -3,6 +3,10 @@
 @section('content')
 @section('page_heading', 'Create Outlet')
 
+<!-- <div class="cover-loader">
+  <div class="loader"></div>
+</div> -->
+
 <!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container-fluid">

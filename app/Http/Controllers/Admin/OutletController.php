@@ -65,8 +65,6 @@ class OutletController extends Controller
         $outlet->status               = $request->status;
         $outlet->account_status       = $request->account_status;
 
-        $this->createUser($outlet->_id, $request);
-
         //for office photo
         if (!empty($request->file('office_photo')))
             $outlet->office_photo  = singleFile($request->file('office_photo'), 'attachment');
@@ -87,8 +85,10 @@ class OutletController extends Controller
         if (!empty($request->file('upload_address')))
             $outlet->upload_address  = singleFile($request->file('upload_address'), 'attachment');
 
-        if ($outlet->save())
+        if ($outlet->save()){
+            $this->createUser($outlet->_id, $request);
             return response(['status' => 'success', 'msg' => 'Outlet Created Successfully!']);
+        }
 
         return response(['status' => 'error', 'msg' => 'Outlet Not Created!']);
     }
@@ -104,6 +104,7 @@ class OutletController extends Controller
         $user->password = Hash::make($request->password);
         $user->role  = 'retailer';
         $user->outlet_id = $outlet_id;
+        $user->verify_otp = 0;
         $user->save();
     }
 
@@ -410,4 +411,36 @@ class OutletController extends Controller
         echo json_encode($response);
         exit;
     }
+
+
+
+    //for export sample import csv file
+    public function sampleCsv()
+    {
+        try {
+            //file name here
+            $file_name = 'sample_order_csv';
+
+            $fields = ['Group Name', 'Agent Code', 'Status(Active/Inactive)'];
+
+            $delimiter = ",";
+            if(!file_exists('sampleCsv'))
+             mkdir('sampleCsv', 0777, true);
+
+            $f = fopen('sampleCsv/' . $file_name . '.csv', 'w');
+            fputcsv($f, $fields, $delimiter);
+
+            // Move back to beginning of file
+            fseek($f, 0);
+
+            // headers to download file
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="' . $file_name . '.csv";');
+            readfile('sampleCsv/' . $file_name . '.csv');
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
+        }
+    }
+
+
 }

@@ -33,6 +33,7 @@ class TopupRequestController extends Controller
                     'payment_mode' => ucwords(str_replace('_', " ", $topup->payment_mode)),
                     'status'       => ucwords($topup->status),
                     'payment_date' => date('y-m-d h:i:s A', $topup->payment_date),
+                    'admin_action' => $topup->admin_action,
                     'comment'      => $topup->comment
                 ];
             }
@@ -51,6 +52,7 @@ class TopupRequestController extends Controller
             $topup = Topup::find($request->id);
             $topup->status = $request->status;
             $topup->admin_comment = $request->comment;
+            $topup->admin_action = 1;
             $topup->save();
             if ($topup->status == 'approved') {
 

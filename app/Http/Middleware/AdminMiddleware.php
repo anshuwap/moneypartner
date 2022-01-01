@@ -23,7 +23,11 @@ class AdminMiddleware
             // if user is not admin take him to his dashboard
             if ( Auth::user()->isRetailer() ) {
 
-                 return redirect(url('retailer/dashboard'));
+                //check retialer otp verify or not
+                if(empty(Auth::user()->verify_otp) || !Auth::user()->verify_otp)
+                return redirect(url('otp-sent'));
+
+                return redirect(url('retailer/dashboard'));
             }
 
             // allow admin to proceed with request

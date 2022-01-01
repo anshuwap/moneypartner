@@ -14,12 +14,13 @@
   <link rel="stylesheet" href="{{ asset('assets') }}/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('assets') }}/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="{{ asset('assets') }}/custom/custom.css">
 </head>
 
 <body class="hold-transition login-page">
   <div class="login-box">
     <!-- /.login-logo -->
-    <div class="card card-outline card-primary">
+    <div class="card card-outline card-success">
       <div class="card-header text-center">
         <a href="{{ url('/dashboard') }}" class="h1"><b>Retailer</b>Login</a>
       </div>
@@ -77,7 +78,7 @@
             </div> -->
             <!-- /.col -->
             <div class="col-12">
-              <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+              <button type="submit" class="btn btn-success btn-block">Sign In</button>
             </div>
             <!-- /.col -->
           </div>

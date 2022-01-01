@@ -56,44 +56,6 @@
 
   <link rel="stylesheet" href="{{ asset('assets') }}/custom/custom.css">
 
-  <style>
-    label {
-
-      font-size: 14px;
-
-      margin: 0rem !important;
-
-    }
-
-    .form-group {
-
-      margin-bottom: 0.5rem !important;
-
-    }
-
-    span.custom-text-danger {
-
-      font-weight: 500;
-
-      color: red !important;
-
-      font-size: 14px;
-
-    }
-
-    .bg-custom-sidebar {
-
-      background: #191b2a !important;
-
-    }
-
-    .card-custom-header {
-
-      background: #2fc296 !important;
-
-    }
-  </style>
-
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -102,13 +64,13 @@
 
     <!-- Preloader -->
 
-    <div class="preloader flex-column justify-content-center align-items-center">
+    <!-- <div class="preloader flex-column justify-content-center align-items-center">
 
       <img class="" src="{{ asset('assets/profile/loader.gif') }}" alt="AdminLTELogo" style="height: 140px;
 
     width: 144px;">
 
-    </div>
+    </div> -->
 
     <!-- Navbar -->
 
@@ -195,7 +157,7 @@
 
           <div class="image">
 
-            <img src="{{ asset('assets') }}/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+            <img src="{{ asset('assets') }}/profile/37.jpg" class="img-circle elevation-2" alt="User Image">
 
           </div>
 
@@ -234,17 +196,11 @@
     </div>
 
     <footer class="main-footer">
-
-      <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
-
+      <strong>Copyright &copy; 2021-{{ date('Y') }} <a href="url('admin/money-transter')">MoneyTransfer</a>.</strong>
       All rights reserved.
-
       <div class="float-right d-none d-sm-inline-block">
-
-        <b>Version</b> 3.2.0-rc
-
+        <b>Version</b> 1.0.0-rc
       </div>
-
     </footer>
 
   </div>
@@ -311,7 +267,7 @@
 
   <!-- AdminLTE for demo purposes -->
 
-  <script src="{{ asset('assets') }}/dist/js/demo.js"></script>
+  <!-- <script src="{{ asset('assets') }}/dist/js/demo.js"></script> -->
 
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 
