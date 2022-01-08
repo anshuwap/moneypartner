@@ -50,6 +50,8 @@
 
   <!-- summernote -->
 
+  <link rel="stylesheet" href="{{ asset('assets') }}/plugins/chart.js/Chart.css">
+
   <link rel="stylesheet" href="{{ asset('assets') }}/plugins/summernote/summernote-bs4.min.css">
 
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
@@ -90,8 +92,8 @@
       <ul class="navbar-nav ml-auto">
         <!-- Messages Dropdown Menu -->
 
-<!-- Messages Dropdown Menu -->
-<li class="nav-item dropdown">
+        <!-- Messages Dropdown Menu -->
+        <li class="nav-item dropdown">
           <a class="nav-link" data-toggle="dropdown" href="#">
             <span><i class="far fa-user"></i></span>
           </a>
@@ -99,10 +101,10 @@
 
             <!-- Message Start -->
 
-            <a href="javascript:void(0);" class="pro-li dropdown-item"><span><img class="profile-small img-fluid img-circle" id="avatar" src="http://moneypartner.in/public/attachment/20211225154722.jpg " alt="User profile picture"></span> <span>{{ ucwords(Auth::user()->full_name)}}</span></a>
+            <a href="javascript:void(0);" class="pro-li dropdown-item"><span><img class="profile-small img-fluid img-circle" id="" src="{{ asset('assets') }}/profile/37.jpg" alt="User profile picture"></span> <span>{{ ucwords(Auth::user()->full_name)}}</span></a>
 
             <a href="{{ url('admin/profile') }}" class="pro-li dropdown-item">
-             <span><i class="far fa-user"></i></span> Profile
+              <span><i class="far fa-user"></i></span> Profile
             </a>
             <a class="dropdown-item" href="{{ url('admin/logout') }}" onclick="event.preventDefault();
                      document.getElementById('logout-form').submit();">
@@ -208,81 +210,46 @@
   <!-- ./wrapper -->
 
   <!-- jQuery -->
-
   <script src="{{ asset('assets') }}/plugins/jquery/jquery.min.js"></script>
-
   <!-- jQuery UI 1.11.4 -->
-
   <script src="{{ asset('assets') }}/plugins/jquery-ui/jquery-ui.min.js"></script>
-
   <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-
   <script>
     $.widget.bridge('uibutton', $.ui.button)
   </script>
-
   <!-- Bootstrap 4 -->
-
   <script src="{{ asset('assets') }}/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-
   <!-- ChartJS -->
-
   <script src="{{ asset('assets') }}/plugins/chart.js/Chart.min.js"></script>
-
   <!-- Sparkline -->
-
-  <script src="{{ asset('assets') }}/plugins/sparklines/sparkline.js"></script>
-
+  <!-- <script src="{{ asset('assets') }}/plugins/sparklines/sparkline.js"></script> -->
   <!-- JQVMap -->
-
   <script src="{{ asset('assets') }}/plugins/jqvmap/jquery.vmap.min.js"></script>
-
   <script src="{{ asset('assets') }}/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-
   <!-- jQuery Knob Chart -->
-
   <script src="{{ asset('assets') }}/plugins/jquery-knob/jquery.knob.min.js"></script>
-
   <!-- daterangepicker -->
-
   <script src="{{ asset('assets') }}/plugins/moment/moment.min.js"></script>
-
   <script src="{{ asset('assets') }}/plugins/daterangepicker/daterangepicker.js"></script>
-
   <!-- Tempusdominus Bootstrap 4 -->
-
   <script src="{{ asset('assets') }}/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-
   <!-- Summernote -->
-
   <script src="{{ asset('assets') }}/plugins/summernote/summernote-bs4.min.js"></script>
-
   <!-- overlayScrollbars -->
-
   <script src="{{ asset('assets') }}/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-
   <!-- AdminLTE App -->
-
   <script src="{{ asset('assets') }}/dist/js/adminlte.js"></script>
-
   <!-- AdminLTE for demo purposes -->
-
+  <script src="{{ asset('assets') }}/plugins/chart.js/Chart.js"></script>
   <!-- <script src="{{ asset('assets') }}/dist/js/demo.js"></script> -->
-
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-
-  <script src="{{ asset('assets') }}/dist/js/pages/dashboard.js"></script>
-
+  <!-- <script src="{{ asset('assets') }}/dist/js/pages/dashboard.js"></script> -->
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
   <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-
   <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
-
   <script src="{{ asset('assets') }}/custom/custom_function.js"></script>
-
   <script>
-    -
+
 
     $(document).ready(function() {
 
@@ -290,7 +257,24 @@
 
     });
 
-    -
+      //Date range as a button
+      $('#daterange-btn').daterangepicker(
+      {
+        ranges   : {
+          'Today'       : [moment(), moment()],
+          'Yesterday'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'Last 7 Days' : [moment().subtract(6, 'days'), moment()],
+          'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+          'This Month'  : [moment().startOf('month'), moment().endOf('month')],
+          'Last Month'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        startDate: moment().subtract(29, 'days'),
+        endDate  : moment()
+      },
+      function (start, end) {
+        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+      }
+    )
 
     //show uploaded file name in input field
 
@@ -321,6 +305,7 @@
       }
 
     });
+
 
     /*end single image preview*/
   </script>

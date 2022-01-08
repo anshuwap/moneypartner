@@ -17,7 +17,7 @@ class OTPValidation extends FormRequest
     public function rules()
     {
         return [
-            'otp'              => 'required|numeric|digits:6|not_in:0'
+            'otp'  => 'required|numeric|digits:6|not_in:0'
         ];
     }
     public function messages()

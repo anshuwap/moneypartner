@@ -42,6 +42,7 @@ class RetailerTransController extends Controller
 
             $RetailerTrans = new RetailerTrans();
             $RetailerTrans->retailer_id     = Auth::user()->_id;
+            $RetailerTrans->outlet_id       = Auth::user()->outlet_id;
             $RetailerTrans->mobile_number   = Auth::user()->mobile_number;
             $RetailerTrans->sender_name     = Auth::user()->full_name;
             $RetailerTrans->amount          = $request->amount;

@@ -77,7 +77,13 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+
+      <div class="cover-loader-modal d-none">
+        <div class="loader-modal"></div>
+      </div>
+
+      <div class="modal-body" id="bank_charges">
+
         <form id="add_bank_charges" action="{{ url('admin/outlet-add-bank-charges') }}" method="post">
           @csrf
           <input type="hidden" value="{{ $id }}" name="id" id="outlet_id">
@@ -147,7 +153,7 @@
       method: 'GET',
       dataType: "JSON",
       data: {
-        'key':key
+        'key': key
       },
       success: function(res) {
         $('#from_amount').val(res.data.from_amount);
@@ -157,7 +163,7 @@
 
         let urlU = '{{ url("admin/outlet-update-bank-charges") }}';
         $('#heading_bank').html('Edit Bank Account Charges');
-        $('#put').html('<input type="hidden" name="key" value="'+key+'">');
+        $('#put').html('<input type="hidden" name="key" value="' + key + '">');
         $('form#add_bank_charges').attr('action', urlU);
         $('#submit_bank_charges').val('Update');
         $('#banckModal').modal('show');
@@ -184,11 +190,13 @@
       contentType: false,
       processData: false,
       beforeSend: function() {
-        $('.has-loader').addClass('has-loader-active');
+        $('.cover-loader-modal').removeClass('d-none');
+        $('#bank_charges').hide();
       },
       success: function(res) {
         //hide loader
-        $('.has-loader').removeClass('has-loader-active');
+        $('.cover-loader-modal').addClass('d-none');
+        $('#bank_charges').show();
 
         /*Start Validation Error Message*/
         $('span.custom-text-danger').html('');
@@ -210,9 +218,9 @@
         //for reset all field
         if (res.status == 'success') {
           $('form#add_bank_charges')[0].reset();
-          setTimeout(function(){
+          setTimeout(function() {
             location.reload();
-          },2000)
+          }, 2000)
 
         }
       }
@@ -222,36 +230,35 @@
   /*end form submit functionality*/
 
   $(document).on('click', '.activeVer', function() {
-            var id = $(this).attr('_id');
-            var val = $(this).attr('val');
-            var key = $(this).attr('key');
+    var id = $(this).attr('_id');
+    var val = $(this).attr('val');
+    var key = $(this).attr('key');
 
-            $.ajax({
-                'url': "{{ url('admin/outlet-charges-status') }}/" + id + "/" + key + "/" + val,
-                data: {},
-                type: 'GET',
-                dataType: 'json',
-                success: function(res) {
-                    if (res.val == 1) {
-                        $('#active_' + key).text('Active');
-                        $('#active_' + key).attr('val', '0');
-                        $('#active_' + key).removeClass('badge-danger');
-                        $('#active_' + key).addClass('badge-success');
-                    } else {
-                        $('#active_' + key).text('Inactive');
-                        $('#active_' + key).attr('val', '1');
-                        $('#active_' + key).removeClass('badge-success');
-                        $('#active_' + key).addClass('badge-danger');
-                    }
-                    Swal.fire(
-                        `${res.status}!`,
-                        res.msg,
-                        `${res.status}`,
-                    )
-                }
-            })
-        });
-
+    $.ajax({
+      'url': "{{ url('admin/outlet-charges-status') }}/" + id + "/" + key + "/" + val,
+      data: {},
+      type: 'GET',
+      dataType: 'json',
+      success: function(res) {
+        if (res.val == 1) {
+          $('#active_' + key).text('Active');
+          $('#active_' + key).attr('val', '0');
+          $('#active_' + key).removeClass('badge-danger');
+          $('#active_' + key).addClass('badge-success');
+        } else {
+          $('#active_' + key).text('Inactive');
+          $('#active_' + key).attr('val', '1');
+          $('#active_' + key).removeClass('badge-success');
+          $('#active_' + key).addClass('badge-danger');
+        }
+        Swal.fire(
+          `${res.status}!`,
+          res.msg,
+          `${res.status}`,
+        )
+      }
+    })
+  });
 </script>
 
 @endpush

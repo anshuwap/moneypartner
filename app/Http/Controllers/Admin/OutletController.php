@@ -85,7 +85,7 @@ class OutletController extends Controller
         if (!empty($request->file('upload_address')))
             $outlet->upload_address  = singleFile($request->file('upload_address'), 'attachment');
 
-        if ($outlet->save()){
+        if ($outlet->save()) {
             $this->createUser($outlet->_id, $request);
             return response(['status' => 'success', 'msg' => 'Outlet Created Successfully!']);
         }
@@ -98,13 +98,14 @@ class OutletController extends Controller
     private function createUser($outlet_id, $request)
     {
         $user = new User();
-        $user->full_name = $request->retailer_name;
-        $user->email = $request->email;
+        $user->full_name     = $request->retailer_name;
+        $user->email         = $request->email;
         $user->mobile_number = $request->mobile_no;
-        $user->password = Hash::make($request->password);
-        $user->role  = 'retailer';
-        $user->outlet_id = $outlet_id;
-        $user->verify_otp = 0;
+        $user->password      = Hash::make($request->password);
+        $user->role          = 'retailer';
+        $user->outlet_id     = $outlet_id;
+        $user->outlet_name   = $request->outlet_name;
+        $user->verify_otp    = 0;
         $user->save();
     }
 
@@ -237,9 +238,11 @@ class OutletController extends Controller
             $outlet = Outlet::find($outlet_id);
 
             $bank_changes = $outlet->bank_charges;
-            foreach ($bank_changes as $charge) {
-                if ($charge['from_amount'] == $request->from_amount && $charge['to_amount'] == $request->to_amount)
-                    return response(['status' => 'error', 'msg' => 'This Amount Slab is already Added.']);
+            if (!empty($bank_charges)) {
+                foreach ($bank_changes as $charge) {
+                    if ($charge['from_amount'] == $request->from_amount && $charge['to_amount'] == $request->to_amount)
+                        return response(['status' => 'error', 'msg' => 'This Amount Slab is already Added.']);
+                }
             }
 
             $bank_charges_val = array();
@@ -384,7 +387,7 @@ class OutletController extends Controller
 
             $available_amount = 0;
             if (!empty($amount))
-            $available_amount = $amount->available_amount;
+                $available_amount = $amount->available_amount;
 
             $dataArr[] = [
                 'sl_no'             => $i,
@@ -424,8 +427,8 @@ class OutletController extends Controller
             $fields = ['Group Name', 'Agent Code', 'Status(Active/Inactive)'];
 
             $delimiter = ",";
-            if(!file_exists('sampleCsv'))
-             mkdir('sampleCsv', 0777, true);
+            if (!file_exists('sampleCsv'))
+                mkdir('sampleCsv', 0777, true);
 
             $f = fopen('sampleCsv/' . $file_name . '.csv', 'w');
             fputcsv($f, $fields, $delimiter);
@@ -441,6 +444,4 @@ class OutletController extends Controller
             return response(['status' => 'error', 'msg' => $e->getMessage()]);
         }
     }
-
-
 }

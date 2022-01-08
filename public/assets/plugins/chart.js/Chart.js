@@ -1528,7 +1528,7 @@ function getAlpha(string) {
 // generators
 function hexString(rgba, a) {
    var a = (a !== undefined && rgba.length === 3) ? a : rgba[3];
-   return "#" + hexDouble(rgba[0]) 
+   return "#" + hexDouble(rgba[0])
               + hexDouble(rgba[1])
               + hexDouble(rgba[2])
               + (
@@ -4796,7 +4796,8 @@ function computeMinSampleSize(scale, pixels) {
 }
 
 /**
- * Computes an "ideal" category based on the absolute bar thickness or, if undefined or null,
+ * Computes an "ideal" category based on the absolute
+ *  thickness or, if undefined or null,
  * uses the smallest interval (see computeMinSampleSize) that prevents bar overlapping. This
  * mode currently always generates bars equally sized (until we introduce scriptable options?).
  * @private

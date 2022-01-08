@@ -31,7 +31,6 @@ class UpdateOutletValidation extends FormRequest
             'email'              => 'required|email|min:2|max:30',
             'gender'             => 'required|min:2|max:30',
             'user_type'          => 'required',
-            'password'           => 'required|max:16|min:4',
             'date_of_birth'      => 'required',
             'permanent_address'  => 'required',
             'id_proff'           => 'required',

@@ -33,10 +33,10 @@ class CustomerTransController extends Controller
 
         try {
             /*start check amount available in wallet or not*/
-            $amount = $request->amount;
-            $outlet = Outlet::select('bank_charges')->where('_id', Auth::user()->outlet_id)->first();
-            if (!empty($outlet)) {
-                $charges = 0;
+            $amount  = $request->amount;
+            $charges = 0;
+            $outlet  = Outlet::select('bank_charges')->where('_id', Auth::user()->outlet_id)->first();
+            if (!empty($outlet->bank_charges)) {
                 foreach ($outlet->bank_charges as $charge) {
                     if ($charge['from_amount'] <= $amount && $charge['to_amount'] >= $amount)
                         $charges = $charge['charges'];
@@ -82,6 +82,7 @@ class CustomerTransController extends Controller
                 //insert new record
                 $CustomerTrans = new CustomerTrans();
                 $CustomerTrans->retailer_id    = Auth::user()->_id;
+                $CustomerTrans->outlet_id      = Auth::user()->outlet_id;
                 $CustomerTrans->otp            = $request->otp;
                 $CustomerTrans->mobile_number  = $request->mobile_number;
                 $CustomerTrans->customer_name  = $request->sender_name;
@@ -202,15 +203,16 @@ class CustomerTransController extends Controller
 
             $outlet = Outlet::select('bank_charges')->where('_id', Auth::user()->outlet_id)->first();
 
-            if (!empty($outlet)) {
-                $charges = 0;
+            $charges = 0;
+            if (!empty($outlet->bank_charges)) {
+
                 foreach ($outlet->bank_charges as $charge) {
                     if ($charge['from_amount'] <= $amount && $charge['to_amount'] >= $amount)
                         $charges = $charge['charges'];
                 }
                 return response(['status' => 'success', 'charges' => $charges]);
             }
-            return response(['status' => 'error', 'msg' => 'something went wrong']);
+            return response(['status' => 'error', 'msg' => 'There are no any Slab Avaliable.']);
         } catch (Exception $e) {
             return response(['status' => 'error', 'msg' => $e->getMessage()]);
         }

@@ -3,10 +3,11 @@
 @section('content')
 @section('page_heading', 'Create Outlet')
 
-<!-- <div class="cover-loader">
+<div class="cover-loader d-none">
   <div class="loader"></div>
-</div> -->
+</div>
 
+<div id="outlet">
 <!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container-fluid">
@@ -23,6 +24,7 @@
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
 </div>
+
 
 <form id="add-outlet" action="{{ url('admin/outlets') }}" method="post" enctype="multipart/form-data">
     @csrf
@@ -346,6 +348,7 @@
 
     </div>
 </form>
+</div>
 
 @push('custom-script')
 <script>
@@ -363,11 +366,13 @@
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $('.has-loader').addClass('has-loader-active');
+                $('.cover-loader').removeClass('d-none');
+                $('#outlet').hide();
             },
             success: function(res) {
                 //hide loader
-                $('.has-loader').removeClass('has-loader-active');
+                $('.cover-loader').addClass('d-none');
+                $('#outlet').show();
 
                 /*Start Validation Error Message*/
                 $('span.custom-text-danger').html('');

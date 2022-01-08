@@ -43,9 +43,8 @@
                 {{ $topup->status }}
               </td>
               <td>
-
-                @if(empty($topup->admin_action) && $topup->admin_action == 0 )
                 <a href="javascript:void(0);" class="text-success view-topup-request" topup_id="{{ $topup->id }}" data-toggle="tooltip" data-placement="bottom" title="View Details"><i class="fas fa-eye"></i></i></a>&nbsp;
+                @if(empty($topup->admin_action) && $topup->admin_action == 0 )
                 <a href="javascript:void(0);" class="text-ingfo add-topup-request" topup_id="{{ $topup->id }}" data-toggle="tooltip" data-placement="bottom" title="Approve Topup"><i class="fas fa-plus-circle"></i></a>
                 @endif
               </td>
@@ -69,15 +68,18 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <!-- loader -->
-      <!-- <div class="cover-loader">
-        <div class="loader"></div>
-      </div> -->
+
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">Place A Comment</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+
+      <div class="cover-loader-modal d-none">
+        <div class="loader-modal"></div>
+      </div>
+
       <div class="modal-body">
 
         <form action="{{ url('admin/topup-request') }}" id="topup-request" method="post">
@@ -170,13 +172,13 @@
         contentType: false,
         processData: false,
         beforeSend: function() {
-          $('.has-loader').addClass('has-loader-active');
-          $('#submit_btn').val('Submitting...');
+          $('.cover-loader-modal').removeClass('d-none');
+          $('.modal-body').hide();
         },
         success: function(res) {
           //hide loader
-          $('.has-loader').removeClass('has-loader-active');
-          $('#submit_btn').val('Submit');
+          $('.cover-loader-modal').addClass('d-none');
+          $('.modal-body').show();
 
           /*Start Validation Error Message*/
           $('span.custom-text-danger').html('');
@@ -227,6 +229,10 @@
       var topup_id = $(this).attr('topup_id');
       $('#topup_id').val(topup_id);
       $('#addTopup-request').modal('show');
+    })
+
+    $('#action1').click(function() {
+      $('#placeComment').toggle();
     })
 
   });

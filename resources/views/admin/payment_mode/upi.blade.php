@@ -142,7 +142,12 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+
+            <div class="cover-loader-modal d-none">
+                <div class="loader-modal"></div>
+            </div>
+
+            <div class="modal-body" id="upi-id">
                 <form id="add_upi_id" action="{{ url('admin/upi') }}" method="post">
                     @csrf
                     <div id="put"></div>
@@ -151,9 +156,9 @@
 
                             <div class="form-group">
 
-                                    <label>UPI ID</label>
-                                    <input type="text" placeholder="Enter UPI ID" id="upi_id" required name="upi_id" class="form-control form-control-sm">
-                                    <span id="upi_id_msg" class="custom-text-danger"></span>
+                                <label>UPI ID</label>
+                                <input type="text" placeholder="Enter UPI ID" id="upi_id" required name="upi_id" class="form-control form-control-sm">
+                                <span id="upi_id_msg" class="custom-text-danger"></span>
 
                             </div>
                             <div class="form-row">
@@ -210,7 +215,7 @@
                 id: id,
             },
             success: function(res) {
-                var url = "{{ asset('attachment/payment_mode/')}}/"+res.upi_id;
+                var url = "{{ asset('attachment/payment_mode/')}}/" + res.upi_id;
                 $('#name').val(res.name);
                 $('#upi_id').val(res.upi_id);
                 $('#status').val(res.status);
@@ -243,11 +248,14 @@
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $('.has-loader').addClass('has-loader-active');
+                $('.cover-loader-modal').removeClass('d-none');
+                $('#upi-id').hide();
             },
             success: function(res) {
                 //hide loader
-                $('.has-loader').removeClass('has-loader-active');
+                $('.cover-loader-modal').addClass('d-none');
+                $('#upi-id').show();
+
 
                 /*Start Validation Error Message*/
                 $('span.custom-text-danger').html('');
@@ -269,13 +277,15 @@
                 //for reset all field
                 if (res.status == 'success') {
                     $('form#add_upi_id')[0].reset();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000)
                 }
             }
         });
     });
 
     /*end form submit functionality*/
-
 </script>
 
 @endpush

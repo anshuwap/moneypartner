@@ -99,7 +99,7 @@ class TopupRequestController extends Controller
                     </tr>
                     <tr>
                         <th>Amount</th>
-                        <td>' . $topup->amount . '</td>
+                        <td>' . mSign($topup->amount) . '</td>
                     </tr>
                     <tr>
                     <th>Comment</th>

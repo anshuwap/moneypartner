@@ -32,23 +32,24 @@
           @endif
           @endif
         </p>
-<style>
-  .otp{
-  -moz-appearance: textfield;
-}
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-</style>
+        <style>
+          .otp {
+            -moz-appearance: textfield;
+          }
+
+          input::-webkit-outer-spin-button,
+          input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
+        </style>
         <form action="{{ url('verify-mobile') }}" method="post">
           {{ csrf_field() }}
           <div class="form-group mb-3">
             <label class="text-center">Enter OTP</label>
             <div class="cover-otp d-flex ">
 
-              <input type="number" name="opt[]" " type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f1">
+              <input type="number" name="otp[]" " type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f1">
 
               <input type="number" name="otp[]" " type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f2">
 

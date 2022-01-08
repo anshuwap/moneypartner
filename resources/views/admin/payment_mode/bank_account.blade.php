@@ -46,12 +46,12 @@
 <script type="text/javascript">
   $(document).ready(function() {
 
-    $(document).on('click','.remove_bank_account',function() {
-            var id = $(this).attr('bank_account_id');
-            var url = "{{ url('admin/bank-account') }}/" + id;
-            var tr = $(this).parent().parent();
-            removeRecord(tr, url);
-        })
+    $(document).on('click', '.remove_bank_account', function() {
+      var id = $(this).attr('bank_account_id');
+      var url = "{{ url('admin/bank-account') }}/" + id;
+      var tr = $(this).parent().parent();
+      removeRecord(tr, url);
+    })
 
     $('#table').DataTable({
       lengthMenu: [
@@ -96,7 +96,7 @@
 
       columnDefs: [{
         orderable: false,
-        targets: [0, 1, 2, 3, 4, 5, 6,7]
+        targets: [0, 1, 2, 3, 4, 5, 6, 7]
       }],
     });
 
@@ -150,10 +150,15 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+
+      <div class="cover-loader-modal d-none">
+        <div class="loader-modal"></div>
+      </div>
+
+      <div class="modal-body" id="bank-account">
         <form id="add_bank_account" action="{{ url('admin/bank-account') }}" method="post">
           @csrf
-        <div id="put"></div>
+          <div id="put"></div>
           <div class="row">
             <div class="col-md-12">
               <div class="form-group">
@@ -216,7 +221,7 @@
   })
 
 
-  $(document).on('click','.edit_bank_account',function(e) {
+  $(document).on('click', '.edit_bank_account', function(e) {
     e.preventDefault();
     var id = $(this).attr('bank_account_id');
     var url = "{{ url('admin/bank-account') }}/" + id + "/edit";
@@ -262,11 +267,13 @@
       contentType: false,
       processData: false,
       beforeSend: function() {
-        $('.has-loader').addClass('has-loader-active');
+        $('.cover-loader-modal').removeClass('d-none');
+        $('#bank-account').hide();
       },
       success: function(res) {
         //hide loader
-        $('.has-loader').removeClass('has-loader-active');
+        $('.cover-loader-modal').addClass('d-none');
+        $('#bank-account').show();
 
         /*Start Validation Error Message*/
         $('span.custom-text-danger').html('');
@@ -288,6 +295,9 @@
         //for reset all field
         if (res.status == 'success') {
           $('form#add_bank_account')[0].reset();
+          setTimeout(function() {
+            location.reload();
+          }, 1000)
         }
       }
     });

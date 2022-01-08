@@ -14,8 +14,8 @@
                 <h3 class="card-title">Spent Amount Topup List</h3>
 
                 <div class="card-tools">
-                <a href="javascript:void(0);" class="btn btn-sm btn-warning mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
-                <a href="javascript:void(0);" id="import" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-upload-alt"></i>&nbsp;Import</a>
+                    <a href="javascript:void(0);" class="btn btn-sm btn-warning mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
+                    <a href="javascript:void(0);" id="import" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-upload-alt"></i>&nbsp;Import</a>
                     <a href="javascript:void(0);" class="btn btn-sm btn-success mr-2" id="create_topup"><i class="fas fa-hand-holding-usd"></i>&nbsp;Request for Topup</a>
                     <a href="{{ url('retailer/topup-history') }}" class="btn btn-sm btn-info mr-4"><i class="fas fa-history"></i>&nbsp;Topup History</a>
                 </div>
@@ -47,7 +47,6 @@
 @push('custom-script')
 
 <script type="text/javascript">
-
     $(document).ready(function() {
 
 
@@ -90,7 +89,6 @@
 
         });
     });
-
 </script>
 
 @endpush
@@ -106,6 +104,10 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
+            </div>
+
+            <div class="cover-loader-modal d-none">
+                <div class="loader-modal"></div>
             </div>
 
             <div class="modal-body">
@@ -178,7 +180,6 @@
 
 
 <script>
-
     $('#payment_mode').change(function() {
         var payment_mode = $(this).val();
         $.ajax({
@@ -293,14 +294,14 @@
             processData: false,
 
             beforeSend: function() {
-
-                $('.has-loader').addClass('has-loader-active');
-
+                $('.cover-loader-modal').removeClass('d-none');
+                $('.modal-body').hide();
             },
-
             success: function(res) {
                 //hide loader
-                $('.has-loader').removeClass('has-loader-active');
+                $('.cover-loader-modal').addClass('d-none');
+                $('.modal-body').show();
+
                 /*Start Validation Error Message*/
                 $('span.custom-text-danger').html('');
                 $.each(res.validation, (index, msg) => {
@@ -323,112 +324,114 @@
                 //for reset all field
                 if (res.status == 'success') {
                     $('form#add_topup_id')[0].reset();
+                    setTimeout(function() {
+              location.reload();
+            }, 1000)
                 }
             }
         });
     });
     /*end form submit functionality*/
-
 </script>
 
 
 <!-- Modal -->
 <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Import Csv File</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>Download sample lead Import(CSV) file : <a href="{{ url('admin/order-sample') }}" class="text-green">Download</a></p>
-        <form id="import_form" action="{{ url('admin/outlet-import') }}" method="post">
-          @csrf
-
-          <div class="form-row">
-            <div class="form-group col-md-10">
-              <div class="input-group">
-                <div class="custom-file">
-                  <input type="file" name="file" class="custom-file-input custom-file-input-sm" id="imgInp" accept=".csv">
-                  <label class="custom-file-label" for="exampleInputFile">Choose file</label>
-                </div>
-              </div>
-              <span id="file_msg" class="custom-text-danger"></span>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Import Csv File</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
+            <div class="modal-body">
+                <p>Download sample lead Import(CSV) file : <a href="{{ url('admin/order-sample') }}" class="text-green">Download</a></p>
+                <form id="import_form" action="{{ url('admin/outlet-import') }}" method="post">
+                    @csrf
 
-            <div class="form-group col-md-2">
-              <input type="submit" class="btn btn-success btn-sm" id="submit_bank_charges" value="Import">
+                    <div class="form-row">
+                        <div class="form-group col-md-10">
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" name="file" class="custom-file-input custom-file-input-sm" id="imgInp" accept=".csv">
+                                    <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                </div>
+                            </div>
+                            <span id="file_msg" class="custom-text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <input type="submit" class="btn btn-success btn-sm" id="submit_bank_charges" value="Import">
+                        </div>
+
+                    </div>
+                </form>
             </div>
-
-          </div>
-        </form>
-      </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <script>
-  $('#import').click(function(e) {
-    e.preventDefault();
-    $('form#import_form')[0].reset();
-    let url = '{{ url("admin/outlet-import") }}';
-    $('form#import_form').attr('action', url);
-    $('#importModal').modal('show');
-  })
+    $('#import').click(function(e) {
+        e.preventDefault();
+        $('form#import_form')[0].reset();
+        let url = '{{ url("admin/outlet-import") }}';
+        $('form#import_form').attr('action', url);
+        $('#importModal').modal('show');
+    })
 
 
-  /*start form submit functionality*/
-  $("form#add_bank_charges").submit(function(e) {
-    e.preventDefault();
-    formData = new FormData(this);
-    var url = $(this).attr('action');
-    $.ajax({
-      data: formData,
-      type: "POST",
-      url: url,
-      dataType: 'json',
-      cache: false,
-      contentType: false,
-      processData: false,
-      beforeSend: function() {
-        $('.has-loader').addClass('has-loader-active');
-      },
-      success: function(res) {
-        //hide loader
-        $('.has-loader').removeClass('has-loader-active');
+    /*start form submit functionality*/
+    $("form#add_bank_charges").submit(function(e) {
+        e.preventDefault();
+        formData = new FormData(this);
+        var url = $(this).attr('action');
+        $.ajax({
+            data: formData,
+            type: "POST",
+            url: url,
+            dataType: 'json',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('.has-loader').addClass('has-loader-active');
+            },
+            success: function(res) {
+                //hide loader
+                $('.has-loader').removeClass('has-loader-active');
 
-        /*Start Validation Error Message*/
-        $('span.custom-text-danger').html('');
-        $.each(res.validation, (index, msg) => {
-          $(`#${index}_msg`).html(`${msg}`);
-        })
-        /*Start Validation Error Message*/
+                /*Start Validation Error Message*/
+                $('span.custom-text-danger').html('');
+                $.each(res.validation, (index, msg) => {
+                    $(`#${index}_msg`).html(`${msg}`);
+                })
+                /*Start Validation Error Message*/
 
-        /*Start Status message*/
-        if (res.status == 'success' || res.status == 'error') {
-          Swal.fire(
-            `${res.status}!`,
-            res.msg,
-            `${res.status}`,
-          )
-        }
-        /*End Status message*/
+                /*Start Status message*/
+                if (res.status == 'success' || res.status == 'error') {
+                    Swal.fire(
+                        `${res.status}!`,
+                        res.msg,
+                        `${res.status}`,
+                    )
+                }
+                /*End Status message*/
 
-        //for reset all field
-        if (res.status == 'success') {
-          $('form#add_bank_charges')[0].reset();
-          setTimeout(function() {
-            location.reload();
-          }, 2000)
+                //for reset all field
+                if (res.status == 'success') {
+                    $('form#add_bank_charges')[0].reset();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 2000)
 
-        }
-      }
+                }
+            }
+        });
     });
-  });
 
-  /*end form submit functionality*/
+    /*end form submit functionality*/
 </script>
 
 @endpush

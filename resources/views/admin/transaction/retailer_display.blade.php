@@ -7,22 +7,49 @@
     <div class="col-12 mt-2">
         <div class="card">
 
-        <div class="covertabs-btn __web-inspector-hide-shortcut__">
+            <div class="covertabs-btn __web-inspector-hide-shortcut__">
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item">
-                        <a href="{{ url('admin/a-customer-trans') }}" class="nav-link ">Customer Transaction</a>
+                        <a href="{{ url('admin/a-customer-trans') }}" class="nav-link ">DMT Transaction</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('admin/a-retailer-trans') }}" class="nav-link active">Retailer Transaction</a>
+                        <a href="{{ url('admin/a-retailer-trans') }}" class="nav-link active">Bulk Transaction</a>
                     </li>
                 </ul>
+                <div class="add-btn w-50">
+                    <form action="{{ url('admin/a-retailer-trans') }}" method="GET">
+                        <div class="form-row mr-4 mt-1">
 
+                            <div class="form-group col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="far fa-calendar-alt"></i>
+                                        </span>
+                                    </div>
+                                    <input type="text" class="form-control form-control-sm float-right" name="date_range" id="daterange-btn">
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <select class="form-control-sm form-control" name="outlet_id">
+                                    <option>Select</option>
+                                    @foreach($outlets as $outlet)
+                                    <option value="{{$outlet->_id}}" {{ ($outlet_id ==$outlet->_id)?"selected":""}}>{{ ucwords($outlet->outlet_name)}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i> &nbsp;serach</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
 
 
             <!-- /.card-header -->
             <div class="card-body table-responsive py-4 table-sm">
-                <table id="table" class="table table-hover text-nowrap">
+                <table id="" class="table table-hover text-nowrap">
                     <thead>
                         <tr>
                             <th>Sr No.</th>
@@ -37,6 +64,24 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach($retailerTrans as $key=>$trans)
+                        <?php if ($trans->status == 'approved') {
+                            $status = '<strong class="text-success">' . ucwords($trans->status) . '</strong>';
+                        } else if ($trans->status == 'rejected') {
+                            $status = '<strong class="text-danger">' . ucwords($trans->status) . '</strong>';
+                        } else {
+                            $status = '<strong class="text-warning">' . ucwords($trans->status) . '</strong>';
+                        } ?>
+                        <td>{{ ++$key }}</td>
+                        <td>{{ ucwords($trans->sender_name) }}</td>
+                        <td>{{ $trans->mobile_number }}</td>
+                        <td>{!! mSign($trans->amount) !!}</td>
+                        <td>{{ ucwords($trans->receiver_name)}}</td>
+                        <td>{{ $trans->payment_mode }}</td>
+                        <td>{!! $status !!}</td>
+                        <td>{{ date('Y-m-d',$trans->created) }}</td>
+                        <td>'<a href="javascript:void(0);" class="btn btn-info btn-sm retailer_trans" _id="{{ $trans->_id }}">Action</a></td>
+                        @endforeach
                     </tbody>
 
                 </table>
@@ -48,65 +93,6 @@
     </div>
 </div>
 <!-- /.row -->
-
-@push('custom-script')
-
-<script type="text/javascript">
-    $(document).ready(function() {
-
-        $('#table').DataTable({
-            lengthMenu: [
-                [10, 30, 50, 100, 500],
-                [10, 30, 50, 100, 500]
-            ], // page length options
-
-            bProcessing: true,
-            serverSide: true,
-            scrollY: "auto",
-            scrollCollapse: true,
-            'ajax': {
-                "dataType": "json",
-                url: "{{ url('admin/a-retailer-trans-ajax') }}",
-                data: {}
-            },
-            columns: [{
-                    data: "sl_no"
-                },
-                {
-                    data: 'sender_name'
-                },
-                {
-                    data: "mobile_number"
-                },
-                {
-                    data: 'amount'
-                },
-                {
-                    data: 'receiver_name'
-                },
-                {
-                    data: "payment_mode"
-                },
-                {
-                    data: "status"
-                },
-                {
-                    data: "created_date"
-                },
-                {
-                    data:'action'
-                }
-            ],
-
-            columnDefs: [{
-                orderable: false,
-                targets: [0, 1, 2, 3, 4, 5, 6,7]
-            }],
-        });
-
-    });
-</script>
-@endpush
 
 @push('modal')
 
@@ -120,6 +106,11 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+
+            <div class="cover-loader-modal d-none">
+                <div class="loader-modal"></div>
+            </div>
+
             <div class="modal-body">
                 <form id="approve_trans" action="{{ url('admin/a-retailer-trans') }}" method="post">
                     @csrf
@@ -161,7 +152,6 @@
 
 
 <script>
-
     $(document).on('click', '.retailer_trans', function(e) {
         e.preventDefault();
         $('#trans_id').val($(this).attr('_id'));
@@ -186,7 +176,7 @@
                                 </select>
                                 <span id="payment_channel_msg" class="custom-text-danger"></span>
                             </div>`);
-        }else{
+        } else {
             $('#approved').html(``);
         }
     })
@@ -206,11 +196,14 @@
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $('.has-loader').addClass('has-loader-active');
+                $('.cover-loader-modal').removeClass('d-none');
+                $('.modal-body').hide();
             },
             success: function(res) {
                 //hide loader
-                $('.has-loader').removeClass('has-loader-active');
+                $('.cover-loader-modal').addClass('d-none');
+                $('.modal-body').show();
+
 
                 /*Start Validation Error Message*/
                 $('span.custom-text-danger').html('');
@@ -232,7 +225,9 @@
                 //for reset all field
                 if (res.status == 'success') {
                     $('form#approve_trans')[0].reset();
-                    location.reload();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000)
                 }
             }
         });

@@ -142,7 +142,12 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+
+            <div class="cover-loader-modal d-none">
+                <div class="loader-modal"></div>
+            </div>
+
+            <div class="modal-body" id="qr-code">
                 <form id="add_qr_code" action="{{ url('admin/qr-code') }}" method="post">
                     @csrf
                     <div id="put"></div>
@@ -217,9 +222,9 @@
                 id: id,
             },
             success: function(res) {
-                var url = "{{ asset('attachment/payment_mode/')}}/"+res.qr_code;
+                var url = "{{ asset('attachment/payment_mode/')}}/" + res.qr_code;
                 $('#name').val(res.name);
-                $('#avatar').attr('src',url);
+                $('#avatar').attr('src', url);
                 $('#status').val(res.status);
 
                 let urlU = '{{ url("admin/qr-code") }}/' + id;
@@ -250,11 +255,13 @@
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $('.has-loader').addClass('has-loader-active');
+                $('.cover-loader-modal').removeClass('d-none');
+                $('#qr-code').hide();
             },
             success: function(res) {
                 //hide loader
-                $('.has-loader').removeClass('has-loader-active');
+                $('.cover-loader-modal').addClass('d-none');
+                $('#qr-code').show();
 
                 /*Start Validation Error Message*/
                 $('span.custom-text-danger').html('');
@@ -276,6 +283,9 @@
                 //for reset all field
                 if (res.status == 'success') {
                     $('form#add_qr_code')[0].reset();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000)
                 }
             }
         });
@@ -284,14 +294,14 @@
     /*end form submit functionality*/
 
     /*start single image preview*/
-    $(document).on('change','#qr_code',function(){
+    $(document).on('change', '#qr_code', function() {
         var fileName = qr_code.files[0].name;
         const [file] = qr_code.files
         if (file) {
             $('#avatar').show();
             avatar.src = URL.createObjectURL(file)
         }
-      });
+    });
     /*end single image preview*/
 </script>
 

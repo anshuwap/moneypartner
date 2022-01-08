@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Transaction;
 
 use App\Http\Controllers\Controller;
+use App\Models\Outlet;
 use App\Models\Transaction\CustomerTrans;
 use Exception;
 use Illuminate\Http\Request;
@@ -11,10 +12,33 @@ use Illuminate\Support\Facades\Auth;
 class CustomerTransController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $data['customer_trans'] = CustomerTrans::get();
+
+            $outlets = Outlet::select('_id','outlet_name')->where('account_status',"1")->orderBy('created','ASC')->get();
+            $outlet_id = $request->outlet_id;
+            if(empty($request->outlet_id))
+            $outlet_id =$outlets[0]->_id;
+
+            $query = CustomerTrans::query()->where('outlet_id',$outlet_id);
+
+            if (!empty($request->start_date) && !empty($request->end_date)) {
+                $start_date = strtotime(trim($request->start_date) . " 00:00:00");
+                $end_date = strtotime(trim($request->end_date) . " 23:59:59");
+            }else {
+                $crrMonth = (date('Y-m-d'));
+                $start_date = strtotime(trim(date("d-m-Y", strtotime('-30 days', strtotime($crrMonth)))) . " 00:00:00");
+                $end_date = strtotime(trim(date('Y-m-d')) . " 23:59:59");
+            }
+
+           $query->whereBetween('created', [$start_date, $end_date]);
+
+            $data['customer_trans'] = $query->get();
+            $data['outlets']   = $outlets;
+            $data['outlet_id'] = $outlet_id;
+            $data['start_date']= $start_date;
+            $data['end_date']  = $end_date;
             return view('admin.transaction.customer_display', $data);
         } catch (Exception $e) {
             return redirect('500')->with(['error' => $e->getMessage()]);;
@@ -32,24 +56,34 @@ class CustomerTransController extends Controller
         $trans_details[$request->key]['admin_action'] = $request->admin_action;
         $trans_details[$request->key]['status']       = $request->status;
         $trans_details[$request->key]['updated']      = strtotime(date('Y-m-d H:i:s'));
+        $trans_details[$request->key]['admin_action'] = 1;
 
         $CustomerTrans->trans_details = $trans_details;
 
         if (!$CustomerTrans->save())
-            return response(['status' => 'error', 'msg' => 'Transaction Request not  Created!']);
+            return response(['status' => 'error', 'msg' => 'Transaction Request not Created!']);
 
         if($CustomerTrans->trans_details[$request->key]['status'] == 'approved'){
-        $amount = $CustomerTrans->trans_details[$request->key]['amount'];
+
+        $amount        = $CustomerTrans->trans_details[$request->key]['amount'];
         $receiver_name = $CustomerTrans->trans_details[$request->key]['receiver_name'];
-        $payment_date = $CustomerTrans->trans_details[$request->key]['created'];
-        $status = $CustomerTrans->trans_details[$request->key]['status'];
-        $retailer_id = $CustomerTrans->_id;
+        $payment_date  = $CustomerTrans->trans_details[$request->key]['created'];
+        $status        = $CustomerTrans->trans_details[$request->key]['status'];
+        $retailer_id   = $CustomerTrans->_id;
+
+        //add total amount in customer trans collection
+        $customer_trans = CustomerTrans::find($retailer_id);
+        $total_amount = ($customer_trans->total_amount) + ($amount);
+        $customer_trans->total_amount = $total_amount;
+        $customer_trans->save();
+        //insert data in transfer history collection
         transferHistory($retailer_id,$amount, $receiver_name, $payment_date, $status);
+
         }else{
             //add toupup amount here
-            $retailer_id = $CustomerTrans->retailer_id;
+            $retailer_id      = $CustomerTrans->retailer_id;
             $transaction_fees = $CustomerTrans->trans_details[$request->key]['transaction_fees'];
-            $amount = $CustomerTrans->trans_details[$request->key]['amount'];
+            $amount           = $CustomerTrans->trans_details[$request->key]['amount'];
             addTopupAmount($retailer_id,$amount,$transaction_fees,1);
         }
 

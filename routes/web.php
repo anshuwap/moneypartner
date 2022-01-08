@@ -20,7 +20,10 @@ use App\Http\Controllers\Retailer\Transaction\CustomerTransController as Retaile
 use App\Http\Controllers\Retailer\Transaction\RetailerTransController as RetailerRetailerTrans;
 
 use Illuminate\Support\Facades\Route;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
+Route::get('500',[AdminDashboard::class,'serverError']);
+// Route::get('404', [AdminDashboard::class, 'notFound']);
 
  Route::group(['middleware' => 'adminRedirect'], function () {
     Route::get('/',[AdminLogin::class,'index']);

@@ -34,4 +34,8 @@ class CustomerTrans extends BaseModel
         $query->orWhere('payment_mode', 'like', "%$val%");
         return $query->get();
     }
+
+    public function OutletName(){
+        return $this->belongsTo('App\Models\User', 'retailer_id', '_id')->select('outlet_name');
+    }
 }

@@ -30,14 +30,14 @@
         <li class="nav-item {{ (url()->full() == url('retailer/customer-trans') || url()->full() == url('retailer/retailer-trans'))?'d-block':''}}">
           <a href="{{ url('retailer/customer-trans') }}" class="nav-link {{ (url()->full() == url('retailer/customer-trans'))? 'active':''}}">
             <i class="fas fa-users nav-icon"></i>
-            <p>Customer Transaction</p>
+            <p>DMT Transaction</p>
           </a>
         </li>
         <li class="nav-item">
           <a href="{{ url('retailer/retailer-trans') }}" class="nav-link {{ (url()->full() == url('retailer/retailer-trans'))? 'active':''}}">
           <i class="fas fa-store-alt nav-icon"></i>
             <p>
-            Retailer Transaction
+            Bulk Transaction
             </p>
           </a>
         </li>

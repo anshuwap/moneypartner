@@ -3,6 +3,11 @@
 @section('content')
 @section('page_heading', 'Edit Outlet')
 
+<div class="cover-loader d-none">
+  <div class="loader"></div>
+</div>
+
+<div id="outlet">
 <!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container-fluid">
@@ -20,6 +25,7 @@
     </div><!-- /.container-fluid -->
 </div>
 
+
 <form id="edit-outlet" action="{{ url('admin/outlets/'.$outlet->_id) }}" method="POST" enctype="multipart/form-data">
 
     {{ method_field('PUT') }}
@@ -36,10 +42,10 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label>Outlet Type</label>
-                        <select class="form-control form-control-sm" name="outlet_outlet_type">
+                        <select class="form-control form-control-sm" name="outlet_type">
                             <option value=''>Select</option>
-                            <option value="retailer" {{ ($outlet->outlet_outlet_type == 'retailer')?"selected" : '' }}>Retailer</option>
-                            <option value="distributor" {{ ($outlet->outlet_outlet_type == 'distributor')?"selected" : '' }}>Distributor</option>
+                            <option value="retailer" {{ ($outlet->outlet_type == 'retailer')?"selected" : '' }}>Retailer</option>
+                            <option value="distributor" {{ ($outlet->outlet_type == 'distributor')?"selected" : '' }}>Distributor</option>
                         </select>
                         <span id="outlet_type_msg" class="custom-text-danger"></span>
                     </div>
@@ -347,6 +353,7 @@
 
     </div>
 </form>
+                        </div>
 
 @push('custom-script')
 <script>
@@ -364,11 +371,13 @@
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $('.has-loader').addClass('has-loader-active');
+                $('.cover-loader').removeClass('d-none');
+                $('#outlet').hide();
             },
             success: function(res) {
                 //hide loader
-                $('.has-loader').removeClass('has-loader-active');
+                $('.cover-loader').addClass('d-none');
+                $('#outlet').show();
 
                 /*Start Validation Error Message*/
                 $('span.custom-text-danger').html('');

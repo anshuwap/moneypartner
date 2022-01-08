@@ -18,7 +18,7 @@ class TopupValidation extends FormRequest
     {
         return [
             'payment_mode'      => 'required|max:30',
-            'payment_reference' => 'required|min:2|max:30',
+         'payment_reference_id' => 'required|min:2|max:30',
             'amount'            => 'required',
             'comment'           => 'required|max:5000',
             'payment_date'      => 'required'

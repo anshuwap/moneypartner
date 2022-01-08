@@ -10,14 +10,14 @@
             <div class="covertabs-btn __web-inspector-hide-shortcut__">
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item">
-                        <a href="{{ url('retailer/customer-trans') }}" class="nav-link active">Customer Transaction</a>
+                        <a href="{{ url('retailer/customer-trans') }}" class="nav-link active">DMT Transaction</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('retailer/retailer-trans') }}" class="nav-link">Retailer Transaction</a>
+                        <a href="{{ url('retailer/retailer-trans') }}" class="nav-link">Bulk Transaction</a>
                     </li>
                 </ul>
                 <div class="add-btn">
-                <a href="javascript:void(0);" class="btn btn-sm btn-success mr-4" id="create_customer"><i class="fas fa-plus-circle"></i>&nbsp;Add</a>
+                    <a href="javascript:void(0);" class="btn btn-sm btn-success mr-4" id="create_customer"><i class="fas fa-plus-circle"></i>&nbsp;Add</a>
                 </div>
             </div>
 
@@ -45,7 +45,7 @@
                         <tr class="expandable-body d-none">
                             <td colspan="8">
                                 <p style="display: none; margin-top: -41px;">
-                                <table class="table table-sm bg-secondary" style="font-size: 13px;">
+                                <table class="table table-sm bg-secondary" style="font-size: 13px;  background:#aedacd;">
                                     <tr>
                                         <th>Sr. No.</th>
                                         <th>Sender Name</th>
@@ -56,27 +56,28 @@
                                         <th>Created Date</th>
                                     </tr>
                                     <?php
-                                    if(!empty($trans->trans_details)){
-                                    foreach($trans->trans_details as $ke=>$detail){
+                                    if (!empty($trans->trans_details)) {
+                                        foreach ($trans->trans_details as $ke => $detail) {
 
-                                    if ($detail['status'] == 'approved'){
-                                    $status = '<strong class="text-success">' . ucwords($detail['status']) . '</strong>';
-                                    }else if($detail['status'] == 'rejected'){
-                                    $status = '<strong class="text-danger">' . ucwords($detail['status']) . '</strong>';
-                                    }else{
-                                    $status = '<strong class="text-warning">' . ucwords($detail['status']) . '</strong>';
-                                    }
+                                            if ($detail['status'] == 'approved') {
+                                                $status = '<strong class="text-success">' . ucwords($detail['status']) . '</strong>';
+                                            } else if ($detail['status'] == 'rejected') {
+                                                $status = '<strong class="text-danger">' . ucwords($detail['status']) . '</strong>';
+                                            } else {
+                                                $status = '<strong class="text-warning">' . ucwords($detail['status']) . '</strong>';
+                                            }
                                     ?>
-                                    <tr>
-                                        <td>{{ ++$ke }}</td>
-                                        <td>{{ ucwords($detail['sender_name'] ) }}</td>
-                                        <td>{!! mSign($detail['amount']) !!}</td>
-                                        <td>{{ ucwords($detail['receiver_name'] ) }}</td>
-                                        <td>{{ ucwords(str_replace('_', ' ', $detail['payment_mode'])) }}</td>
-                                        <td><?=$status ?></td>
-                                        <td>{{ date('Y-m-d',$detail['created'])}}</td>
-                                    </tr>
-                                <?php } } ?>
+                                            <tr>
+                                                <td>{{ ++$ke }}</td>
+                                                <td>{{ ucwords($detail['sender_name'] ) }}</td>
+                                                <td>{!! mSign($detail['amount']) !!}</td>
+                                                <td>{{ ucwords($detail['receiver_name'] ) }}</td>
+                                                <td>{{ ucwords(str_replace('_', ' ', $detail['payment_mode'])) }}</td>
+                                                <td><?= $status ?></td>
+                                                <td>{{ date('Y-m-d',$detail['created'])}}</td>
+                                            </tr>
+                                    <?php }
+                                    } ?>
                                 </table>
                                 </p>
                             </td>
@@ -107,6 +108,11 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+
+            <div class="cover-loader-modal d-none">
+                <div class="loader-modal"></div>
+            </div>
+
             <div class="modal-body">
                 <form id="add_customer" action="{{ url('retailer/customer-trans') }}" method="post">
                     @csrf
@@ -254,29 +260,31 @@
     })
 
 
-function transactionFeeDetails(amount){
+    function transactionFeeDetails(amount) {
 
-    var amount = (amount)?amount:0;
-    $.ajax({
-        url:"<?=url('retailer/fee-details')?>",
-        data:{'amount':amount},
-        dataType:"JSON",
-        type:"GET",
-        success:function(res){
+        var amount = (amount) ? amount : 0;
+        $.ajax({
+            url: "<?= url('retailer/fee-details') ?>",
+            data: {
+                'amount': amount
+            },
+            dataType: "JSON",
+            type: "GET",
+            success: function(res) {
 
-            if(res.status =='success'){
-            $('#charges').html(`Rs. ${res.charges} Transaction Fees
+                if (res.status == 'success') {
+                    $('#charges').html(`Rs. ${res.charges} Transaction Fees
             <div class="form-group">
             <label>Transaction Amount</label>
             <input type="text" readonly name="" value="${parseInt(amount)+ parseInt(res.charges)}" class="form-control form-control-sm">
             </div>`);
 
-            }else if(res.status =='error'){
-                $('#charges').html(res.msg);
+                } else if (res.status == 'error') {
+                    $('#charges').html(res.msg);
+                }
             }
-        }
-    })
-}
+        })
+    }
 
 
     /*start otp varifaction functionality*/
@@ -355,7 +363,7 @@ function transactionFeeDetails(amount){
     })
 
 
-   $(document).on('click','#verify',function(){
+    $(document).on('click', '#verify', function() {
         var mobile_no = $('#mobile_number').val();
         var otp = $('#otp').val();
 
@@ -383,7 +391,7 @@ function transactionFeeDetails(amount){
     });
 
 
-    $(document).on('keyup','#otp',function(){
+    $(document).on('keyup', '#otp', function() {
         var otp = $(this).val();
         if (otp == "" || otp == null) {
             $('#otp_msg').html("Please enter OTP.");
@@ -430,13 +438,14 @@ function transactionFeeDetails(amount){
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $('.has-loader').addClass('has-loader-active');
-                $('#submit_customer').val(`Saving...`);
+                $('.cover-loader-modal').removeClass('d-none');
+                $('.modal-body').hide();
             },
             success: function(res) {
                 //hide loader
-                $('.has-loader').removeClass('has-loader-active');
-                $('#submit_customer').val(`Submit`);
+                $('.cover-loader-modal').addClass('d-none');
+                $('.modal-body').show();
+
                 /*Start Validation Error Message*/
                 $('span.custom-text-danger').html('');
                 $.each(res.validation, (index, msg) => {
@@ -457,7 +466,9 @@ function transactionFeeDetails(amount){
                 //for reset all field
                 if (res.status == 'success') {
                     $('form#add_customer')[0].reset();
-                    location.reload();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000)
                 }
             }
         });

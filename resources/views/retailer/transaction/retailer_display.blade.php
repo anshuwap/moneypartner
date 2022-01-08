@@ -9,10 +9,10 @@
             <div class="covertabs-btn __web-inspector-hide-shortcut__">
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item">
-                        <a href="{{ url('retailer/customer-trans') }}" class="nav-link ">Customer Transaction</a>
+                        <a href="{{ url('retailer/customer-trans') }}" class="nav-link ">DMT Transaction</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('retailer/retailer-trans') }}" class="nav-link active">Retailer Transaction</a>
+                        <a href="{{ url('retailer/retailer-trans') }}" class="nav-link active">Bulk Transaction</a>
                     </li>
                 </ul>
                 <div class="add-btn">
@@ -117,6 +117,11 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+
+            <div class="cover-loader-modal d-none">
+                <div class="loader-modal"></div>
+            </div>
+
             <div class="modal-body">
                 <form id="add_customer" action="{{ url('retailer/retailer-trans') }}" method="post">
                     @csrf
@@ -286,11 +291,13 @@
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $('.has-loader').addClass('has-loader-active');
+                $('.cover-loader-modal').removeClass('d-none');
+                $('.modal-body').hide();
             },
             success: function(res) {
                 //hide loader
-                $('.has-loader').removeClass('has-loader-active');
+                $('.cover-loader-modal').addClass('d-none');
+                $('.modal-body').show();
 
                 /*Start Validation Error Message*/
                 $('span.custom-text-danger').html('');
@@ -312,7 +319,9 @@
                 //for reset all field
                 if (res.status == 'success') {
                     $('form#add_customer')[0].reset();
-                    location.reload();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000)
                 }
             }
         });
