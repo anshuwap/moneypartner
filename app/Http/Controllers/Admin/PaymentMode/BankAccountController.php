@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\PaymentMode;
 
 use App\Http\Controllers\Controller;
 use App\Models\PaymentMode\BankAccount;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,14 +17,13 @@ class BankAccountController extends Controller
         try {
             return view('admin.payment_mode.bank_account');
         } catch (Exception $e) {
-            return redirect('500')->with(['error' => $e->getMessage()] );;
+            return redirect('500')->with(['error' => $e->getMessage()]);;
         }
     }
 
 
     public function create()
     {
-
     }
 
 
@@ -40,13 +40,12 @@ class BankAccountController extends Controller
         if ($bank_account->save())
             return response(['status' => 'success', 'msg' => 'Bank Account Added Successfully!']);
 
-            return response(['status' => 'error', 'msg' => 'Bank Account not Added Successfully!']);
+        return response(['status' => 'error', 'msg' => 'Bank Account not Added Successfully!']);
     }
 
 
     public function show(BankAccount $BankAccount)
     {
-
     }
 
 
@@ -74,7 +73,7 @@ class BankAccountController extends Controller
         if ($bank_account->save())
             return response(['status' => 'success', 'msg' => 'Bank Account Updated Successfully!']);
 
-            return response(['status' => 'error', 'msg' => 'Bank Account not Updated Successfully!']);
+        return response(['status' => 'error', 'msg' => 'Bank Account not Updated Successfully!']);
     }
 
 
@@ -109,6 +108,46 @@ class BankAccountController extends Controller
     }
 
 
+    public function allocateRetailer(Request $request)
+    {
+        try {
+            $bank_id = $request->id;
+            $BankAccount = BankAccount::select('retailer_ids')->find($bank_id);
+
+            $retailers = User::select('_id','full_name')->where('role', 'retailer')->get();
+
+            $checkbox = '<div class="d-flex">';
+            foreach ($retailers as $retailer) {
+                $checked = (!empty($BankAccount->retailer_ids) && is_array($BankAccount->retailer_ids) && in_array($retailer->id,$BankAccount->retailer_ids))?"checked":"";
+
+                $checkbox .= '<div class="custom-control custom-checkbox">
+                <input type="checkbox" value="' . $retailer->_id . '" name="retailers[]" '.$checked.'>
+                <label>' . ucwords($retailer->full_name) . '</label>
+                </div>';
+            }
+            $checkbox .= '</div>';
+
+            die(json_encode($checkbox));
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => 'Something went wrong!!']);
+        }
+    }
+
+
+    public function saveAllocateRetailer(Request $request)
+    {
+        try {
+            $BankAccount = BankAccount::find($request->id);
+            $BankAccount->retailer_ids = $request->retailers;
+            if ($BankAccount->save())
+                return response(['status' => 'success', 'msg' => 'Bank Account Allocated Successfully!']);
+
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => 'Something went wrong!!']);
+        }
+    }
+
+
     public function ajaxList(Request $request)
     {
 
@@ -134,7 +173,8 @@ class BankAccountController extends Controller
         $i = 1;
 
         foreach ($data as $val) {
-            $action = '<a href="javascript:void(0);" class="text-info edit_bank_account" data-toggle="tooltip" data-placement="bottom" title="Edit" bank_account_id="' . $val->_id . '"><i class="far fa-edit"></i></a>&nbsp;&nbsp;';
+            $action = '<a href="javascript:void(0);" class="text-warning allocate-retailer" data-toggle="tooltip" data-placement="bottom" title="Edit" bank_account_id="' . $val->_id . '"><i class="far fa-eye"></i></a>&nbsp;&nbsp;';
+            $action .= '<a href="javascript:void(0);" class="text-info edit_bank_account" data-toggle="tooltip" data-placement="bottom" title="Edit" bank_account_id="' . $val->_id . '"><i class="far fa-edit"></i></a>&nbsp;&nbsp;';
             $action .= '<a href="javascript:void(0);" class="text-danger remove_bank_account"  data-toggle="tooltip" data-placement="bottom" title="Remove" bank_account_id="' . $val->_id . '"><i class="fas fa-trash"></i></a>';
             if ($val->status == 1) {
                 $status = ' <a href="javascript:void(0);"><span class="badge badge-success activeVer" id="active_' . $val->_id . '" _id="' . $val->_id . '" val="0">Active</span></a>';
@@ -164,5 +204,4 @@ class BankAccountController extends Controller
         echo json_encode($response);
         exit;
     }
-
 }

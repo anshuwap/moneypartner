@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Auth;
 
 class Topup extends BaseModel
 {
@@ -11,17 +12,19 @@ class Topup extends BaseModel
 
     public function scopeAllCount($query){
 
-        return $query->count();
+        return $query->where('retailer_id',Auth::user()->_id)->count();
         }
 
         public function scopeLikeColumn($query,$val){
 
+            $query->where('retailer_id',Auth::user()->_id);
             $query->where('name', 'like', "%$val%");
             return $query->count();
         }
 
         public function scopeGetResult($query,$val){
 
+            $query->where('retailer_id',Auth::user()->_id);
             $query->where('name', 'like', "%$val%");
             return $query->get();
         }

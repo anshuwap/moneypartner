@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\PaymentMode;
 
 use App\Http\Controllers\Controller;
 use App\Models\PaymentMode\QrCode;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -108,6 +109,46 @@ class QrCodeController extends Controller
     }
 
 
+    public function allocateRetailer(Request $request)
+    {
+        try {
+            $_id = $request->id;
+            $qrCode = QrCode::select('retailer_ids')->find($_id);
+
+            $retailers = User::select('_id','full_name')->where('role', 'retailer')->get();
+
+            $checkbox = '<div class="d-flex">';
+            foreach ($retailers as $retailer) {
+                $checked = (!empty($qrCode->retailer_ids) && is_array($qrCode->retailer_ids) && in_array($retailer->id,$qrCode->retailer_ids))?"checked":"";
+
+                $checkbox .= '<div class="custom-control custom-checkbox">
+                <input type="checkbox" value="' . $retailer->_id . '" name="retailers[]" '.$checked.'>
+                <label>' . ucwords($retailer->full_name) . '</label>
+                </div>';
+            }
+            $checkbox .= '</div>';
+
+            die(json_encode($checkbox));
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => 'Something went wrong!!']);
+        }
+    }
+
+
+    public function saveAllocateRetailer(Request $request)
+    {
+        try {
+            $qrCode = QrCode::find($request->id);
+            $qrCode->retailer_ids = $request->retailers;
+            if ($qrCode->save())
+                return response(['status' => 'success', 'msg' => 'Bank Account Allocated Successfully!']);
+
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => 'Something went wrong!!']);
+        }
+    }
+
+
     public function ajaxList(Request $request)
     {
 
@@ -133,7 +174,8 @@ class QrCodeController extends Controller
         $i = 1;
 
         foreach ($data as $val) {
-            $action = '<a href="javascript:void(0);" class="text-info edit_qr_code" data-toggle="tooltip" data-placement="bottom" title="Edit" qr_code_id="' . $val->_id . '"><i class="far fa-edit"></i></a>&nbsp;&nbsp;';
+                 $action = '<a href="javascript:void(0);" class="text-warning allocate-retailer" data-toggle="tooltip" data-placement="bottom" title="Edit" bank_account_id="' . $val->_id . '"><i class="far fa-eye"></i></a>&nbsp;&nbsp;';
+            $action .= '<a href="javascript:void(0);" class="text-info edit_qr_code" data-toggle="tooltip" data-placement="bottom" title="Edit" qr_code_id="' . $val->_id . '"><i class="far fa-edit"></i></a>&nbsp;&nbsp;';
             $action .= '<a href="javascript:void(0);" class="text-danger remove_qr_code"  data-toggle="tooltip" data-placement="bottom" title="Remove" qr_code_id="' . $val->_id . '"><i class="fas fa-trash"></i></a>';
             if ($val->status == 1) {
                 $status = ' <a href="javascript:void(0);"><span class="badge badge-success activeVer" id="active_' . $val->_id . '" _id="' . $val->_id . '" val="0">Active</span></a>';

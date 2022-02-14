@@ -10,9 +10,8 @@
                 <h3 class="card-title">Topup History</h3>
                 <div class="card-tools">
                     <a href="javascript:void(0);" class="btn btn-sm btn-warning mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
-                    <a href="javascript:void(0);" id="import" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-upload-alt"></i>&nbsp;Import</a>
                     <a href="javascript:void(0);" class="btn btn-sm btn-success mr-2" id="create_topup"><i class="fas fa-hand-holding-usd"></i>&nbsp;Request for Topup</a>
-                    <a href="{{ url('retailer/topup') }}" class="btn btn-sm btn-warning mr-4" id=""><i class="fas fa-arrow-alt-circle-left"></i>&nbsp;Back</a>
+                    <!-- <a href="{{ url('retailer/topup') }}" class="btn btn-sm btn-warning mr-4" id=""><i class="fas fa-arrow-alt-circle-left"></i>&nbsp;Back</a> -->
                 </div>
             </div>
 
@@ -334,6 +333,9 @@
                         res.msg,
                         `${res.status}`,
                     )
+                    setTimeout(function() {
+                        location.reload();
+                    }, 100)
                 }
                 /*End Status message*/
 

@@ -12,11 +12,13 @@
                         <a href="{{ url('retailer/customer-trans') }}" class="nav-link ">DMT Transaction</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('retailer/retailer-trans') }}" class="nav-link active">Bulk Transaction</a>
+                        <a href="{{ url('retailer/retailer-trans') }}" class="nav-link active">Payout Transaction</a>
                     </li>
                 </ul>
                 <div class="add-btn">
-                    <a href="javascript:void(0);" class="btn btn-sm btn-success mr-4" id="create_retailer"><i class="fas fa-plus-circle"></i>&nbsp;Add</a>
+
+                    <a href="javascript:void(0);" class="btn btn-sm btn-success mr-2" id="create_retailer"><i class="fas fa-plus-circle"></i>&nbsp;Add Payout</a>
+                    <a href="javascript:void(0);" id="import" class="btn btn-sm btn-info mr-2"><i class="fas fa-cloud-upload-alt"></i>&nbsp;Import</a>
                 </div>
             </div>
 
@@ -27,16 +29,49 @@
                     <thead>
                         <tr>
                             <th>Sr No.</th>
-                            <th>Sender Name</th>
-                            <th>Mobile No.</th>
-                            <th>Amount</th>
-                            <th>Receiver Name</th>
+
+                            <th>Total Amount</th>
+                            <th>Beneficiary Name</th>
                             <th>Payment Mode</th>
+                            <th>IFSC</th>
+                            <th>Account No./UPI Id</th>
+                            <th>Bank Name</th>
                             <th>Status</th>
-                            <th>Created Date</th>
+                            <th>Datetime</th>
+
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach($retailerTrans as $key=>$trans)
+                        <?php
+
+                        $payment = (object)$trans->payment_channel;
+
+                        if ($trans->status == 'approved') {
+                            $status = '<strong class="text-success">' . ucwords($trans->status) . '</strong>';
+                            $action = '-';
+                        } else if ($trans->status == 'rejected') {
+                            $status = '<strong class="text-danger">' . ucwords($trans->status) . '</strong>';
+                            $action = '-';
+                        } else {
+
+                            $status = '<strong class="text-warning">' . ucwords($trans->status) . '</strong>';
+                        } ?>
+                        <tr>
+                            <td>{{ ++$key }}</td>
+                            <td>{!! mSign($trans->amount + $trans->transaction_fees) !!}</td>
+                            <td>{{ ucwords($trans->receiver_name)}}</td>
+                            <td>{{ ucwords(str_replace('_',' ',$trans->payment_mode))}}</td>
+                            <td>{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</td>
+                            <td><?= (!empty($payment->account_number)) ? $payment->account_number : '' ?>
+                                <?= (!empty($payment->upi_id)) ? $payment->upi_id : '' ?>
+                            </td>
+                            <td><?= (!empty($payment->bank_name)) ? $payment->bank_name : '-' ?></td>
+                            <td>{!! $status !!}</td>
+                            <td>{{ date('d,M y H:i A',$trans->created) }}</td>
+
+                        </tr>
+                        @endforeach
                     </tbody>
 
                 </table>
@@ -49,63 +84,61 @@
 </div>
 <!-- /.row -->
 
-@push('custom-script')
-
-<script type="text/javascript">
-    $(document).ready(function() {
-
-        $('#table').DataTable({
-            lengthMenu: [
-                [10, 30, 50, 100, 500],
-                [10, 30, 50, 100, 500]
-            ], // page length options
-
-            bProcessing: true,
-            serverSide: true,
-            scrollY: "auto",
-            scrollCollapse: true,
-            'ajax': {
-                "dataType": "json",
-                url: "{{ url('retailer/retailer-trans-ajax') }}",
-                data: {}
-            },
-            columns: [{
-                    data: "sl_no"
-                },
-                {
-                    data: 'sender_name'
-                },
-                {
-                    data: "mobile_number"
-                },
-                {
-                    data: 'amount'
-                },
-                {
-                    data: 'receiver_name'
-                },
-                {
-                    data: "payment_mode"
-                },
-                {
-                    data: "status",
-                },
-                {
-                    data: "created_date"
-                }
-            ],
-
-            columnDefs: [{
-                orderable: false,
-                targets: [0, 1, 2, 3, 4, 5, 6]
-            }],
-        });
-
-    });
-</script>
-@endpush
 
 @push('modal')
+
+<!-- Modal -->
+<div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Import Csv File</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- for loader -->
+            <div class="cover-loader-modal d-none">
+                <div class="loader-modal"></div>
+            </div>
+
+            <div class="modal-body">
+                <p>Download sample Payout Transaction Import(CSV) file : <a href="{{ url('retailer/sample-csv') }}" class="text-green">Download</a></p>
+                <form id="import" action="{{ url('retailer/payout-import') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+
+                    <div class="form-row">
+                        <div class="form-group col-md-10">
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" name="file" class="custom-file-input custom-file-input-sm" id="imgInp" accept=".csv">
+                                    <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                </div>
+                            </div>
+                            <span id="file_msg" class="custom-text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <input type="submit" class="btn btn-success btn-sm" id="submit_bank_charges" value="Import">
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#import').click(function(e) {
+        e.preventDefault();
+        $('form#import')[0].reset();
+        let url = '{{ url("retailer/payout-import") }}';
+        $('form#import').attr('action', url);
+        $('#importModal').modal('show');
+    })
+</script>
 
 <!-- Modal -->
 <div class="modal fade" id="retailer_trans_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -175,6 +208,19 @@
     </div>
 </div>
 
+<?php
+$bank_names = [
+    'Bank of Baroda', 'Bank of India', 'Bank of Maharashtra', 'Canara Bank', 'Central Bank of India',
+    'Indian Bank', 'Indian Overseas Bank', 'Punjab & Sind Bank', 'Punjab National Bank', 'State Bank of India', 'UCO Bank',
+    'Union Bank of India', 'Axis Bank Ltd', 'Bandhan Bank Ltd', 'CSB Bank Ltd', 'City Union Bank Ltd', 'DCB Bank Ltd', 'Dhanlaxmi Bank Ltd',
+    'Federal Bank Ltd', 'HDFC Bank Ltd', 'ICICI Bank Ltd', 'Induslnd Bank Ltd', 'IDFC First Bank Ltd', 'Jammu & Kashmir Bank Ltd',
+    'Karnataka Bank Ltd', 'Karur Vysya Bank Ltd', 'Kotak Mahindra Bank Ltd', 'Lakshmi Vilas Bank Ltd', 'Nainital Bank Ltd', 'RBL Bank Ltd',
+    'South Indian Bank Ltd', 'Tamilnad Mercantile Bank Ltd', 'YES Bank Ltd', 'IDBI Bank Ltd', 'Au Small Finance Bank Limited', 'Capital Small Finance Bank Limited',
+    'Equitas Small Finance Bank Limited', 'Suryoday Small Finance Bank Limited', 'Ujjivan Small Finance Bank Limited', 'Utkarsh Small Finance Bank Limited',
+    'ESAF Small Finance Bank Limited', 'Fincare Small Finance Bank Limited', 'Jana Small Finance Bank Limited', 'North East Small Finance Bank Limited', 'Shivalik Small Finance Bank Limited',
+    'India Post Payments Bank Limited', 'Fino Payments Bank Limited', 'Paytm Payments Bank Limited', 'Airtel Payments Bank Limited'
+];
+?>
 
 <script>
     $('#payment_channel').change(function() {
@@ -182,20 +228,25 @@
         if (payment_channel == 'bank_account') {
             $('#payment_channel_field').html(`<div class="form-group">
             <label>Bank Name</label>
-            <input type="text" name="payment_channel['bank_name']" class="form-control form-control-sm" placeholder="Enter Bank Account Name">
+            <select name="payment_channel[bank_name]" class="form-control form-control-sm" required>
+            <option value=''>Select Bank Name</option>
+            <?php foreach ($bank_names as $name) {
+                echo '<option value=' . $name . '>' . $name . '</option>';
+            } ?>
+            </select>
             </div>
             <div class="form-group">
             <label>Account Number</label>
-            <input type="number" name="payment_channel['account_number']" class="form-control form-control-sm" placeholder="Enter Account Number">
+            <input type="number" name="payment_channel[account_number]" class="form-control form-control-sm" placeholder="Enter Account Number">
             </div>
             <div class="form-group">
             <label>IFSC Code</label>
-            <input type="text" name="payment_channel['ifsc_code']" class="form-control form-control-sm" placeholder="Enter IFSC Code">
+            <input type="text" name="payment_channel[ifsc_code]" class="form-control form-control-sm" placeholder="Enter IFSC Code">
             </div>`);
         } else if (payment_channel == 'upi') {
             $('#payment_channel_field').html(`<div class="form-group">
             <label>UPI Id</label>
-            <input type="text" name="payment_channel['upi_id']" class="form-control form-control-sm" placeholder="Enter UPI ID">
+            <input type="text" name="payment_channel[upi_id]" class="form-control form-control-sm" placeholder="Enter UPI ID">
             </div>`);
         } else {
             $('#payment_channel_field').html(``);
@@ -211,20 +262,20 @@
         transactionFeeDetails(amount);
 
         if (amount >= 25000 && amount < 200000) {
-            $('#upload_docs').html(`<div class="form-group">
-            <label>Pancard Number</label>
-            <input type="text" name="pancard_no" class=" form-control form-control-sm" placeholder="Enter Pancard Number" required>
-            </div>
-            <div class="form-group">
-            <label>Uploade Pancard</label>
-            <div class="input-group">
-            <div class="custom-file">
-            <input type="file" name="pancard" class=" custom-file-input custom-file-input-sm" id="attachment" required>
-            <label class="custom-file-label" for="exampleInputFile">Choose file</label>
-            </div>
-            </div>
-            <span id="attachment_msg" class="custom-text-danger"></span>
-            </div>`);
+            // $('#upload_docs').html(`<div class="form-group">
+            // <label>Pancard Number</label>
+            // <input type="text" name="pancard_no" class=" form-control form-control-sm" placeholder="Enter Pancard Number" required>
+            // </div>
+            // <div class="form-group">
+            // <label>Uploade Pancard</label>
+            // <div class="input-group">
+            // <div class="custom-file">
+            // <input type="file" name="pancard" class=" custom-file-input custom-file-input-sm" id="attachment" required>
+            // <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+            // </div>
+            // </div>
+            // <span id="attachment_msg" class="custom-text-danger"></span>
+            // </div>`);
         } else if (amount > 200000) {
             $('#add_customer input,select').attr('disabled', 'disabled');
             $('#amount_msg').html('Alowed only 2 lakh Per Month.');
@@ -328,6 +379,60 @@
     });
 
     /*end form submit functionality*/
+
+
+    /*start import functionality*/
+    $("form#import").submit(function(e) {
+        e.preventDefault();
+
+        var formData = new FormData(this);
+        var url = $(this).attr('action');
+
+        $.ajax({
+            data: formData,
+            type: "post",
+            url: url,
+            dataType: 'json',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('.cover-loader-modal').removeClass('d-none');
+                $('.modal-body').hide();
+            },
+            success: function(res) {
+                //hide loader
+                $('.cover-loader-modal').addClass('d-none');
+                $('.modal-body').show();
+                /*Start Validation Error Message*/
+                if (res.file) {
+                    $('#fileMsg').html(res.file);
+                } else {
+                    $('#fileMsg').html('');
+                }
+                /*Start Validation Error Message*/
+
+                /*Start Status message*/
+                if (res.status == 'success' || res.status == 'error') {
+                    Swal.fire(
+                        `${res.status}!`,
+                        res.msg,
+                        `${res.status}`,
+                    )
+                }
+                /*End Status message*/
+
+                //for reset all field
+
+                if (res.status == 'success') {
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000);
+                }
+            }
+        });
+    });
+    /*end import functionality*/
 </script>
 
 @endpush

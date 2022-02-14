@@ -29,22 +29,36 @@ class TopupController extends Controller
     public function outletPaymentMode(Request $request)
     {
 
+        $retailer_id = Auth::user()->_id;
+
         $option = '<option value="">Select</option>';
         switch ($request->payment_mode) {
             case "bank_account":
-                $selectPayment = BankAccount::get();
+                $query = BankAccount::query();
+                $query->where(function ($q) use ($retailer_id) {
+                    $q->where('retailer_ids', 'all', [$retailer_id]);
+                });
+                $selectPayment = $query->get();
                 foreach ($selectPayment as $payment) {
                     $option .= '<option value="' . $payment->_id . '">' . $payment->bank_name . '</option>';
                 }
                 break;
             case "upi_id":
-                $selectPayment = Upi::get();
+                $query = Upi::query();
+                $query->where(function ($q) use ($retailer_id) {
+                    $q->where('retailer_ids', 'all', [$retailer_id]);
+                });
+                $selectPayment = $query->get();
                 foreach ($selectPayment as $payment) {
                     $option .= '<option value="' . $payment->_id . '">' . $payment->name . '</option>';
                 }
                 break;
             case "qr_code":
-                $selectPayment = QrCode::get();
+                $query = QrCode::query();
+                $query->where(function ($q) use ($retailer_id) {
+                    $q->where('retailer_ids', 'all', [$retailer_id]);
+                });
+                $selectPayment = $query->get();
                 foreach ($selectPayment as $payment) {
                     $option .= '<option value="' . $payment->_id . '">' . $payment->name . '</option>';
                 }
@@ -66,15 +80,15 @@ class TopupController extends Controller
                 $data = '<table class="table table-sm table-bordered">
                 <tr>
                     <th>Bank Name</th>
-                    <td>'.ucwords($payment->bank_name).'</td>
+                    <td>' . ucwords($payment->bank_name) . '</td>
                 </tr>
                 <tr>
                     <th>Account Number</th>
-                    <td>'.$payment->account_number.'</td>
+                    <td>' . $payment->account_number . '</td>
                 </tr>
                 <tr>
                     <th>IFSC Code</th>
-                    <td>'.$payment->ifsc_code.'</td>
+                    <td>' . $payment->ifsc_code . '</td>
                 </tr>
             </table>';
                 break;
@@ -83,19 +97,19 @@ class TopupController extends Controller
                 $data = '<table class="table table-sm table-bordered">
                 <tr>
                     <th>UPI ID Name</th>
-                    <td>'.ucwords($payment->name).'</td>
+                    <td>' . ucwords($payment->name) . '</td>
                 </tr>
                 <tr>
                     <th>UPI ID</th>
-                    <td>'.$payment->upi_id.'</td>
+                    <td>' . $payment->upi_id . '</td>
                 </tr>
             </table>';
                 break;
             case "qr_code":
                 $payment = QrCode::find($request->payment_id);
                 $data = '<div class="card w-50 py-4 m-auto">
-                <img src="'.asset('attachment/payment_mode/'.$payment->qr_code).'">
-                <div class="text-center"><span>'.ucwords($payment->name).'</span></div>
+                <img src="' . asset('attachment/payment_mode/' . $payment->qr_code) . '">
+                <div class="text-center"><span>' . ucwords($payment->name) . '</span></div>
                 </div>';
                 break;
             default:
@@ -111,6 +125,7 @@ class TopupController extends Controller
         $topup = new Topup();
         $topup->retailer_id            = Auth::user()->_id;
         $topup->outlet_id              = Auth::user()->outlet_id;
+        $topup->payment_id             = uniqCode(3).rand(1111,9999);
         $topup->payment_has_code       = uniqCode(16);
         $topup->payment_mode           = $request->payment_mode;
         $topup->payment_reference_id   = $request->payment_reference_id;
@@ -215,7 +230,7 @@ class TopupController extends Controller
         } else {
             // get per page data
             $totalRecordswithFilter = $totalRecords;
-            $data = TransferHistory::offset($start)->limit($length)->orderBy('created', 'DESC')->get();
+            $data = TransferHistory::where('retailer_id', Auth::user()->_id)->offset($start)->limit($length)->orderBy('created', 'DESC')->get();
         }
         $dataArr = [];
         $i = 1;
@@ -242,7 +257,8 @@ class TopupController extends Controller
     }
 
 
-    public function topupHistory(){
+    public function topupHistory()
+    {
         try {
             return view('retailer.topup.topup_history');
         } catch (Exception $e) {
@@ -270,7 +286,7 @@ class TopupController extends Controller
         } else {
             // get per page data
             $totalRecordswithFilter = $totalRecords;
-            $data = Topup::offset($start)->limit($length)->orderBy('created', 'DESC')->get();
+            $data = Topup::where('retailer_id', Auth::user()->_id)->offset($start)->limit($length)->orderBy('created', 'DESC')->get();
         }
         $dataArr = [];
         $i = 1;
@@ -280,25 +296,25 @@ class TopupController extends Controller
             $action .= '<a href="javascript:void(0);" class="text-danger remove_qr_code"  data-toggle="tooltip" data-placement="bottom" title="Remove" qr_code_id="' . $val->_id . '"><i class="fas fa-trash"></i></a>';
 
             if ($val->status == 'approved') {
-                $payment_has_code = '<a href="javacript:void(0);" class="text-success" data-toggle="tooltip" data-placement="bottom" title="'.$val->admin_comment.'">'.$val->payment_has_code.'</a>';
-                $status = '<strong class="text-success">'.ucwords($val->status).'</strong>';
-            } else if($val->status =='rejected') {
-                $payment_has_code = '<a href="javacript:void(0);" class="text-danger" data-toggle="tooltip" data-placement="bottom" title="'.$val->admin_comment.'">'.$val->payment_has_code.'</a>';
-                $status = '<strong class="text-danger">'.ucwords($val->status).'</strong>';
-            }else if($val->status == 'pending'){
-             $payment_has_code = '<a href="javacript:void(0);" class="text-warning" data-toggle="tooltip" data-placement="bottom" title="'.$val->admin_comment.'">'.$val->payment_has_code.'</a>';
-             $status = '<strong class="text-warning">'.ucwords($val->status).'</strong>';
+                $payment_has_code = '<a href="javacript:void(0);" class="text-success" data-toggle="tooltip" data-placement="bottom" title="' . $val->admin_comment . '">' . $val->payment_id .'</a>';
+                $status = '<strong class="text-success">' . ucwords($val->status) . '</strong>';
+            } else if ($val->status == 'rejected') {
+                $payment_has_code = '<a href="javacript:void(0);" class="text-danger" data-toggle="tooltip" data-placement="bottom" title="' . $val->admin_comment . '">' . $val->payment_id .'</a>';
+                $status = '<strong class="text-danger">' . ucwords($val->status) . '</strong>';
+            } else if ($val->status == 'pending') {
+                $payment_has_code = '<a href="javacript:void(0);" class="text-warning" data-toggle="tooltip" data-placement="bottom" title="' . $val->admin_comment . '">' . $val->payment_id .'</a>';
+                $status = '<strong class="text-warning">' . ucwords($val->status) . '</strong>';
             }
 
             $dataArr[] = [
                 'sr_no'            => $i,
                 'payment_has_code' => $payment_has_code,
-                'payment_mode'     => ucwords(str_replace('_',' ',$val->payment_mode)),
+                'payment_mode'     => ucwords(str_replace('_', ' ', $val->payment_mode)),
                 'amount'           => mSign($val->amount),
                 'status'           => $status,
-                'payment_date'     => date('Y-m-d h:i:s A', $val->payment_date),
-                'created_date'     => date('Y-m-d', $val->created),
-               // 'action'            => $action
+                'payment_date'     => date('d,M Y h:i A', $val->payment_date),
+                'created_date'     => date('d,M Y', $val->created),
+                // 'action'            => $action
             ];
             $i++;
         }

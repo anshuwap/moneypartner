@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Validation\LoginValidation;
 use App\Http\Validation\OTPValidation;
 use App\Models\User;
 use Exception;
@@ -17,13 +18,10 @@ class LoginController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(LoginValidation $request)
     {
         try {
-            $request->validate([
-                'email' => 'required|email',
-                'password' => 'required|min:6|max:16',
-            ]);
+
 
             $remember_me = $request->has('remember_me') ? true : false;
             $credentials = $request->only('email', 'password');
@@ -32,21 +30,26 @@ class LoginController extends Controller
 
                 if (Auth::user()->role == 'retailer') {
 
-                    $otp = rand(0000, 9999);
+                    $otp = mt_rand(1111, 9999);
 
                     $user = User::where('_id', Auth::user()->_id)->where('mobile_number', Auth::user()->mobile_number)->first();
                     $user->otp = $otp;
                     $data  = ['otp' => $otp, 'msg' => '<span class="text-success">Otp Sent Successfully!</span>'];
                     if ($user->save())
                         return redirect()->intended('otp-sent')->with('message', $data);
-                } else {
+
+                } else if (Auth::user()->role == 'employee') {
+                    return redirect()->intended('employee/dashboard')
+                        ->withSuccess('Signed in');
+
+                } else if (Auth::user()->role == 'admin') {
                     return redirect()->intended('admin/dashboard')
                         ->withSuccess('Signed in');
                 }
             }
             return redirect()->back()->with('success', 'Invalid credentials!');
         } catch (Exception $e) {
-            return redirect('500');
+            return redirect('500')->with('error', $e->getMessage());
         }
     }
 
@@ -64,7 +67,7 @@ class LoginController extends Controller
             'otp'  => 'required'
         ]);
 
-        $otp = implode(',',$request->otp);
+        $otp = implode(',', $request->otp);
         $otp = trim(str_replace(',', '', $otp));
         $id  = Auth::user()->_id;
 
@@ -86,9 +89,9 @@ class LoginController extends Controller
     public function logout()
     {
         $user = User::find(Auth::user()->_id);
-        if($user->role == 'retailer'){
-        $user->verify_otp = 0;
-        $user->save();
+        if ($user->role == 'retailer') {
+            $user->verify_otp = 0;
+            $user->save();
         }
         Auth::logout();
         return redirect('/');

@@ -206,10 +206,15 @@
   <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
 
   <script>
-    -
+
+//popover
+    $(document).ready(function(){
+  $('[data-toggle="popover"]').popover();
+});
+
     $(document).ready(function() {
       $('[data-toggle="tooltip"]').tooltip();
-    }); -
+    });
     //show uploaded file name in input field
     $(document).on('change', 'input[type=file]', function() {
       var fileName = this.files[0].name;

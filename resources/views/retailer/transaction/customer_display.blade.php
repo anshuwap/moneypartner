@@ -13,11 +13,11 @@
                         <a href="{{ url('retailer/customer-trans') }}" class="nav-link active">DMT Transaction</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('retailer/retailer-trans') }}" class="nav-link">Bulk Transaction</a>
+                        <a href="{{ url('retailer/retailer-trans') }}" class="nav-link">Payout Transaction</a>
                     </li>
                 </ul>
                 <div class="add-btn">
-                    <a href="javascript:void(0);" class="btn btn-sm btn-success mr-4" id="create_customer"><i class="fas fa-plus-circle"></i>&nbsp;Add</a>
+                    <a href="javascript:void(0);" class="btn btn-sm btn-success mr-4" id="create_customer"><i class="fas fa-plus-circle"></i>&nbsp;Add DMT</a>
                 </div>
             </div>
 
@@ -29,36 +29,45 @@
                             <th>Sr No.</th>
                             <th>Customer Name</th>
                             <th>Mobile No.</th>
+                            <th>Mobile Verified</th>
+                            <th>Total Amount</th>
+
                             <th>Created Date</th>
                         </tr>
                     </thead>
                     <tbody>
 
+                        @if(!$customer_trans->isEmpty())
                         @foreach($customer_trans as $key=>$trans)
                         <tr data-widget="expandable-table" aria-expanded="false">
                             <td>{{ ++$key }}</td>
                             <td>{{ ucwords($trans->customer_name) }}</td>
                             <td>{{ $trans->mobile_number }}</td>
-                            <td>{{ date('Y-m-d',$trans->created) }}</td>
+                            <td>{{ ($trans->verified)?'Yes':'No'}}</td>
+                            <td>{!!mSign($trans->total_amount)!!}</td>
+                            <td>{{ date('d,M Y H:i A',$trans->created) }}</td>
                         </tr>
 
                         <tr class="expandable-body d-none">
                             <td colspan="8">
                                 <p style="display: none; margin-top: -41px;">
-                                <table class="table table-sm bg-secondary" style="font-size: 13px;  background:#aedacd;">
+                                <table class="table table-sm" style="font-size: 13px;  background:rgb(174, 218, 205);">
                                     <tr>
                                         <th>Sr. No.</th>
-                                        <th>Sender Name</th>
-                                        <th>Amount</th>
-                                        <th>Receiver Name</th>
+                                        <th>Total Amount</th>
+                                        <th>Beneficiary Name</th>
                                         <th>Payment Mode</th>
+                                        <th>IFSC</th>
+                                        <th>Account No./UPI Id</th>
+                                        <th>Bank Name</th>
                                         <th>Status</th>
-                                        <th>Created Date</th>
+                                        <th>Datetime</th>
                                     </tr>
                                     <?php
                                     if (!empty($trans->trans_details)) {
                                         foreach ($trans->trans_details as $ke => $detail) {
 
+  $payment = (object)$detail['payment_channel'];
                                             if ($detail['status'] == 'approved') {
                                                 $status = '<strong class="text-success">' . ucwords($detail['status']) . '</strong>';
                                             } else if ($detail['status'] == 'rejected') {
@@ -68,13 +77,18 @@
                                             }
                                     ?>
                                             <tr>
+
                                                 <td>{{ ++$ke }}</td>
-                                                <td>{{ ucwords($detail['sender_name'] ) }}</td>
-                                                <td>{!! mSign($detail['amount']) !!}</td>
+                                                <td>{!! mSign($detail['amount'] + $detail['transaction_fees']) !!}</td>
                                                 <td>{{ ucwords($detail['receiver_name'] ) }}</td>
-                                                <td>{{ ucwords(str_replace('_', ' ', $detail['payment_mode'])) }}</td>
-                                                <td><?= $status ?></td>
-                                                <td>{{ date('Y-m-d',$detail['created'])}}</td>
+                                                <td>{{ ucwords(str_replace('_',' ',$detail['payment_mode'] )) }}</td>
+                                                <td>{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</td>
+                                                <td><?= (!empty($payment->account_number)) ? $payment->account_number : '' ?>
+                                                    <?= (!empty($payment->upi_id)) ? $payment->upi_id : '' ?>
+                                                </td>
+                                                <td><?= (!empty($payment->bank_name)) ? $payment->bank_name : '-' ?></td>
+                                                <td>{!! $status !!}</td>
+                                                <td>{{ date('d,M y H:i A',$detail['created'])}}</td>
                                             </tr>
                                     <?php }
                                     } ?>
@@ -82,10 +96,13 @@
                                 </p>
                             </td>
                         </tr>
-
-
-
                         @endforeach
+
+                        @else
+                        <tr>
+                            <td colspan="4" align="center">There is no any Record.</td>
+                        </tr>
+                        @endif
 
                     </tbody>
                 </table>
@@ -163,8 +180,8 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Receiver Name</label>
-                                    <input type="text" placeholder="Enter Receiver Name" id="receiver" required name="receiver_name" class="form-control form-control-sm" disabled>
+                                    <label>Beneficiary Name</label>
+                                    <input type="text" placeholder="Enter Beneficiary Name" id="receiver" required name="receiver_name" class="form-control form-control-sm" disabled>
                                     <span id="receiver_msg" class="custom-text-danger"></span>
                                 </div>
 
@@ -198,27 +215,44 @@
     </div>
 </div>
 
-
+<?php
+$bank_names = [
+    'Bank of Baroda', 'Bank of India', 'Bank of Maharashtra', 'Canara Bank', 'Central Bank of India',
+    'Indian Bank', 'Indian Overseas Bank', 'Punjab & Sind Bank', 'Punjab National Bank', 'State Bank of India', 'UCO Bank',
+    'Union Bank of India', 'Axis Bank Ltd', 'Bandhan Bank Ltd', 'CSB Bank Ltd', 'City Union Bank Ltd', 'DCB Bank Ltd', 'Dhanlaxmi Bank Ltd',
+    'Federal Bank Ltd', 'HDFC Bank Ltd', 'ICICI Bank Ltd', 'Induslnd Bank Ltd', 'IDFC First Bank Ltd', 'Jammu & Kashmir Bank Ltd',
+    'Karnataka Bank Ltd', 'Karur Vysya Bank Ltd', 'Kotak Mahindra Bank Ltd', 'Lakshmi Vilas Bank Ltd', 'Nainital Bank Ltd', 'RBL Bank Ltd',
+    'South Indian Bank Ltd', 'Tamilnad Mercantile Bank Ltd', 'YES Bank Ltd', 'IDBI Bank Ltd', 'Au Small Finance Bank Limited', 'Capital Small Finance Bank Limited',
+    'Equitas Small Finance Bank Limited', 'Suryoday Small Finance Bank Limited', 'Ujjivan Small Finance Bank Limited', 'Utkarsh Small Finance Bank Limited',
+    'ESAF Small Finance Bank Limited', 'Fincare Small Finance Bank Limited', 'Jana Small Finance Bank Limited', 'North East Small Finance Bank Limited', 'Shivalik Small Finance Bank Limited',
+    'India Post Payments Bank Limited', 'Fino Payments Bank Limited', 'Paytm Payments Bank Limited', 'Airtel Payments Bank Limited'
+];
+?>
 <script>
     $('#payment_channel').change(function() {
         var payment_channel = $(this).val();
         if (payment_channel == 'bank_account') {
             $('#payment_channel_field').html(`<div class="form-group">
             <label>Bank Name</label>
-            <input type="text" name="payment_channel['bank_name']" class="form-control form-control-sm" placeholder="Enter Bank Account Name">
+            <select name="payment_channel[bank_name]" class="form-control form-control-sm" required>
+            <option value=''>Select Bank Name</option>
+            <?php foreach ($bank_names as $name) {
+                echo '<option value=' . $name . '>' . $name . '</option>';
+            } ?>
+            </select>
             </div>
             <div class="form-group">
             <label>Account Number</label>
-            <input type="number" name="payment_channel['account_number']" class="form-control form-control-sm" placeholder="Enter Account Number">
+            <input type="number" name="payment_channel[account_number]" class="form-control form-control-sm" placeholder="Enter Account Number">
             </div>
             <div class="form-group">
             <label>IFSC Code</label>
-            <input type="text" name="payment_channel['ifsc_code']" class="form-control form-control-sm" placeholder="Enter IFSC Code">
+            <input type="text" name="payment_channel[ifsc_code]" class="form-control form-control-sm" placeholder="Enter IFSC Code">
             </div>`);
         } else if (payment_channel == 'upi') {
             $('#payment_channel_field').html(`<div class="form-group">
             <label>UPI Id</label>
-            <input type="text" name="payment_channel['upi_id']" class="form-control form-control-sm" placeholder="Enter UPI ID">
+            <input type="text" name="payment_channel[upi_id]" class="form-control form-control-sm" placeholder="Enter UPI ID">
             </div>`);
         } else {
             $('#payment_channel_field').html(``);

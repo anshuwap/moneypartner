@@ -30,14 +30,17 @@ class User extends Authenticatable
 
     public function isAdmin() {
         return $this->role === 'admin';
-     }
+    }
 
-     public function isRetailer() {
+    public function isRetailer() {
         return $this->role === 'retailer';
-     }
+    }
 
+    public function isEmployee() {
+        return $this->role === 'employee';
+    }
 
-     public function getJWTIdentifier() {
+    public function getJWTIdentifier() {
         return $this->getKey();
     }
 

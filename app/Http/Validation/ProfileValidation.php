@@ -58,7 +58,7 @@ class ProfileValidation extends FormRequest
             'new_password.max'        => 'New Password should not be maximum 16 Character.',
             'new_password.min'        => 'New Password should not be minimum 6 Character.',
             'new_password.same'       => 'New Password should be same as confirm Password.',
-            'confirm_password.required'=> 'Confirm Password Required.',
+            'confirm_password.required'=>'Confirm Password Required.',
             'confirm_password.max'    => 'Confirm Password should not be maximum 16 Character.',
             'confirm_password.min'    => 'Confirm Password should not be minimum 6 Character.',
         ];

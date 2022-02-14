@@ -132,6 +132,41 @@
 
 @push('modal')
 
+
+
+<!-- Modal -->
+<div class="modal fade" id="allocate_retailer_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="heading_bank">Show Retailers</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="cover-loader-modal d-none">
+        <div class="loader-modal"></div>
+      </div>
+
+      <div class="modal-body" id="allocate_retailer">
+        <form id="allocate_retailer_account" action="{{ url('admin/q-save-allocate-retailer') }}" method="post">
+          @csrf
+          <div class="row">
+            <div class="col-md-12" id="">
+              <input type="hidden" id="r_id" name="id">
+              <div id="retailer1"></div>
+              <div class="form-group mt-3 text-center">
+                <input type="submit" class="btn btn-success btn-sm" id="submit_bank_account" value="Submit">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal -->
 <div class="modal fade" id="add_qr_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -195,6 +230,76 @@
         </div>
     </div>
 </div>
+
+
+<script>
+  $(document).on('click', '.allocate-retailer', function(e) {
+    e.preventDefault();
+    var id = $(this).attr('bank_account_id');
+    var url = "{{ url('admin/q-allocate-retailer') }}";
+    $.ajax({
+      url: url,
+      method: 'GET',
+      dataType: "JSON",
+      data:{'id':id},
+      success: function(res) {
+        console.log(res);
+        $('#retailer1').html(res);
+        $('#r_id').val(id);
+        $('#allocate_retailer_modal').modal('show');
+      },
+
+      error: function(error) {
+        console.log(error)
+      }
+    });
+  });
+
+   /*start form submit functionality*/
+  $("form#allocate_retailer_account").submit(function(e) {
+    e.preventDefault();
+    formData = new FormData(this);
+    var url = $(this).attr('action');
+    $.ajax({
+      data: formData,
+      type: "POST",
+      url: url,
+      dataType: 'json',
+      cache: false,
+      contentType: false,
+      processData: false,
+      beforeSend: function() {
+        $('.cover-loader-modal').removeClass('d-none');
+        $('#allocate_retailer').hide();
+      },
+      success: function(res) {
+        //hide loader
+        $('.cover-loader-modal').addClass('d-none');
+        $('#allocate_retailer').show();
+
+        /*Start Status message*/
+        if (res.status == 'success' || res.status == 'error') {
+          Swal.fire(
+            `${res.status}!`,
+            res.msg,
+            `${res.status}`,
+          )
+        }
+        /*End Status message*/
+
+        //for reset all field
+        if (res.status == 'success') {
+          $('form#allocate_retailer_account')[0].reset();
+          setTimeout(function() {
+            location.reload();
+          }, 1000)
+        }
+      }
+    });
+  });
+
+  /*end form submit functionality*/
+</script>
 
 
 <script>

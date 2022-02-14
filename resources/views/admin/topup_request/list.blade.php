@@ -8,7 +8,37 @@
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">Topup List</h3>
-        <div class="card-tools">
+        <div class="card-tools" style="width: 600px;">
+
+          <form action="{{ url('admin/topup-list') }}" method="GET">
+            <div class="form-row mr-4 mt-1">
+
+              <div class="form-group col-md-6 mt-1">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="far fa-calendar-alt"></i>
+                    </span>
+                  </div>
+                  <input type="text" class="form-control form-control-sm float-right" name="date_range" id="daterange-btn">
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <select class="form-control-sm form-control" name="outlet_id">
+                  <option value="" >
+                    All
+                  </option>
+                  @foreach($outlets as $outlet)
+                  <option value="{{$outlet->_id}}" {{ ($outlet->_id == $outlet_id)?"selected":""}}>{{ ucwords($outlet->outlet_name)}}</option>
+                  @endforeach
+
+                </select>
+              </div>
+              <div class="form-group col-md-2">
+                <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i> &nbsp;serach</button>
+              </div>
+            </div>
+          </form>
 
         </div>
       </div>
@@ -122,7 +152,7 @@
         <div id="dataVal">
 
         </div>
-        <div>
+        <div id="topup-form">
           <a href="javascript:void(0)" class="btn-sm btn-info" id="action1">Action</a>
           <div class="row" id="placeComment" style="display: none;">
             <div class="col-md-12 border mt-2">
@@ -218,7 +248,12 @@
         type: 'GET',
         dataType: 'JSON',
         success: function(res) {
-          $('#dataVal').html(res);
+          $('#dataVal').html(res.data);
+
+          $('#topup-form').show();
+          if (res.show_action)
+            $('#topup-form').hide();
+
           $('#topup-request-details').modal('show');
         }
       })

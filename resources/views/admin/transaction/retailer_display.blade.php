@@ -13,7 +13,7 @@
                         <a href="{{ url('admin/a-customer-trans') }}" class="nav-link ">DMT Transaction</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('admin/a-retailer-trans') }}" class="nav-link active">Bulk Transaction</a>
+                        <a href="{{ url('admin/a-retailer-trans') }}" class="nav-link active">Payout Transaction</a>
                     </li>
                 </ul>
                 <div class="add-btn w-50">
@@ -53,34 +53,47 @@
                     <thead>
                         <tr>
                             <th>Sr No.</th>
-                            <th>Sender Name</th>
-                            <th>Mobile No.</th>
-                            <th>Amount</th>
-                            <th>Receiver Name</th>
-                            <th>Payment Mode</th>
+                            <th>Total Amount</th>
+                            <th>Beneficiary Name</th>
+                            <th>IFSC</th>
+                            <th>Account No./UPI Id</th>
+                            <th>Bank Name</th>
                             <th>Status</th>
-                            <th>Created Date</th>
+                            <th>Datetime</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($retailerTrans as $key=>$trans)
-                        <?php if ($trans->status == 'approved') {
+                        <?php
+
+                        $payment = (object)$trans->payment_channel;
+
+                        if ($trans->status == 'approved') {
                             $status = '<strong class="text-success">' . ucwords($trans->status) . '</strong>';
+                            $action = '-';
                         } else if ($trans->status == 'rejected') {
                             $status = '<strong class="text-danger">' . ucwords($trans->status) . '</strong>';
+                            $action = '-';
                         } else {
+
                             $status = '<strong class="text-warning">' . ucwords($trans->status) . '</strong>';
+                            $action = '<a href="javascript:void(0);" class="btn btn-danger btn-sm retailer_trans" _id="' . $trans->_id . '">Action</a>';
                         } ?>
-                        <td>{{ ++$key }}</td>
-                        <td>{{ ucwords($trans->sender_name) }}</td>
-                        <td>{{ $trans->mobile_number }}</td>
-                        <td>{!! mSign($trans->amount) !!}</td>
-                        <td>{{ ucwords($trans->receiver_name)}}</td>
-                        <td>{{ $trans->payment_mode }}</td>
-                        <td>{!! $status !!}</td>
-                        <td>{{ date('Y-m-d',$trans->created) }}</td>
-                        <td>'<a href="javascript:void(0);" class="btn btn-info btn-sm retailer_trans" _id="{{ $trans->_id }}">Action</a></td>
+                        <tr>
+                            <td>{{ ++$key }}</td>
+                            <td>{!! mSign($trans->amount + $trans->transaction_fees) !!}</td>
+                            <td>{{ ucwords($trans->receiver_name)}}</td>
+                            <td>{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</td>
+                            <td><?= (!empty($payment->account_number)) ? $payment->account_number : '' ?>
+                                <?= (!empty($payment->upi_id)) ? $payment->upi_id : '' ?>
+                            </td>
+                            <td><?= (!empty($payment->bank_name)) ? $payment->bank_name : '-' ?></td>
+                            <td>{!! $status !!}</td>
+                            <td>{{ date('d,M y H:i A',$trans->created) }}</td>
+                            <td> <a href="javascript:void(0);" class="btn btn-info btn-sm view" _id="{{ $trans->_id }}"><i class="fas fa-eye"></i>&nbsp;view</a>
+                                {!! $action !!}</td>
+                        </tr>
                         @endforeach
                     </tbody>
 
@@ -117,12 +130,14 @@
                     <div class="row">
                         <div class="col-md-12">
                             <input type="hidden" id="trans_id" name="trans_id">
+                            <input type="hidden" id="key" name="key">
 
                             <div class="form-group">
                                 <label>Action</label>
                                 <select name="status" id="status-select" class="form-control form-control-sm">
                                     <option value="">Select</option>
                                     <option value="approved">Approved</option>
+                                    <option value="pending">Pending</option>
                                     <option value="rejected">Rejected</option>
                                 </select>
                                 <span id="status_msg" class="custom-text-danger"></span>
@@ -131,8 +146,21 @@
                             <div id="approved"></div>
 
                             <div class="form-group">
+                                <label>Select Payment Channel</label>
+                                <select name="admin_action['payment_mode']" class="form-control form-control-sm" id="payment_channel">
+                                    <option value="">Select</option>
+                                    <?php foreach ($payment_channel as $channel) {
+                                        echo '<option value="' . $channel->name . '">' . $channel->name . '</option>';
+                                    } ?>
+                                </select>
+                                <span id="payment_channel_msg" class="custom-text-danger"></span>
+                            </div>
+
+                            <div class="form-group" id="comment-field" style="display: none;">
                                 <label>Comment</label>
-                                <textarea name="admin_action['comment']" class="form-control" placeholder="Enter Comment" rows="5" required></textarea>
+                                <select name="comment" class="form-control form-control-sm" id="comment">
+
+                                </select>
                                 <span id="comment_msg" class="custom-text-danger"></span>
                             </div>
 
@@ -150,6 +178,27 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="view_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="heading_bank">Account Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="cover-loader-modal d-none">
+                <div class="loader-modal"></div>
+            </div>
+
+            <div class="modal-body" id="details1">
+                <div id="details"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     $(document).on('click', '.retailer_trans', function(e) {
@@ -158,6 +207,26 @@
         $('#approve_modal').modal('show');
     })
 
+
+    //show transaction detils
+    $(document).on('click', '.view', function() {
+        var _id = $(this).attr('_id');
+        $.ajax({
+            url: "<?= url('admin/a-retailer-detail') ?>",
+            data: {
+                'id': _id,
+            },
+            type: 'GET',
+            dataType: "json",
+            success: function(res) {
+
+                $('#details').html(res);
+                $('#view_modal').modal('show');
+            }
+        })
+    });
+
+
     $('#status-select').change(() => {
         let status = $('#status-select').val();
         if (status == 'approved') {
@@ -165,22 +234,35 @@
                                 <label>UTR/Transaction</label>
                                 <input type="text" placeholder="UTR/Transaction" id="utr" name="admin_action['utr_transaction']" class="form-control form-control-sm">
                                 <span id="utr_transaction_msg" class="custom-text-danger"></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Select Payment Channel</label>
-                                <select name="admin_action['payment_mode']" class="form-control form-control-sm" id="payment_channel" >
-                                    <option value="">Select</option>
-                                    <option value="bank_account">Bank Account</option>
-                                    <option value="upi">UPI</option>
-                                </select>
-                                <span id="payment_channel_msg" class="custom-text-danger"></span>
                             </div>`);
         } else {
             $('#approved').html(``);
         }
     })
 
+
+    $('#status-select').change(function(e) {
+        e.preventDefault();
+
+        var type = $(this).val();
+
+        if (type == '') {
+            $('#comment-field').hide();
+        } else {
+            $.ajax({
+                url: "<?= url('admin/a-retailer-comment') ?>",
+                data: {
+                    'type': type
+                },
+                type: 'GET',
+                dataType: "json",
+                success: function(res) {
+                    $('#comment-field').show();
+                    $('#comment').html(res);
+                }
+            })
+        }
+    })
 
     /*start form submit functionality*/
     $("form#approve_trans").submit(function(e) {
@@ -234,6 +316,15 @@
     });
 
     /*end form submit functionality*/
+
+    function copyToClipboard(element, copy) {
+        var $temp = $("<input />");
+        $("#details1").append($temp);
+        $temp.val($(element).text()).select();
+        document.execCommand("copy");
+        $(copy).removeClass('d-none');
+        $temp.remove();
+    }
 </script>
 
 @endpush

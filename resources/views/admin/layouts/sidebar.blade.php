@@ -20,6 +20,14 @@
         <p>Outlets</p>
       </a>
     </li>
+
+    <li class="nav-item">
+      <a href="{{ url('admin/employee') }}" class="nav-link {{ (url()->full() == url('admin/employee'))? 'active':''}}">
+        <i class=" nav-icon fas fa-users"></i>
+        <p>Employee</p>
+      </a>
+    </li>
+
     <li class="nav-item {{ (url()->full() == url('admin/bank-account') || url()->full() == url('admin/upi') || url()->full() == url('admin/qr-code'))?'menu-is-opening menu-open':''}}">
       <a href="javascript:void(0);" class="nav-link">
         <i class="nav-icon fas fa-money-bill-wave text-success"></i>
@@ -76,12 +84,30 @@
           <a href="{{ url('admin/a-retailer-trans') }}" class="nav-link {{ (url()->full() == url('admin/a-retailer-trans'))? 'active':''}}">
           <i class="fas fa-store-alt nav-icon"></i>
             <p>
-            Bulk Transaction
+            Payout Transaction
             </p>
           </a>
         </li>
 
       </ul>
+    </li>
+
+
+    <li class="nav-item">
+      <a href="{{ url('admin/payment-channel') }}" class="nav-link {{ (url()->full() == url('admin/payment-channel'))? 'active':''}}">
+
+        <i class="fas fa-regular fa-dice nav-icon text-danger"></i>
+        <p>Payment Channel</p>
+      </a>
+    </li>
+
+
+    <li class="nav-item">
+      <a href="{{ url('admin/comment') }}" class="nav-link {{ (url()->full() == url('admin/comment'))? 'active':''}}">
+
+        <i class="fas fa-regular nav-icon fa-comment-medical" style="color: white;"></i>
+        <p>Comment List</p>
+      </a>
     </li>
 
     <!-- <li class="nav-header">MULTI LEVEL EXAMPLE</li>

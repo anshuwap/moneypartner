@@ -58,6 +58,11 @@
 
   <link rel="stylesheet" href="{{ asset('assets') }}/custom/custom.css">
 
+<style>
+  .card-primary.card-outline-tabs>.card-header a.active {
+    border-top: 3px solid #2fc296;
+}
+</style>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">

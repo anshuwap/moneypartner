@@ -8,13 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
-     */
+
     public function handle(Request $request, Closure $next)
     {
         if( Auth::check() )
@@ -28,12 +22,13 @@ class AdminMiddleware
                 return redirect(url('otp-sent'));
 
                 return redirect(url('retailer/dashboard'));
-            }
 
-            // allow admin to proceed with request
-            else if ( Auth::user()->isAdmin() ) {
+            }else if(Auth::user()->isEmployee()){
 
-                 return $next($request);
+                return redirect(url('employee/dashboard'));
+
+            }else if (Auth::user()->isAdmin()) {  // allow admin to proceed with request
+                return $next($request);
             }else{
 
                 return redirect(url('/'));

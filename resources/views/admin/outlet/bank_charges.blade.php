@@ -36,10 +36,10 @@
             @foreach($bank_charges as $key=>$bank)
             <tr>
               <td>{{ ++$i }}</td>
-              <td>{!! (!empty($bank['from_amount']))?mSign($bank['from_amount']):'' !!}</td>
-              <td>{!! (!empty($bank['from_amount']))?mSign($bank['to_amount']):'' !!}</td>
-              <td>{{ (!empty($bank['from_amount']))?ucwords($bank['type']):'' }}</td>
-              <td>{!! (!empty($bank['from_amount']))?mSign($bank['charges']):'' !!}</td>
+              <td>{!! (!empty($bank['from_amount']))?mSign($bank['from_amount']):mSign(0) !!}</td>
+              <td>{!! (!empty($bank['to_amount']))?mSign($bank['to_amount']):mSign(0) !!}</td>
+              <td>{{ (!empty($bank['type']))?ucwords($bank['type']):'' }}</td>
+              <td>{!! (!empty($bank['charges']))?mSign($bank['charges']):mSign(0) !!}</td>
               <td>
                 @if (!empty($bank['status']) && $bank['status'] == 1)
 

@@ -13,7 +13,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard v1</li>
+              <li class="breadcrumb-item active">Dashboard</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -28,13 +28,12 @@
     <div class="row">
       <div class="col-12 col-sm-6 col-md-3">
         <div class="info-box">
-          <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+          <span class="info-box-icon bg-info elevation-1"><i class="fas fa-wallet"></i></span>
 
           <div class="info-box-content">
-            <span class="info-box-text">CPU Traffic</span>
+            <span class="info-box-text">Topup Amount</span>
             <span class="info-box-number">
               10
-              <small>%</small>
             </span>
           </div>
           <!-- /.info-box-content -->
@@ -44,10 +43,10 @@
       <!-- /.col -->
       <div class="col-12 col-sm-6 col-md-3">
         <div class="info-box mb-3">
-          <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-thumbs-up"></i></span>
+          <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-money-check"></i></span>
 
           <div class="info-box-content">
-            <span class="info-box-text">Likes</span>
+            <span class="info-box-text">Spent Amount</span>
             <span class="info-box-number">41,410</span>
           </div>
           <!-- /.info-box-content -->
@@ -61,10 +60,10 @@
 
       <div class="col-12 col-sm-6 col-md-3">
         <div class="info-box mb-3">
-          <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
+          <span class="info-box-icon bg-success elevation-1"><i class="fas fa-money-bill-alt"></i></span>
 
           <div class="info-box-content">
-            <span class="info-box-text">Sales</span>
+            <span class="info-box-text">DMT Transfer Amount</span>
             <span class="info-box-number">760</span>
           </div>
           <!-- /.info-box-content -->
@@ -74,10 +73,10 @@
       <!-- /.col -->
       <div class="col-12 col-sm-6 col-md-3">
         <div class="info-box mb-3">
-          <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+          <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-money-bill-wave"></i></span>
 
           <div class="info-box-content">
-            <span class="info-box-text">New Members</span>
+            <span class="info-box-text">Blance Amount</span>
             <span class="info-box-number">2,000</span>
           </div>
           <!-- /.info-box-content -->
@@ -154,12 +153,11 @@
               <!-- /.col -->
               <div class="col-md-4">
                 <ul class="chart-legend clearfix">
-                  <li><i class="far fa-circle text-danger"></i> Chrome</li>
-                  <li><i class="far fa-circle text-success"></i> IE</li>
-                  <li><i class="far fa-circle text-warning"></i> FireFox</li>
-                  <li><i class="far fa-circle text-info"></i> Safari</li>
-                  <li><i class="far fa-circle text-primary"></i> Opera</li>
-                  <li><i class="far fa-circle text-secondary"></i> Navigator</li>
+                  <li><i class="far fa-circle text-danger"></i> Spent Amount</li>
+                  <li><i class="far fa-circle text-success"></i> DMT Amount</li>
+                  <li><i class="far fa-circle text-warning"></i> Bulk Amount</li>
+                  <li><i class="far fa-circle text-info"></i> Topup Amount</li>
+
                 </ul>
               </div>
               <!-- /.col -->
@@ -188,16 +186,14 @@
   var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
   var pieData = {
     labels: [
-      'Chrome',
-      'IE',
-      'FireFox',
-      'Safari',
-      'Opera',
-      'Navigator'
+      'Spent Amount',
+      'DMT Amount',
+      'Bulk Amount',
+      'Topup Amount',
     ],
     datasets: [{
-      data: [700, 500, 400, 600, 300, 100],
-      backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de']
+      data: [700, 500, 400, 600],
+      backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef']
     }]
   }
   var pieOptions = {

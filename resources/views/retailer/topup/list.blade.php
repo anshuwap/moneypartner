@@ -11,13 +11,12 @@
 
             <div class="card-header">
 
-                <h3 class="card-title">Spent Amount Topup List</h3>
+                <h3 class="card-title">Passbook</h3>
 
                 <div class="card-tools">
                     <a href="javascript:void(0);" class="btn btn-sm btn-warning mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
-                    <a href="javascript:void(0);" id="import" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-upload-alt"></i>&nbsp;Import</a>
                     <a href="javascript:void(0);" class="btn btn-sm btn-success mr-2" id="create_topup"><i class="fas fa-hand-holding-usd"></i>&nbsp;Request for Topup</a>
-                    <a href="{{ url('retailer/topup-history') }}" class="btn btn-sm btn-info mr-4"><i class="fas fa-history"></i>&nbsp;Topup History</a>
+                    <!-- <a href="{{ url('retailer/topup-history') }}" class="btn btn-sm btn-info mr-4"><i class="fas fa-history"></i>&nbsp;Topup History</a> -->
                 </div>
             </div>
 
@@ -27,10 +26,11 @@
                     <thead>
                         <tr>
                             <th>Sr No.</th>
-                            <th>Used Amount</th>
-                            <th>Receiver Name</th>
-                            <th>Payment Date</th>
-                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Credit Amount</th>
+                            <th>Debit Amount</th>
+
+                            <th>Total Amount</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,55 +43,6 @@
     </div>
 </div>
 <!-- /.row -->
-
-@push('custom-script')
-
-<script type="text/javascript">
-    $(document).ready(function() {
-
-
-        $('#table').DataTable({
-            lengthMenu: [
-                [10, 30, 50, 100, 500],
-                [10, 30, 50, 100, 500]
-            ], // page length options
-
-            bProcessing: true,
-            serverSide: true,
-            scrollY: "auto",
-            scrollCollapse: true,
-            'ajax': {
-                "dataType": "json",
-                url: "{{ url('retailer/transaction-history') }}",
-                data: {}
-            },
-            columns: [{
-                    data: "sl_no"
-                },
-                {
-                    data: 'used_amount'
-                },
-                {
-                    data: "reciever_name"
-                },
-                {
-                    data: "payment_date"
-                },
-                {
-                    data: "status"
-                }
-            ],
-
-            columnDefs: [{
-                orderable: false,
-                targets: [0, 1, 2, 3, 4]
-            }],
-
-        });
-    });
-</script>
-
-@endpush
 
 @push('modal')
 <!-- Modal -->
@@ -325,7 +276,8 @@
                 if (res.status == 'success') {
                     $('form#add_topup_id')[0].reset();
                     setTimeout(function() {
-              location.reload();
+             window.location.href = "{{ url('retailer/topup-history')}}";
+
             }, 1000)
                 }
             }

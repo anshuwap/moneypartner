@@ -56,10 +56,20 @@ if (!function_exists('profileImage')) {
     {
         $outlet_id = Auth::user()->outlet_id;
         $outlet = Outlet::select('profile_image')->find($outlet_id);
-        return (!empty($outlet->profile_image)) ? asset('attachment') . '/' . $outlet->profile_image :asset('profile/37.jpg');
+        return (!empty($outlet->profile_image)) ? asset('attachment') . '/' . $outlet->profile_image :asset('assets/profile/37.jpg');
     }
 }
 
+
+if (!function_exists('employeeImage')) {
+
+    function employeeImage()
+    {
+        $user_id = Auth::user()->_id;
+        $user = User::select('employee_img')->find($user_id);
+        return (!empty($user->employee_img)) ? asset('attachment') . '/' . $user->employee_img :asset('assets/profile/37.jpg');
+    }
+}
 
 if (!function_exists('transferHistory')) {
     function transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status)
@@ -81,6 +91,8 @@ if (!function_exists('transferHistory')) {
 if (!function_exists('mSign')) {
     function mSign($val)
     {
+
+        $val = ($val)?$val:0;
 
         return '<i class="fas fa-rupee-sign" style="font-size: 13px;
     color: #696b74;"></i>&nbsp;' . $val;

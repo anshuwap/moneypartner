@@ -16,7 +16,7 @@ class TransferHistory extends BaseModel
 
         public function scopeLikeColumn($query,$val){
 
-            $query->where('retailer_id',Auth::user()->_id);
+            $query->where('retailer_id','=',Auth::user()->_id);
             $query->where('receiver_name', 'like', "%$val%");
             $query->where('amount', 'like', "%$val%");
             $query->where('status', 'like', "%$val%");
@@ -25,7 +25,7 @@ class TransferHistory extends BaseModel
 
         public function scopeGetResult($query,$val){
 
-            $query->where('retailer_id',Auth::user()->_id);
+            $query->where('retailer_id','=',Auth::user()->_id);
             $query->where('receiver_name', 'like', "%$val%");
             $query->where('amount', 'like', "%$val%");
             $query->where('status', 'like', "%$val%");

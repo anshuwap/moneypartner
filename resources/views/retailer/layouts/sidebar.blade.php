@@ -13,9 +13,16 @@
     </li>
 
     <li class="nav-item">
-      <a href="{{ url('retailer/topup') }}" class="nav-link {{ (url()->full() == url('retailer/topup'))? 'active':''}}">
+      <a href="{{ url('retailer/topup-history') }}" class="nav-link {{ (url()->full() == url('retailer/topup-history'))? 'active':''}}">
       <i class="fas fa-wallet nav-icon text-info"></i>
         <p>Topup List</p>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a href="{{ url('retailer/topup') }}" class="nav-link {{ (url()->full() == url('retailer/topup'))? 'active':''}}">
+ <i class="fas fa-solid fa-book nav-icon text-warning"></i>
+        <p>Passbook</p>
       </a>
     </li>
 
@@ -37,7 +44,7 @@
           <a href="{{ url('retailer/retailer-trans') }}" class="nav-link {{ (url()->full() == url('retailer/retailer-trans'))? 'active':''}}">
           <i class="fas fa-store-alt nav-icon"></i>
             <p>
-            Bulk Transaction
+            Payout Transaction
             </p>
           </a>
         </li>
