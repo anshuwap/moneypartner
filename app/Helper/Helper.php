@@ -72,8 +72,13 @@ if (!function_exists('employeeImage')) {
 }
 
 if (!function_exists('transferHistory')) {
-    function transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status)
+    function transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status,$payment_mode,$fees,$type)
     {
+
+        $closing_amount = 0;
+        $A_amount = User::select('available_amount')->find($retailer_id);
+        if(!empty($A_amount))
+        $closing_amount = $A_amount->available_amount;
 
         $transferHistory = new TransferHistory();
         $transferHistory->retailer_id   = $retailer_id;
@@ -81,6 +86,10 @@ if (!function_exists('transferHistory')) {
         $transferHistory->receiver_name = $receiver_name;
         $transferHistory->payment_date  = $payment_date;
         $transferHistory->status        = $status;
+        $transferHistory->payment_mode  = $payment_mode;
+        $transferHistory->fees          = $fees;
+        $transferHistory->type          = $type;
+        $transferHistory->closing_amount= $closing_amount;
         $transferHistory->save();
     }
 }
@@ -105,6 +114,7 @@ if (!function_exists('spentTopupAmount')) {
         try {
             $user = User::find($user_id);
             $avaliable_amount = ($user->available_amount) - ($amount);
+
             $spent_amount = ($user->spent_amount) + ($amount);
 
             $user->available_amount = $avaliable_amount;
@@ -127,7 +137,9 @@ if (!function_exists('addTopupAmount')) {
 
         try {
             $user = User::find($user_id);
+
             $avaliable_amount = ($user->available_amount) + ($amount);
+
             $total_amount = ($user->total_amount) + ($amount);
             $spent_amount = $user->spent_amount;
 
@@ -148,4 +160,17 @@ if (!function_exists('addTopupAmount')) {
             return false;
         }
     }
+}
+
+
+if (!function_exists('moneyTransferOption')) {
+
+function moneyTransferOption(){
+$outlet = Outlet::select('*')->find(Auth::user()->outlet_id);
+if(!empty($outlet))
+return (object)$outlet->money_transfer_option;
+
+return false;
+}
+
 }

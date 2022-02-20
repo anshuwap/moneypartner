@@ -28,17 +28,26 @@
         </p>
       </a>
       <ul class="nav nav-treeview">
-        <li class="nav-item {{ (url()->full() == url('employee/e-customer-trans') || url()->full() == url('employee/e-retailer-trans'))?'d-block':''}}">
+          <li class="nav-item {{ (url()->full() == url('employee/e-customer-trans') || url()->full() == url('employee/e-retailer-trans'))?'d-block':''}}">
           <a href="{{ url('employee/e-customer-trans') }}" class="nav-link {{ (url()->full() == url('employee/e-customer-trans'))? 'active':''}}">
-            <i class="fas fa-users nav-icon"></i>
+            <i class="fas fa-file-invoice-dollar nav-icon"></i>
             <p>DMT Transaction</p>
           </a>
         </li>
         <li class="nav-item">
           <a href="{{ url('employee/e-retailer-trans') }}" class="nav-link {{ (url()->full() == url('employee/e-retailer-trans'))? 'active':''}}">
-          <i class="fas fa-store-alt nav-icon"></i>
+          <i class="fas fa-money-check nav-icon"></i>
             <p>
-            Payout Transaction
+              Payout Transaction
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{{ url('employee/e-offline-payout') }}" class="nav-link {{ (url()->full() == url('employee/e-offline-payout'))? 'active':''}}">
+            <i class="fas fa-hand-holding-usd nav-icon"></i>
+            <p>
+              Offline Payout
             </p>
           </a>
         </li>

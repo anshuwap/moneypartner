@@ -32,19 +32,19 @@
       <a href="javascript:void(0);" class="nav-link">
         <i class="nav-icon fas fa-money-bill-wave text-success"></i>
         <p>Payment Mode
-        <i class="right fas fa-angle-left"></i>
+          <i class="right fas fa-angle-left"></i>
         </p>
       </a>
       <ul class="nav nav-treeview">
         <li class="nav-item {{ (url()->full() == url('admin/bank-account') || url()->full() == url('admin/upi') || url()->full() == url('admin/qr-code'))?'d-block':''}}">
           <a href="{{ url('admin/bank-account') }}" class="nav-link {{ (url()->full() == url('admin/bank-account'))?'active':''}}">
-          <i class="nav-icon fas fa-university"></i>
+            <i class="nav-icon fas fa-university"></i>
             <p>Bank Account</p>
           </a>
         </li>
         <li class="nav-item">
           <a href="{{ url('admin/upi') }}" class="nav-link {{ (url()->full() == url('admin/upi'))? 'active':''}}">
-          <i class="nav-icon fas fa-rupee-sign"></i>
+            <i class="nav-icon fas fa-rupee-sign"></i>
             <p>
               UPI
             </p>
@@ -52,7 +52,7 @@
         </li>
         <li class="nav-item">
           <a href="{{ url('admin/qr-code') }}" class="nav-link {{ (url()->full() == url('admin/qr-code'))? 'active':''}}">
-          <i class="nav-icon fas fa-qrcode"></i>
+            <i class="nav-icon fas fa-qrcode"></i>
             <p>QR Code</p>
           </a>
         </li>
@@ -68,23 +68,32 @@
 
     <li class="nav-item {{ (url()->full() == url('admin/a-customer-trans') || url()->full() == url('admin/a-retailer-trans'))?'menu-is-opening menu-open':''}}">
       <a href="javascript:void(0);" class="nav-link ">
-      <i class="fas fa-list-ul nav-icon text-primary"></i>
+        <i class="fas fa-list-ul nav-icon text-primary"></i>
         <p>Transaction
-        <i class="right fas fa-angle-left"></i>
+          <i class="right fas fa-angle-left"></i>
         </p>
       </a>
       <ul class="nav nav-treeview">
         <li class="nav-item {{ (url()->full() == url('admin/a-customer-trans') || url()->full() == url('admin/a-retailer-trans'))?'d-block':''}}">
           <a href="{{ url('admin/a-customer-trans') }}" class="nav-link {{ (url()->full() == url('admin/a-customer-trans'))? 'active':''}}">
-            <i class="fas fa-users nav-icon"></i>
+            <i class="fas fa-file-invoice-dollar nav-icon"></i>
             <p>DMT Transaction</p>
           </a>
         </li>
         <li class="nav-item">
           <a href="{{ url('admin/a-retailer-trans') }}" class="nav-link {{ (url()->full() == url('admin/a-retailer-trans'))? 'active':''}}">
-          <i class="fas fa-store-alt nav-icon"></i>
+          <i class="fas fa-money-check nav-icon"></i>
             <p>
-            Payout Transaction
+              Payout Transaction
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{{ url('admin/a-offline-payout') }}" class="nav-link {{ (url()->full() == url('admin/a-offline-payout'))? 'active':''}}">
+            <i class="fas fa-hand-holding-usd nav-icon"></i>
+            <p>
+              Offline Payout
             </p>
           </a>
         </li>

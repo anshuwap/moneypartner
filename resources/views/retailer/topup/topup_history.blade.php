@@ -21,7 +21,7 @@
                     <thead>
                         <tr>
                             <th>Sr No.</th>
-                            <th>Paymnet Id</th>
+                            <th>Transaction Id</th>
                             <th>Payment Mode</th>
                             <th>Amount</th>
                             <th>Status</th>

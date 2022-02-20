@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Api\OfflinePayoutApi;
 use App\Models\Outlet;
 use App\Models\PaymentChannel;
 use App\Models\Topup;
@@ -26,6 +27,7 @@ class DashboardController extends Controller
 
                 $topup_request[] = (object)[
                     'id'           => $topup->_id,
+                    'payment_id'   => $topup->payment_id,
                     'retailer_name'=> !empty($topup->RetailerName['full_name'])?$topup->RetailerName['full_name']:'',
                     'amount'       => $topup->amount,
                     'payment_mode' => ucwords(str_replace('_', " ", $topup->payment_mode)),
@@ -92,8 +94,9 @@ class DashboardController extends Controller
 //  }
 // die;
 
-   $data['customer_trans'] =CustomerTrans::select('trans_details')->get();
-   $data['retailerTrans'] =RetailerTrans::where('status','pending')->get();
+   $data['customer_trans'] = CustomerTrans::select('trans_details')->get();
+   $data['retailerTrans']  = RetailerTrans::where('status','pending')->get();
+   $data['offlinePayouts'] = OfflinePayoutApi::where('status','pending')->get();
 
  //for payment channel
             $data['payment_channel'] = PaymentChannel::select('_id', 'name')->get();

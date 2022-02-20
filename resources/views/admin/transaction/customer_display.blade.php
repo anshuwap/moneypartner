@@ -7,14 +7,19 @@
     <div class="col-12 mt-2">
         <div class="card">
 
-            <div class="covertabs-btn __web-inspector-hide-shortcut__">
+            <div class="">
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item">
-                        <a href="{{ url('admin/a-customer-trans') }}" class="nav-link active">DMT Transaction</a>
+                        <a href="{{ url('admin/a-customer-trans') }}" class="nav-link active"><i class="fas fa-file-invoice-dollar"></i>&nbsp;DMT Transaction</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('admin/a-retailer-trans') }}" class="nav-link">Payout Transaction</a>
+                        <a href="{{ url('admin/a-retailer-trans') }}" class="nav-link"><i class="fas fa-money-check nav-icon"></i>&nbsp;Payout Transaction</a>
                     </li>
+
+                     <li class="nav-item">
+                        <a href="{{ url('admin/a-offline-payout') }}" class="nav-link"><i class="fas fa-hand-holding-usd"></i> &nbsp;Payout Offline</a>
+                    </li>
+
                 </ul>
                 <div class="add-btn w-50">
                     <form action="{{ url('admin/a-customer-trans') }}" method="GET">
@@ -47,86 +52,61 @@
 
 
             <div class="card-body table-responsive py-4">
-                <table class="table table-hover table-sm">
-                    <thead>
-                        <tr>
-                            <th>Sr No.</th>
-                            <th>Oultlet Name</th>
-                            <th>Customer Name</th>
-                            <th>Mobile No.</th>
-                            <th>Total Amount</th>
-                            <th>Created Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
 
+                <table class="table table-sm bg-muted">
+                    <tr>
+                        <th>Sr. No.</th>
+                        <th>Rransaction Id</th>
+                        <th>Amount</th>
+                        <th>Beneficiary Name</th>
+                        <th>IFSC</th>
+                        <th>Account No./UPI Id</th>
+                        <th>Bank Name</th>
+                        <th>Status</th>
+                        <th>Datetime</th>
+                        <th>Action</th>
+                    </tr>
+                    <tbody>
                         @if(!$customer_trans->isEmpty())
                         @foreach($customer_trans as $key=>$trans)
-                        <tr data-widget="expandable-table" aria-expanded="false">
-                            <td>{{ ++$key }}</td>
-                            <td>{{ $trans->OutletName['outlet_name']}}</td>
-                            <td>{{ ucwords($trans->customer_name) }}</td>
-                            <td>{{ $trans->mobile_number }}</td>
-                            <td>{!!mSign($trans->total_amount)!!}</td>
-                            <td>{{ date('Y-m-d',$trans->created) }}</td>
-                        </tr>
 
-                        <tr class="expandable-body d-none">
-                            <td colspan="8">
-                                <p style="display: none; margin-top: -41px;">
-                                <table class="table table-sm bg-muted" style="font-size: 13px;  background:#aedacd;">
-                                    <tr>
-                                        <th>Sr. No.</th>
-                                        <th>Total Amount</th>
-                                        <th>Beneficiary Name</th>
-                                        <th>IFSC</th>
-                                        <th>Account No./UPI Id</th>
-                                        <th>Bank Name</th>
-                                        <th>Status</th>
-                                        <th>Datetime</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    <?php
-                                    if (!empty($trans->trans_details)) {
-                                        $i = 0;
-                                        foreach ($trans->trans_details as $ke => $detail) {
+                        <?php
+                        if (!empty($trans->trans_details)) {
+                            $i = 0;
+                            foreach ($trans->trans_details as $ke => $detail) {
 
-                                            $payment = (object)$detail['payment_channel'];
+                                $payment = (object)$detail['payment_channel'];
 
-                                            if ($detail['status'] == 'approved') {
-                                                $status = '<strong class="text-success">' . ucwords($detail['status']) . '</strong>';
-                                            } else if ($detail['status'] == 'rejected') {
-                                                $status = '<strong class="text-danger">' . ucwords($detail['status']) . '</strong>';
-                                            } else {
-                                                $status = '<strong class="text-warning">' . ucwords($detail['status']) . '</strong>';
-                                            }
-                                    ?>
-                                            <tr>
-                                                <td>{{ ++$ke }}</td>
-
-                                                <td>{!! mSign($detail['amount'] + $detail['transaction_fees']) !!}</td>
-                                                <td>{{ ucwords($detail['receiver_name'] ) }}</td>
-                                                <td>{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</td>
-                                                <td><?= (!empty($payment->account_number)) ? $payment->account_number : '' ?>
-                                                    <?= (!empty($payment->upi_id)) ? $payment->upi_id : '' ?>
-                                                </td>
-                                                <td><?= (!empty($payment->bank_name)) ? $payment->bank_name : '-' ?></td>
-                                                <td>{!! $status !!}</td>
-                                                <td>{{ date('d,M y H:i A',$detail['created'])}}</td>
-                                                <td>
-                                                    <a href="javascript:void(0);" class="btn btn-info btn-sm view" trans_id="{{ $trans->_id }}" _id="{{ $i }}"><i class="fas fa-eye"></i>&nbsp;view</a>
-                                                    @if(empty($detail['admin_action']))
-                                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm customer_trans" trans_id="{{ $trans->_id }}" _id="{{ $i }}">Action</a>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                    <?php $i++;
-                                        }
-                                    } ?>
-                                </table>
-                                </p>
-                            </td>
-                        </tr>
+                                if ($detail['status'] == 'approved') {
+                                    $status = '<strong class="text-success">' . ucwords($detail['status']) . '</strong>';
+                                } else if ($detail['status'] == 'rejected') {
+                                    $status = '<strong class="text-danger">' . ucwords($detail['status']) . '</strong>';
+                                } else {
+                                    $status = '<strong class="text-warning">' . ucwords($detail['status']) . '</strong>';
+                                }
+                        ?>
+                                <tr>
+                                    <td>{{ ++$ke }}</td>
+                                    <td><?= (!empty($detail['transaction_id'])) ? $detail['transaction_id'] : '' ?></td>
+                                    <td>{!! mSign($detail['amount']) !!}</td>
+                                    <td>{{ ucwords($detail['receiver_name'] ) }}</td>
+                                    <td>{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</td>
+                                    <td><?= (!empty($payment->account_number)) ? $payment->account_number : '' ?>
+                                        <?= (!empty($payment->upi_id)) ? $payment->upi_id : '' ?>
+                                    </td>
+                                    <td><?= (!empty($payment->bank_name)) ? $payment->bank_name : '-' ?></td>
+                                    <td>{!! $status !!}</td>
+                                    <td>{{ date('d,M y H:i A',$detail['created'])}}</td>
+                                    <td>
+                                        <a href="javascript:void(0);" class="btn btn-info btn-sm view" trans_id="{{ $trans->_id }}" _id="{{ $i }}"><i class="fas fa-eye"></i>&nbsp;view</a>
+                                        @if(empty($detail['admin_action']))
+                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm customer_trans" trans_id="{{ $trans->_id }}" _id="{{ $i }}">Action</a>
+                                        @endif
+                                    </td>
+                                </tr>
+                        <?php $i++;
+                            }
+                        } ?>
 
                         @endforeach
                         @else
@@ -181,7 +161,7 @@
                                 <span id="status_msg" class="custom-text-danger"></span>
                             </div>
 
-    <div id="approved"></div>
+                            <div id="approved"></div>
 
                             <div class="form-group">
                                 <label>Select Payment Channel</label>

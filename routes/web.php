@@ -10,23 +10,28 @@ use App\Http\Controllers\Admin\PaymentMode\UpiController as AdminUpi;
 use App\Http\Controllers\Admin\TopupRequestController as AdminTopupRequest;
 use App\Http\Controllers\Admin\Transaction\CustomerTransController as AdminCustomerTrans;
 use App\Http\Controllers\Admin\Transaction\RetailerTransController as AdminRetailerTrans;
+use App\Http\Controllers\Admin\Transaction\OfflinePayoutApiController as AdminOfflinePayout;
 use App\Http\Controllers\Admin\PaymentChannelController as AdminPaymentChannel;
 use App\Http\Controllers\Admin\TransactionCommentController as AdminComment;
 use App\Http\Controllers\Admin\EmployeeController as AdminEmployee;
 
 //for retailer panel
-use App\Http\Controllers\Retailer\LoginController as RetailerLogin;
+use App\Http\Controllers\Retailer\WebhookApiController as WebhookApi;
 use App\Http\Controllers\Retailer\ProfileController as RetailerProfile;
 use App\Http\Controllers\Retailer\DashboardController as RetailerDashboard;
+use App\Http\Controllers\Retailer\PassbookController as RetailerPassbook;
 use App\Http\Controllers\Retailer\TopupController as RetailerTopup;
+use App\Http\Controllers\Retailer\Transaction\OfflinePayoutApiController as OfflinePayout;
 use App\Http\Controllers\Retailer\Transaction\CustomerTransController as RetailerCustomerTrans;
 use App\Http\Controllers\Retailer\Transaction\RetailerTransController as RetailerRetailerTrans;
 
 //for employee panel
+use App\Http\Controllers\Employee\LoginController as EmployeeLogin;
 use App\Http\Controllers\Employee\ProfileController as EmployeeProfile;
 use App\Http\Controllers\Employee\DashboardController as EmployeeDashboard;
 use App\Http\Controllers\Employee\TopupRequestController as EmployeeTopupRequest;
 use App\Http\Controllers\Employee\TopupController as EmployeeTopup;
+use App\Http\Controllers\Employee\Transaction\OfflinePayoutApiController as EmployeeOfflinePayout;
 use App\Http\Controllers\Employee\Transaction\CustomerTransController as EmployeeCustomerTrans;
 use App\Http\Controllers\Employee\Transaction\RetailerTransController as EmployeeRetailerTrans;
 
@@ -108,9 +113,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('a-retailer-detail', [AdminRetailerTrans::class,'viewDetail']);
     Route::get('a-retailer-comment', [AdminRetailerTrans::class,'retailerComment']);
 
+    Route::resource('a-offline-payout', AdminOfflinePayout::class);
+    Route::get('a-offline-payout-detail', [AdminOfflinePayout::class,'viewDetail']);
+    Route::get('a-offline-payout-comment', [AdminOfflinePayout::class,'Comment']);
 
     Route::resource('employee', AdminEmployee::class);
     Route::post('employee-status', [AdminEmployee::class,'employeeStatus']);
+
 
     Route::post('logout',  [AdminLogin::class, 'logout']);
 });
@@ -123,6 +132,9 @@ Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
     Route::resource('profile', RetailerProfile::class);
 
     Route::get('dashboard',  [RetailerDashboard::class, 'index']);
+
+    Route::get('passbook',  [RetailerPassbook::class, 'index']);
+
 
     Route::resource('topup', RetailerTopup::class);
     Route::get('outlet-payment-mode',  [RetailerTopup::class, 'outletPaymentMode']);
@@ -141,6 +153,10 @@ Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
     Route::get('retailer-trans-ajax', [RetailerRetailerTrans::class,'ajaxList']);
     Route::get('sample-csv', [RetailerRetailerTrans::class,'sampleCsv']);
     Route::post('payout-import', [RetailerRetailerTrans::class,'import']);
+
+    Route::resource('offline-payout', OfflinePayout::class);
+
+    Route::resource('webhook-api', WebhookApi::class);
 
     Route::post('logout',  [AdminLogin::class, 'logout']);
 });
@@ -167,6 +183,10 @@ Route::group(['prefix' => 'employee', 'middleware' => 'employee'], function () {
     Route::get('e-retailer-trans-ajax', [EmployeeRetailerTrans::class,'ajaxList']);
     Route::get('e-retailer-detail',     [EmployeeRetailerTrans::class,'viewDetail']);
     Route::get('e-retailer-comment',    [EmployeeRetailerTrans::class,'retailerComment']);
+
+    Route::resource('e-offline-payout',  EmployeeOfflinePayout::class);
+    Route::get('e-offline-payout-detail', [EmployeeOfflinePayout::class,'viewDetail']);
+    Route::get('e-offline-payout-comment', [EmployeeOfflinePayout::class,'Comment']);
 
     Route::post('logout',  [EmployeeLogin::class, 'logout']);
 });

@@ -62,6 +62,11 @@
   .card-primary.card-outline-tabs>.card-header a.active {
     border-top: 3px solid #2fc296;
 }
+.add-btn{
+  position: absolute;
+    right: 9px;
+    top: 2px;
+}
 </style>
 </head>
 

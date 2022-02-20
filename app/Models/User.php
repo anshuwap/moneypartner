@@ -4,8 +4,9 @@ namespace App\Models;
 use Jenssegers\Mongodb\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use  HasFactory, Notifiable;
 

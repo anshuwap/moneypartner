@@ -16,7 +16,7 @@
 
       <!-- /.card-header -->
       <div class="card-body table-responsive py-4">
-        <table id="table" class="table table-hover text-nowrap">
+        <table id="table" class="table table-hover table-sm text-nowrap">
           <thead>
             <tr>
               <th>Sl No.</th>
@@ -106,9 +106,18 @@
               <div class="form-row">
                 <div class="form-group col-md-6">
                   <label>Type</label>
-                  <select class="form-control form-control-sm" id="type" name="type">
+                  <select class="form-control form-control-sm" id="type" required name="type">
+                    <option value=" ">Select</option>
+                    @if(!empty($bank_charges[0]['type']) && $bank_charges[0]['type'] == 'persantage')
+                    <option value="persantage">Persantage(%)</option>
+                    @endif
+                    @if(!empty($bank_charges[0]['type']) && $bank_charges[0]['type'] == 'inr')
+                    <option value="inr">INR</option>
+                    @endif
+                    @if(empty($bank_charges[0]['type']) && empty($bank_charges[0]['type']))
                     <option value="persantage">Persantage(%)</option>
                     <option value="inr">INR</option>
+                    @endif
                   </select>
                   <span id="type_msg" class="custom-text-danger"></span>
                 </div>

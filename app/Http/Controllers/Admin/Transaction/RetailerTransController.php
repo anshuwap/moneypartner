@@ -67,10 +67,13 @@ class RetailerTransController extends Controller
             $receiver_name = $retailerTrans->receiver_name;
             $payment_date  = $retailerTrans->created;
             $status        = $retailerTrans->status;
-            $retailer_id   = $retailerTrans->_id;
+            $payment_mode  = $retailerTrans->payment_mode;
+            $transaction_fees = $retailerTrans->transaction_fees;
+
+            $retailer_id   = $retailerTrans->retailer_id;
 
             //insert data in transfer history collection
-            transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status);
+            transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status,$payment_mode,$transaction_fees,'debit');
         } else {
             //add toupup amount here
             $retailer_id      = $retailerTrans->retailer_id;

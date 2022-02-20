@@ -61,7 +61,7 @@ class OutletController extends Controller
         $outlet->address_proff        = $request->address_proff;
         $outlet->pancard              = $request->pancard;
         $outlet->outlet_gst_number    = $request->outlet_gst_number;
-        $outlet->money_transfer_otion = $request->money_transfer_otion;
+        $outlet->money_transfer_option= $request->money_transfer_option;
         $outlet->status               = $request->status;
         $outlet->account_status       = $request->account_status;
 
@@ -158,7 +158,7 @@ class OutletController extends Controller
         $outlet->address_proff        = $request->address_proff;
         $outlet->pancard              = $request->pancard;
         $outlet->outlet_gst_number    = $request->outlet_gst_number;
-        $outlet->money_transfer_otion = $request->money_transfer_otion;
+        $outlet->money_transfer_option= $request->money_transfer_option;
         $outlet->status               = $request->status;
         $outlet->account_status       = $request->account_status;
 

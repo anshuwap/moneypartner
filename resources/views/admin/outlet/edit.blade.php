@@ -134,11 +134,6 @@
                         <span id="incorporation_date_msg" class="custom-text-danger"></span>
                     </div>
 
-                    <div class="form-group">
-                        <label>Company Pan Card No.</label>
-                        <input type="text" name="company_pancard" value="{{ $outlet->company_pancard }}" class="form-control form-control-sm" placeholder="Company Pan Card No.">
-                        <span id="company_pancard_msg" class="custom-text-danger"></span>
-                    </div>
 
                     <div class="form-group">
                         <label>GST Certificate No.</label>
@@ -334,11 +329,13 @@
 
                     <div class="form-group">
                         <label>Money Transfer Otions</label><br>
-                        <input type="checkbox" name="money_transfer_otion['transfer_online']" <?= (!empty($outlet->money_transfer_otion["'transfer_online'"]) && $outlet->money_transfer_otion["'transfer_online'"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Money Transfer offline<br>
-                        <input type="checkbox" name="money_transfer_otion['transfer_offline']" <?= (!empty($outlet->money_transfer_otion["'transfer_offline'"]) && $outlet->money_transfer_otion["'transfer_offline'"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Money Transfer online<br>
-                        <input type="checkbox" name="money_transfer_otion['transfer_online_api']" <?= (!empty($outlet->money_transfer_otion["'transfer_online_api'"]) && $outlet->money_transfer_otion["'transfer_online_api'"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Money Transfer offline Api<br>
-                        <input type="checkbox" name="money_transfer_otion['transfer_online_api']" <?= (!empty($outlet->money_transfer_otion["'transfer_online_api'"]) && $outlet->money_transfer_otion["'transfer_online_api'"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Money Transfer online Api<br>
-                        <span id="money_transfer_otion_msg" class="custom-text-danger"></span>
+                        <input type="checkbox" name="money_transfer_option[dmt_transfer_offline]" <?= (!empty($outlet->money_transfer_option["dmt_transfer_offline"]) && $outlet->money_transfer_option["dmt_transfer_offline"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;DMT Transfer Offline<br>
+                        <input type="checkbox" name="money_transfer_option[dmt_transfer_online]" <?= (!empty($outlet->money_transfer_option["dmt_transfer_online"]) && $outlet->money_transfer_option["dmt_transfer_online"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;DMT Transfer Online<br>
+                        <input type="checkbox" name="money_transfer_option[payout_offline]" <?= (!empty($outlet->money_transfer_option["payout_offline"]) && $outlet->money_transfer_option["payout_offline"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Payout Offline<br>
+                        <input type="checkbox" name="money_transfer_option[payout_online]" <?= (!empty($outlet->money_transfer_option["payout_online"]) && $outlet->money_transfer_option["payout_online"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Payout Online<br>
+                        <input type="checkbox" name="money_transfer_option[payout_offline_api]" <?= (!empty($outlet->money_transfer_option["payout_offline_api"]) && $outlet->money_transfer_option["payout_offline_api"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Payout Offline API<br>
+                        <input type="checkbox" name="money_transfer_option[payout_online_api]" <?= (!empty($outlet->money_transfer_option["payout_online_api"]) && $outlet->money_transfer_option["payout_online_api"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Payout Online API<br>
+                        <span id="money_transfer_option_msg" class="custom-text-danger"></span>
                     </div>
 
                     <div class="">

@@ -15,8 +15,8 @@ class RetailerTransController extends Controller
     public function index()
     {
         try {
-             $data['retailerTrans'] = RetailerTrans::where('retailer_id', Auth::user()->_id)->get();
-            return view('retailer.transaction.retailer_display',$data);
+            $data['retailerTrans'] = RetailerTrans::where('retailer_id', Auth::user()->_id)->get();
+            return view('retailer.transaction.retailer_display', $data);
         } catch (Exception $e) {
             return redirect('500')->with(['error' => $e->getMessage()]);;
         }
@@ -29,19 +29,29 @@ class RetailerTransController extends Controller
             /*start check amount available in wallet or not*/
             $amount = $request->amount;
             $outlet = Outlet::select('bank_charges')->where('_id', Auth::user()->outlet_id)->first();
+            $charges = 0;
             if (!empty($outlet)) {
-                $charges = 0;
                 foreach ($outlet->bank_charges as $charge) {
-                    if ($charge['from_amount'] <= $amount && $charge['to_amount'] >= $amount)
-                        $charges = $charge['charges'];
+                    if ($charge['type'] == 'inr') {
+
+                        if ($charge['from_amount'] <= $amount && $charge['to_amount'] >= $amount)
+                            $charges = $charge['charges'];
+                    } else if ($charge['type'] == 'persantage') {
+
+                        if ($charge['from_amount'] <= $amount && $charge['to_amount'] >= $amount)
+                            $charges = ($charge['charges'] / 100) * $amount;
+                    }
                 }
             }
+
+
             $total_amount = $amount + $charges;
             if ($total_amount >= Auth()->user()->available_amount)
                 return response(['status' => 'error', 'msg' => 'You have not Sufficient Amount']);
             /*end check amount available in wallet or not*/
 
             $RetailerTrans = new RetailerTrans();
+            $RetailerTrans->transaction_id  = uniqCode(3) . rand(111111, 999999);
             $RetailerTrans->retailer_id     = Auth::user()->_id;
             $RetailerTrans->outlet_id       = Auth::user()->outlet_id;
             $RetailerTrans->mobile_number   = Auth::user()->mobile_number;
@@ -137,11 +147,19 @@ class RetailerTransController extends Controller
                         /*start check amount available in wallet or not*/
                         $amount = $getData[0];
                         $outlet = Outlet::select('bank_charges')->where('_id', Auth::user()->outlet_id)->first();
+                         $charges = 0;
                         if (!empty($outlet)) {
-                            $charges = 0;
+
                             foreach ($outlet->bank_charges as $charge) {
-                                if ($charge['from_amount'] <= $amount && $charge['to_amount'] >= $amount)
-                                    $charges = $charge['charges'];
+                                if ($charge['type'] == 'inr') {
+
+                                    if ($charge['from_amount'] <= $amount && $charge['to_amount'] >= $amount)
+                                        $charges = $charge['charges'];
+                                } else if ($charge['type'] == 'persantage') {
+
+                                    if ($charge['from_amount'] <= $amount && $charge['to_amount'] >= $amount)
+                                        $charges = ($charge['charges'] / 100) * $amount;
+                                }
                             }
                         }
                         $total_amount = $amount + $charges;
@@ -157,7 +175,7 @@ class RetailerTransController extends Controller
                         if (strtolower($getData[2]) == 'upi')
                             $payment_channel = ['upi_id' => $getData[3]];
 
-                        if (strtolower(str_replace('_',' ',$getData[2])) == 'bank account')
+                        if (strtolower(str_replace('_', ' ', $getData[2])) == 'bank account')
                             $payment_channel = ['bank_name' => $getData[4], 'account_number' => $getData[5], 'ifsc_code' => $getData[6]];
                         /*end check payment mode here*/
 
@@ -175,9 +193,9 @@ class RetailerTransController extends Controller
                         $csvImport =  $retailerTrans->save();
 
                         //update toupup amount here
-                        if($csvImport){
-                        if (!spentTopupAmount(Auth()->user()->_id, $total_amount))
-                            return response(['status' => 'error', 'msg' => 'Something went wrong!']);
+                        if ($csvImport) {
+                            if (!spentTopupAmount(Auth()->user()->_id, $total_amount))
+                                return response(['status' => 'error', 'msg' => 'Something went wrong!']);
                         }
                     }
 

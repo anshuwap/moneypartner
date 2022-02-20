@@ -7,13 +7,18 @@
     <div class="col-12 mt-2">
         <div class="card">
 
-            <div class="covertabs-btn __web-inspector-hide-shortcut__">
+            <div class="">
                 <ul class="nav nav-tabs" role="tablist">
+
                     <li class="nav-item">
-                        <a href="{{ url('employee/e-customer-trans') }}" class="nav-link ">DMT Transaction</a>
+                        <a href="{{ url('employee/e-customer-trans') }}" class="nav-link "><i class="fas fa-file-invoice-dollar"></i>&nbsp;DMT Transaction</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('employee/e-retailer-trans') }}" class="nav-link active">Payout Transaction</a>
+                        <a href="{{ url('employee/e-retailer-trans') }}" class="nav-link active"><i class="fas fa-money-check nav-icon"></i>&nbsp;Payout Transaction</a>
+                    </li>
+
+                     <li class="nav-item">
+                        <a href="{{ url('employee/e-offline-payout') }}" class="nav-link"><i class="fas fa-hand-holding-usd"></i> &nbsp;Payout Offline</a>
                     </li>
                 </ul>
                 <div class="add-btn w-50">

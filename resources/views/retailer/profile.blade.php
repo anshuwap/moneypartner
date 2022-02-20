@@ -141,201 +141,203 @@
                     </div>
                     <div class="col-md-6">
                       <div class="row">
+
                         @if(!empty($outlet->office_photo))
                         <div class="col-md-12">
                           <div class="card p-2"><strong>Office Photo</strong>
                             <span>Attachment Link-<a href="{{ (!empty($outlet->office_photo))?asset('attachment/').'/'.$outlet->office_photo:'' }}" target="_blank">{{$outlet->office_photo}}</a></span>
                           </div>
-                          @endif
-                          @if(!empty($outlet->office_address_proff))
-                          <div class="col-md-12">
-                            <div class="card p-2"><strong>Office Address Proff</strong>
-                              <span>Attachment Link- <a href="{{ (!empty($outlet->office_address_proff))?asset('attachment/').'/'.$outlet->office_address_proff:'' }}" target="_blank">{{$outlet->office_address_proff}}</a></span>
-                              <!-- <img src="{{ (!empty($outlet->office_address_proff))?asset('attachment/').'/'.$outlet->office_address_proff:asset('assets').'/dist/img/user4-128x128.jpg' }}"> -->
-                            </div>
-                          </div>
-                          @endif
-                          @if(!empty($outlet->office_photo))
-                          <div class="col-md-12">
-                            <div class="card p-2"><strong>GST Certificate</strong>
-                              <span>Attachment Link- <a href="{{ (!empty($outlet->office_photo))?asset('attachment/').'/'.$outlet->office_photo:'' }}" target="_blank">{{$outlet->office_photo}}</a></span>
-                              <!-- <img src="{{ (!empty($outlet->office_photo))?asset('attachment/').'/'.$outlet->office_photo:asset('assets').'/dist/img/user4-128x128.jpg' }}"> -->
-                            </div>
-                          </div>
-                          @endif
                         </div>
+                        @endif
+                        @if(!empty($outlet->office_address_proff))
+                        <div class="col-md-12">
+                          <div class="card p-2"><strong>Office Address Proff</strong>
+                            <span>Attachment Link- <a href="{{ (!empty($outlet->office_address_proff))?asset('attachment/').'/'.$outlet->office_address_proff:'' }}" target="_blank">{{$outlet->office_address_proff}}</a></span>
+                            <!-- <img src="{{ (!empty($outlet->office_address_proff))?asset('attachment/').'/'.$outlet->office_address_proff:asset('assets').'/dist/img/user4-128x128.jpg' }}"> -->
+                          </div>
+                        </div>
+                        @endif
+                        @if(!empty($outlet->office_photo))
+                        <div class="col-md-12">
+                          <div class="card p-2"><strong>GST Certificate</strong>
+                            <span>Attachment Link- <a href="{{ (!empty($outlet->office_photo))?asset('attachment/').'/'.$outlet->office_photo:'' }}" target="_blank">{{$outlet->office_photo}}</a></span>
+                            <!-- <img src="{{ (!empty($outlet->office_photo))?asset('attachment/').'/'.$outlet->office_photo:asset('assets').'/dist/img/user4-128x128.jpg' }}"> -->
+                          </div>
+                        </div>
+                        @endif
                       </div>
                     </div>
-
                   </div>
-                  <!-- /.post -->
+
                 </div>
-                <!-- /.tab-pane -->
-                <div class="tab-pane" id="timeline">
-                  <div class="post">
-
-                    <div class="row">
-                      <div class="col-md-6">
-                        <table class="table table-sm">
-                          <tr>
-                            <th>Date Of Birth :</th>
-                            <td>{{ ucwords($outlet->date_of_birth) }}</td>
-                          </tr>
-                          <tr>
-                            <th>Permanent Address :</th>
-                            <td>{{ ucwords($outlet->permanent_address) }}</td>
-                          </tr>
-                          <tr>
-                            <th>Id Proff :</th>
-                            <td>{{ ucwords(str_replace('_',' ',$outlet->id_proff)) }}</td>
-                          </tr>
-                          <tr>
-                            <th>Address Proff:</th>
-                            <td>{{ ucfirst(str_replace('_',' ',$outlet->address_proff)) }}</td>
-                          </tr>
-                          <tr>
-                            <th>Pancard No :</th>
-                            <td>{{ ucfirst($outlet->pancard) }}</td>
-                          </tr>
-                        </table>
-                      </div>
-
-                      <div class="col-md-6">
-                        <div class="row">
-                          @if(!empty($outlet->upload_id))
-                          <div class="col-md-12">
-                            <div class="card p-2"><strong>{{ ucwords(str_replace('_',' ',$outlet->id_proff)) }}</strong>
-                              <img src">
-                              <span>Attachment Link- <a href="{{ (!empty($outlet->upload_id))?asset('attachment/').'/'.$outlet->upload_id:'' }}" target="_blank">{{$outlet->upload_id}}</a></span>
-                            </div>
-                          </div>
-                          @endif
-
-                          @if(!empty($outlet->upload_address))
-                          <div class="col-md-12">
-                            <div class="card p-2"><strong>Address Proff</strong>
-                              <img src="">
-                              <span>Attachment Link- <a href="{{ (!empty($outlet->upload_address))?asset('attachment/').'/'.$outlet->upload_address:'' }}" target="_blank">{{$outlet->upload_address}}</a></span>
-                            </div>
-                          </div>
-                          @endif
-                        </div>
-                      </div>
-
-                    </div>
-
-                  </div>
-                </div>
-                <!-- /.tab-pane -->
-
-                <div class="tab-pane" id="settings">
-                  <form class="form-horizontal" id="upload-profile" action="{{ url('retailer/profile/'.$outlet->_id) }}" method="post" enctype="multipart/form-data">
-                    {{ method_field('PUT') }}
-                    @csrf
-                    <div class="form-group row">
-                      <label class="col-sm-2 col-form-label">Profile Image</label>
-                      <div class="col-sm-10">
-                        <div class="input-group">
-                          <div class="custom-file">
-                            <input type="file" name="profile_image" class="custom-file-input custom-file-input-sm" id="imgInp" accept="image/png, image/gif, image/jpeg">
-                            <label class="custom-file-label" for="exampleInputFile">Choose file</label>
-                          </div>
-                        </div>
-
-                        <span id="profile_image_msg" class="custom-text-danger"></span>
-                      </div>
-                    </div>
-
-                    <div class="form-group row">
-                      <label for="inputName" class="col-sm-2 col-form-label">Retailer Name</label>
-                      <div class="col-sm-10">
-                        <input type="text" name="retailer_name" required value="{{ ucwords($outlet->retailer_name)}}" class="form-control" id="inputName" placeholder="Retailer Name">
-                        <span id="retailer_name_msg" class="custom-text-danger"></span>
-                      </div>
-
-                    </div>
-
-                    <div class="form-group row">
-                      <label for="inputName2" class="col-sm-2 col-form-label">Mobile Number</label>
-                      <div class="col-sm-10">
-                        <input type="number" required name="mobile_no" class="form-control" value="{{ $outlet->mobile_no}}" id="inputName2" placeholder="Mobile Number">
-                        <span id="mobile_no_msg" class="custom-text-danger"></span>
-                      </div>
-
-                    </div>
-                    <div class="form-group row">
-                      <label for="inputName2" class="col-sm-2 col-form-label">Alternate Number</label>
-                      <div class="col-sm-10">
-                        <input type="number" name="alternate_number" class="form-control" value="{{ $outlet->alternate_number }}" id="inputName2" placeholder="Alternate Number">
-                        <span id="alternate_number_msg" class="custom-text-danger"></span>
-                      </div>
-
-                    </div>
-                    <div class="form-group row">
-                      <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
-                      <div class="col-sm-10">
-                        <input type="email" name="email" readonly class="form-control" value="{{ $outlet->email }}" id="inputEmail" placeholder="Email">
-                        <span id="email_msg" class="custom-text-danger"></span>
-                      </div>
-
-                    </div>
-
-                    <div class="form-group row">
-                      <label for="inputExperience" class="col-sm-2 col-form-label">Gender</label>
-                      <div class="col-sm-10">
-                        <select class="form-control " name="gender">
-                          <option value="">Select</option>
-                          <option value="male" {{ ($outlet->gender == 'male')?"selected":"" }}>Male</option>
-                          <option value="female" {{ ($outlet->gender == 'female')?"selected":"" }}>Female</option>
-                        </select>
-                        <span id="gender_msg" class="custom-text-danger"></span>
-                      </div>
-                    </div>
-
-                    <div class="form-group row">
-                      <label for="" class="col-sm-2 col-form-label">Old Password</label>
-                      <div class="col-sm-10">
-                        <input type="password" name="old_password" class="form-control" id="oldPassword" placeholder="Old Password">
-                        <span id="old_password_msg" class="custom-text-danger"></span>
-                      </div>
-
-                    </div>
-
-                    <div class="form-group row">
-                      <label for="" class="col-sm-2 col-form-label">New Password</label>
-                      <div class="col-sm-10">
-                        <input type="password" name="new_password" class="form-control" id="oldPassword" placeholder="New Password">
-                        <span id="new_password_msg" class="custom-text-danger"></span>
-                      </div>
-                    </div>
-
-                    <div class="form-group row">
-                      <label for="" class="col-sm-2 col-form-label">Confirm Password</label>
-                      <div class="col-sm-10">
-                        <input type="password" name="confirm_password" class="form-control" id="oldPassword" placeholder="Confirm Password">
-                        <span id="confirm_password_msg" class="custom-text-danger"></span>
-                      </div>
-                    </div>
-
-
-                    <div class="form-group row">
-                      <div class="offset-sm-2 col-sm-10">
-                        <button type="submit" class="btn btn-success">Submit</button>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-                <!-- /.tab-pane -->
+                <!-- /.post -->
               </div>
-              <!-- /.tab-content -->
-            </div><!-- /.card-body -->
-          </div>
-          <!-- /.card -->
+              <!-- /.tab-pane -->
+              <div class="tab-pane" id="timeline">
+                <div class="post">
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <table class="table table-sm">
+                        <tr>
+                          <th>Date Of Birth :</th>
+                          <td>{{ ucwords($outlet->date_of_birth) }}</td>
+                        </tr>
+                        <tr>
+                          <th>Permanent Address :</th>
+                          <td>{{ ucwords($outlet->permanent_address) }}</td>
+                        </tr>
+                        <tr>
+                          <th>Id Proff :</th>
+                          <td>{{ ucwords(str_replace('_',' ',$outlet->id_proff)) }}</td>
+                        </tr>
+                        <tr>
+                          <th>Address Proff:</th>
+                          <td>{{ ucfirst(str_replace('_',' ',$outlet->address_proff)) }}</td>
+                        </tr>
+                        <tr>
+                          <th>Pancard No :</th>
+                          <td>{{ ucfirst($outlet->pancard) }}</td>
+                        </tr>
+                      </table>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="row">
+                        @if(!empty($outlet->upload_id))
+                        <div class="col-md-12">
+                          <div class="card p-2"><strong>{{ ucwords(str_replace('_',' ',$outlet->id_proff)) }}</strong>
+                            <img src">
+                            <span>Attachment Link- <a href="{{ (!empty($outlet->upload_id))?asset('attachment/').'/'.$outlet->upload_id:'' }}" target="_blank">{{$outlet->upload_id}}</a></span>
+                          </div>
+                        </div>
+                        @endif
+
+                        @if(!empty($outlet->upload_address))
+                        <div class="col-md-12">
+                          <div class="card p-2"><strong>Address Proff</strong>
+                            <img src="">
+                            <span>Attachment Link- <a href="{{ (!empty($outlet->upload_address))?asset('attachment/').'/'.$outlet->upload_address:'' }}" target="_blank">{{$outlet->upload_address}}</a></span>
+                          </div>
+                        </div>
+                        @endif
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+              <!-- /.tab-pane -->
+
+              <div class="tab-pane" id="settings">
+                <form class="form-horizontal" id="upload-profile" action="{{ url('retailer/profile/'.$outlet->_id) }}" method="post" enctype="multipart/form-data">
+                  {{ method_field('PUT') }}
+                  @csrf
+                  <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Profile Image</label>
+                    <div class="col-sm-10">
+                      <div class="input-group">
+                        <div class="custom-file">
+                          <input type="file" name="profile_image" class="custom-file-input custom-file-input-sm" id="imgInp" accept="image/png, image/gif, image/jpeg">
+                          <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                        </div>
+                      </div>
+
+                      <span id="profile_image_msg" class="custom-text-danger"></span>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="inputName" class="col-sm-2 col-form-label">Retailer Name</label>
+                    <div class="col-sm-10">
+                      <input type="text" name="retailer_name" required value="{{ ucwords($outlet->retailer_name)}}" class="form-control" id="inputName" placeholder="Retailer Name">
+                      <span id="retailer_name_msg" class="custom-text-danger"></span>
+                    </div>
+
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="inputName2" class="col-sm-2 col-form-label">Mobile Number</label>
+                    <div class="col-sm-10">
+                      <input type="number" required name="mobile_no" class="form-control" value="{{ $outlet->mobile_no}}" id="inputName2" placeholder="Mobile Number">
+                      <span id="mobile_no_msg" class="custom-text-danger"></span>
+                    </div>
+
+                  </div>
+                  <div class="form-group row">
+                    <label for="inputName2" class="col-sm-2 col-form-label">Alternate Number</label>
+                    <div class="col-sm-10">
+                      <input type="number" name="alternate_number" class="form-control" value="{{ $outlet->alternate_number }}" id="inputName2" placeholder="Alternate Number">
+                      <span id="alternate_number_msg" class="custom-text-danger"></span>
+                    </div>
+
+                  </div>
+                  <div class="form-group row">
+                    <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
+                    <div class="col-sm-10">
+                      <input type="email" name="email" readonly class="form-control" value="{{ $outlet->email }}" id="inputEmail" placeholder="Email">
+                      <span id="email_msg" class="custom-text-danger"></span>
+                    </div>
+
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="inputExperience" class="col-sm-2 col-form-label">Gender</label>
+                    <div class="col-sm-10">
+                      <select class="form-control " name="gender">
+                        <option value="">Select</option>
+                        <option value="male" {{ ($outlet->gender == 'male')?"selected":"" }}>Male</option>
+                        <option value="female" {{ ($outlet->gender == 'female')?"selected":"" }}>Female</option>
+                      </select>
+                      <span id="gender_msg" class="custom-text-danger"></span>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="" class="col-sm-2 col-form-label">Old Password</label>
+                    <div class="col-sm-10">
+                      <input type="password" name="old_password" class="form-control" id="oldPassword" placeholder="Old Password">
+                      <span id="old_password_msg" class="custom-text-danger"></span>
+                    </div>
+
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="" class="col-sm-2 col-form-label">New Password</label>
+                    <div class="col-sm-10">
+                      <input type="password" name="new_password" class="form-control" id="oldPassword" placeholder="New Password">
+                      <span id="new_password_msg" class="custom-text-danger"></span>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="" class="col-sm-2 col-form-label">Confirm Password</label>
+                    <div class="col-sm-10">
+                      <input type="password" name="confirm_password" class="form-control" id="oldPassword" placeholder="Confirm Password">
+                      <span id="confirm_password_msg" class="custom-text-danger"></span>
+                    </div>
+                  </div>
+
+
+                  <div class="form-group row">
+                    <div class="offset-sm-2 col-sm-10">
+                      <button type="submit" class="btn btn-success">Submit</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+          </div><!-- /.card-body -->
         </div>
-        <!-- /.col -->
+        <!-- /.card -->
       </div>
-      <!-- /.row -->
-    </div><!-- /.container-fluid -->
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </div><!-- /.container-fluid -->
 </section>
 <!-- /.content -->
 @push('custom-script')

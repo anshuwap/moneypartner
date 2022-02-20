@@ -54,6 +54,11 @@
     .card-custom-header {
       background: #2fc296 !important;
     }
+    .add-btn{
+  position: absolute;
+    right: 9px;
+    top: 5px;
+}
   </style>
 </head>
 

@@ -38,8 +38,15 @@ class CustomerTransController extends Controller
             $outlet  = Outlet::select('bank_charges')->where('_id', Auth::user()->outlet_id)->first();
             if (!empty($outlet->bank_charges)) {
                 foreach ($outlet->bank_charges as $charge) {
-                    if ($charge['from_amount'] <= $amount && $charge['to_amount'] >= $amount)
-                        $charges = $charge['charges'];
+                    if ($charge['type'] == 'inr') { // here all inr charges
+
+                        if ($charge['from_amount'] <= $amount && $charge['to_amount'] >= $amount)
+                            $charges = $charge['charges'];
+                    } else if ($charge['type'] == 'persantage') { //calculate persantage here
+
+                        if ($charge['from_amount'] <= $amount && $charge['to_amount'] >= $amount)
+                            $charges = ($charge['charges'] / 100) * $amount;
+                    }
                 }
             }
             $total_amount = $amount + $charges;
@@ -64,9 +71,10 @@ class CustomerTransController extends Controller
 
 
                 $trans_details[] = [
+                    'transaction_id'  => uniqCode(3) . rand(111111, 999999),
                     'sender_name'     => $request->sender_name,
                     'amount'          => $request->amount,
-                    'transaction_fees'=> $charges,
+                    'transaction_fees' => $charges,
                     'receiver_name'   => $request->receiver_name,
                     'payment_mode'    => $request->payment_mode,
                     'payment_channel' => $request->payment_channel,
@@ -89,9 +97,10 @@ class CustomerTransController extends Controller
 
 
                 $trans_details[] = [
+                    'transaction_id'  => uniqCode(3) . rand(111111, 999999),
                     'sender_name'     => $request->sender_name,
                     'amount'          => $request->amount,
-                    'transaction_fees'=> $charges,
+                    'transaction_fees' => $charges,
                     'receiver_name'   => $request->receiver_name,
                     'payment_mode'    => $request->payment_mode,
                     'payment_channel' => $request->payment_channel,
@@ -207,9 +216,18 @@ class CustomerTransController extends Controller
             if (!empty($outlet->bank_charges)) {
 
                 foreach ($outlet->bank_charges as $charge) {
-                    if ($charge['from_amount'] <= $amount && $charge['to_amount'] >= $amount)
-                        $charges = $charge['charges'];
+                    $charges = '';
+                    if ($charge['type'] == 'inr') { // here all inr charges
+
+                        if ($charge['from_amount'] <= $amount && $charge['to_amount'] >= $amount)
+                            $charges = $charge['charges'];
+                    } else if ($charge['type'] == 'persantage') { //calculate persantage here
+
+                        if ($charge['from_amount'] <= $amount && $charge['to_amount'] >= $amount)
+                            $charges = ($charge['charges'] / 100) * $amount;
+                    }
                 }
+
                 return response(['status' => 'success', 'charges' => $charges]);
             }
             return response(['status' => 'error', 'msg' => 'There are no any Slab Avaliable.']);

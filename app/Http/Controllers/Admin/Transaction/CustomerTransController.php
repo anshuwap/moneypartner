@@ -76,15 +76,19 @@ class CustomerTransController extends Controller
             $receiver_name = $CustomerTrans->trans_details[$request->key]['receiver_name'];
             $payment_date  = $CustomerTrans->trans_details[$request->key]['created'];
             $status        = $CustomerTrans->trans_details[$request->key]['status'];
-            $retailer_id   = $CustomerTrans->_id;
+            $payment_mode  = $CustomerTrans->trans_details[$request->key]['payment_mode'];
+            $transaction_fees = $CustomerTrans->trans_details[$request->key]['transaction_fees'];
+            $retailer_id   = $CustomerTrans->retailer_id;
 
             //add total amount in customer trans collection
-            $customer_trans = CustomerTrans::find($retailer_id);
+            $customer_trans = CustomerTrans::find($request->trans_id);
+
             $total_amount   = ($customer_trans->total_amount) + ($amount);
+
             $customer_trans->total_amount = $total_amount;
             $customer_trans->save();
             //insert data in transfer history collection
-            transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status);
+            transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status,$payment_mode,$transaction_fees,'debit');
         } else {
             //add toupup amount here
             $retailer_id      = $CustomerTrans->retailer_id;
