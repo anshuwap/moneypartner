@@ -55,15 +55,20 @@
       background: #2fc296 !important;
     }
 
-  .card-primary.card-outline-tabs>.card-header a.active {
-    border-top: 3px solid #2fc296;
-}
+    .card-primary.card-outline-tabs>.card-header a.active {
+      border-top: 3px solid #2fc296;
+    }
 
-.add-btn{
-  position: absolute;
-    right: 9px;
-    top: 5px;
-}
+    .add-btn {
+      position: absolute;
+      right: 9px;
+      top: 5px;
+    }
+
+    .btn-danger {
+      background-color: #e26005 !important;
+      border-color: #e26005 !important;
+    }
   </style>
 </head>
 
@@ -93,7 +98,7 @@
             <a href="javascript:void(0);" class="pro-li dropdown-item"><span><img class="profile-small img-fluid img-circle" id="avatar" src="{{ profileImage() }}" alt="User profile picture"></span> <span>{{ ucwords(Auth::user()->full_name)}}</span></a>
 
             <a href="{{ url('retailer/profile') }}" class="pro-li dropdown-item">
-             <span><i class="far fa-user"></i></span> Profile
+              <span><i class="far fa-user"></i></span> Profile
             </a>
             <a class="dropdown-item" href="{{ url('retailer/logout') }}" onclick="event.preventDefault();
                      document.getElementById('logout-form').submit();">
@@ -216,11 +221,20 @@
   <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
 
   <script>
+    //filter open and close
+    $('#filter-btn').click(function() {
+      $('#filter').toggle();
+      if ($(this).text().trim() === "Filter") {
+        $(this).html('<i class="far fa-times-circle"></i>&nbsp;Close');
+      } else if ($(this).text().trim() === 'Close') {
+        $(this).html('<i class="fas fa-filter"></i>&nbsp;Filter');
+      }
+    })
 
-//popover
-    $(document).ready(function(){
-  $('[data-toggle="popover"]').popover();
-});
+    //popover
+    $(document).ready(function() {
+      $('[data-toggle="popover"]').popover();
+    });
 
     $(document).ready(function() {
       $('[data-toggle="tooltip"]').tooltip();
@@ -242,6 +256,24 @@
       }
     });
     /*end single image preview*/
+
+    //Date range as a button
+    $('#daterange-btn').daterangepicker({
+        ranges: {
+          'Today': [moment(), moment()],
+          'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+          'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+          'This Month': [moment().startOf('month'), moment().endOf('month')],
+          'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        startDate: moment().subtract(29, 'days'),
+        endDate: moment()
+      },
+      function(start, end) {
+        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+      }
+    )
   </script>
 
   @stack('custom-script')

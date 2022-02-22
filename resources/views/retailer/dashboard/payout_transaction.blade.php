@@ -2,6 +2,7 @@
               <thead>
                 <tr>
                   <th>Sr. No.</th>
+                  <th>Transaction Id</th>
                   <th>Amount</th>
                   <th>Beneficiary Name</th>
                   <th>IFSC</th>
@@ -30,6 +31,7 @@
                 } ?>
                 <tr>
                   <td>{{ ++$key }}</td>
+                  <td><?= (!empty($trans->transaction_id)) ? $trans->transaction_id : '' ?></td>
                   <td>{!! mSign($trans->amount) !!}</td>
                   <td>{{ ucwords($trans->receiver_name)}}</td>
                   <td>{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</td>

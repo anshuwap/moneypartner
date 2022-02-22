@@ -23,7 +23,7 @@
 
                     @if(!empty(moneyTransferOption()->payout_offline_api))
                     <li class="nav-item">
-                        <a href="#" class="nav-link">Payout Offline Api</a>
+                        <a href="#" class="nav-link">Payout Api Api</a>
                     </li>
                     @endif
 

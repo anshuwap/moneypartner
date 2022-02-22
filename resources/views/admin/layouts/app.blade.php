@@ -58,16 +58,21 @@
 
   <link rel="stylesheet" href="{{ asset('assets') }}/custom/custom.css">
 
-<style>
-  .card-primary.card-outline-tabs>.card-header a.active {
-    border-top: 3px solid #2fc296;
-}
-.add-btn{
-  position: absolute;
-    right: 9px;
-    top: 2px;
-}
-</style>
+  <style>
+    .card-primary.card-outline-tabs>.card-header a.active {
+      border-top: 3px solid #2fc296;
+    }
+
+    .add-btn {
+      position: absolute;
+      right: 9px;
+      top: 2px;
+    }
+    .btn-danger {
+      background-color: #e26005 !important;
+      border-color: #e26005 !important;
+    }
+  </style>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -260,6 +265,15 @@
   <script src="{{ asset('assets') }}/custom/custom_function.js"></script>
   <script>
 
+       //filter open and close
+    $('#filter-btn').click(function() {
+      $('#filter').toggle();
+      if ($(this).text().trim() === "Filter") {
+        $(this).html('<i class="far fa-times-circle"></i>&nbsp;Close');
+      } else if ($(this).text().trim() === 'Close') {
+        $(this).html('<i class="fas fa-filter"></i>&nbsp;Filter');
+      }
+    })
 
     $(document).ready(function() {
 
@@ -267,21 +281,25 @@
 
     });
 
-      //Date range as a button
-      $('#daterange-btn').daterangepicker(
-      {
-        ranges   : {
-          'Today'       : [moment(), moment()],
-          'Yesterday'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-          'Last 7 Days' : [moment().subtract(6, 'days'), moment()],
+    //popover
+    $(document).ready(function() {
+      $('[data-toggle="popover"]').popover();
+    });
+
+    //Date range as a button
+    $('#daterange-btn').daterangepicker({
+        ranges: {
+          'Today': [moment(), moment()],
+          'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'Last 7 Days': [moment().subtract(6, 'days'), moment()],
           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-          'This Month'  : [moment().startOf('month'), moment().endOf('month')],
-          'Last Month'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+          'This Month': [moment().startOf('month'), moment().endOf('month')],
+          'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
         startDate: moment().subtract(29, 'days'),
-        endDate  : moment()
+        endDate: moment()
       },
-      function (start, end) {
+      function(start, end) {
         $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
       }
     )

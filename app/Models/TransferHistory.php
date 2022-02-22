@@ -38,4 +38,8 @@ class TransferHistory extends BaseModel
             return $this->belongsTo('App\Models\User', 'retailer_id', '_id')->select('name');
         }
 
+        public function OutletName(){
+            return $this->belongsTo('App\Models\Outlet','outlet_id','_id')->select('outlet_name');
+        }
+
 }

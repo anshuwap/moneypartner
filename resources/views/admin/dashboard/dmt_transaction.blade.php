@@ -32,7 +32,7 @@
                       }
                 ?>
                       <tr>
-                        <td>{{ ++$ke }}</td>
+                        <td>{{ $i }}</td>
                         <td><?= (!empty($detail['transaction_id'])) ? $detail['transaction_id'] : '' ?></td>
                         <td><a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title="copy" id="copy-{{$i}}" onclick="copyToClipboard('#text-{{$i}}','#copy-{{$i}}')" class="text-dark">{!! mSign($detail['amount']) !!}</a></td>
                         <td>{{ ucwords($detail['receiver_name'] ) }}</td>
@@ -44,14 +44,18 @@
                         <td>{!! $status !!}</td>
                         <td>{{ date('d,M y H:i A',$detail['created'])}}</td>
                         <td>
+                            <a tabindex="0" class="text-success" role="button" data-toggle="popover" data-trigger="focus" title="Customer Details" data-content="{{ $trans->customer_name}},{{ $trans->mobile_number}}"><i class="fas fa-angle-down"></i></a>
+
                           <a href="javascript:void(0);" class="btn btn-info btn-sm view" trans_id="{{ $trans->_id }}" _id="{{ $i }}"><i class="fas fa-eye"></i>&nbsp;view</a>
                           @if(empty($detail['admin_action']))
                           <a href="javascript:void(0);" class="btn btn-danger btn-sm customer_trans" trans_id="{{ $trans->_id }}" _id="{{ $i }}">Action</a>
                           @endif
                         </td>
+
                       </tr>
-                <?php $i++;
+                <?php
                     }
+                    $i++;
                   }
                 } ?>
               <tbody>

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Validation\OfflineBulkPayoutValidation;
+use App\Http\Validation\OfflinePayoutValidation;
 use App\Models\Api\OfflinePayoutApi;
 use App\Models\Outlet;
 use Exception;
@@ -13,7 +15,7 @@ class OfflinePayoutController extends Controller
 {
 
     //for single payout system
-    public function payout(Request $request)
+    public function payout(OfflinePayoutValidation $request)
     {
 
         try {
@@ -70,7 +72,7 @@ class OfflinePayoutController extends Controller
 
 
 
-    public function bulkPayout(Request $request)
+    public function bulkPayout(OfflineBulkPayoutValidation $request)
     {
 
         try {

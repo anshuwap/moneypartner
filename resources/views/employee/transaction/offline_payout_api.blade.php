@@ -16,7 +16,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a href="{{ url('employee/e-offline-payout') }}" class="nav-link active"><i class="fas fa-hand-holding-usd"></i> &nbsp;Payout Offline</a>
+                        <a href="{{ url('employee/e-offline-payout') }}" class="nav-link active"><i class="fas fa-hand-holding-usd"></i> &nbsp;Payout Api</a>
                     </li>
                 </ul>
 <div class="add-btn w-50">

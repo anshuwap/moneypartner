@@ -330,9 +330,9 @@
                         <label>Money Transfer Otions</label><br>
                         <input type="checkbox" name="money_transfer_option[dmt_transfer_offline]" value="1">&nbsp;&nbsp;DMT Transfer Offline<br>
                         <input type="checkbox" name="money_transfer_option[dmt_transfer_online]" value="1">&nbsp;&nbsp;DMT Transfer Online<br>
-                        <input type="checkbox" name="money_transfer_option[payout_offline]" value="1">&nbsp;&nbsp;Payout Offline<br>
+                        <input type="checkbox" name="money_transfer_option[payout_offline]" value="1">&nbsp;&nbsp;Payout Api<br>
                         <input type="checkbox" name="money_transfer_option[payout_online]" value="1">&nbsp;&nbsp;Payout Online<br>
-                        <input type="checkbox" name="money_transfer_option[payout_offline_api]" value="1">&nbsp;&nbsp;Payout Offline API<br>
+                        <input type="checkbox" name="money_transfer_option[payout_offline_api]" value="1">&nbsp;&nbsp;Payout Api API<br>
                         <input type="checkbox" name="money_transfer_option[payout_online_api]" value="1">&nbsp;&nbsp;Payout Online API<br>
                         <span id="money_transfer_option_msg" class="custom-text-danger"></span>
                     </div>

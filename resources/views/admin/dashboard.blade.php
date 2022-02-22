@@ -99,7 +99,7 @@
             <a class="nav-link" id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false"><i class="fas fa-money-check nav-icon"></i>&nbsp;Payout Transfer</a>
           </li>
          <li class="nav-item">
-            <a class="nav-link" id="custom-tabs-four-profile-tab1" data-toggle="pill" href="#custom-tabs-four-profile1" role="tab" aria-controls="custom-tabs-four-profile1" aria-selected="false"><i class="fas fa-hand-holding-usd"></i> &nbsp;Offline Payout</a>
+            <a class="nav-link" id="custom-tabs-four-profile-tab1" data-toggle="pill" href="#custom-tabs-four-profile1" role="tab" aria-controls="custom-tabs-four-profile1" aria-selected="false"><i class="fas fa-hand-holding-usd"></i> &nbsp;Payout Api</a>
           </li>
         </ul>
       </div>

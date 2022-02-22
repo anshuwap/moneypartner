@@ -57,7 +57,7 @@
           <a href="{{ url('retailer/offline-payout') }}" class="nav-link {{ (url()->full() == url('retailer/offline-payout'))? 'active':''}}">
             <i class="fas fa-hand-holding-usd nav-icon"></i>
             <p>
-              Offline Payout
+               Payout Api
             </p>
           </a>
         </li>

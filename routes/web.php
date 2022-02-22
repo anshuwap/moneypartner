@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\Transaction\OfflinePayoutApiController as AdminOf
 use App\Http\Controllers\Admin\PaymentChannelController as AdminPaymentChannel;
 use App\Http\Controllers\Admin\TransactionCommentController as AdminComment;
 use App\Http\Controllers\Admin\EmployeeController as AdminEmployee;
+use App\Http\Controllers\Admin\PassbookController as AdminPassbook;
 
 //for retailer panel
 use App\Http\Controllers\Retailer\WebhookApiController as WebhookApi;
@@ -120,6 +121,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::resource('employee', AdminEmployee::class);
     Route::post('employee-status', [AdminEmployee::class,'employeeStatus']);
 
+    Route::get('passbook',  [AdminPassbook::class, 'index']);
+    Route::get('passbook-export',  [AdminPassbook::class, 'export']);
 
     Route::post('logout',  [AdminLogin::class, 'logout']);
 });

@@ -76,12 +76,13 @@ if (!function_exists('transferHistory')) {
     {
 
         $closing_amount = 0;
-        $A_amount = User::select('available_amount')->find($retailer_id);
+        $A_amount = User::select('available_amount','outlet_id')->find($retailer_id);
         if(!empty($A_amount))
         $closing_amount = $A_amount->available_amount;
 
         $transferHistory = new TransferHistory();
         $transferHistory->retailer_id   = $retailer_id;
+        $transferHistory->outlet_id     = $A_amount->outlet_id;
         $transferHistory->amount        = $amount;
         $transferHistory->receiver_name = $receiver_name;
         $transferHistory->payment_date  = $payment_date;

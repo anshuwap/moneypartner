@@ -103,7 +103,7 @@
           @endif
            @if(!empty(moneyTransferOption()->payout_offline_api))
          <li class="nav-item">
-            <a class="nav-link" id="custom-tabs-four-profile-tab1" data-toggle="pill" href="#custom-tabs-four-profile1" role="tab" aria-controls="custom-tabs-four-profile1" aria-selected="false"><i class="fas fa-hand-holding-usd"></i> &nbsp;Offline Payout</a>
+            <a class="nav-link" id="custom-tabs-four-profile-tab1" data-toggle="pill" href="#custom-tabs-four-profile1" role="tab" aria-controls="custom-tabs-four-profile1" aria-selected="false"><i class="fas fa-hand-holding-usd"></i> &nbsp;Payout Api</a>
           </li>
           @endif
 

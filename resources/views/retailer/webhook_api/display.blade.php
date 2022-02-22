@@ -49,6 +49,63 @@
             <div class="card-body">
 
                 <div id="accordion">
+
+                    <div class="card card-secondary">
+                        <div class="card-header">
+                            <h4 class="card-title w-100">
+                                <a class="d-block w-100 collapsed" data-toggle="collapse" href="#collapseOne" aria-expanded="false">
+                                    Document of Login Api
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="collapse show" data-parent="#accordion" style="">
+                            <div class="card-body">
+                                <div>
+                                    <table class="table table-bordered table-sm">
+                                        <tr>
+                                            <th>URL</th>
+                                            <td>{{ url('/api/login')}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Method</th>
+                                            <td>POST</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Authorization</th>
+                                            <td>NO</td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>Request</th>
+                                            <td>{<br>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;"email":"ram@gmail.com",</br>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;"password":"123456"</br>
+                                                }</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Response</th>
+                                            <td>{<br>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;"access_token": <span class="">"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.<br>
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMF
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;1NiwiZXhwIjoxNjQ1MjcyMzU2LCJuYmYiOjE2NDUyNj<br>
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;dUUiLCJzdWIiOiI2MWQwOTc0ZWEzNjAwMDAwOWUwMDUx<br>
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;cwMWM0MDA4NzJkYjdhNTk3NmY3In0._6Id1G64UoyMy,</span><br>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;"token_type": "bearer",<br>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;"expires_in": 3600,<br>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;"user": {<br>
+                                                &nbsp;&nbsp;&nbsp;&nbsp; "name": demo,<br>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;"email": "demo@gmail.com"<br>
+                                                &nbsp;&nbsp;&nbsp;&nbsp; }<br>
+                                                }</td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
                     <div class="card card-secondary">
                         <div class="card-header">
                             <h4 class="card-title w-100">
@@ -59,16 +116,43 @@
                         </div>
                         <div id="collapseOne" class="collapse" data-parent="#accordion" style="">
                             <div class="card-body">
-                                {
-                                "amount":"100",
-                                "receiver_name":"Demo21",
-                                "payment_mode":"bank_account",
-                                "payment_channel":{
-                                "bank_name":"SBI Bank",
-                                "account_number":"9987654322",
-                                "ifsc_code":"SBI434"
-                                }
-                                }
+
+                                <table class="table table-bordered table-sm">
+                                    <tr>
+                                        <th>URL</th>
+                                        <td>{{ url('/api/offline-payout')}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Method</th>
+                                        <td>POST</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Authorization</th>
+                                        <td>Bearer Token</td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Request</th>
+                                        <td>{<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;"amount":"100",<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;"receiver_name":"Demo21",<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;"payment_mode":"bank_account",<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;"payment_channel":{<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;"bank_name":"SBI Bank",<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;"account_number":"9987654322",<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;"ifsc_code":"SBI434"<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                                            }</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Response</th>
+                                        <td>{<br>
+                                             &nbsp;&nbsp;&nbsp;&nbsp;"status": "success",
+                                             &nbsp;&nbsp;&nbsp;&nbsp;"msg": "Transaction Request Created Successfully!"<br>
+                                            }</td>
+                                    </tr>
+                                </table>
+
                             </div>
                         </div>
                     </div>
@@ -82,28 +166,54 @@
                         </div>
                         <div id="collapseTwo" class="collapse" data-parent="#accordion" style="">
                             <div class="card-body">
-                                [
-                                {
-                                "amount":"100",
-                                "receiver_name":"SDF3",
-                                "payment_mode":"bank_account",
-                                "payment_channel":{
-                                "bank_name":"SBI Bank",
-                                "account_number":"9987654322",
-                                "ifsc_code":"SBI434"
-                                }
-                                },
-                                {
-                                "amount":"100",
-                                "receiver_name":"SF12",
-                                "payment_mode":"bank_account",
-                                "payment_channel":{
-                                "bank_name":"SBI Bank",
-                                "account_number":"9987654322",
-                                "ifsc_code":"SBI434"
-                                }
-                                }
-                                ]
+
+                                <table class="table table-bordered table-sm">
+                                    <tr>
+                                        <th>URL</th>
+                                        <td>{{ url('/api/bulk-offline-payout')}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Method</th>
+                                        <td>POST</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Authorization</th>
+                                        <td>Bearer Token</td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Request</th>
+                                        <td>[<br>
+                                &nbsp;&nbsp; {<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"amount":"100",<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"receiver_name":"SDF3",<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"payment_mode":"bank_account",<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"payment_channel":{<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"bank_name":"SBI Bank",<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"account_number":"9987654322",<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"ifsc_code":"SBI434"<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp; }<br>
+                                },<br>
+                                &nbsp;&nbsp; {<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"amount":"100",<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"receiver_name":"SF12",<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"payment_mode":"bank_account",<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"payment_channel":{<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"bank_name":"SBI Bank",<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"account_number":"9987654322",<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"ifsc_code":"SBI434"<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                                &nbsp;&nbsp;}<br>
+                                ]</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Response</th>
+                                        <td>{<br>
+                                             &nbsp;&nbsp;&nbsp;&nbsp;"status": "success",
+                                             &nbsp;&nbsp;&nbsp;&nbsp;"msg": "Transaction Request Created Successfully!"<br>
+                                            }</td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
                     </div>

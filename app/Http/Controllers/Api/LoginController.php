@@ -40,7 +40,7 @@ class LoginController extends Controller
 
     protected function createNewToken($token)
     {
-        $user['name'] = auth()->user()->name;
+        $user['name'] = auth()->user()->full_name;
         $user['email'] = auth()->user()->email;
 
         return response()->json([

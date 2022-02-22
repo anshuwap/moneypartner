@@ -16,7 +16,7 @@
                         <a href="{{ url('admin/a-retailer-trans') }}" class="nav-link active"> <i class="fas fa-money-check nav-icon"></i>&nbsp;Payout Transaction</a>
                     </li>
                      <li class="nav-item">
-                        <a href="{{ url('admin/a-offline-payout') }}" class="nav-link"><i class="fas fa-hand-holding-usd"></i> &nbsp;Payout Offline</a>
+                        <a href="{{ url('admin/a-offline-payout') }}" class="nav-link"><i class="fas fa-hand-holding-usd"></i> &nbsp;Payout Api</a>
                     </li>
                 </ul>
                 <div class="add-btn w-50">

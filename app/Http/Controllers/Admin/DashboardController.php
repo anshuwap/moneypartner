@@ -94,7 +94,7 @@ class DashboardController extends Controller
 //  }
 // die;
 
-   $data['customer_trans'] = CustomerTrans::select('trans_details')->get();
+   $data['customer_trans'] = CustomerTrans::select('trans_details','customer_name','mobile_number')->get();
    $data['retailerTrans']  = RetailerTrans::where('status','pending')->get();
    $data['offlinePayouts'] = OfflinePayoutApi::where('status','pending')->get();
 

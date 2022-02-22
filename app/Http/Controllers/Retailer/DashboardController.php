@@ -14,7 +14,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $data['customer_trans'] = CustomerTrans::select('trans_details')->where('retailer_id', Auth::user()->_id)->get();
+        $data['customer_trans'] = CustomerTrans::select('trans_details','customer_name','mobile_number')->where('retailer_id', Auth::user()->_id)->get();
         $data['retailerTrans'] = RetailerTrans::where('status', 'pending')->where('retailer_id', Auth::user()->_id)->get();
         $data['offlinePayouts'] = OfflinePayoutApi::where('status', 'pending')->where('retailer_id', Auth::user()->_id)->get();
 

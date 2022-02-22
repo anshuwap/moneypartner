@@ -12,6 +12,7 @@
             <thead>
               <tr>
                 <th>Sr No.</th>
+                <th>Transaction Id</th>
                 <th>Retailer Name</th>
                 <th>Amount</th>
                 <th>Payment Mode</th>
@@ -30,6 +31,7 @@
               @foreach($topup_request as $key=>$topup)
               <tr>
                 <td>{{ ++$i }}</td>
+                 <td><?= (!empty($topup->payment_id)) ? $topup->payment_id : '' ?></td>
                 <td><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="{{ $topup->comment }}">{{ $topup->retailer_name }}</a></td>
                 <td>{!! mSign($topup->amount) !!}</td>
                 <td>{{ $topup->payment_mode }}</td>

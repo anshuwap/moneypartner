@@ -14,14 +14,46 @@
                 <h3 class="card-title">Passbook</h3>
 
                 <div class="card-tools">
-                    <a href="javascript:void(0);" class="btn btn-sm btn-warning mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
                     <a href="javascript:void(0);" class="btn btn-sm btn-success mr-2" id="create_topup"><i class="fas fa-hand-holding-usd"></i>&nbsp;Request for Topup</a>
-                    <!-- <a href="{{ url('retailer/topup-history') }}" class="btn btn-sm btn-info mr-4"><i class="fas fa-history"></i>&nbsp;Topup History</a> -->
+
+                    @if(!empty($filter))
+                    <a href="javascript:void(0);" class="btn btn-sm bg-fuchsia color-palette mr-2" id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
+                    @else
+                    <a href="javascript:void(0);" class="btn btn-sm bg-fuchsia color-palette mr-2" id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a>
+                    @endif
+                    <a href="javascript:void(0);" class="btn btn-sm btn-warning mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
+                </div>
+            </div>
+
+
+            <div class="row pl-2 pr-2" id="filter" <?=(empty($filter))?"style='display:none'":""?>>
+                <div class="col-md-12 ml-auto">
+                    <form action="{{ url('retailer/passbook') }}">
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label>Data Range</label>
+                                <input type="text" class="form-control form-control-sm" value="{{ !empty($filter['date_range'])?$filter['date_range']:''}}" name="date_range" id="daterange-btn" />
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>Type</label>
+                                <select class="form-control form-control-sm" name="type">
+                                    <option value="">All</option>
+                                    <option value="credit" <?= (!empty($filter['type']) && $filter['type']=='credit')?'selected':'' ?>>Credit</option>
+                                    <option value="debit" <?= (!empty($filter['type']) && $filter['type']=='debit')?'selected':'' ?>>Debit</option>
+                                </select>
+                            </div>
+                            <div class="form-group mt-4">
+                                <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i>&nbsp;Search</button>
+                                <a href="{{ url('retailer/passbook') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
 
             <!-- /.card-header -->
-            <div class="card-body table-responsive py-4">
+            <div class="card-body table-responsive py-1">
+
                 <table id="table" class="table table-hover text-nowrap table-sm">
                     <thead>
                         <tr>
@@ -35,28 +67,31 @@
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach($passbook as $key=>$pb)
-                        <tr>
-                            <td>{{ ++$key }}</td>
-                            <td>{{ date('Y-m-d H:i:s A',$pb->created)}}</td>
-                            <td>{{ ucwords(str_replace('_',' ',$pb->payment_mode)) }}</td>
-                            <td>{!!mSign($pb->amount)!!}</td>
-                            <td>{!!(!empty($pb->fees))?mSign($pb->fees):'-' !!}</td>
-                            <td>{!!mSign($pb->closing_amount)!!}</td>
 
-                            @if($pb->type == 'credit')
-                            <td class="text-success">{{ strtoupper($pb->type) }}</td>
-                            @else
-                            <td class="text-danger">{{ strtoupper($pb->type) }}</td>
-                            @endif
-                            <td>{{ strtoupper($pb->status) }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
+                    @foreach($passbook as $key=>$pb)
+                    <tr>
+                        <td>{{ ++$key }}</td>
+                        <td>{{ date('Y-m-d H:i:s A',$pb->created)}}</td>
+                        <td>{{ ucwords(str_replace('_',' ',$pb->payment_mode)) }}</td>
+                        <td>{!!mSign($pb->amount)!!}</td>
+                        <td>{!!(!empty($pb->fees))?mSign($pb->fees):'-' !!}</td>
+                        <td>{!!mSign($pb->closing_amount)!!}</td>
+
+                        @if($pb->type == 'credit')
+                        <td class="text-success">{{ strtoupper($pb->type) }}</td>
+                          @elseif($pb->type == 'debit')
+                        <td class="text-danger">{{ strtoupper($pb->type) }}</td>
+                        @else
+                         <td class="text-danger">-</td>
+                        @endif
+
+                        <td>{{ strtoupper($pb->status) }}</td>
+                    </tr>
+                    @endforeach
+
                 </table>
 
-            {{ $passbook->appends(request()->toArray())->links()}}
+                {{ $passbook->appends(request()->toArray())->links()}}
             </div>
             <!-- /.card-body -->
         </div>

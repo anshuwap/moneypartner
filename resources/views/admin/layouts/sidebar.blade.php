@@ -28,6 +28,13 @@
       </a>
     </li>
 
+<li class="nav-item">
+      <a href="{{ url('admin/passbook') }}" class="nav-link {{ (url()->full() == url('admin/passbook'))? 'active':''}}">
+        <i class="fas fa-solid fa-book nav-icon text-warning"></i>
+        <p>Passbook</p>
+      </a>
+    </li>
+
     <li class="nav-item {{ (url()->full() == url('admin/bank-account') || url()->full() == url('admin/upi') || url()->full() == url('admin/qr-code'))?'menu-is-opening menu-open':''}}">
       <a href="javascript:void(0);" class="nav-link">
         <i class="nav-icon fas fa-money-bill-wave text-success"></i>
@@ -93,7 +100,7 @@
           <a href="{{ url('admin/a-offline-payout') }}" class="nav-link {{ (url()->full() == url('admin/a-offline-payout'))? 'active':''}}">
             <i class="fas fa-hand-holding-usd nav-icon"></i>
             <p>
-              Offline Payout
+             Payout Api
             </p>
           </a>
         </li>
