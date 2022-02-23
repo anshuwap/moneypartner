@@ -137,6 +137,7 @@ Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
     Route::get('dashboard',  [RetailerDashboard::class, 'index']);
 
     Route::get('passbook',  [RetailerPassbook::class, 'index']);
+    Route::get('passbook-export',  [RetailerPassbook::class, 'export']);
 
 
     Route::resource('topup', RetailerTopup::class);

@@ -1,7 +1,6 @@
 @extends('admin.layouts.app')
 
 @section('content')
-@section('page_heading', 'UPI Id List')
 
 <div class="row">
     <div class="col-12 mt-2">
@@ -14,8 +13,8 @@
             </div>
 
             <!-- /.card-header -->
-            <div class="card-body table-responsive py-4">
-                <table id="table" class="table table-hover text-nowrap">
+            <div class="card-body table-responsive ">
+                <table id="table" class="table table-hover table-sm text-nowrap">
                     <thead>
                         <tr>
                             <th>Sr No.</th>
@@ -31,11 +30,11 @@
                     </thead>
                     <tbody>
                         @foreach($employees as $key=>$employee)
-                        <?php if ($employee->status == 1){
-                        $status = ' <a href="javascript:void(0);"><span class="badge badge-success activeVer" id="active_' . $employee->_id . '" _id="' . $employee->_id . '" val="0">Active</span></a>';
-                        }else{
-                        $status = ' <a href="javascript:void(0)"><span class="badge badge-danger activeVer" id="active_' . $employee->_id . '" _id="' . $employee->_id . '" val="1">Inactive</span></a>';
-                       } ?>
+                        <?php if ($employee->status == 1) {
+                            $status = ' <a href="javascript:void(0);"><span class="badge badge-success activeVer" id="active_' . $employee->_id . '" _id="' . $employee->_id . '" val="0">Active</span></a>';
+                        } else {
+                            $status = ' <a href="javascript:void(0)"><span class="badge badge-danger activeVer" id="active_' . $employee->_id . '" _id="' . $employee->_id . '" val="1">Inactive</span></a>';
+                        } ?>
                         <tr>
                             <td>{{ ++$key}}</td>
                             <td>{{ $employee->full_name }}</td>
@@ -49,8 +48,8 @@
                         </tr>
                         @endforeach
                     </tbody>
-
                 </table>
+                {{ $employees->appends(request()->toArray())->links() }}
             </div>
             <!-- /.card-body -->
 

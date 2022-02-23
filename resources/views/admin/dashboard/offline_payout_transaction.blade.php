@@ -58,7 +58,6 @@
 
 
  <!--start retailer transfer module-->
-
  @push('modal')
 
  <!-- Modal -->

@@ -97,7 +97,7 @@ class PassbookController extends Controller
             if (!empty($request->type))
                 $query->where('type', $request->type);
 
-            $passbooks = $query->paginate(config('constants.perPage'));
+            $passbooks = $query->page();
 
             if ($passbooks->isEmpty())
                 return back()->with('error', 'There is no any record for export!');

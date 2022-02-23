@@ -25,13 +25,20 @@ class RetailerTransController extends Controller
 
             $query = RetailerTrans::query()->where('outlet_id', $outlet_id);
 
-            if (!empty($request->start_date) && !empty($request->end_date)) {
-                $start_date = strtotime(trim($request->start_date) . " 00:00:00");
-                $end_date = strtotime(trim($request->end_date) . " 23:59:59");
+            $start_date = '';
+            $end_date   = '';
+            if (!empty($request->date_range)) {
+                $date = explode('-', $request->date_range);
+                $start_date = $date[0];
+                $end_date   = $date[1];
+            }
+            if (!empty($start_date) && !empty($end_date)) {
+                $start_date = strtotime(trim($start_date) . " 00:00:00");
+                $end_date   = strtotime(trim($end_date) . " 23:59:59");
             } else {
                 $crrMonth = (date('Y-m-d'));
                 $start_date = strtotime(trim(date("d-m-Y", strtotime('-30 days', strtotime($crrMonth)))) . " 00:00:00");
-                $end_date = strtotime(trim(date('Y-m-d')) . " 23:59:59");
+                $end_date   = strtotime(trim(date('Y-m-d')) . " 23:59:59");
             }
 
             $query->whereBetween('created', [$start_date, $end_date]);

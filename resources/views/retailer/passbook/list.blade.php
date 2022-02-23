@@ -21,7 +21,7 @@
                     @else
                     <a href="javascript:void(0);" class="btn btn-sm bg-fuchsia color-palette mr-2" id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a>
                     @endif
-                    <a href="javascript:void(0);" class="btn btn-sm btn-warning mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
+                    <a href="{{ url('retailer/passbook-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-warning mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
                 </div>
             </div>
 

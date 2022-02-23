@@ -15,7 +15,9 @@ class EmployeeController extends Controller
     public function index()
     {
         try {
-            $data['employees'] = User::where('role','employee')->get();
+
+            $data['employees'] = User::where('role','employee')->paginate(config('constants.perPage'));
+
             return view('admin.employee.list',$data);
         } catch (Exception $e) {
             return redirect('500')->with(['error' => $e->getMessage()]);;

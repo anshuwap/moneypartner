@@ -24,8 +24,7 @@
 <!-- Main content -->
 <section class="content">
   <div class="container-fluid">
-    <!-- Small boxes (Stat box) -->
-    <div class="row">
+    <!-- <div class="row">
       <div class="col-12 col-sm-6 col-md-3">
         <div class="info-box">
           <span class="info-box-icon bg-info elevation-1"><i class="fas fa-store"></i></span>
@@ -36,11 +35,9 @@
               {{ $total_outlet }}
             </span>
           </div>
-          <!-- /.info-box-content -->
         </div>
-        <!-- /.info-box -->
       </div>
-      <!-- /.col -->
+
       <div class="col-12 col-sm-6 col-md-3">
         <div class="info-box mb-3">
           <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-wallet"></i></span>
@@ -49,13 +46,9 @@
             <span class="info-box-text">Topup Amount</span>
             <span class="info-box-number">{!!mSign($total_topup_amount)!!}</span>
           </div>
-          <!-- /.info-box-content -->
         </div>
-        <!-- /.info-box -->
       </div>
-      <!-- /.col -->
 
-      <!-- fix for small devices only -->
       <div class="clearfix hidden-md-up"></div>
 
       <div class="col-12 col-sm-6 col-md-3">
@@ -66,11 +59,9 @@
             <span class="info-box-text">DMT Amount</span>
             <span class="info-box-number">{!!mSign($current_month_dmt_amount + $current_month_bulk_amount)!!}</span>
           </div>
-          <!-- /.info-box-content -->
         </div>
-        <!-- /.info-box -->
       </div>
-      <!-- /.col -->
+
       <div class="col-12 col-sm-6 col-md-3">
         <div class="info-box mb-3">
           <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-money-bill-wave"></i></span>
@@ -79,12 +70,12 @@
             <span class="info-box-text">Total DMT Amount</span>
             <span class="info-box-number">{!!mSign($total_bulk_amount + $total_dmt_amount)!!}</span>
           </div>
-          <!-- /.info-box-content -->
+
         </div>
-        <!-- /.info-box -->
+
       </div>
-      <!-- /.col -->
-    </div>
+
+    </div> -->
     <!-- /.row -->
 
     <!-- Topup Request List -->
@@ -92,37 +83,34 @@
       <div class="card-header p-0 border-bottom-0">
         <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
 
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="false"><i class="fas fa-file-invoice-dollar"></i>&nbsp;DMT Transfer</a>
-          </li>
-          <li class="nav-item">
+          </li> -->
+          <!-- <li class="nav-item">
             <a class="nav-link" id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false"><i class="fas fa-money-check nav-icon"></i>&nbsp;Payout Transfer</a>
           </li>
          <li class="nav-item">
             <a class="nav-link" id="custom-tabs-four-profile-tab1" data-toggle="pill" href="#custom-tabs-four-profile1" role="tab" aria-controls="custom-tabs-four-profile1" aria-selected="false"><i class="fas fa-hand-holding-usd"></i> &nbsp;Payout Api</a>
-          </li>
+          </li> -->
         </ul>
       </div>
-      <div class="pl-2 pr-2" style="height: 300px; overflow-y: scroll;">
+      <div class="pl-2 pr-2" style="height: 500px; overflow-y: scroll;">
         <div class="tab-content" id="custom-tabs-four-tabContent">
           <div class="tab-pane active" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
-            @include('admin.dashboard.dmt_transaction')
-
+            @include('admin.dashboard.all_transaction')
           </div>
-          <div class="tab-pane fade" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
-            @include('admin.dashboard.payout_transaction')
-
+          <!-- <div class="tab-pane fade" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+            //include('admin.dashboard.payout_transaction')
           </div>
 
           <div class="tab-pane fade" id="custom-tabs-four-profile1" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab1">
-            @include('admin.dashboard.offline_payout_transaction')
-
-          </div>
+            //include('admin.dashboard.offline_payout_transaction')
+          </div> -->
         </div>
       </div>
     </div>
 
-      @include('admin.dashboard.topup_request')
+    @include('admin.dashboard.topup_request')
 
     <!-- Main row -->
     <div class="row">
