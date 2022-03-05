@@ -10,6 +10,6 @@ Route::post('/login', [LoginController::class, 'store']);
 
 Route::group(['middleware' => ['jwt.verify']], function () {
 
-    Route::post('offline-payout',      [offlinePayout::class, 'payout']);
-    Route::post('bulk-offline-payout', [offlinePayout::class, 'bulkPayout']);
+    Route::post('payout',      [offlinePayout::class, 'payout']);
+    Route::post('bulk-payout', [offlinePayout::class, 'bulkPayout']);
 });

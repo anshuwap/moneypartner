@@ -1,134 +1,21 @@
-@extends('retailer.layouts.app')
-
-@section('content')
-@section('page_heading', 'Customer List')
-
-<div class="row">
-    <div class="col-12 mt-2">
-        <div class="card">
-
-            <div class="">
-                <ul class="nav nav-tabs" role="tablist">
-                    @if(!empty(moneyTransferOption()->dmt_transfer_offline))
-                    <li class="nav-item">
-                        <a href="{{ url('retailer/customer-trans') }}" class="nav-link active">DMT Transaction</a>
-                    </li>
-                    @endif
-
-                    @if(!empty(moneyTransferOption()->payout_offline))
-                    <li class="nav-item">
-                        <a href="{{ url('retailer/retailer-trans') }}" class="nav-link">Payout Transaction</a>
-                    </li>
-                    @endif
-
-                    @if(!empty(moneyTransferOption()->payout_offline_api))
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">Payout Api Api</a>
-                    </li>
-                    @endif
-
-                </ul>
-                <div class="add-btn">
-                    <a href="javascript:void(0);" class="btn btn-sm btn-success mr-4" id="create_customer"><i class="fas fa-plus-circle"></i>&nbsp;Add DMT</a>
-                </div>
-            </div>
-
-
-            <div class="card-body table-responsive py-4 table-sm">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Sr No.</th>
-                            <th>Customer Name</th>
-                            <th>Mobile No.</th>
-                            <th>Mobile Verified</th>
-                            <th>Total Amount</th>
-                            <th>Created Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        @if(!$customer_trans->isEmpty())
-                        @foreach($customer_trans as $key=>$trans)
-                        <tr data-widget="expandable-table" aria-expanded="false">
-                            <td>{{ ++$key }}</td>
-                            <td>{{ ucwords($trans->customer_name) }}</td>
-                            <td>{{ $trans->mobile_number }}</td>
-                            <td>{{ ($trans->verified)?'Yes':'No'}}</td>
-                            <td>{!!mSign($trans->total_amount)!!}</td>
-                            <td>{{ date('d,M Y H:i A',$trans->created) }}</td>
-                        </tr>
-
-                        <tr class="expandable-body d-none">
-                            <td colspan="8">
-                                <p style="display: none; margin-top: -41px;">
-                                <table class="table table-sm" style="font-size: 13px;  background:rgb(174, 218, 205);">
-                                    <tr>
-                                        <th>Sr. No.</th>
-                                        <th>Amount</th>
-                                        <th>Beneficiary Name</th>
-                                        <th>Payment Mode</th>
-                                        <th>IFSC</th>
-                                        <th>Account No./UPI Id</th>
-                                        <th>Bank Name</th>
-                                        <th>Status</th>
-                                        <th>Datetime</th>
-                                    </tr>
-                                    <?php
-                                    if (!empty($trans->trans_details)) {
-                                        foreach ($trans->trans_details as $ke => $detail) {
-
-                                            $payment = (object)$detail['payment_channel'];
-                                            if ($detail['status'] == 'approved') {
-                                                $status = '<strong class="text-success">' . ucwords($detail['status']) . '</strong>';
-                                            } else if ($detail['status'] == 'rejected') {
-                                                $status = '<strong class="text-danger">' . ucwords($detail['status']) . '</strong>';
-                                            } else {
-                                                $status = '<strong class="text-warning">' . ucwords($detail['status']) . '</strong>';
-                                            }
-                                    ?>
-                                            <tr>
-
-                                                <td>{{ ++$ke }}</td>
-                                                <td>{!! mSign($detail['amount']) !!}</td>
-                                                <td>{{ ucwords($detail['receiver_name'] ) }}</td>
-                                                <td>{{ ucwords(str_replace('_',' ',$detail['payment_mode'] )) }}</td>
-                                                <td>{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</td>
-                                                <td><?= (!empty($payment->account_number)) ? $payment->account_number : '' ?>
-                                                    <?= (!empty($payment->upi_id)) ? $payment->upi_id : '' ?>
-                                                </td>
-                                                <td><?= (!empty($payment->bank_name)) ? $payment->bank_name : '-' ?></td>
-                                                <td>{!! $status !!}</td>
-                                                <td>{{ date('d,M y H:i A',$detail['created'])}}</td>
-                                            </tr>
-                                    <?php }
-                                    } ?>
-                                </table>
-                                </p>
-                            </td>
-                        </tr>
-                        @endforeach
-
-                        @else
-                        <tr>
-                            <td colspan="4" align="center">There is no any Record.</td>
-                        </tr>
-                        @endif
-
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <!-- /.card -->
-    </div>
-</div>
-<!-- /.row -->
-
 @push('modal')
 
+<?php
+$bank_names = [
+    'Bank of Baroda', 'Bank of India', 'Bank of Maharashtra', 'Canara Bank', 'Central Bank of India',
+    'Indian Bank', 'Indian Overseas Bank', 'Punjab & Sind Bank', 'Punjab National Bank', 'State Bank of India', 'UCO Bank',
+    'Union Bank of India', 'Axis Bank Ltd', 'Bandhan Bank Ltd', 'CSB Bank Ltd', 'City Union Bank Ltd', 'DCB Bank Ltd', 'Dhanlaxmi Bank Ltd',
+    'Federal Bank Ltd', 'HDFC Bank Ltd', 'ICICI Bank Ltd', 'Induslnd Bank Ltd', 'IDFC First Bank Ltd', 'Jammu & Kashmir Bank Ltd',
+    'Karnataka Bank Ltd', 'Karur Vysya Bank Ltd', 'Kotak Mahindra Bank Ltd', 'Lakshmi Vilas Bank Ltd', 'Nainital Bank Ltd', 'RBL Bank Ltd',
+    'South Indian Bank Ltd', 'Tamilnad Mercantile Bank Ltd', 'YES Bank Ltd', 'IDBI Bank Ltd', 'Au Small Finance Bank Limited', 'Capital Small Finance Bank Limited',
+    'Equitas Small Finance Bank Limited', 'Suryoday Small Finance Bank Limited', 'Ujjivan Small Finance Bank Limited', 'Utkarsh Small Finance Bank Limited',
+    'ESAF Small Finance Bank Limited', 'Fincare Small Finance Bank Limited', 'Jana Small Finance Bank Limited', 'North East Small Finance Bank Limited', 'Shivalik Small Finance Bank Limited',
+    'India Post Payments Bank Limited', 'Fino Payments Bank Limited', 'Paytm Payments Bank Limited', 'Airtel Payments Bank Limited'
+];
+?>
 <!-- Modal -->
 <div class="modal fade" id="add_bank_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg " role="document">
+    <div class="modal-dialog  modal-dialog-scrollable modal-lg " role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="heading_bank">Customer Details</h5>
@@ -142,11 +29,12 @@
             </div>
 
             <div class="modal-body">
-                <form id="add_customer" action="{{ url('retailer/customer-trans') }}" method="post">
+                <form id="add_customer" action="{{ url('retailer/dmt-trans') }}" method="post">
                     @csrf
                     <div id="put"></div>
                     <div class="row">
-                        <div class="col-md-6"><strong>Sender Details</strong>
+                        <div class="col-md-6 dmt-form"><strong>Sender Details</strong>
+                            <div id="preview-input"><input type="hidden" id="preview-field" value="preview" name="preview"></div>
 
                             <div class="border p-3">
                                 <div class="form-group">
@@ -162,7 +50,6 @@
                                     <span id="mobile_number_msg" class="custom-text-danger"></span>
                                 </div>
 
-
                                 <div class="form-group d-none" id="otp-field">
 
                                 </div>
@@ -176,7 +63,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6"><strong>Receiver Details</strong>
+                        <div class="col-md-6 dmt-form" id="dmt-form"><strong>Beneficiary Details</strong>
                             <div class="border p-3">
 
                                 <div class="form-group">
@@ -196,49 +83,117 @@
                                     <span id="receiver_msg" class="custom-text-danger"></span>
                                 </div>
 
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label>Select Payment Channel</label>
                                     <select name="payment_mode" class="form-control form-control-sm" id="payment_channel" disabled>
                                         <option value="">Select</option>
                                         <option value="bank_account">Bank Account</option>
-                                        <option value="upi">UPI</option>
-                                    </select>
+                                      <option value="upi">UPI</option> -->
+                                <!-- </select>
                                     <span id="receiver_msg" class="custom-text-danger"></span>
                                 </div>
+                                <div id="payment_channel_field"> -->
 
-                                <div id="payment_channel_field">
-
+                                <div class="form-group">
+                                    <label>Bank Name</label>
+                                    <select name="payment_channel[bank_name]" disabled class="form-control form-control-sm" required>
+                                        <option value=''>Select Bank Name</option>
+                                        <?php foreach ($bank_names as $name) {
+                                            echo '<option value="' . $name . '">' . $name . '</option>';
+                                        } ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Account Number</label>
+                                    <input type="number" name="payment_channel[account_number]" disabled class="form-control form-control-sm" placeholder="Enter Account Number">
+                                </div>
+                                <div class="form-group">
+                                    <label>IFSC Code</label>
+                                    <input type="text" name="payment_channel[ifsc_code]" disabled class="form-control form-control-sm" placeholder="Enter IFSC Code">
                                 </div>
 
                             </div>
 
                         </div>
-                        <div class="col-md-12 mt-2">
-                            <div class="form-group text-center">
-                                <input type="submit" class="btn btn-success btn-sm" disabled id="submit_customer" value="Submit">
-                                <!-- <input type="submit" class="btn btn-info btn-sm" value="Send"> -->
+
+                    </div>
+
+                    <div class="com-md-12 bordered-1 d-none" id="preview">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td>Sender Name</td>
+                                        <td id="sender_name1">Sender Name</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mobile Number</td>
+                                        <td id="mobile_number1"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Amount</td>
+                                        <td id="amount1"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fess</td>
+                                        <td id="fees"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Receiver Name</td>
+                                        <td id="receiver_name"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bank Name</td>
+                                        <td id="bank_name"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Account Number</td>
+                                        <td id="account_number"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>IFSC Code</td>
+                                        <td id="ifsc_code"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card p-4">
+                                    <div class="form-group mb-3">
+                                        <label class="text-center">Enter PIN</label>
+                                        <div class="cover-otp d-flex ">
+                                            <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f1">
+                                            <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f2">
+                                            <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f3">
+                                            <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f4">
+                                        </div>
+                                        <span id="otp_verify" class="text-success"></span>
+                                    </div>
+                                    <div class="form-group text-center">
+                                        <!-- <input type="submit" class="btn btn-success btn-sm" value="Verify"> -->
+                                        <a href="javascript:void(0);" class="btn btn-sm btn-warning" id="back"><i class="far fa-arrow-alt-circle-left"></i>&nbsp;Back</a>
+                                        <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-compress-arrows-alt"></i>&nbsp;Verify & Send</button>
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </form>
+
+
+                    <div class="col-md-12 mt-2">
+                        <div class="form-group text-center" id="submit-btn">
+                            <input type="submit" class="btn btn-success btn-sm" disabled id="submit_customer" value="Preview">
+                            <!-- <input type="submit" class="btn btn-info btn-sm" value="Send"> -->
+                        </div>
+                    </div>
             </div>
+
+            </form>
         </div>
     </div>
 </div>
+</div>
 
-<?php
-$bank_names = [
-    'Bank of Baroda', 'Bank of India', 'Bank of Maharashtra', 'Canara Bank', 'Central Bank of India',
-    'Indian Bank', 'Indian Overseas Bank', 'Punjab & Sind Bank', 'Punjab National Bank', 'State Bank of India', 'UCO Bank',
-    'Union Bank of India', 'Axis Bank Ltd', 'Bandhan Bank Ltd', 'CSB Bank Ltd', 'City Union Bank Ltd', 'DCB Bank Ltd', 'Dhanlaxmi Bank Ltd',
-    'Federal Bank Ltd', 'HDFC Bank Ltd', 'ICICI Bank Ltd', 'Induslnd Bank Ltd', 'IDFC First Bank Ltd', 'Jammu & Kashmir Bank Ltd',
-    'Karnataka Bank Ltd', 'Karur Vysya Bank Ltd', 'Kotak Mahindra Bank Ltd', 'Lakshmi Vilas Bank Ltd', 'Nainital Bank Ltd', 'RBL Bank Ltd',
-    'South Indian Bank Ltd', 'Tamilnad Mercantile Bank Ltd', 'YES Bank Ltd', 'IDBI Bank Ltd', 'Au Small Finance Bank Limited', 'Capital Small Finance Bank Limited',
-    'Equitas Small Finance Bank Limited', 'Suryoday Small Finance Bank Limited', 'Ujjivan Small Finance Bank Limited', 'Utkarsh Small Finance Bank Limited',
-    'ESAF Small Finance Bank Limited', 'Fincare Small Finance Bank Limited', 'Jana Small Finance Bank Limited', 'North East Small Finance Bank Limited', 'Shivalik Small Finance Bank Limited',
-    'India Post Payments Bank Limited', 'Fino Payments Bank Limited', 'Paytm Payments Bank Limited', 'Airtel Payments Bank Limited'
-];
-?>
 <script>
     $('#payment_channel').change(function() {
         var payment_channel = $(this).val();
@@ -248,7 +203,7 @@ $bank_names = [
             <select name="payment_channel[bank_name]" class="form-control form-control-sm" required>
             <option value=''>Select Bank Name</option>
             <?php foreach ($bank_names as $name) {
-                echo '<option value=' . $name . '>' . $name . '</option>';
+                echo '<option value="' . $name . '">' . $name . '</option>';
             } ?>
             </select>
             </div>
@@ -458,15 +413,25 @@ $bank_names = [
     $('#create_customer').click(function(e) {
         e.preventDefault();
         $('form#add_customer')[0].reset();
-        let url = '{{ url("retailer/customer-trans") }}';
+        let url = '{{ url("retailer/dmt-trans") }}';
         $('#heading_bank').html('Transaction Details');
         $('#put').html('');
         $('form#add_customer').attr('action', url);
-        $('#submit_customer').val('Submit');
+        $('#submit_customer').val('Preview');
+        // openPinPopup();
         $('#add_bank_modal').modal('show');
+
     })
 
 
+    //back to dmt form
+    $('#back').click(function(e) {
+        e.preventDefault();
+        $('.dmt-form').removeClass('d-none');
+        $('#preview').addClass('d-none');
+        $('#submit-btn').removeClass('d-none');
+        $('#preview-input').html('<input type="hidden" id="preview-field" value="preview" name="preview">');
+    })
 
 
     /*start form submit functionality*/
@@ -474,6 +439,7 @@ $bank_names = [
         e.preventDefault();
         formData = new FormData(this);
         var url = $(this).attr('action');
+
         $.ajax({
             data: formData,
             type: "POST",
@@ -499,7 +465,7 @@ $bank_names = [
                 /*Start Validation Error Message*/
 
                 /*Start Status message*/
-                if (res.status == 'success' || res.status == 'error') {
+                if (res.status == 'error' || res.status == 'success') {
                     Swal.fire(
                         `${res.status}!`,
                         res.msg,
@@ -508,6 +474,22 @@ $bank_names = [
                 }
                 /*End Status message*/
 
+                //for preview page
+                console.log(res);
+                if (res.status === 'preview') {
+                    $('.dmt-form').addClass('d-none');
+                    $('#preview').removeClass('d-none');
+                    $('#submit-btn').addClass('d-none');
+                    $('#preview-field').remove();
+                    $('#sender_name1').html(res.response.sender_name);
+                    $('#mobile_number1').html(res.response.mobile_number);
+                    $('#amount1').html(res.response.amount);
+                    $('#fees').html(res.response.fees);
+                    $('#bank_name').html(res.response.payment_channel.bank_name);
+                    $('#account_number').html(res.response.payment_channel.account_number);
+                    $('#ifsc_code').html(res.response.payment_channel.ifsc_code);
+                    $('#receiver_name').html(res.response.receiver_name);
+                }
                 //for reset all field
                 if (res.status == 'success') {
                     $('form#add_customer')[0].reset();
@@ -520,7 +502,37 @@ $bank_names = [
     });
 
     /*end form submit functionality*/
+
+
+    $('.popover-dismiss').popover({
+        trigger: 'focus'
+    })
+</script>
+
+<script>
+    /*start focus pointer to new field (functionality)*/
+    $('#f1').keyup(function() {
+        if ($('#f1').val().length == 1) {
+            $('#f2').focus();
+        }
+    });
+    $('#f2').keyup(function() {
+        if ($('#f2').val().length == 1) {
+            $('#f3').focus();
+        }
+    });
+    $('#f3').keyup(function() {
+        if ($('#f3').val().length == 1) {
+            $('#f4').focus();
+        }
+    });
+    $('#f4').keyup(function() {
+        if ($('#f4').val().length == 1) {
+            $('#login').focus();
+            $("#login").removeClass("disabled");
+        }
+    });
+    /*end focus pointer to new field (functionality)*/
 </script>
 
 @endpush
-@endsection

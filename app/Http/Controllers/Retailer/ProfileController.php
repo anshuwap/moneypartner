@@ -7,7 +7,6 @@ use App\Http\Validation\ProfileValidation;
 use App\Models\Outlet;
 use App\Models\User;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -43,10 +42,14 @@ class ProfileController extends Controller
             if (!$outlet->save())
                 return response(['status' => 'error', 'msg' => 'Profile not Updated!']);
 
-           if (!empty($request->old_password)){
-            if(!$this->updateUser($request))
-            return response(json_encode(array('validation' => ['old_password' => 'Old Password does not match current password'])));
-           }
+            $user = User::find(Auth::user()->_id);
+            $user->pin = $request->pin;
+            $user->save();
+
+            if (!empty($request->old_password)) {
+                if (!$this->updateUser($request))
+                    return response(json_encode(array('validation' => ['old_password' => 'Old Password does not match current password'])));
+            }
 
 
             return response(['status' => 'success', 'msg' => 'Profile Updated Successfully!']);
@@ -62,9 +65,9 @@ class ProfileController extends Controller
         $user = User::find(Auth::user()->_id);
 
         if (!Hash::check($request->old_password, $user->password))
-          return false;
+            return false;
 
-            $user->password = Hash::make($request->new_password);
+        $user->password = Hash::make($request->new_password);
 
         if ($user->save())
             return true;

@@ -35,7 +35,7 @@ class BankAccountController extends Controller
         $bank_account->account_number       = $request->account_number;
         $bank_account->ifsc_code            = $request->ifsc_code;
         $bank_account->account_holder_name  = $request->account_holder_name;
-        $bank_account->status               = $request->status;
+        $bank_account->status               = (int)$request->status;
 
         if ($bank_account->save())
             return response(['status' => 'success', 'msg' => 'Bank Account Added Successfully!']);
@@ -68,7 +68,7 @@ class BankAccountController extends Controller
         $bank_account->account_number       = $request->account_number;
         $bank_account->ifsc_code            = $request->ifsc_code;
         $bank_account->account_holder_name  = $request->account_holder_name;
-        $bank_account->status               = $request->status;
+        $bank_account->status               = (int)$request->status;
 
         if ($bank_account->save())
             return response(['status' => 'success', 'msg' => 'Bank Account Updated Successfully!']);

@@ -93,12 +93,12 @@
               <div class="form-row">
                 <div class="form-group col-md-6">
                   <label>From Amount</label>
-                  <input type="number" name="from_amount" id="from_amount" required class="form-control form-control-sm" placeholder="Enter Amount">
+                  <input type="number" name="from_amount" id="from_amount" required  disabled value="{{ (!empty($bank['from_amount']))?$bank['to_amount'] + 1:'0' }}" class="form-control form-control-sm" placeholder="Enter Amount">
                   <span id="from_amount_msg" class="custom-text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
                   <label>To Amount</label>
-                  <input type="number" name="to_amount" id="to_amount" required class="form-control form-control-sm" placeholder="Enter Amount">
+                  <input type="number" name="to_amount" id="to_amount" min="{{ (!empty($bank['from_amount']))?$bank['to_amount'] + 1:'0' }}" required class="form-control form-control-sm" placeholder="Enter Amount">
                   <span id="to_amount_msg" class="custom-text-danger"></span>
                 </div>
               </div>
@@ -108,16 +108,9 @@
                   <label>Type</label>
                   <select class="form-control form-control-sm" id="type" required name="type">
                     <option value=" ">Select</option>
-                    @if(!empty($bank_charges[0]['type']) && $bank_charges[0]['type'] == 'persantage')
-                    <option value="persantage">Persantage(%)</option>
-                    @endif
-                    @if(!empty($bank_charges[0]['type']) && $bank_charges[0]['type'] == 'inr')
-                    <option value="inr">INR</option>
-                    @endif
-                    @if(empty($bank_charges[0]['type']) && empty($bank_charges[0]['type']))
                     <option value="persantage">Persantage(%)</option>
                     <option value="inr">INR</option>
-                    @endif
+
                   </select>
                   <span id="type_msg" class="custom-text-danger"></span>
                 </div>

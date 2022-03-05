@@ -118,7 +118,7 @@
           <div class="form-group">
             <select name="status" class="form-control control-sm" required='required'>
               <option value="">Select</option>
-              <option value="approved">Approved</option>
+              <option value="success">success</option>
               <option value="rejected">Rejected</option>
             </select>
           </div>
@@ -164,7 +164,7 @@
                 <div class="form-group">
                   <select name="status" class="form-control control-sm" required='required'>
                     <option value="">Select</option>
-                    <option value="approved">Approved</option>
+                    <option value="success">success</option>
                     <option value="rejected">Rejected</option>
                   </select>
                 </div>

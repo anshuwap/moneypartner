@@ -80,9 +80,9 @@ class TopupRequestController extends Controller
             $topup->admin_comment = $request->comment;
             $topup->admin_action = 1;
             $topup->save();
-            if ($topup->status == 'approved') {
+            if ($topup->status == 'success') {
 
-                $topups = Topup::select('amount')->where('status', 'approved')->where('outlet_id', $topup->outlet_id)->get();
+                $topups = Topup::select('amount')->where('status', 'success')->where('outlet_id', $topup->outlet_id)->get();
 
                 $amount = 0;
                 foreach ($topups as $topupa) {
@@ -92,7 +92,7 @@ class TopupRequestController extends Controller
                 //add topup amount in retailer wallet
                 addTopupAmount($topup->retailer_id, $amount);
 
-                return response(['status' => 'success', 'msg' => 'Topup Request Approved', 'status_msg' => ucwords($topup->status), 'id' => $topup->id]);
+                return response(['status' => 'success', 'msg' => 'Topup Request success', 'status_msg' => ucwords($topup->status), 'id' => $topup->id]);
             } else if ($topup->status == 'rejected') {
                 return response(['status' => 'success', 'msg' => 'Topup Request Rejected', 'status_msg' => ucwords($topup->status), 'id' => $topup->id]);
             } else {

@@ -32,7 +32,7 @@ class QrCodeController extends Controller
         $qr_code = new QrCode();
         $qr_code->user_id      = Auth::user()->_id;
         $qr_code->name         = $request->name;
-        $qr_code->status       = $request->status;
+        $qr_code->status       = (int)$request->status;
         //for file uploade
         if (!empty($request->file('qr_code')))
             $qr_code->qr_code  = singleFile($request->file('qr_code'), 'attachment/payment_mode');
@@ -65,7 +65,7 @@ class QrCodeController extends Controller
 
         $qr_code = $QrCode;
         $qr_code->name         = $request->name;
-        $qr_code->status       = $request->status;
+        $qr_code->status       = (int)$request->status;
         //for file uploade
         if (!empty($request->file('qr_code')))
             $qr_code->qr_code  = singleFile($request->file('qr_code'), 'attachment/payment_mode');

@@ -168,7 +168,7 @@
                                     <label>Action</label>
                                     <select class="form-control form-control-sm" required id="type" name="type">
                                         <option value=" ">Select</option>
-                                        <option value="approved">Approved</option>
+                                        <option value="success">success</option>
                                         <option value="pending">Pending</option>
                                         <option value="reject">Reject</option>
                                     </select>

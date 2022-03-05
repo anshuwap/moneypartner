@@ -20,7 +20,7 @@
         <table id="table" class="table table-hover text-nowrap table-sm">
           <thead>
             <tr>
-              <th>Sl No.</th>
+              <th>Sr No.</th>
               <th>Outlet No./Code</th>
               <th>Name</th>
               <th>Mobile No.</th>

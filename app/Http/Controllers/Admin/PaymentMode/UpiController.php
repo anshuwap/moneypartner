@@ -33,7 +33,7 @@ class UpiController extends Controller
         $upi->user_id      = Auth::user()->_id;
         $upi->name         = $request->name;
         $upi->upi_id       = $request->upi_id;
-        $upi->status       = $request->status;
+        $upi->status       = (int)$request->status;
 
         if ($upi->save())
             return response(['status' => 'success', 'msg' => 'UPI Added Successfully!']);
@@ -64,7 +64,7 @@ class UpiController extends Controller
         $upi = $Upi;
         $upi->name         = $request->name;
         $upi->upi_id       = $request->upi_id;
-        $upi->status       = $request->status;
+        $upi->status       = (int)$request->status;
 
         if ($upi->save())
             return response(['status' => 'success', 'msg' => 'UPI Updated Successfully!']);

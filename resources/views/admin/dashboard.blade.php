@@ -78,46 +78,17 @@
     </div> -->
     <!-- /.row -->
 
-    <!-- Topup Request List -->
-    <div class="card card-primary card-outline card-outline-tabs">
-      <div class="card-header p-0 border-bottom-0">
-        <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+    <!-- Transaction Request List -->
+    @include('admin.dashboard.all_transaction')
 
-          <!-- <li class="nav-item">
-            <a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="false"><i class="fas fa-file-invoice-dollar"></i>&nbsp;DMT Transfer</a>
-          </li> -->
-          <!-- <li class="nav-item">
-            <a class="nav-link" id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false"><i class="fas fa-money-check nav-icon"></i>&nbsp;Payout Transfer</a>
-          </li>
-         <li class="nav-item">
-            <a class="nav-link" id="custom-tabs-four-profile-tab1" data-toggle="pill" href="#custom-tabs-four-profile1" role="tab" aria-controls="custom-tabs-four-profile1" aria-selected="false"><i class="fas fa-hand-holding-usd"></i> &nbsp;Payout Api</a>
-          </li> -->
-        </ul>
-      </div>
-      <div class="pl-2 pr-2" style="height: 500px; overflow-y: scroll;">
-        <div class="tab-content" id="custom-tabs-four-tabContent">
-          <div class="tab-pane active" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
-            @include('admin.dashboard.all_transaction')
-          </div>
-          <!-- <div class="tab-pane fade" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
-            //include('admin.dashboard.payout_transaction')
-          </div>
-
-          <div class="tab-pane fade" id="custom-tabs-four-profile1" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab1">
-            //include('admin.dashboard.offline_payout_transaction')
-          </div> -->
-        </div>
-      </div>
-    </div>
 
     @include('admin.dashboard.topup_request')
 
     <!-- Main row -->
     <div class="row">
       <!-- Left col -->
-      <section class="col-lg-7 connectedSortable">
+      <!-- <section class="col-lg-7 connectedSortable">
 
-        <!-- BAR CHART -->
         <div class="card card-success">
           <div class="card-header">
             <h3 class="card-title">Bar Chart</h3>
@@ -136,15 +107,13 @@
               <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
             </div>
           </div>
-          <!-- /.card-body -->
+
         </div>
-        <!-- /.card -->
 
-
-      </section>
+      </section> -->
       <!-- /.Left col -->
       <!-- right col (We are only adding the ID to make the widgets sortable)-->
-      <section class="col-lg-5 connectedSortable">
+      <!-- <section class="col-lg-5 connectedSortable">
 
         <div class="card" style="height: 338px;">
           <div class="card-header">
@@ -159,7 +128,7 @@
               </button>
             </div>
           </div>
-          <!-- /.card-header -->
+
           <div class="card-body">
             <div class="row">
               <div class="col-md-8">
@@ -174,9 +143,9 @@
                   </div>
                   <canvas id="pieChart" height="147" width="296" style="display: block; height: 118px; width: 237px;" class="chartjs-render-monitor"></canvas>
                 </div>
-                <!-- ./chart-responsive -->
+
               </div>
-              <!-- /.col -->
+
               <div class="col-md-4">
                 <ul class="chart-legend clearfix">
                   <li><i class="far fa-circle text-danger"></i> Topup Amount</li>
@@ -186,22 +155,18 @@
 
                 </ul>
               </div>
-              <!-- /.col -->
+
             </div>
-            <!-- /.row -->
+
           </div>
 
         </div>
 
-        <!-- /.card -->
-      </section>
-      <!-- right col -->
+      </section> -->
+
     </div>
-    <!-- /.row (main row) -->
 
-
-    <!--/.direct-chat -->
-  </div><!-- /.container-fluid -->
+  </div>
 </section>
 <!-- /.content -->
 

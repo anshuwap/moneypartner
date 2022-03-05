@@ -321,6 +321,14 @@
 
 
                   <div class="form-group row">
+                    <label for="" class="col-sm-2 col-form-label">PIN</label>
+                    <div class="col-sm-10">
+                      <input type="password" name="pin" class="form-control" id="pin" placeholder="Enter PIN" value="{{ Auth::user()->pin}}" style=" background: #b2d8cd;ss">
+                      <span id="pin_msg" class="custom-text-danger"></span>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
                     <div class="offset-sm-2 col-sm-10">
                       <button type="submit" class="btn btn-success">Submit</button>
                     </div>

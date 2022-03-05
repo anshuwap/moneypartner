@@ -1,103 +1,3 @@
-@extends('retailer.layouts.app')
-
-@section('content')
-@section('page_heading', 'Retailer List')
-
-<div class="row">
-    <div class="col-12 mt-2">
-        <div class="card">
-            <div class="">
-                <ul class="nav nav-tabs" role="tablist">
-
-                    @if(!empty(moneyTransferOption()->dmt_transfer_offline))
-                    <li class="nav-item">
-                        <a href="{{ url('retailer/customer-trans') }}" class="nav-link "><i class="fas fa-file-invoice-dollar"></i>&nbsp;DMT Transaction</a>
-                    </li>
-                    @endif
-
-
-                    @if(!empty(moneyTransferOption()->payout_offline))
-                    <li class="nav-item">
-                        <a href="{{ url('retailer/retailer-trans') }}" class="nav-link"> <i class="fas fa-money-check nav-icon"></i>&nbsp;Payout Transaction</a>
-                    </li>
-                    @endif
-
-                    @if(!empty(moneyTransferOption()->payout_offline_api))
-                    <li class="nav-item">
-                        <a href="{{ url('retailer/offline-payout') }}" class="nav-link active"><i class="fas fa-hand-holding-usd"></i> &nbsp;Payout Api</a>
-                    </li>
-                    @endif
-                </ul>
-                  @if(!empty(moneyTransferOption()->payout_online_api))
-                <div class="add-btn">
-                    <a href="javascript:void(0);" class="btn btn-sm btn-success mr-2" id="create_retailer"><i class="fas fa-plus-circle"></i>&nbsp;Add Payout Api</a>
-                </div>
-                 @endif
-            </div>
-
-
-            <!-- /.card-header -->
-            <div class="card-body table-responsive py-4 table-sm">
-                <table id="table" class="table table-hover text-nowrap">
-                    <thead>
-                        <tr>
-                            <th>Sr No.</th>
-                            <th>Transaction Id</th>
-                            <th>Amount</th>
-                            <th>Beneficiary Name</th>
-                            <th>Payment Mode</th>
-                            <th>IFSC</th>
-                            <th>Account No./UPI Id</th>
-                            <th>Bank Name</th>
-                            <th>Status</th>
-                            <th>Datetime</th>
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($retailerTrans as $key=>$trans)
-                        <?php
-
-                        $payment = (object)$trans->payment_channel;
-
-                        if ($trans->status == 'approved') {
-                            $status = '<strong class="text-success">' . ucwords($trans->status) . '</strong>';
-                            $action = '-';
-                        } else if ($trans->status == 'rejected') {
-                            $status = '<strong class="text-danger">' . ucwords($trans->status) . '</strong>';
-                            $action = '-';
-                        } else {
-
-                            $status = '<strong class="text-warning">' . ucwords($trans->status) . '</strong>';
-                        } ?>
-                        <tr>
-                            <td>{{ ++$key }}</td>
-                            <td>{{ $trans->transaction_id }}</td>
-                            <td>{!! mSign($trans->amount) !!}</td>
-                            <td>{{ ucwords($trans->receiver_name)}}</td>
-                            <td>{{ ucwords(str_replace('_',' ',$trans->payment_mode))}}</td>
-                            <td>{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</td>
-                            <td><?= (!empty($payment->account_number)) ? $payment->account_number : '' ?>
-                                <?= (!empty($payment->upi_id)) ? $payment->upi_id : '' ?>
-                            </td>
-                            <td><?= (!empty($payment->bank_name)) ? $payment->bank_name : '-' ?></td>
-                            <td>{!! $status !!}</td>
-                            <td>{{ date('d,M y H:i A',$trans->created) }}</td>
-
-                        </tr>
-                        @endforeach
-                    </tbody>
-
-                </table>
-            </div>
-            <!-- /.card-body -->
-
-        </div>
-        <!-- /.card -->
-    </div>
-</div>
-<!-- /.row -->
-
 
 @push('modal')
 
@@ -169,7 +69,7 @@ $bank_names = [
 ?>
 
 <!-- Modal -->
-<div class="modal fade" id="retailer_trans_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="payout_api_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -184,22 +84,21 @@ $bank_names = [
             </div>
 
             <div class="modal-body">
-                <form id="add_customer" action="{{ url('retailer/offline-payout') }}" method="post">
+                <form id="add_payout_api" action="{{ url('retailer/payout-api') }}" method="post">
                     @csrf
                     <div id="put"></div>
                     <div class="row">
 
-                        <div class="col-md-12"><strong>Receiver Details</strong>
-                            <div class="border p-3">
+                        <div class="col-md-12">
 
                                 <div class="form-group">
                                     <label>Amount</label>
-                                    <input type="number" placeholder="Enter Amount" id="amount" required name="amount" class="form-control form-control-sm">
-                                    <span id="amount_msg" class="custom-text-danger"></span>
+                                    <input type="number" placeholder="Enter Amount" id="amount_payout_api" required name="amount" class="form-control form-control-sm">
+                                    <span id="pauout_api_amount_msg" class="custom-text-danger"></span>
                                 </div>
 
-                                <div id="charges"></div>
-                                <div id="upload_docs"></div>
+                                <div id="charges_payout_api"></div>
+                                <div id="payout_api_upload_docs"></div>
 
                                 <div class="form-group">
                                     <label>Receiver Name</label>
@@ -226,10 +125,9 @@ $bank_names = [
                                 </div>
                             </div>
 
-                        </div>
                         <div class="col-md-12 mt-2">
                             <div class="form-group text-center">
-                                <input type="submit" class="btn btn-success btn-sm" id="submit_customer" value="Submit">
+                                <input type="submit" class="btn btn-success btn-sm" id="submit_payout_api" value="Submit">
                                 <!-- <input type="submit" class="btn btn-info btn-sm" value="Send"> -->
                             </div>
                         </div>
@@ -241,14 +139,14 @@ $bank_names = [
 </div>
 
 <script>
-    $('#amount').keyup(function(e) {
+    $('#amount_payout_api').keyup(function(e) {
         e.preventDefault();
 
         var amount = $(this).val();
-        transactionFeeDetails(amount);
+        payout_transction_api(amount);
 
         if (amount >= 25000 && amount < 200000) {
-            // $('#upload_docs').html(`<div class="form-group">
+            // $('#payout_api_upload_docs').html(`<div class="form-group">
             // <label>Pancard Number</label>
             // <input type="text" name="pancard_no" class=" form-control form-control-sm" placeholder="Enter Pancard Number" required>
             // </div>
@@ -263,19 +161,19 @@ $bank_names = [
             // <span id="attachment_msg" class="custom-text-danger"></span>
             // </div>`);
         } else if (amount > 200000) {
-            $('#add_customer input,select').attr('disabled', 'disabled');
-            $('#amount_msg').html('Alowed only 2 lakh Per Month.');
-            $('#amount').removeAttr('disabled');
+            $('#add_payout_api input,select').attr('disabled', 'disabled');
+            $('#pauout_api_amount_msg').html('Alowed only 2 lakh Per Month.');
+            $('#amount_payout_api').removeAttr('disabled');
         } else {
-            $('#upload_docs').html(``);
-            $('#amount_msg').html(``);
-            $('#add_customer input,select').removeAttr('disabled');
+            $('#payout_api_upload_docs').html(``);
+            $('#pauout_api_amount_msg').html(``);
+            $('#add_payout_api input,select').removeAttr('disabled');
         }
     })
 
 
     //for check retailer fee detials
-    function transactionFeeDetails(amount) {
+    function payout_transction_api(amount) {
 
         var amount = (amount) ? amount : 0;
         $.ajax({
@@ -288,14 +186,14 @@ $bank_names = [
             success: function(res) {
 
                 if (res.status == 'success') {
-                    $('#charges').html(`Rs. ${res.charges} Transaction Fees
+                    $('#charges_payout_api').html(`Rs. ${res.charges} Transaction Fees
         <div class="form-group">
         <label>Transaction Amount</label>
         <input type="text" readonly name="" value="${parseInt(amount)+ parseInt(res.charges)}" class="form-control form-control-sm">
         </div>`);
 
                 } else if (res.status == 'error') {
-                    $('#charges').html(res.msg);
+                    $('#charges_payout_api').html(res.msg);
                 }
             }
         })
@@ -304,18 +202,18 @@ $bank_names = [
 
     $('#create_retailer').click(function(e) {
         e.preventDefault();
-        $('form#add_customer')[0].reset();
-        let url = '{{ url("retailer/offline-payout") }}';
+        $('form#add_payout_api')[0].reset();
+        let url = '{{ url("retailer/payout-api") }}';
         $('#heading_bank').html('Transaction Details');
         $('#put').html('');
-        $('form#add_customer').attr('action', url);
-        $('#submit_customer').val('Submit');
-        $('#retailer_trans_modal').modal('show');
+        $('form#add_payout_api').attr('action', url);
+        $('#submit_payout_api').val('Submit');
+        $('#payout_api_modal').modal('show');
     })
 
 
     /*start form submit functionality*/
-    $("form#add_customer").submit(function(e) {
+    $("form#add_payout_api").submit(function(e) {
         e.preventDefault();
         formData = new FormData(this);
         var url = $(this).attr('action');
@@ -355,7 +253,7 @@ $bank_names = [
 
                 //for reset all field
                 if (res.status == 'success') {
-                    $('form#add_customer')[0].reset();
+                    $('form#add_payout_api')[0].reset();
                     setTimeout(function() {
                         location.reload();
                     }, 1000)
@@ -422,4 +320,3 @@ $bank_names = [
 </script>
 
 @endpush
-@endsection

@@ -41,7 +41,7 @@ class OutletController extends Controller
 
         $outlet = new Outlet();
         $outlet->user_id              = Auth::user()->_id;
-        $outlet->outlet_no            = rand(0000, 9999);
+        $outlet->outlet_no            = rand(1111, 9999);
         $outlet->outlet_type          = $request->outlet_type;
         $outlet->user_type            = $request->user_type;
         $outlet->mobile_no            = $request->mobile_no;
@@ -63,7 +63,8 @@ class OutletController extends Controller
         $outlet->outlet_gst_number    = $request->outlet_gst_number;
         $outlet->money_transfer_option= $request->money_transfer_option;
         $outlet->status               = $request->status;
-        $outlet->account_status       = $request->account_status;
+        $outlet->account_status       = (int)$request->account_status;
+        $outlet->pin                  = "1234";
 
         //for office photo
         if (!empty($request->file('office_photo')))
@@ -160,7 +161,7 @@ class OutletController extends Controller
         $outlet->outlet_gst_number    = $request->outlet_gst_number;
         $outlet->money_transfer_option= $request->money_transfer_option;
         $outlet->status               = $request->status;
-        $outlet->account_status       = $request->account_status;
+        $outlet->account_status       = (int)$request->account_status;
 
         //for office photo
         if (!empty($request->file('office_photo')))

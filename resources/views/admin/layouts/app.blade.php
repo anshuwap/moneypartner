@@ -57,7 +57,8 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
 
   <link rel="stylesheet" href="{{ asset('assets') }}/custom/custom.css">
-
+<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap-switch-button@1.1.0/css/bootstrap-switch-button.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap-switch-button@1.1.0/dist/bootstrap-switch-button.min.js"></script>
   <style>
     .card-primary.card-outline-tabs>.card-header a.active {
       border-top: 3px solid #2fc296;
@@ -68,14 +69,51 @@
       right: 9px;
       top: 2px;
     }
+
     .btn-danger {
       background-color: #e26005 !important;
       border-color: #e26005 !important;
     }
+
+    .tag-small {
+      font-size: 11px;
+      background: #99d6c4;
+      border: 1px solid #2fc296;
+      border-radius: 9px;
+      width: auto;
+      padding: 0px 8px;
+      color: black;
+      text-transform: uppercase;
+    }
+
+    .tag-small-warning{
+      font-size: 11px;
+      background: #e6d08d;
+      border: 1px solid #fcbf07;
+      border-radius: 9px;
+      width: auto;
+      padding: 0px 8px;
+      color: black;
+      text-transform: uppercase;
+    }
+
+    .tag-small-danger{
+      font-size: 11px;
+      background: #ea9f6a;
+      border: 1px solid #e26005;
+      border-radius: 9px;
+      width: auto;
+      padding: 0px 8px;
+      color: black;
+      text-transform: uppercase;
+    }
   </style>
 </head>
 
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="sidebar-mini layout-fixed sidebar-collapse" style="
+    font-family: initial !important;
+    font-size: 15px !important;
+">
 
   <div class="wrapper">
 
@@ -118,9 +156,9 @@
 
             <a href="javascript:void(0);" class="pro-li dropdown-item"><span><img class="profile-small img-fluid img-circle" id="" src="{{ asset('assets') }}/profile/37.jpg" alt="User profile picture"></span> <span>{{ ucwords(Auth::user()->full_name)}}</span></a>
 
-            <a href="{{ url('admin/profile') }}" class="pro-li dropdown-item">
+            <!-- <a href="{{ url('admin/profile') }}" class="pro-li dropdown-item">
               <span><i class="far fa-user"></i></span> Profile
-            </a>
+            </a> -->
             <a class="dropdown-item" href="{{ url('admin/logout') }}" onclick="event.preventDefault();
                      document.getElementById('logout-form').submit();">
               <button class="btn btn-danger logout-button w-100"><span class="icon is-small"> <i data-feather="log-out"></i> </span>
@@ -156,7 +194,7 @@
 
       <!-- Brand Logo -->
 
-      <a href="index3.html" class="brand-link">
+      <a href="javascript:void(0);" class="brand-link">
 
         <img src="{{ asset('assets') }}/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
 
@@ -180,7 +218,7 @@
 
           <div class="info">
 
-            <a href="{{ url('admin/profile') }}" class="d-block">{{ ucwords(Auth::user()->full_name) }}</a>
+            <a href="javascript:void(0);" class="d-block">{{ ucwords(Auth::user()->full_name) }}</a>
 
           </div>
 
@@ -264,8 +302,7 @@
   <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
   <script src="{{ asset('assets') }}/custom/custom_function.js"></script>
   <script>
-
-       //filter open and close
+    //filter open and close
     $('#filter-btn').click(function() {
       $('#filter').toggle();
       if ($(this).text().trim() === "Filter") {

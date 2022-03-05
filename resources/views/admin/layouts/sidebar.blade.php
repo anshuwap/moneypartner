@@ -73,7 +73,17 @@
       </a>
     </li>
 
-    <li class="nav-item {{ (url()->full() == url('admin/a-customer-trans') || url()->full() == url('admin/a-retailer-trans'))?'menu-is-opening menu-open':''}}">
+
+<li class="nav-item">
+      <a href="{{ url('admin/a-transaction') }}" class="nav-link {{ (url()->full() == url('admin/a-transaction'))? 'active':''}}">
+        <!-- <i class="fas fa-solid fa-book nav-icon text-warning"></i> -->
+        <i class="fas fa-money-bill-wave nav-icon text-primary"></i>
+        <p>Transaction</p>
+      </a>
+    </li>
+
+
+    <!-- <li class="nav-item {{ (url()->full() == url('admin/a-customer-trans') || url()->full() == url('admin/a-retailer-trans'))?'menu-is-opening menu-open':''}}">
       <a href="javascript:void(0);" class="nav-link ">
         <i class="fas fa-list-ul nav-icon text-primary"></i>
         <p>Transaction
@@ -106,7 +116,7 @@
         </li>
 
       </ul>
-    </li>
+    </li> -->
 
 
     <li class="nav-item">
@@ -120,9 +130,15 @@
 
     <li class="nav-item">
       <a href="{{ url('admin/comment') }}" class="nav-link {{ (url()->full() == url('admin/comment'))? 'active':''}}">
-
         <i class="fas fa-regular nav-icon fa-comment-medical" style="color: white;"></i>
         <p>Comment List</p>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a href="{{ url('admin/api-list') }}" class="nav-link {{ (url()->full() == url('admin/api-list'))? 'active':''}}">
+        <i class="fas fa-swatchbook  nav-icon text-danger"></i>
+        <p>Api List</p>
       </a>
     </li>
 

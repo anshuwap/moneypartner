@@ -120,7 +120,7 @@
                                 <table class="table table-bordered table-sm">
                                     <tr>
                                         <th>URL</th>
-                                        <td>{{ url('/api/offline-payout')}}</td>
+                                        <td>{{ url('/api/payout')}}</td>
                                     </tr>
                                     <tr>
                                         <th>Method</th>
@@ -135,7 +135,7 @@
                                         <th>Request</th>
                                         <td>{<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"amount":"100",<br>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;"receiver_name":"Demo21",<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;"beneficiary_name":"Demo",<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"payment_mode":"bank_account",<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"payment_channel":{<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"bank_name":"SBI Bank",<br>
@@ -170,7 +170,7 @@
                                 <table class="table table-bordered table-sm">
                                     <tr>
                                         <th>URL</th>
-                                        <td>{{ url('/api/bulk-offline-payout')}}</td>
+                                        <td>{{ url('/api/bulk-payout')}}</td>
                                     </tr>
                                     <tr>
                                         <th>Method</th>
@@ -186,7 +186,7 @@
                                         <td>[<br>
                                 &nbsp;&nbsp; {<br>
                                 &nbsp;&nbsp;&nbsp;&nbsp;"amount":"100",<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;"receiver_name":"SDF3",<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"beneficiary_name":"Demo",<br>
                                 &nbsp;&nbsp;&nbsp;&nbsp;"payment_mode":"bank_account",<br>
                                 &nbsp;&nbsp;&nbsp;&nbsp;"payment_channel":{<br>
                                 &nbsp;&nbsp;&nbsp;&nbsp;"bank_name":"SBI Bank",<br>
@@ -196,7 +196,7 @@
                                 },<br>
                                 &nbsp;&nbsp; {<br>
                                 &nbsp;&nbsp;&nbsp;&nbsp;"amount":"100",<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;"receiver_name":"SF12",<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"beneficiary_name":"Demo",<br>
                                 &nbsp;&nbsp;&nbsp;&nbsp;"payment_mode":"bank_account",<br>
                                 &nbsp;&nbsp;&nbsp;&nbsp;"payment_channel":{<br>
                                 &nbsp;&nbsp;&nbsp;&nbsp;"bank_name":"SBI Bank",<br>

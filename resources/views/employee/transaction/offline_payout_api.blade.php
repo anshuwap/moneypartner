@@ -73,7 +73,7 @@
                         <?php
                         $payment = (object)$trans->payment_channel;
 
-                        if ($trans->status == 'approved') {
+                        if ($trans->status == 'success') {
                             $status = '<strong class="text-success">' . ucwords($trans->status) . '</strong>';
                             $action = '-';
                         } else if ($trans->status == 'rejected') {
@@ -121,7 +121,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="heading_bank">Approved/Reject Request</h5>
+                <h5 class="modal-title" id="heading_bank">success/Reject Request</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -143,14 +143,14 @@
                                 <label>Action</label>
                                 <select name="status" id="status-select" class="form-control form-control-sm">
                                     <option value="">Select</option>
-                                    <option value="approved">Approved</option>
+                                    <option value="success">success</option>
                                     <option value="pending">Pending</option>
                                     <option value="rejected">Rejected</option>
                                 </select>
                                 <span id="status_msg" class="custom-text-danger"></span>
                             </div>
 
-                            <div id="approved"></div>
+                            <div id="success"></div>
 
                             <div class="form-group">
                                 <label>Select Payment Channel</label>
@@ -236,14 +236,14 @@
 
     $('#status-select').change(() => {
         let status = $('#status-select').val();
-        if (status == 'approved') {
-            $('#approved').html(`<div class="form-group">
+        if (status == 'success') {
+            $('#success').html(`<div class="form-group">
                                 <label>UTR/Transaction</label>
                                 <input type="text" placeholder="UTR/Transaction" id="utr" name="admin_action['utr_transaction']" class="form-control form-control-sm">
                                 <span id="utr_transaction_msg" class="custom-text-danger"></span>
                             </div>`);
         } else {
-            $('#approved').html(``);
+            $('#success').html(``);
         }
     })
 

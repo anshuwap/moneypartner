@@ -28,7 +28,7 @@ if (!function_exists('singleFile')) {
             if (!file_exists($folder))
                 mkdir($folder, 0777, true);
 
-            $destinationPath = $folder;
+            $destinationPath = public_path().'/'.$folder;
             $profileImage = date('YmdHis') . "." . $file->getClientOriginalExtension();
             $file->move($destinationPath, $profileImage);
             $fileName = "$profileImage";
@@ -72,7 +72,7 @@ if (!function_exists('employeeImage')) {
 }
 
 if (!function_exists('transferHistory')) {
-    function transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status,$payment_mode,$fees,$type)
+    function transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status,$payment_mode,$transaction_type,$fees,$type)
     {
 
         $closing_amount = 0;
@@ -90,6 +90,7 @@ if (!function_exists('transferHistory')) {
         $transferHistory->payment_mode  = $payment_mode;
         $transferHistory->fees          = $fees;
         $transferHistory->type          = $type;
+        $transferHistory->transaction_type = $transaction_type;
         $transferHistory->closing_amount= $closing_amount;
         $transferHistory->save();
     }

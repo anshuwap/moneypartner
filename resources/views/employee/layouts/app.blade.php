@@ -62,7 +62,10 @@
   </style>
 </head>
 
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition sidebar-mini layout-fixed" style="
+    font-family: initial !important;
+    font-size: 15px !important;
+">
   <div class="wrapper">
 
     <!-- Preloader -->

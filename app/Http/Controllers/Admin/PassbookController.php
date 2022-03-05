@@ -24,7 +24,7 @@ class PassbookController extends Controller
                 $end_date   = $date[1];
             }
 
-            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', "1")->orderBy('created', 'ASC')->get();
+            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->orderBy('created', 'ASC')->get();
 
             $query = TransferHistory::query();
             if (!empty($request->outlet_id))
@@ -97,7 +97,7 @@ class PassbookController extends Controller
             if (!empty($request->type))
                 $query->where('type', $request->type);
 
-            $passbooks = $query->page();
+            $passbooks = $query->get();
 
             if ($passbooks->isEmpty())
                 return back()->with('error', 'There is no any record for export!');

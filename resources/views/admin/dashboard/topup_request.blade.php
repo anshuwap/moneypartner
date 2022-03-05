@@ -7,10 +7,8 @@
       <!-- /.card-header -->
       <div class="card-body">
         <!-- Conversations are loaded here -->
-        <div class="direct-chat-messages">
           <table class="table table-hover text-nowrap table-sm">
 
-            <thead>
               <tr>
                 <th>Sr No.</th>
                 <th>Transaction Id</th>
@@ -21,9 +19,7 @@
                 <th>Status</th>
                 <th>Action</th>
               </tr>
-            </thead>
 
-            <tbody>
               @php
               $i =0;
               @endphp
@@ -49,16 +45,13 @@
               </tr>
               @endforeach
               @else
-            <tbody>
               <tr>
                 <td colspan="7" style="text-align:center;">There is no any Topup Request</td>
               </tr>
-            </tbody>
+
             @endif
-            </tbody>
 
           </table>
-        </div>
       </div>
     </div>
 
@@ -85,7 +78,7 @@
           <div class="form-group">
             <select name="status" class="form-control control-sm" required='required'>
               <option value="">Select</option>
-              <option value="approved">Approved</option>
+              <option value="success">success</option>
               <option value="rejected">Rejected</option>
             </select>
           </div>
@@ -130,7 +123,7 @@
                 <div class="form-group">
                   <select name="status" class="form-control control-sm" required='required'>
                     <option value="">Select</option>
-                    <option value="approved">Approved</option>
+                    <option value="success">success</option>
                     <option value="rejected">Rejected</option>
                   </select>
                 </div>

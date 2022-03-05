@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\Admin\LoginController as AdminLogin;
 use App\Http\Controllers\Admin\RegisterController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
@@ -10,9 +10,10 @@ use App\Http\Controllers\Admin\PaymentMode\UpiController as AdminUpi;
 use App\Http\Controllers\Admin\TopupRequestController as AdminTopupRequest;
 use App\Http\Controllers\Admin\Transaction\CustomerTransController as AdminCustomerTrans;
 use App\Http\Controllers\Admin\Transaction\RetailerTransController as AdminRetailerTrans;
-use App\Http\Controllers\Admin\Transaction\OfflinePayoutApiController as AdminOfflinePayout;
+use App\Http\Controllers\Admin\ApiListController as AdminApiList;
 use App\Http\Controllers\Admin\PaymentChannelController as AdminPaymentChannel;
 use App\Http\Controllers\Admin\TransactionCommentController as AdminComment;
+use App\Http\Controllers\Admin\TransactionController as AdminTransaction;
 use App\Http\Controllers\Admin\EmployeeController as AdminEmployee;
 use App\Http\Controllers\Admin\PassbookController as AdminPassbook;
 
@@ -25,6 +26,7 @@ use App\Http\Controllers\Retailer\TopupController as RetailerTopup;
 use App\Http\Controllers\Retailer\Transaction\OfflinePayoutApiController as OfflinePayout;
 use App\Http\Controllers\Retailer\Transaction\CustomerTransController as RetailerCustomerTrans;
 use App\Http\Controllers\Retailer\Transaction\RetailerTransController as RetailerRetailerTrans;
+use App\Http\Controllers\Retailer\TransactionController as RetailerTransaction;
 
 //for employee panel
 use App\Http\Controllers\Employee\LoginController as EmployeeLogin;
@@ -35,9 +37,26 @@ use App\Http\Controllers\Employee\TopupController as EmployeeTopup;
 use App\Http\Controllers\Employee\Transaction\OfflinePayoutApiController as EmployeeOfflinePayout;
 use App\Http\Controllers\Employee\Transaction\CustomerTransController as EmployeeCustomerTrans;
 use App\Http\Controllers\Employee\Transaction\RetailerTransController as EmployeeRetailerTrans;
-
+use App\Mail\SendMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+
+Route::get('/send-1email', [MailController::class, 'sendEmail']);
+
+Route::get('/email',function(){
+    Mail::to('agraharibablu99@gmail.com')->send(new SendMail());
+    return new SendMail();
+});
+
+Route::get('/send-email',function(){
+  $to = "agraharibablu99.com";
+$subject = "My subject";
+$txt = "Hello world!";
+$headers = "From: bablu@nimbuspost.com";
+
+mail($to,$subject,$txt,$headers);
+});
 
 Route::get('500',[AdminDashboard::class,'serverError']);
 // Route::get('404', [AdminDashboard::class, 'notFound']);
@@ -104,19 +123,29 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::post('topup-request', [AdminTopupRequest::class,'topupRequest']);
     Route::get('topup-request-details/{id}', [AdminTopupRequest::class,'topupRequestDetials']);
 
-    Route::resource('a-customer-trans', AdminCustomerTrans::class);
-    Route::get('a-customer-trans-ajax', [AdminCustomerTrans::class,'ajaxList']);
-    Route::get('a-view-detail', [AdminCustomerTrans::class,'viewDetail']);
-    Route::get('a-customer-comment', [AdminCustomerTrans::class,'customerComment']);
+    Route::resource('a-transaction', AdminTransaction::class);
+    Route::post('a-store-api',      [AdminTransaction::class,'storeApi']);
+    Route::get('a-trans-detail',     [AdminTransaction::class,'viewDetail']);
+    Route::get('a-trans-comment',    [AdminTransaction::class,'Comment']);
+    Route::get('a-transaction-export',[AdminTransaction::class, 'export']);
 
-    Route::resource('a-retailer-trans', AdminRetailerTrans::class);
-    Route::get('a-retailer-trans-ajax', [AdminRetailerTrans::class,'ajaxList']);
-    Route::get('a-retailer-detail', [AdminRetailerTrans::class,'viewDetail']);
-    Route::get('a-retailer-comment', [AdminRetailerTrans::class,'retailerComment']);
+    // Route::resource('a-customer-trans', AdminCustomerTrans::class);
+    // Route::get('a-customer-trans-ajax', [AdminCustomerTrans::class,'ajaxList']);
+    // Route::get('a-view-detail', [AdminCustomerTrans::class,'viewDetail']);
+    // Route::get('a-customer-comment', [AdminCustomerTrans::class,'customerComment']);
 
-    Route::resource('a-offline-payout', AdminOfflinePayout::class);
-    Route::get('a-offline-payout-detail', [AdminOfflinePayout::class,'viewDetail']);
-    Route::get('a-offline-payout-comment', [AdminOfflinePayout::class,'Comment']);
+    // Route::resource('a-retailer-trans', AdminRetailerTrans::class);
+    // Route::get('a-retailer-trans-ajax', [AdminRetailerTrans::class,'ajaxList']);
+    // Route::get('a-retailer-detail', [AdminRetailerTrans::class,'viewDetail']);
+    // Route::get('a-retailer-comment', [AdminRetailerTrans::class,'retailerComment']);
+
+    // Route::resource('a-offline-payout', AdminOfflinePayout::class);
+    // Route::get('a-offline-payout-detail', [AdminOfflinePayout::class,'viewDetail']);
+    // Route::get('a-offline-payout-comment', [AdminOfflinePayout::class,'Comment']);
+
+    Route::resource('api-list', AdminApiList::class);
+    Route::post('api-list-editApi', [AdminApiList::class,'editApi']);
+
 
     Route::resource('employee', AdminEmployee::class);
     Route::post('employee-status', [AdminEmployee::class,'employeeStatus']);
@@ -147,16 +176,24 @@ Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
     Route::get('transaction-history',  [RetailerTopup::class, 'transactionHistory']);
     Route::get('topup-history-ajax',   [RetailerTopup::class, 'topupHistoryAjax']);
 
-    Route::resource('customer-trans', RetailerCustomerTrans::class);
-    Route::get('verify-mobile',       [RetailerCustomerTrans::class,'verifyMobile']);
-    Route::get('send-otp',            [RetailerCustomerTrans::class,'sendOtp']);
-    Route::get('customer-trans-ajax', [RetailerCustomerTrans::class,'ajaxList']);
-    Route::get('fee-details',         [RetailerCustomerTrans::class,'feeDetails']);
+  //  Route::resource('customer-trans', RetailerCustomerTrans::class);
+
+
+    Route::resource('transaction',    RetailerTransaction::class);
+    Route::post('dmt-trans',          [RetailerTransaction::class,'dmtStore']);
+    Route::post('payout-trans',       [RetailerTransaction::class,'payoutStore']);
+    Route::post('payout-api',         [RetailerTransaction::class,'payoutApiStore']);
+    Route::get('sample-csv',          [RetailerTransaction::class,'sampleCsv']);
+    Route::post('payout-import',      [RetailerTransaction::class,'import']);
+    Route::get('import-sequence',    [RetailerTransaction::class,'importSequence']);
+    Route::get('verify-mobile',       [RetailerTransaction::class,'verifyMobile']);
+    Route::get('send-otp',            [RetailerTransaction::class,'sendOtp']);
+    Route::get('fee-details',         [RetailerTransaction::class,'feeDetails']);
 
     Route::resource('retailer-trans', RetailerRetailerTrans::class);
     Route::get('retailer-trans-ajax', [RetailerRetailerTrans::class,'ajaxList']);
-    Route::get('sample-csv', [RetailerRetailerTrans::class,'sampleCsv']);
-    Route::post('payout-import', [RetailerRetailerTrans::class,'import']);
+    // Route::get('sample-csv', [RetailerRetailerTrans::class,'sampleCsv']);
+    // Route::post('payout-import', [RetailerRetailerTrans::class,'import']);
 
     Route::resource('offline-payout', OfflinePayout::class);
 

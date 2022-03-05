@@ -23,7 +23,7 @@ class TopupRequestController extends Controller
 
             //  $topups = Topup::get();
 
-            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', "1")->orderBy('created', 'ASC')->get();
+            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->orderBy('created', 'ASC')->get();
             $outlet_id = $request->outlet_id;
             if (empty($request->outlet_id))
                 $outlet_id = $outlets[0]->_id;
@@ -81,16 +81,13 @@ class TopupRequestController extends Controller
             $topup->admin_comment = $request->comment;
             $topup->admin_action = 1;
             $topup->save();
-            if ($topup->status == 'approved') {
+            if ($topup->status == 'success') {
 
-                // $topups = Topup::select('amount')->where('status', 'approved')->where('outlet_id', $topup->outlet_id)->get();
+                // $topups = Topup::select('amount')->where('status', 'success')->where('outlet_id', $topup->outlet_id)->get();
 
                 $amount = 0;
                 if(!empty($topup->amount))
                 $amount = $topup->amount;
-                // foreach ($topups as $topupa) {
-                //     $amount += $topupa->amount;
-                // }
 
                 //add topup amount in retailer wallet
                 addTopupAmount($topup->retailer_id, $amount);
@@ -101,11 +98,12 @@ class TopupRequestController extends Controller
                 $payment_date     = $topup->payment_date;
                 $status           = $topup->status;
                 $payment_mode     = $topup->payment_mode;
+                $type             = $topup->payment_mode;
                 $transaction_fees = 0;
                 //insert data in transfer history collection
-                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $transaction_fees, 'credit');
+                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode,$type, $transaction_fees, 'credit');
 
-                return response(['status' => 'success', 'msg' => 'Topup Request Approved', 'status_msg' => ucwords($topup->status), 'id' => $topup->id]);
+                return response(['status' => 'success', 'msg' => 'Topup Request success', 'status_msg' => ucwords($topup->status), 'id' => $topup->id]);
             } else if ($topup->status == 'rejected') {
                 return response(['status' => 'success', 'msg' => 'Topup Request Rejected', 'status_msg' => ucwords($topup->status), 'id' => $topup->id]);
             } else {

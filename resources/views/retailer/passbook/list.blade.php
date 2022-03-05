@@ -59,7 +59,7 @@
                         <tr>
                             <th>Sr No.</th>
                             <th>Transaction Time</th>
-                            <th>Payment Mode</th>
+                            <th>Mode</th>
                             <th>Transaction Amount</th>
                             <th>Fees</th>
                             <th>Closing Amount</th>
@@ -72,7 +72,7 @@
                     <tr>
                         <td>{{ ++$key }}</td>
                         <td>{{ date('Y-m-d H:i:s A',$pb->created)}}</td>
-                        <td>{{ ucwords(str_replace('_',' ',$pb->payment_mode)) }}</td>
+                        <td>{{ !empty($pb->transaction_type)?ucwords(str_replace('_',' ',$pb->transaction_type)):'-' }}</td>
                         <td>{!!mSign($pb->amount)!!}</td>
                         <td>{!!(!empty($pb->fees))?mSign($pb->fees):'-' !!}</td>
                         <td>{!!mSign($pb->closing_amount)!!}</td>

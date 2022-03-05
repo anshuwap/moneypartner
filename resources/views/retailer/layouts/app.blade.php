@@ -69,10 +69,55 @@
       background-color: #e26005 !important;
       border-color: #e26005 !important;
     }
+
+    .otp {
+      -moz-appearance: textfield;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .tag-small {
+      font-size: 11px;
+      background: #99d6c4;
+      border: 1px solid #2fc296;
+      border-radius: 9px;
+      width: auto;
+      padding: 0px 8px;
+      color: black;
+      text-transform: uppercase;
+    }
+
+    .tag-small-warning{
+      font-size: 11px;
+      background: #e6d08d;
+      border: 1px solid #fcbf07;
+      border-radius: 9px;
+      width: auto;
+      padding: 0px 8px;
+      color: black;
+      text-transform: uppercase;
+    }
+
+    .tag-small-danger{
+      font-size: 11px;
+      background: #ea9f6a;
+      border: 1px solid #e26005;
+      border-radius: 9px;
+      width: auto;
+      padding: 0px 8px;
+      color: black;
+      text-transform: uppercase;
+    }
   </style>
 </head>
 
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="sidebar-mini layout-fixed sidebar-collapse" style="
+    font-family: initial !important;
+    font-size: 15px !important;
+">
   <div class="wrapper">
 
     <!-- Preloader -->

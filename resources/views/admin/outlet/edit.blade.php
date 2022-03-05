@@ -329,12 +329,9 @@
 
                     <div class="form-group">
                         <label>Money Transfer Otions</label><br>
-                        <input type="checkbox" name="money_transfer_option[dmt_transfer_offline]" <?= (!empty($outlet->money_transfer_option["dmt_transfer_offline"]) && $outlet->money_transfer_option["dmt_transfer_offline"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;DMT Transfer Offline<br>
-                        <input type="checkbox" name="money_transfer_option[dmt_transfer_online]" <?= (!empty($outlet->money_transfer_option["dmt_transfer_online"]) && $outlet->money_transfer_option["dmt_transfer_online"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;DMT Transfer Online<br>
-                        <input type="checkbox" name="money_transfer_option[payout_offline]" <?= (!empty($outlet->money_transfer_option["payout_offline"]) && $outlet->money_transfer_option["payout_offline"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Payout Api<br>
-                        <input type="checkbox" name="money_transfer_option[payout_online]" <?= (!empty($outlet->money_transfer_option["payout_online"]) && $outlet->money_transfer_option["payout_online"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Payout Online<br>
-                        <input type="checkbox" name="money_transfer_option[payout_offline_api]" <?= (!empty($outlet->money_transfer_option["payout_offline_api"]) && $outlet->money_transfer_option["payout_offline_api"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Payout Api API<br>
-                        <input type="checkbox" name="money_transfer_option[payout_online_api]" <?= (!empty($outlet->money_transfer_option["payout_online_api"]) && $outlet->money_transfer_option["payout_online_api"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Payout Online API<br>
+                        <input type="checkbox" name="money_transfer_option[dmt_transfer]" <?= (!empty($outlet->money_transfer_option["dmt_transfer"]) && $outlet->money_transfer_option["dmt_transfer"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;DMT Transfer<br>
+                        <input type="checkbox" name="money_transfer_option[payout]" <?= (!empty($outlet->money_transfer_option["payout"]) && $outlet->money_transfer_option["payout"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Payout<br>
+                        <input type="checkbox" name="money_transfer_option[payout_api]" <?= (!empty($outlet->money_transfer_option["payout_api"]) && $outlet->money_transfer_option["payout_api"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Payout API<br>
                         <span id="money_transfer_option_msg" class="custom-text-danger"></span>
                     </div>
 

@@ -7,6 +7,7 @@ use App\Models\Api\OfflinePayoutApi;
 use App\Models\Outlet;
 use App\Models\PaymentChannel;
 use App\Models\Topup;
+use App\Models\Transaction;
 use App\Models\Transaction\CustomerTrans;
 use App\Models\Transaction\RetailerTrans;
 use Exception;
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
 
         try {
@@ -41,7 +42,7 @@ class DashboardController extends Controller
             $data['total_outlet']  = Outlet::count();
 
             //for topup amount
-            $topups = Topup::select('amount')->where('status', 'approved')->get();
+            $topups = Topup::select('amount')->where('status', 'success')->get();
             $total_topup_amount = 0;
             foreach ($topups as $am) {
                 $total_topup_amount += $am->amount;
@@ -94,10 +95,16 @@ class DashboardController extends Controller
 //  }
 // die;
 
-   $data['customer_trans'] = CustomerTrans::select('trans_details','customer_name','mobile_number')->get();
-   $data['retailerTrans']  = RetailerTrans::where('status','pending')->get();
-   $data['offlinePayouts'] = OfflinePayoutApi::where('status','pending')->get();
+//    $data['customer_trans'] = CustomerTrans::select('trans_details','customer_name','mobile_number')->get();
+//    $data['retailerTrans']  = RetailerTrans::where('status','pending')->get();
+//    $data['offlinePayouts'] = OfflinePayoutApi::where('status','pending')->get();
 
+     $que = Transaction::where('status','pending');
+     if(!empty($request->mode))
+     $que->where('payment_mode',$request->mode);
+
+     $data['transaction']  = $que->get();
+     $data['mode'] = $request->mode;
  //for payment channel
             $data['payment_channel'] = PaymentChannel::select('_id', 'name')->get();
             return view('admin.dashboard', $data);

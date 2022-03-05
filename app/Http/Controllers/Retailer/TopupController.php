@@ -295,7 +295,7 @@ class TopupController extends Controller
             $action = '<a href="javascript:void(0);" class="text-info edit_qr_code" data-toggle="tooltip" data-placement="bottom" title="Edit" qr_code_id="' . $val->_id . '"><i class="far fa-edit"></i></a>&nbsp;&nbsp;';
             $action .= '<a href="javascript:void(0);" class="text-danger remove_qr_code"  data-toggle="tooltip" data-placement="bottom" title="Remove" qr_code_id="' . $val->_id . '"><i class="fas fa-trash"></i></a>';
 
-            if ($val->status == 'approved') {
+            if ($val->status == 'success') {
                 $payment_has_code = '<a href="javacript:void(0);" class="text-success" data-toggle="tooltip" data-placement="bottom" title="' . $val->admin_comment . '">' . $val->payment_id .'</a>';
                 $status = '<strong class="text-success">' . ucwords($val->status) . '</strong>';
             } else if ($val->status == 'rejected') {

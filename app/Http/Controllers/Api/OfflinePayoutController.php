@@ -5,10 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Validation\OfflineBulkPayoutValidation;
 use App\Http\Validation\OfflinePayoutValidation;
-use App\Models\Api\OfflinePayoutApi;
 use App\Models\Outlet;
+use App\Models\Transaction;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class OfflinePayoutController extends Controller
@@ -44,25 +43,39 @@ class OfflinePayoutController extends Controller
                 return response(['status' => 'error', 'msg' => 'You have not Sufficient Amount']);
             /*end check amount available in wallet or not*/
 
-            $OfflinePayoutApi = new OfflinePayoutApi();
-            $OfflinePayoutApi->transaction_id  = uniqCode(3) . rand(111111, 999999);
-            $OfflinePayoutApi->retailer_id     = Auth::user()->_id;
-            $OfflinePayoutApi->outlet_id       = Auth::user()->outlet_id;
-            $OfflinePayoutApi->mobile_number   = Auth::user()->mobile_number;
-            $OfflinePayoutApi->sender_name     = Auth::user()->full_name;
-            $OfflinePayoutApi->amount          = $request->amount;
-            $OfflinePayoutApi->transaction_fees = $charges;
-            $OfflinePayoutApi->receiver_name   = $request->receiver_name;
-            $OfflinePayoutApi->payment_mode    = $request->payment_mode;
-            $OfflinePayoutApi->payment_channel = $request->payment_channel;
-            $OfflinePayoutApi->status          = 'pending';
+            $transaction = new Transaction();
+            $transaction->transaction_id  = uniqCode(3) . rand(111111, 999999);
+            $transaction->retailer_id     = Auth::user()->_id;
+            $transaction->outlet_id       = Auth::user()->outlet_id;
+            $transaction->mobile_number   = Auth::user()->mobile_number;
+            $transaction->sender_name     = Auth::user()->full_name;
+            $transaction->amount          = $request->amount;
+            $transaction->transaction_fees= $charges;
+            $transaction->receiver_name   = $request->receiver_name;
+            $transaction->payment_mode    = $request->payment_mode;
+            $transaction->payment_channel = $request->payment_channel;
+            $transaction->status          = 'pending';
+            $transaction->type            = 'payout_api';
 
-            if (!$OfflinePayoutApi->save())
+            if (!$transaction->save())
                 return response(['status' => 'error', 'msg' => 'Transaction Request not  Created!']);
 
             //update toupup amount here
             if (!spentTopupAmount(Auth()->user()->_id, $total_amount))
                 return response(['status' => 'error', 'msg' => 'Something went wrong!']);
+
+                /*start passbook debit functionality*/
+                $amount        = $transaction->amount;
+                $receiver_name = $transaction->receiver_name;
+                $payment_date  = $transaction->created;
+                $status        = 'success';
+                $payment_mode  = $transaction->payment_mode;
+                $transaction_fees = $transaction->transaction_fees;
+                $type          = $transaction->type;
+                $retailer_id   = $transaction->retailer_id;
+
+                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit');
+                /*end passbook debit functionality*/
 
             return response(['status' => 'success', 'msg' => 'Transaction Request Created Successfully!']);
         } catch (Exception $e) {
@@ -105,25 +118,39 @@ class OfflinePayoutController extends Controller
                     return response(['status' => 'error', 'msg' => 'Some Transaction Request not Created, Because you have not Sufficient Amount']);
                 /*end check amount available in wallet or not*/
 
-                $OfflinePayoutApi = new OfflinePayoutApi();
-                $OfflinePayoutApi->transaction_id  = uniqCode(3) . rand(111111, 999999);
-                $OfflinePayoutApi->retailer_id     = Auth::user()->_id;
-                $OfflinePayoutApi->outlet_id       = Auth::user()->outlet_id;
-                $OfflinePayoutApi->mobile_number   = Auth::user()->mobile_number;
-                $OfflinePayoutApi->sender_name     = Auth::user()->full_name;
-                $OfflinePayoutApi->amount          = $request->amount;
-                $OfflinePayoutApi->transaction_fees= $charges;
-                $OfflinePayoutApi->receiver_name   = $request->receiver_name;
-                $OfflinePayoutApi->payment_mode    = $request->payment_mode;
-                $OfflinePayoutApi->payment_channel = $request->payment_channel;
-                $OfflinePayoutApi->status          = 'pending';
+                $transaction = new Transaction();
+                $transaction->transaction_id  = uniqCode(3) . rand(111111, 999999);
+                $transaction->retailer_id     = Auth::user()->_id;
+                $transaction->outlet_id       = Auth::user()->outlet_id;
+                $transaction->mobile_number   = Auth::user()->mobile_number;
+                $transaction->sender_name     = Auth::user()->full_name;
+                $transaction->amount          = $request->amount;
+                $transaction->transaction_fees= $charges;
+                $transaction->receiver_name   = $request->receiver_name;
+                $transaction->payment_mode    = $request->payment_mode;
+                $transaction->payment_channel = $request->payment_channel;
+                $transaction->status          = 'pending';
+                $transaction->type            = 'payout_api';
 
-                if(!$OfflinePayoutApi->save())
+                if(!$transaction->save())
                  return response(['status' => 'error', 'msg' => 'Somthing went wrong, Transaction Request not Created!']);
 
                  //update toupup amount here
                 if (!spentTopupAmount(Auth()->user()->_id, $total_amount))
                  return response(['status' => 'error', 'msg' => 'Something went wrong!']);
+
+                 /*start passbook debit functionality*/
+                $amount        = $transaction->amount;
+                $receiver_name = $transaction->receiver_name;
+                $payment_date  = $transaction->created;
+                $status        = 'success';
+                $payment_mode  = $transaction->payment_mode;
+                $transaction_fees = $transaction->transaction_fees;
+                $type          = $transaction->type;
+                $retailer_id   = $transaction->retailer_id;
+
+                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit');
+                /*end passbook debit functionality*/
             }
 
                 return response(['status' => 'success', 'msg' => 'Transaction Request Created Successfully!']);
