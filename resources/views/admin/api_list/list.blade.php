@@ -33,7 +33,7 @@
             <form id="update-api" method="post">
                 <div class="row">
                     <input type="hidden" name="id" value="{{ $api->_id }}">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div><strong>Api Name:&nbsp;&nbsp;&nbsp;</strong><span>{{ ucwords($api->name) }}</span></div>
                         <div><strong>Api URL:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong><span>{{ $api->api}}</span></div>
                     </div>
@@ -47,13 +47,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-1">
-                        <input type="checkbox" name="status" id="status" data-toggle="switchbutton" data-onlabel="Enable" data-offlabel="Disabled" data-onstyle="success" data-offstyle="danger" {{ ($api->status)?'checked':'' }}>
+                    <div class="col-md-2">
+                        <input type="checkbox" class="btn-xs" name="status" id="status" data-toggle="switchbutton" data-onlabel="Enable" data-offlabel="Disabled" data-onstyle="success" data-offstyle="danger" {{ ($api->status)?'checked':'' }}>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-3">
                         @foreach($retailers as $retailer)
                         <input class="" type="checkbox" name="retailer_ids[]" value="{{ $retailer->_id }}" class="red-input" {{ (!empty($api->retailer_ids) && in_array($retailer->_id,$api->retailer_ids))?'checked':''}}>
-                        <label for="" class="">{{ ucwords($retailer->full_name) }}|</label>
+                        <span for="" class="">{{ ucwords($retailer->full_name) }}</span>
                         @endforeach
                     </div>
                     <div class="col-md-1">
@@ -63,6 +63,10 @@
                         </div>
                     </div>
 
+                </div>
+                <div class="row">
+                    <div class="col-md-4"><button type="button" id="blance{{$key}}" class="btn btn-secondary btn-xs check-blance">Check Blance</button></div>
+                    <div class="col-md-8" id="show-blance{{$key}}"></div>
                 </div>
             </form>
         </div>
@@ -77,37 +81,56 @@
 @push('modal')
 
 <script>
-    // $(document).on('click', '.edit', function(e) {
-    //     e.preventDefault();
-    //     var id = $(this).attr('api_id');
-    //     var sort = $('#sort-' + id).val();
-    //     var status = $().val();
-    //     var url = "{{ url('admin/api-list-editApi') }}/";
-    //     $.ajax({
-    //         url: url,
-    //         method: 'POST',
-    //         dataType: "JSON",
-    //         data: {
-    //             id: id,
-    //             'sort': sort,
-    //         },
-    //         success: function(res) {
-    //             /*Start Status message*/
-    //             if (res.status == 'success' || res.status == 'error') {
-    //                 Swal.fire(
-    //                     `${res.status}!`,
-    //                     res.msg,
-    //                     `${res.status}`,
-    //                 )
-    //             }
-    //             /*End Status message*/
-    //         },
+    $(document).on('click', '#blance0', function(e) {
+        var url = "{{ url('get-blance0') }}";
+        $.ajax({
+            url: url,
+            method: 'get',
+            dataType: "json",
+            crossDomain: true,
+            success: function(res) {
+               $('#show-blance0').html('<b>Avaliable Blance-&nbsp;&nbsp;</b>' + res.blance);
+            },
+            error: function(error) {
+                console.log(error)
+            }
+        });
+    });
 
-    //         error: function(error) {
-    //             console.log(error)
-    //         }
-    //     });
-    // });
+    $(document).on('click', '#blance1', function(e) {
+        var url = "{{ url('get-blance1') }}";
+        $.ajax({
+            url: url,
+            method: 'get',
+            dataType: "json",
+            crossDomain: true,
+            success: function(res) {
+               $('#show-blance1').html('<b>Avaliable Blance-&nbsp;&nbsp;</b>' + res.blance);
+            },
+            error: function(error) {
+                console.log(error)
+            }
+        });
+    });
+
+
+    $(document).on('click', '#blance2', function(e) {
+        var url = "{{ url('get-blance2') }}";
+        alert('Under Working...');
+        return false;
+        $.ajax({
+            url: url,
+            method: 'get',
+            dataType: "json",
+            crossDomain: true,
+            success: function(res) {
+               $('#show-blance2').html('<b>Avaliable Blance-&nbsp;&nbsp;</b>' + res.blance);
+            },
+            error: function(error) {
+                console.log(error)
+            }
+        });
+    });
 
     /*start form submit functionality*/
     $("form#update-api").submit(function(e) {

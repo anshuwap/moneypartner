@@ -224,18 +224,6 @@
                         </select>
                         <span id="gender_msg" class="custom-text-danger"></span>
                     </div>
-
-
-                    <div class="form-group">
-                        <label>User Type</label>
-                        <select class="form-control form-control-sm" name="user_type">
-                            <option value=''>Select</option>
-                            <option value="retailer" {{ ($outlet->user_type == 'retailer')?"selected" : '' }}>Retailer</option>
-                            <option value="distributor" {{ ($outlet->user_type == 'distributor')?"selected" : '' }}>Distributor</option>
-                        </select>
-                        <span id="user_type_msg" class="custom-text-danger"></span>
-                    </div>
-
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -328,7 +316,7 @@
                 <div class="card-body">
 
                     <div class="form-group">
-                        <label>Money Transfer Otions</label><br>
+                        <label>Money Partner Otions</label><br>
                         <input type="checkbox" name="money_transfer_option[dmt_transfer]" <?= (!empty($outlet->money_transfer_option["dmt_transfer"]) && $outlet->money_transfer_option["dmt_transfer"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;DMT Transfer<br>
                         <input type="checkbox" name="money_transfer_option[payout]" <?= (!empty($outlet->money_transfer_option["payout"]) && $outlet->money_transfer_option["payout"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Payout<br>
                         <input type="checkbox" name="money_transfer_option[payout_api]" <?= (!empty($outlet->money_transfer_option["payout_api"]) && $outlet->money_transfer_option["payout_api"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Payout API<br>

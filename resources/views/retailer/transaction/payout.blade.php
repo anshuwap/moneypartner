@@ -75,7 +75,10 @@ $bank_names = [
                                 <span id="otp_verify" class="text-success"></span>
                             </div>
                             <div class="form-group text-center">
-                                <button type="button" id="verify-import" class="btn btn-success btn-sm"><i class="fas fa-compress-arrows-alt"></i>&nbsp;Verify & Import</button>
+                                <button type="button" id="verify-import" class="btn btn-success btn-sm"><i class="fas fa-compress-arrows-alt"></i>&nbsp;Verify</button>
+                                <button type="button" class="btn btn-sm btn-success" data-dismiss="modal" aria-label="Close">
+                                  <i class="fas fa-times"></i>&nbsp;Close
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -141,10 +144,10 @@ $bank_names = [
 
                 $('#preview-table').append(res.data);
 
-                if(index+1 != res.all_row){
-                importSequence(res.index);
-                }else{
-                   $('#verify-import').attr('disabled',true);
+                if (index + 1 != res.all_row) {
+                    importSequence(res.index);
+                } else {
+                    $('#verify-import').attr('disabled', true);
                 }
                 //for reset all fields
                 // if (res.status == 'success') {
@@ -156,13 +159,12 @@ $bank_names = [
         });
     }
 
-//     $('#importModal').on('hidden', function () {
-//   document.location.reload();
-// })
-$('#importModal').on('hidden.bs.modal', function () {
-    location.reload();
-});
-
+    //     $('#importModal').on('hidden', function () {
+    //   document.location.reload();
+    // })
+    $('#importModal').on('hidden.bs.modal', function() {
+        location.reload();
+    });
 </script>
 
 <!-- Modal -->
@@ -271,10 +273,10 @@ $('#importModal').on('hidden.bs.modal', function () {
                                         <div class="form-group mb-3">
                                             <label class="text-center">Enter PIN</label>
                                             <div class="cover-otp d-flex ">
-                                                <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f1p">
-                                                <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f2p">
-                                                <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f3p">
-                                                <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f4p">
+                                                <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f11p">
+                                                <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f22p">
+                                                <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f33p">
+                                                <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f44p">
                                             </div>
                                             <span id="otp_verify" class="text-success"></span>
                                         </div>
@@ -339,7 +341,7 @@ $('#importModal').on('hidden.bs.modal', function () {
         e.preventDefault();
 
         var amount = $(this).val();
-        payout_transction(amount);
+        // payout_transction(amount);
 
         if (amount >= 25000 && amount < 200000) {
             // $('#payput_upload_docs').html(`<div class="form-group">
@@ -528,10 +530,11 @@ $('#importModal').on('hidden.bs.modal', function () {
                     $('#preview-import-data').html(res.data);
                 }
                 /*Start Status message*/
+
                 if (res.status == 'success' || res.status == 'error') {
                     Swal.fire(
                         `${res.status}!`,
-                        res.msg,
+                        `${res.msg}`,
                         `${res.status}`,
                     )
                 }
@@ -569,6 +572,29 @@ $('#importModal').on('hidden.bs.modal', function () {
     });
     $('#f4p').keyup(function() {
         if ($('#f4p').val().length == 1) {
+            $('#verifyin').focus();
+        }
+    });
+    /*end focus pointer to new field (functionality)*/
+
+    /*start focus pointer to new field (functionality)*/
+    $('#f11p').keyup(function() {
+        if ($('#f11p').val().length == 1) {
+            $('#f22p').focus();
+        }
+    });
+    $('#f22p').keyup(function() {
+        if ($('#f22p').val().length == 1) {
+            $('#f33p').focus();
+        }
+    });
+    $('#f33p').keyup(function() {
+        if ($('#f33p').val().length == 1) {
+            $('#f44p').focus();
+        }
+    });
+    $('#f44p').keyup(function() {
+        if ($('#f44p').val().length == 1) {
             $('#verifyin').focus();
         }
     });

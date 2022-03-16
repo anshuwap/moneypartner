@@ -23,8 +23,14 @@ class RetailerMiddleware
             else if (Auth::user()->isRetailer()) {
 
                 //check otp retailer otp verify or not
-                if (empty(Auth::user()->verify_otp) || !Auth::user()->verify_otp)
-                    return redirect(url('otp-sent'));
+                if (empty(Auth::user()->verify_otp) || !Auth::user()->verify_otp) {
+                    if (!empty($_COOKIE['logged_in']) && $_COOKIE['logged_in'] == 'logged') {
+                        // return redirect(url('retailer/dashboard'));
+                         return $next($request);
+                    } else {
+                        return redirect(url('otp-sent'));
+                    }
+                }
 
                 return $next($request);
             } else if (Auth::user()->isEmployee()) {

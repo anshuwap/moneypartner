@@ -107,3 +107,59 @@
 </body>
 
 </html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="login-section">
+            <div class="login-form-container">
+                <div class="login-form-left-side">
+                    <div class="form-box">
+                        <div class="form-logo">
+                            <img src="./assets/img/logo/logo.png" alt="">
+                        </div>
+                        <div class="title-container">
+                            <h1><i class="fas fa-user"></i> Login</h1>
+                            <span>or use your account</span>
+                        </div>
+
+                        <div class="form-wrapper">
+                            <form action="#">
+                                <div class="form-field">
+                                    <input type="text" placeholder="Your Username">
+                                </div>
+                                <div class="form-field">
+                                    <input type="password" placeholder="Password">
+                                </div>
+                                <div class="form-field form-btn-container">
+                                    <button type="submit" class="form-login-btn">LOG IN</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="login-form-right-side">
+                    <div class="login-content">
+                        <h1>Welcome Back</h1>
+                        <p>Please login for a awesome money service experiance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

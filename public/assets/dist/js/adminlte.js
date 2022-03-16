@@ -2323,7 +2323,7 @@
         }
       }
 
-      var groupItemElement = $__default['default']('<a/>', {
+      var groupItemElement = $__default['default']('</a>', {
         href: link,
         class: 'list-group-item'
       });

@@ -16,8 +16,9 @@ class WebhookApiController extends Controller
     public function index()
     {
         try {
-            $data['webhook'] = Webhook::where('retailer_id', Auth::user()->_id)->first();
-            return view('retailer.webhook_api.display', $data);
+            $data['webhook'] = Webhook::where('retailer_id', Auth::user()->_id)->where('type','webhook')->first();
+            $data['base_url'] = Webhook::where('retailer_id', Auth::user()->_id)->where('type','base_url')->first();
+            return view('retailer.setting.webhook', $data);
         } catch (Exception $e) {
             return redirect('500')->with(['error' => $e->getMessage()]);;
         }
@@ -26,7 +27,6 @@ class WebhookApiController extends Controller
 
     public function store(Request $request)
     {
-
         try {
             $webhook = new Webhook();
             if (!empty($request->webhook_id))
@@ -34,10 +34,31 @@ class WebhookApiController extends Controller
 
             $webhook->retailer_id = Auth::user()->_id;
             $webhook->webhook_url = $request->webhook_url;
+            $webhook->type        = 'webhook';
             if (!$webhook->save())
                 return response(['status' => 'error', 'msg' => 'Webhook URL not integrated!']);
 
             return response(['status' => 'success', 'msg' => 'Webhook URL integrated!']);
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
+        }
+    }
+
+
+        public function baseUrlApi(Request $request)
+    {
+        try {
+            $base_url = new Webhook();
+            if (!empty($request->base_url_id))
+                $base_url = Webhook::find($request->base_url_id);
+
+            $base_url->retailer_id = Auth::user()->_id;
+            $base_url->base_url = $request->base_url;
+            $base_url->type        = 'base_url';
+            if (!$base_url->save())
+                return response(['status' => 'error', 'msg' => 'Base URL not integrated!']);
+
+            return response(['status' => 'success', 'msg' => 'Base URL integrated!']);
         } catch (Exception $e) {
             return response(['status' => 'error', 'msg' => $e->getMessage()]);
         }

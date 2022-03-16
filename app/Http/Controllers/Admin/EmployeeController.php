@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Validation\CreateEmployeeValidation;
+use App\Http\Validation\UpdateEmployeeValidation;
 use App\Models\User;
+use App\Support\Email;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,9 +19,9 @@ class EmployeeController extends Controller
     {
         try {
 
-            $data['employees'] = User::where('role','employee')->paginate(config('constants.perPage'));
+            $data['employees'] = User::where('role', 'employee')->orderBy('created', 'DESC')->paginate(config('constants.perPage'));
 
-            return view('admin.employee.list',$data);
+            return view('admin.employee.list', $data);
         } catch (Exception $e) {
             return redirect('500')->with(['error' => $e->getMessage()]);;
         }
@@ -27,7 +30,7 @@ class EmployeeController extends Controller
 
     public function create()
     {
-         try {
+        try {
             return view('admin.employee.create');
         } catch (Exception $e) {
             return redirect('500')->with(['error' => $e->getMessage()]);;
@@ -35,7 +38,7 @@ class EmployeeController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(CreateEmployeeValidation $request)
     {
         $employee = new User();
         $employee->user_id       = Auth::user()->_id;
@@ -51,34 +54,44 @@ class EmployeeController extends Controller
         if (!empty($request->file('employee')))
             $employee->employee_img  = singleFile($request->file('employee'), 'attachment');
 
-        if ($employee->save())
-            return response(['status' => 'success', 'msg' => 'Employee Created Successfully!']);
+        if (!$employee->save())
+            return response(['status' => 'error', 'msg' => 'Employee not Created Successfully!']);
 
-        return response(['status' => 'error', 'msg' => 'Employee not Created Successfully!']);
+        $msg = '<h3>Welcome in Moneypartner Panel</h3>';
+        $msg .= '<p></p>Your User Id is-' . $request->email . '</p>';
+        $msg .= '<p></p>Your Password is-' . $request->password . '</p>';
+        $subject = 'Welcome Message';
+        $dataM = ['msg' => $msg, 'subject' => $subject, 'email' => $request->email];
+        $email = new Email();
+        $email->composeEmail($dataM);
+
+        return response(['status' => 'success', 'msg' => 'Employee Created Successfully!']);
     }
 
 
-    public function show(User $User)
-    {
-    }
-
-
-    public function edit(User $User,$id)
+    public function edit(User $User, $id)
     {
 
         try {
             $employee = User::find($id);
-           return view('admin.employee.edit', compact('employee'));
+            return view('admin.employee.edit', compact('employee'));
         } catch (Exception $e) {
             return redirect('500');
         }
     }
 
 
-    public function update(Request $request, User $User,$id)
+    public function update(UpdateEmployeeValidation $request, User $User, $id)
     {
 
         $employee = User::find($id);
+        $count = $employee->where('mobile_no', $request->mobile_no)->where('_id', '!=', $id)->count();
+        if ($count > 0)
+            return response(json_encode(array('validation' => ['mobile_no' => 'This Mobile Number used by Other.'])));
+
+        $count = $employee->where('email', $request->email)->where('_id', '!=', $id)->count();
+        if ($count > 0)
+            return response(json_encode(array('validation' => ['email' => 'This Email used by Other.'])));
 
         $employee->full_name     = $request->full_name;
         $employee->email         = $request->email;
@@ -113,5 +126,4 @@ class EmployeeController extends Controller
             return response(['status' => 'error', 'msg' => 'Something went wrong!!']);
         }
     }
-
 }

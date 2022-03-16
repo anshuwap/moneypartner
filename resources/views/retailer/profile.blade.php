@@ -294,39 +294,39 @@
                     </div>
                   </div>
 
-                  <div class="form-group row">
+                  <!-- <div class="form-group row">
                     <label for="" class="col-sm-2 col-form-label">Old Password</label>
                     <div class="col-sm-10">
                       <input type="password" name="old_password" class="form-control" id="oldPassword" placeholder="Old Password">
                       <span id="old_password_msg" class="custom-text-danger"></span>
                     </div>
 
-                  </div>
+                  </div> -->
 
-                  <div class="form-group row">
+                  <!-- <div class="form-group row">
                     <label for="" class="col-sm-2 col-form-label">New Password</label>
                     <div class="col-sm-10">
                       <input type="password" name="new_password" class="form-control" id="oldPassword" placeholder="New Password">
                       <span id="new_password_msg" class="custom-text-danger"></span>
                     </div>
-                  </div>
+                  </div> -->
 
-                  <div class="form-group row">
+                  <!-- <div class="form-group row">
                     <label for="" class="col-sm-2 col-form-label">Confirm Password</label>
                     <div class="col-sm-10">
                       <input type="password" name="confirm_password" class="form-control" id="oldPassword" placeholder="Confirm Password">
                       <span id="confirm_password_msg" class="custom-text-danger"></span>
                     </div>
-                  </div>
+                  </div> -->
 
 
-                  <div class="form-group row">
+                  <!-- <div class="form-group row">
                     <label for="" class="col-sm-2 col-form-label">PIN</label>
                     <div class="col-sm-10">
                       <input type="password" name="pin" class="form-control" id="pin" placeholder="Enter PIN" value="{{ Auth::user()->pin}}" style=" background: #b2d8cd;ss">
                       <span id="pin_msg" class="custom-text-danger"></span>
                     </div>
-                  </div>
+                  </div> -->
 
                   <div class="form-group row">
                     <div class="offset-sm-2 col-sm-10">

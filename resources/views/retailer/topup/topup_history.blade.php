@@ -9,19 +9,50 @@
             <div class="card-header">
                 <h3 class="card-title">Topup History</h3>
                 <div class="card-tools">
-                    <a href="javascript:void(0);" class="btn btn-sm btn-warning mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
-                    <a href="javascript:void(0);" class="btn btn-sm btn-success mr-2" id="create_topup"><i class="fas fa-hand-holding-usd"></i>&nbsp;Request for Topup</a>
+                    <a href="javascript:void(0);" class="btn btn-sm btn-success" id="create_topup"><i class="fas fa-hand-holding-usd"></i>&nbsp;Request for Topup</a>
+                    <a href="{{ url('retailer/topup-history-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
+                    @if(!empty($filter))
+                    <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
+                    @else
+                    <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a>
+                    @endif
+
+
                     <!-- <a href="{{ url('retailer/topup') }}" class="btn btn-sm btn-warning mr-4" id=""><i class="fas fa-arrow-alt-circle-left"></i>&nbsp;Back</a> -->
+                </div>
+            </div>
+
+            <div class="row pl-2 pr-2" id="filter" <?= (empty($filter)) ? "style='display:none'" : "" ?>>
+                <div class="col-md-12 ml-auto">
+                    <form action="{{ url('retailer/topup-history') }}">
+                        <div class="form-row">
+                            <div class="form-group col-md-2">
+                                <label>Data Range</label>
+                                <input type="text" class="form-control form-control-sm" value="<?= !empty($filter['date_range']) ? $filter['date_range'] : '' ?>" name="date_range" id="daterange-btn" />
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label>Transaction Id</label>
+                                <input type="text" class="form-control form-control-sm" placeholder="Transaction ID" value="<?= !empty($filter['transaction_id']) ? $filter['transaction_id'] : '' ?>" name="transaction_id" id="transaction_id" />
+                            </div>
+
+                            <div class="form-group mt-4">
+                                <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i>&nbsp;Search</button>
+                                <a href="{{ url('admin/topup-history') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
 
             <!-- /.card-header -->
             <div class="card-body table-responsive py-4">
-                <table id="table" class="table table-hover text-nowrap">
+                <table id="" class="table table-sm table-hover text-nowrap">
                     <thead>
                         <tr>
                             <th>Sr No.</th>
                             <th>Transaction Id</th>
+                            <th>Channel</th>
                             <th>Payment Mode</th>
                             <th>Amount</th>
                             <th>Status</th>
@@ -30,9 +61,48 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @if(!$topup_request->isEmpty())
+                        @php
+                        $i =0;
+                        @endphp
+                        @foreach($topup_request as $key=>$topup)
+                        <?php
+                        if ($topup->status == 'success') {
+                            $payment_has_code = '<a href="javacript:void(0);" class="text-success" data-toggle="tooltip" data-placement="bottom" title="' . $topup->admin_comment . '">' . $topup->payment_id . '</a>';
+                            $status = '<strong class="text-success">Approved</strong>';
+                        } else if ($topup->status == 'rejected') {
+                            $payment_has_code = '<a href="javacript:void(0);" class="text-danger" data-toggle="tooltip" data-placement="bottom" title="' . $topup->admin_comment . '">' . $topup->payment_id . '</a>';
+                            $status = '<strong class="text-danger">' . ucwords($topup->status) . '</strong>';
+                        } else if ($topup->status == 'pending') {
+                            $payment_has_code = '<a href="javacript:void(0);" class="text-warning" data-toggle="tooltip" data-placement="bottom" title="' . $topup->admin_comment . '">' . $topup->payment_id . '</a>';
+                            $status = '<strong class="text-warning">' . ucwords($val->status) . '</strong>';
+                        }
+
+                        ?>
+                        <tr>
+                            <td>{{ ++$i }}</td>
+                            <td><?= $payment_has_code; ?></td>
+                            <td>{{ (!empty($topup->payment_channel))?ucwords($topup->payment_channel):'-' }}</td>
+                            <td>{{ ucwords(str_replace('_', " ", $topup->payment_mode)) }}</td>
+                            <td>{!! mSign($topup->amount) !!}</td>
+                            <td id="status-{{ $topup->id }}">
+                                {!! $status !!}
+                            </td>
+                            <td>{{ date('d M Y h:i:s A', $topup->created) }}</td>
+                            <td>{{ date('d M Y h:i:s A', $topup->payment_date) }}</td>
+                            <!-- <td>
+                               <a href="javascript:void(0);" class="text-success view-topup-request" topup_id="{{ $topup->id }}" data-toggle="tooltip" data-placement="bottom" title="View Details"><i class="fas fa-eye"></i></i></a>
+                                @if(empty($topup->admin_action) && $topup->admin_action == 0 )
+                                <a href="javascript:void(0);" class="text-ingfo add-topup-request" topup_id="{{ $topup->id }}" data-toggle="tooltip" data-placement="bottom" title="Approve Topup"><i class="fas fa-plus-circle"></i></a>
+                                @endif
+                            </td> -->
+                        </tr>
+                        @endforeach
+                        @endif
                     </tbody>
 
                 </table>
+                {{ $topup_request->appends($_GET)->links()}}
             </div>
             <!-- /.card-body -->
 
@@ -46,52 +116,6 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-
-        $('#table').DataTable({
-            lengthMenu: [
-                [10, 30, 50, 100, 500],
-                [10, 30, 50, 100, 500]
-            ], // page length options
-
-            bProcessing: true,
-            serverSide: true,
-            scrollY: "auto",
-            scrollCollapse: true,
-            'ajax': {
-                "dataType": "json",
-                url: "{{ url('retailer/topup-history-ajax') }}",
-                data: {}
-            },
-            columns: [{
-                    data: "sr_no"
-                },
-                {
-                    data: 'payment_has_code'
-                },
-                {
-                    data: "payment_mode"
-                },
-                {
-                    data: "amount",
-                },
-                {
-                    data: "status"
-                },
-                {
-                    data: "payment_date"
-                },
-                {
-                    data: "created_date"
-                },
-
-
-            ],
-
-            columnDefs: [{
-                orderable: false,
-                targets: [0, 1, 2, 3, 4, 5, 6]
-            }],
-        });
 
         $(document).on('click', '.activeVer', function() {
             var id = $(this).attr('_id');
@@ -397,6 +421,24 @@
         $('#importModal').modal('show');
     })
 
+ $('.view-topup-request').click(function() {
+      var topup_id = $(this).attr('topup_id');
+      $('#topup_id').val(topup_id);
+      $.ajax({
+        url: "{{ url('retailer/topup-request-details') }}/" + topup_id,
+        type: 'GET',
+        dataType: 'JSON',
+        success: function(res) {
+          $('#dataVal').html(res.data);
+
+          $('#topup-form').show();
+          if (res.show_action)
+            $('#topup-form').hide();
+
+          $('#topup-request-details').modal('show');
+        }
+      })
+    })
 
     /*start form submit functionality*/
     $("form#add_bank_charges").submit(function(e) {

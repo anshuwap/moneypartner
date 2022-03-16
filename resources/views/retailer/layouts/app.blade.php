@@ -5,8 +5,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}" />
-  <title>Money Transfer</title>
-
+  <title>Money Partner</title>
+  <link rel="icon" type="image/x-icon" href="{{ asset('assets')}}/profile/logo.PNG">
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
@@ -79,45 +79,60 @@
       -webkit-appearance: none;
       margin: 0;
     }
-    .tag-small {
-      font-size: 11px;
-      background: #99d6c4;
-      border: 1px solid #2fc296;
-      border-radius: 9px;
-      width: auto;
-      padding: 0px 8px;
-      color: black;
-      text-transform: uppercase;
-    }
 
-    .tag-small-warning{
-      font-size: 11px;
-      background: #e6d08d;
-      border: 1px solid #fcbf07;
-      border-radius: 9px;
-      width: auto;
-      padding: 0px 8px;
+    .def {
+      font-weight: 600;
+      font-size: 13px;
       color: black;
-      text-transform: uppercase;
+      background: #facece;
+      padding: 4px;
+      border-radius: 4px;
     }
-
-    .tag-small-danger{
-      font-size: 11px;
-      background: #ea9f6a;
-      border: 1px solid #e26005;
-      border-radius: 9px;
-      width: auto;
-      padding: 0px 8px;
-      color: black;
-      text-transform: uppercase;
-    }
+  </style>
+  <style>
+input{
+  font-family: IBM Plex Sans,sans-serif!important;
+    font-size: 12px !important;
+    letter-spacing: 0.01em;
+    height: auto;
+}
+select{
+  font-family: IBM Plex Sans,sans-serif!important;
+    font-size: 12px !important;
+    letter-spacing: 0.01em;
+    height: auto;
+}
+label{
+  font-family: IBM Plex Sans,sans-serif!important;
+    font-size: 12px !important;
+    letter-spacing: 0.01em;
+    height: auto;
+}
+.card-title{
+  font-family: IBM Plex Sans,sans-serif!important;
+    font-size: 14px !important;
+    letter-spacing: 0.01em;
+    height: auto;
+}
+.btn{
+  font-family: IBM Plex Sans,sans-serif!important;
+    font-size: 12px !important;
+    letter-spacing: 0.01em;
+    height: auto;
+}
+.modal-title{
+  font-family: IBM Plex Sans,sans-serif!important;
+    font-size: 14px !important;
+    letter-spacing: 0.01em;
+    height: auto;
+}
   </style>
 </head>
 
-<body class="sidebar-mini layout-fixed sidebar-collapse" style="
-    font-family: initial !important;
-    font-size: 15px !important;
-">
+<body class="sidebar-mini layout-fixed" style="font-family: IBM Plex Sans,sans-serif!important;
+    font-size: 12px !important;
+    letter-spacing: 0.01em;
+    height: auto;">
   <div class="wrapper">
 
     <!-- Preloader -->
@@ -176,10 +191,10 @@
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4 bg-custom-sidebar">
       <!-- Brand Logo -->
-      <a class="brand-link">
+      <!-- <a class="brand-link">
         <img src="{{ asset('assets') }}/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">Money Transfer</span>
-      </a>
+        <span class="brand-text font-weight-light">Money Partner</span>
+      </a> -->
 
       <!-- Sidebar -->
       <div class="sidebar">
@@ -214,7 +229,7 @@
 
 
     <footer class="main-footer">
-      <strong>Copyright &copy; 2021-{{ date('Y') }} <a href="url('admin/money-transter')">MoneyTransfer</a>.</strong>
+      <strong>Copyright &copy; 2021-{{ date('Y') }} <a href="url('admin/money-transter')">MoneyPartner</a>.</strong>
       All rights reserved.
       <div class="float-right d-none d-sm-inline-block">
         <b>Version</b> 1.0.0-rc

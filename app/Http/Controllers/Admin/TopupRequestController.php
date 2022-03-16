@@ -4,67 +4,57 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Outlet;
+use App\Models\PaymentChannel;
 use App\Models\PaymentMode\BankAccount;
 use App\Models\PaymentMode\QrCode;
 use App\Models\PaymentMode\Upi;
 use App\Models\Topup;
-use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class TopupRequestController extends Controller
 {
-
-
     public function index(Request $request)
     {
         try {
 
             //  $topups = Topup::get();
+            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->orderBy('created', 'DESC')->get();
 
-            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->orderBy('created', 'ASC')->get();
-            $outlet_id = $request->outlet_id;
-            if (empty($request->outlet_id))
-                $outlet_id = $outlets[0]->_id;
+            $query = Topup::query();
 
-            $query = Topup::query()->where('outlet_id', $outlet_id);
+            if (!empty($request->outlet_id))
+                $query->where('outlet_id', $request->outlet_id);
 
-            if (empty($request->outlet_id)) {
-                $query = Topup::query();
-                $outlet_id = '';
+            if (!empty($request->transaction_id))
+                $query->where('payment_id', $request->transaction_id);
+
+            $start_date = '';
+            $end_date   = '';
+            if (!empty($request->date_range)) {
+                $date = explode('-', $request->date_range);
+                $start_date = $date[0];
+                $end_date   = $date[1];
             }
-
-            if (!empty($request->start_date) && !empty($request->end_date)) {
-                $start_date = strtotime(trim($request->start_date) . " 00:00:00");
-                $end_date = strtotime(trim($request->end_date) . " 23:59:59");
+            if (!empty($start_date) && !empty($end_date)) {
+                $start_date = strtotime(trim($start_date) . " 00:00:00");
+                $end_date   = strtotime(trim($end_date) . " 23:59:59");
             } else {
                 $crrMonth = (date('Y-m-d'));
                 $start_date = strtotime(trim(date("d-m-Y", strtotime('-30 days', strtotime($crrMonth)))) . " 00:00:00");
-                $end_date = strtotime(trim(date('Y-m-d')) . " 23:59:59");
+                $end_date   = strtotime(trim(date('Y-m-d')) . " 23:59:59");
             }
 
-            $topups = $query->whereBetween('created', [$start_date, $end_date])->get();
+            $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
+            $topups = $query->whereBetween('created', [$start_date, $end_date])->orderBy('created', 'DESC')->paginate($perPage);
 
-
-            $topup_request = [];
-            foreach ($topups as $topup) {
-
-                $topup_request[] = (object)[
-                    'id'           => $topup->_id,
-                    'payment_id'   => $topup->payment_id,
-                    'retailer_name' => !empty($topup->RetailerName['full_name']) ? $topup->RetailerName['full_name'] : '',
-                    'amount'       => mSign($topup->amount),
-                    'payment_mode' => ucwords(str_replace('_', " ", $topup->payment_mode)),
-                    'status'       => ucwords($topup->status),
-                    'payment_date' => date('y-m-d h:i:s A', $topup->payment_date),
-                    'admin_action' => $topup->admin_action,
-                    'comment'      => $topup->comment
-                ];
-            }
-            $data['topup_request'] = $topup_request;
+            $data['topup_request'] = $topups;
             $data['outlets']   = $outlets;
-            $data['outlet_id'] = $outlet_id;
+
+            $request->request->remove('page');
+            $request->request->remove('perPage');
+            $data['filter']  = $request->all();
+            $data['payment_channel'] = PaymentChannel::select('_id', 'name')->get();
 
             return view('admin.topup_request.list', $data);
         } catch (Exception $e) {
@@ -78,7 +68,8 @@ class TopupRequestController extends Controller
         try {
             $topup = Topup::find($request->id);
             $topup->status = $request->status;
-            $topup->admin_comment = $request->comment;
+            $topup->admin_comment   = $request->comment;
+            $topup->payment_channel = $request->payment_channel;
             $topup->admin_action = 1;
             $topup->save();
             if ($topup->status == 'success') {
@@ -86,7 +77,7 @@ class TopupRequestController extends Controller
                 // $topups = Topup::select('amount')->where('status', 'success')->where('outlet_id', $topup->outlet_id)->get();
 
                 $amount = 0;
-                if(!empty($topup->amount))
+                if (!empty($topup->amount))
                 $amount = $topup->amount;
 
                 //add topup amount in retailer wallet
@@ -101,9 +92,9 @@ class TopupRequestController extends Controller
                 $type             = $topup->payment_mode;
                 $transaction_fees = 0;
                 //insert data in transfer history collection
-                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode,$type, $transaction_fees, 'credit');
+                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'credit');
 
-                return response(['status' => 'success', 'msg' => 'Topup Request success', 'status_msg' => ucwords($topup->status), 'id' => $topup->id]);
+                return response(['status' => 'success', 'msg' => 'Topup Request Success', 'status_msg' => ucwords($topup->status), 'id' => $topup->id]);
             } else if ($topup->status == 'rejected') {
                 return response(['status' => 'success', 'msg' => 'Topup Request Rejected', 'status_msg' => ucwords($topup->status), 'id' => $topup->id]);
             } else {
@@ -243,6 +234,87 @@ class TopupRequestController extends Controller
             die(json_encode(['data' => $data, 'show_action' => $show_action]));
         } catch (Exception $e) {
             return response(['status' => 'error', 'msg' => config('custom_errorlist.error.codeException')]);
+        }
+    }
+
+
+    public function export(Request $request){
+
+try {
+            $file_name = 'topup-report';
+
+            $delimiter = ","; //dfine delimiter
+
+            if (!file_exists('exportCsv')) //
+                mkdir('exportCsv', 0777, true);
+
+            $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
+
+            $transactionArray = [
+                'Transaction ID', 'Outlet','Amount','Payment Date','Payment Mode','Channel',
+                'Status', 'Datetime'
+            ];
+            fputcsv($f, $transactionArray, $delimiter); //put heading here
+
+            $query = Topup::query();
+
+            if (!empty($request->outlet_id))
+                $query->where('outlet_id', $request->outlet_id);
+
+            if (!empty($request->transaction_id))
+                $query->where('payment_id', $request->transaction_id);
+
+            $start_date = '';
+            $end_date   = '';
+            if (!empty($request->date_range)) {
+                $date = explode('-', $request->date_range);
+                $start_date = $date[0];
+                $end_date   = $date[1];
+            }
+            if (!empty($start_date) && !empty($end_date)) {
+                $start_date = strtotime(trim($start_date) . " 00:00:00");
+                $end_date   = strtotime(trim($end_date) . " 23:59:59");
+            } else {
+                $crrMonth = (date('Y-m-d'));
+                $start_date = strtotime(trim(date("d-m-Y", strtotime('-30 days', strtotime($crrMonth)))) . " 00:00:00");
+                $end_date   = strtotime(trim(date('Y-m-d')) . " 23:59:59");
+            }
+            $topups = $query->get();
+
+            if ($topups->isEmpty())
+                return back()->with('error', 'There is no any record for export!');
+
+            $transactionArr = [];
+            foreach ($topups as $topup) {
+
+                $topup_val[] = $topup->payment_id;
+                $topup_val[] = !empty($topup->RetailerName['outlet_name']) ? $topup->RetailerName['outlet_name'] : '';
+                $topup_val[] = $topup->amount;
+                $topup_val[] = date('Y-m-d H:i:s A', $topup->payment_date);
+                $topup_val[] = !empty($topup->payment_mode)?ucwords(str_replace('_',' ',$topup->payment_mode)):'';
+                $topup_val[] = !empty($topup->payment_channel)?ucwords(str_replace('_',' ',$topup->payment_channel)):'';
+                $topup_val[] = strtoupper($topup->status);
+                $topup_val[] = date('Y-m-d H:i:s A', $topup->created);
+
+                $transactionArr = $topup_val;
+
+                fputcsv($f, $transactionArr, $delimiter); //put heading here
+                $topup_val = [];
+            }
+            // Move back to beginning of file
+            fseek($f, 0);
+
+            // headers to download file
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="' . $file_name . '.csv"');
+            readfile('exportCsv/' . $file_name . '.csv');
+
+            //remove file form server
+            $path = 'exportCsv/' . $file_name . '.csv';
+            if (file_exists($path))
+                unlink($path);
+        } catch (Exception $e) {
+            return redirect('500');
         }
     }
 }

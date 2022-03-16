@@ -44,11 +44,6 @@ class BankAccountController extends Controller
     }
 
 
-    public function show(BankAccount $BankAccount)
-    {
-    }
-
-
     public function edit(BankAccount $BankAccount)
     {
 
@@ -175,7 +170,7 @@ class BankAccountController extends Controller
         foreach ($data as $val) {
             $action = '<a href="javascript:void(0);" class="text-warning allocate-retailer" data-toggle="tooltip" data-placement="bottom" title="Edit" bank_account_id="' . $val->_id . '"><i class="far fa-eye"></i></a>&nbsp;&nbsp;';
             $action .= '<a href="javascript:void(0);" class="text-info edit_bank_account" data-toggle="tooltip" data-placement="bottom" title="Edit" bank_account_id="' . $val->_id . '"><i class="far fa-edit"></i></a>&nbsp;&nbsp;';
-            $action .= '<a href="javascript:void(0);" class="text-danger remove_bank_account"  data-toggle="tooltip" data-placement="bottom" title="Remove" bank_account_id="' . $val->_id . '"><i class="fas fa-trash"></i></a>';
+            //$action .= '<a href="javascript:void(0);" class="text-danger remove_bank_account"  data-toggle="tooltip" data-placement="bottom" title="Remove" bank_account_id="' . $val->_id . '"><i class="fas fa-trash"></i></a>';
             if ($val->status == 1) {
                 $status = ' <a href="javascript:void(0);"><span class="badge badge-success activeVer" id="active_' . $val->_id . '" _id="' . $val->_id . '" val="0">Active</span></a>';
             } else {

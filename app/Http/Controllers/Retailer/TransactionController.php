@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Retailer;
 
 use App\Http\Controllers\Controller;
+use App\Models\ApiList;
 use App\Models\Outlet;
 use App\Models\Transaction;
 use App\Support\PaymentApi;
@@ -10,14 +11,43 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class TransactionController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $data['transactions'] = Transaction::where('retailer_id', Auth::user()->_id)->get();
+
+            $query = Transaction::query()->where('retailer_id', Auth::user()->_id);
+
+            if (!empty($request->type))
+                $query->where('type', $request->type);
+
+            if (!empty($request->transaction_id))
+                $query->where('transaction_id', $request->transaction_id);
+
+            if (!empty($request->banficiary))
+                $query->where('receiver_name', $request->banficiary);
+
+
+            $start_date = $request->start_date;
+            $end_date   = $request->end_date;
+
+            if (!empty($start_date) && !empty($end_date)) {
+                $start_date = strtotime(trim($start_date) . " 00:00:00");
+                $end_date   = strtotime(trim($end_date) . " 23:59:59");
+                $query->whereBetween('created', [$start_date, $end_date]);
+            }
+
+            $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
+            $data['transactions']    = $query->orderBy('created', 'DESC')->paginate($perPage);
+
+            $request->request->remove('page');
+             $request->request->remove('perPage');
+            $data['filter']  = $request->all();
+
             return view('retailer.transaction.display', $data);
 
             Session::forget('importData');
@@ -80,24 +110,37 @@ class TransactionController extends Controller
 
             $api_status = 'pending';
             /*start api transfer functionality*/
-            if ($amount <= 5000 && $request->payment_mode == 'bank_account') {
+            if ($total_amount <= 5000) {
 
                 $payment_channel = (object)$request->payment_channel;
 
                 $payment_para = [
                     'account_number' => $payment_channel->account_number,
                     'ifsc_code'     => $payment_channel->ifsc_code,
-                    'amount'        => $request->amount,
+                    'amount'        => $total_amount,
                     'receiver_name' => $request->receiver_name,
                     'bank_name'     => $payment_channel->bank_name,
                 ];
                 $payment_api = new PaymentApi();
 
-                $res = $payment_api->payunie($payment_para);
+                $apiLists = ApiList::where('retailer_ids', 'all', [Auth::user()->_id])->orderBy('sort', 'ASC')->get();
+                $res = '';
+                foreach ($apiLists as $api) {
 
-                if (!empty($res) && $res['status'] == 'error')
-                    $res = $payment_api->payunie1($payment_para);
-                //     return response(['status' => 'error', 'msg' => $res['msg']]);
+                    if ($api->status == 1 && $api->name == 'Payunie - Preet Kumar') {
+                        $res = $payment_api->payunie($payment_para);
+                    }
+
+                    if ($api->status == 1 && $api->name == 'Payunie - Parveen') {
+                        if ((!empty($res) && $res['status'] == 'error') || empty($res))
+                            $res = $payment_api->payunie1($payment_para);
+                    }
+
+                    if ($api->status == 1 && $api->name == 'Pay2All- Parveen') {
+                        if (!empty($res) && $res['status'] == 'error')
+                            $res =  $payment_api->pay2All($payment_para);
+                    }
+                }
 
                 $response = [];
                 if (!empty($res) && $res['status'] == 'success') {
@@ -126,7 +169,7 @@ class TransactionController extends Controller
             $transaction->transaction_fees = $charges;
             $transaction->receiver_name  = $request->receiver_name;
             $transaction->payment_mode   = 'bank_account'; //$request->payment_mode;
-            $transaction->payment_channel= $request->payment_channel;
+            $transaction->payment_channel = $request->payment_channel;
             $transaction->status         = $api_status;
             $transaction->type           = 'dmt_transfer';
             $transaction->pancard_no     = $request->pancard_no;
@@ -216,12 +259,13 @@ class TransactionController extends Controller
 
     public function payoutStore(Request $request)
     {
+
         try {
             /*start check amount available in wallet or not*/
             $amount = $request->amount;
             $outlet = Outlet::select('bank_charges')->where('_id', Auth::user()->outlet_id)->first();
             $charges = 0;
-            if (!empty($outlet)) {
+            if (!empty($outlet->bank_charges)) {
                 foreach ($outlet->bank_charges as $charge) {
                     if ($charge['type'] == 'inr') {
 
@@ -237,11 +281,13 @@ class TransactionController extends Controller
                         }
                     }
                 }
+            } else {
+                return response(['status' => 'error', 'msg' => 'There are no any Slab Avaliable.']);
             }
 
             $total_amount = $amount + $charges;
             if ($total_amount >= Auth()->user()->available_amount)
-                return response(['status' => 'error', 'msg' => 'You have not Sufficient Amount']);
+                return response(['status' => 'error', 'msg' => 'You have not Sufficient Amount.']);
             /*end check amount available in wallet or not*/
 
 
@@ -267,24 +313,46 @@ class TransactionController extends Controller
 
             $api_status = 'pending';
             /*start api transfer functionality*/
-            if ($amount <= 5000 && $request->payment_mode == 'bank_account') {
+            if ($total_amount <= 5000) {
 
+                // $payunie_parveen = ApiList::where('status',1)->where()->find();
                 $payment_channel = (object)$request->payment_channel;
 
                 $payment_para = [
+                    'mobile_number'  => Auth::user()->mobile_number,
                     'account_number' => $payment_channel->account_number,
-                    'ifsc_code'     => $payment_channel->ifsc_code,
-                    'amount'        => $request->amount,
-                    'receiver_name' => $request->receiver_name,
-                    'bank_name'     => $payment_channel->bank_name,
+                    'ifsc_code'      => $payment_channel->ifsc_code,
+                    'amount'         => $total_amount,
+                    'receiver_name'  => $request->receiver_name,
+                    'bank_name'      => $payment_channel->bank_name,
                 ];
                 $payment_api = new PaymentApi();
+                // $res =  $payment_api->pay2All($payment_para);
+                //  die;
+                $apiLists = ApiList::where('retailer_ids', 'all', [Auth::user()->_id])->orderBy('sort', 'ASC')->get();
+                $res = '';
+                foreach ($apiLists as $api) {
 
-                $res = $payment_api->payunie($payment_para);
+                    if ($api->status == 1 && $api->name == 'Payunie - Preet Kumar') {
+                        $res = $payment_api->payunie($payment_para);
+                    }
 
-                if (!empty($res) && $res['status'] == 'error')
-                    $res = $payment_api->payunie1($payment_para);
-                //     return response(['status' => 'error', 'msg' => $res['msg']]);
+                    if ($api->status == 1 && $api->name == 'Payunie - Parveen') {
+                        if ((!empty($res) && $res['status'] == 'error') || empty($res))
+                            $res = $payment_api->payunie1($payment_para);
+                    }
+
+                    if ($api->status == 1 && $api->name == 'Pay2All- Parveen') {
+                        if (!empty($res) && $res['status'] == 'error')
+                            $res =  $payment_api->pay2All($payment_para);
+                    }
+                }
+
+                // if ((!empty($res) && $res['status'] == 'error') || empty($res))
+                //     $res = $payment_api->payunie1($payment_para);
+
+                // if (!empty($res) && $res['status'] == 'error')
+                //     $res =  $payment_api->pay2All($payment_para);
 
                 $response = [];
                 if (!empty($res) && $res['status'] == 'success') {
@@ -341,38 +409,6 @@ class TransactionController extends Controller
     }
 
 
-    public function pushRequest($input)
-    {
-
-        $post_data   = array(
-            'key'           => 'vPxce3A8W23XTokxvBbj34Co',
-            'AccountNumber' => $input->account_number,
-            'IFSC'          => $input->ifsc_code,
-            'Amount'        => $input->amount,
-            'HolderName'    => $input->receiver_name,
-            'BankName'      => $input->bank_name,
-            'TransactionID' => uniqCode(7)
-        );
-
-        $url = "https://payunie.com/api/v1/payout";
-
-        $ch  = curl_init();
-        curl_setopt($ch, CURLOPT_VERBOSE, 1);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_FAILONERROR, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data));
-        $http_result = curl_exec($ch);
-        curl_close($ch);
-
-        $result = json_decode($http_result);
-        return $result;
-    }
-
-
-
     public function feeDetails(Request $request)
     {
         try {
@@ -400,7 +436,7 @@ class TransactionController extends Controller
                     }
                 }
 
-                return response(['status' => 'success', 'charges' => $charges]);
+                return response(['status' => 'success', 'charges' => number_format((float)$charges, 2, '.', '')]);
             }
             return response(['status' => 'error', 'msg' => 'There are no any Slab Avaliable.']);
         } catch (Exception $e) {
@@ -480,6 +516,24 @@ class TransactionController extends Controller
                     $ctr++;
                 }
 
+                $validator = Validator::make($importData, [
+                    '*.amount' => 'required|numeric|not_in:0',
+                    '*.receiver_name' => 'required',
+                    '*.payment_channel.bank_name' => 'required',
+                    '*.payment_channel.account_number' => 'required|numeric',
+                    '*.payment_channel.ifsc_code' => 'required'
+                ]);
+
+                if (!empty($validator->errors()->all())) {
+                    $messages = $validator->errors()->messages();
+                    $v_message = '';
+                    foreach ($messages as $msg) {
+                        $v_message .= '<p class="def">' . $msg[0] . '.</p>';
+                    }
+                    $mg = str_replace('The', ' ', $v_message);
+                    return response(['status' => 'error', 'msg' => str_replace('.', ' ', $mg)]);
+                }
+
                 session()->put('importData', $importData);
                 session()->put('previewData', $previewData);
                 $dataV = '';
@@ -495,25 +549,30 @@ class TransactionController extends Controller
     private function previewData($previewData)
     {
         $table_data = '<table class="table table-sm" id="preview-table">';
-        $table_data .= '<tr><th>Amount</th>
+        $table_data .= '<tr>
         <th>Beneficiary</th>
         <th>Bank Name</th>
         <th>A/C No.</th>
         <th>IFSC</th>
+        <th>Amount</th>
         <th colspan="2">Status</th>
 
         </tr>';
+        $total_amount = 0;
         foreach ($previewData as $da) {
+            $total_amount += $da['amount'];
+
             $table_data .= '<tr class="preview-table">
-            <td>' . mSign($da['amount']) . '</td>
             <td>' . $da['receiver_name'] . '</td>
             <td>' . $da['payment_channel']['bank_name'] . '</td>
             <td>' . $da['payment_channel']['account_number'] . '</td>
             <td>' . $da['payment_channel']['ifsc_code'] . '</td>
+            <td>' . mSign($da['amount']) . '</td>
             <td><span class="tag-small-warning">Pending</span></td>
             </tr>';
         }
-        $table_data .= '</table>';
+        $table_data .= '<tr class="preview-table"><th colspan="4" style="text-align:end;">Total Amount</th>
+        <th colspan="2">' . mSign($total_amount) . '</th></tr></table>';
         return $table_data;
     }
 
@@ -525,6 +584,8 @@ class TransactionController extends Controller
         // $previewData = session('previewData');
         $import = session('importData');
         $importData = $import[$index];
+
+        $payment_channel = ['bank_name' => $importData['payment_channel']['bank_name'], 'account_number' => $importData['payment_channel']['account_number'], 'ifsc_code' => $importData['payment_channel']['ifsc_code']];
 
         /*start check amount available in wallet or not*/
         $amount = $importData['amount'];
@@ -550,8 +611,6 @@ class TransactionController extends Controller
         }
         $total_amount = $amount + $charges;
         /*end check amount available in wallet or not*/
-
-        $payment_channel = ['bank_name' => $importData['payment_channel']['bank_name'], 'account_number' => $importData['payment_channel']['account_number'], 'ifsc_code' => $importData['payment_channel']['ifsc_code']];
 
         if ($total_amount >= Auth()->user()->available_amount) {
             $comment = '<span class="text-danger">You have not Sufficient Amount.</span>';
@@ -593,6 +652,7 @@ class TransactionController extends Controller
             $comment = '<span class="text-success">Import Successfully!</span>';
             $status  = '<span class="tag-small">Success</span>';
         }
+        // }
 
         $previewData = [
             'amount'          => $importData['amount'],
@@ -613,11 +673,11 @@ class TransactionController extends Controller
     {
 
         $table_data = '<tr>
-            <td>' . mSign($previewData['amount']) . '</td>
             <td>' . $previewData['receiver_name'] . '</td>
             <td>' . $previewData['payment_channel']['bank_name'] . '</td>
             <td>' . $previewData['payment_channel']['account_number'] . '</td>
             <td>' . $previewData['payment_channel']['ifsc_code'] . '</td>
+            <td>' . mSign($previewData['amount']) . '</td>
             <td>' . $previewData['status'] . '</td>
             <td>' . $previewData['comment'] . '</td>
             </tr>';
@@ -626,111 +686,93 @@ class TransactionController extends Controller
     }
 
 
-    // import csv file
-    public function importSequence1(Request $request)
+    public function export(Request $request)
     {
         try {
-            $filename = $_FILES['file']['name'];
+            $file_name = 'transaction-report';
 
-            if (!empty($filename)) {
-                $file = fopen($_FILES['file']['tmp_name'], "r");
-                $ctr = 1;
-                $csvError = FALSE;
-                $csvImport = FALSE;
-                $error = array();
-                $responseArray[0] =  ['Amount', 'Beneficiary', 'Bank Name', 'Account Number', 'IFSC Code'];
-                while (($getData = fgetcsv($file, 10000, ",")) !== FALSE) {
-                    if ($ctr != 1) {
-                        $responseArray[$ctr] = $getData;
+            $delimiter = ","; //dfine delimiter
 
-                        /*start check amount available in wallet or not*/
-                        $amount = $getData[0];
-                        $outlet = Outlet::select('bank_charges')->where('_id', Auth::user()->outlet_id)->first();
-                        $charges = 0;
-                        if (!empty($outlet)) {
+            if (!file_exists('exportCsv')) //
+                mkdir('exportCsv', 0777, true);
 
-                            foreach ($outlet->bank_charges as $charge) {
-                                if ($charge['type'] == 'inr') {
+            $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
 
-                                    if ($charge['from_amount'] <= $amount && $charge['to_amount'] >= $amount) {
-                                        $charges = $charge['charges'];
-                                        break;
-                                    }
-                                } else if ($charge['type'] == 'persantage') {
+            $transactionArray = [
+                'Transaction ID', 'UTR Number', 'Amount', 'Fees', 'Beneficiary', 'IFSC', 'Account No.', 'Bank Name',
+                'Status', 'Datetime'
+            ];
+            fputcsv($f, $transactionArray, $delimiter); //put heading here
 
-                                    if ($charge['from_amount'] <= $amount && $charge['to_amount'] >= $amount) {
-                                        $charges = ($charge['charges'] / 100) * $amount;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        $total_amount = $amount + $charges;
-                        if ($total_amount >= Auth()->user()->available_amount)
-                            return response(['status' => 'error', 'msg' => 'You have not Sufficient Amount']);
-                        /*end check amount available in wallet or not*/
+            $query = Transaction::query();
 
-                        $transaction = new Transaction(); // initialize transaction model
+            if (!empty($request->type))
+                $query->where('type', $request->type);
 
-                        /*start check payment mode here*/
-                        $payment_channel = [];
+            // if (!empty($request->status))
+            //     $query->where('status', $request->status);
 
-                        // if (strtolower($getData[2]) == 'upi')
-                        //     $payment_channel = ['upi_id' => $getData[3]];
+            if (!empty($request->transaction_id))
+                $query->where('transaction_id', $request->transaction_id);
 
-                        // if (strtolower(str_replace('_', ' ', $getData[2])) == 'bank account')
-                        $payment_channel = ['bank_name' => $getData[2], 'account_number' => $getData[3], 'ifsc_code' => $getData[4]];
-                        /*end check payment mode here*/
-
-                        $transaction->transaction_id   = uniqCode(3) . rand(111111, 999999);
-                        $transaction->retailer_id      = Auth::user()->_id;
-                        $transaction->outlet_id        = Auth::user()->outlet_id;
-                        $transaction->mobile_number    = Auth::user()->mobile_number;
-                        $transaction->sender_name      = Auth::user()->full_name;
-                        $transaction->amount           = $getData[0];
-                        $transaction->transaction_fees = $charges;
-                        $transaction->receiver_name    = $getData[1];
-                        // $transaction->payment_mode     = strtolower(str_replace(' ', '_', $getData[2]));
-                        $transaction->payment_channel  = $payment_channel;
-                        $transaction->status           = 'pending';
-                        $transaction->type             = 'bulk_payout';
-
-                        $csvImport =  $transaction->save();
-
-                        //update toupup amount here
-                        if ($csvImport) {
-                            if (!spentTopupAmount(Auth()->user()->_id, $total_amount))
-                                return response(['status' => 'error', 'msg' => 'Something went wrong!']);
-                        }
-                    }
-
-                    $ctr++;
-                    $error = array();
-                }
-                fclose($file);
-
-                //store error list in csv file on server
-                // if ($csvError == TRUE) {
-                //     if (!file_exists('csvErrorList'))//if folder not exit then create folder
-                //         mkdir('csvErrorList', 0777, true);
-
-                //     $fileName = 'agentCsv' . uniqCode(3) . '.csv';
-                //     $fp = fopen('csvErrorList/' . $fileName, 'w');
-                //     foreach ($responseArray as $fields) {
-                //         fputcsv($fp, $fields);
-                //     }
-                //     fclose($fp);
-                //     $path = url('admin/csv-error-list/'.$fileName);
-                //     $msg = 'Some record not imported. please download file and check error. <a href='.$path.'><b>Download</b></a>';
-                //     return response(['status' => 'error', 'msg' => $msg, 'file_path' => $fileName]);
-                // }
-
-                if ($csvImport)
-                    return response(['status' => 'success', 'msg' => 'Bulk Payout Imported successfully!']);
+            $start_date = '';
+            $end_date   = '';
+            if (!empty($request->date_range)) {
+                $date = explode('-', $request->date_range);
+                $start_date = $date[0];
+                $end_date   = $date[1];
             }
-            return response(['status' => 'error', 'msg' => 'File Not Found!']);
+            if (!empty($start_date) && !empty($end_date)) {
+                $start_date = strtotime(trim($start_date) . " 00:00:00");
+                $end_date   = strtotime(trim($end_date) . " 23:59:59");
+            } else {
+                $crrMonth = (date('Y-m-d'));
+                $start_date = strtotime(trim(date("d-m-Y", strtotime('-30 days', strtotime($crrMonth)))) . " 00:00:00");
+                $end_date   = strtotime(trim(date('Y-m-d')) . " 23:59:59");
+            }
+
+            $query->whereBetween('created', [$start_date, $end_date]);
+
+            $transactions = $query->get();
+
+            if ($transactions->isEmpty())
+                return back()->with('error', 'There is no any record for export!');
+
+            $transactionArr = [];
+            foreach ($transactions as $transaction) {
+
+                $payment = (object)$transaction->payment_channel;
+
+                $transaction_val[] = $transaction->transaction_id;
+                $transaction_val[] = (!empty($transaction->response['utr_number'])) ? $transaction->response['utr_number'] : '';
+                $transaction_val[] = $transaction->amount;
+                $transaction_val[] = (!empty($transaction->transaction_fees)) ? $transaction->transaction_fees : '';
+                $transaction_val[] = ucwords($transaction->receiver_name);
+                $transaction_val[] = (!empty($payment->ifsc_code)) ? $payment->ifsc_code : '';
+                $transaction_val[] = (!empty($payment->account_number)) ? $payment->account_number : $payment->upi_id;
+                $transaction_val[] = (!empty($payment->bank_name)) ? $payment->bank_name : '';
+                $transaction_val[] = strtoupper($transaction->status);
+                $transaction_val[] = date('Y-m-d H:i:s A', $transaction->created);
+
+                $transactionArr = $transaction_val;
+
+                fputcsv($f, $transactionArr, $delimiter); //put heading here
+                $transaction_val = [];
+            }
+            // Move back to beginning of file
+            fseek($f, 0);
+
+            // headers to download file
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="' . $file_name . '.csv"');
+            readfile('exportCsv/' . $file_name . '.csv');
+
+            //remove file form server
+            $path = 'exportCsv/' . $file_name . '.csv';
+            if (file_exists($path))
+                unlink($path);
         } catch (Exception $e) {
-            return response(['status' => 'error', 'msg' => $e->getMessage()]);
+            return redirect('500');
         }
     }
 }

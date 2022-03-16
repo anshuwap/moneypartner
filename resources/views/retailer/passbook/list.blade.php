@@ -14,14 +14,14 @@
                 <h3 class="card-title">Passbook</h3>
 
                 <div class="card-tools">
-                    <a href="javascript:void(0);" class="btn btn-sm btn-success mr-2" id="create_topup"><i class="fas fa-hand-holding-usd"></i>&nbsp;Request for Topup</a>
-
+                    <a href="javascript:void(0);" class="btn btn-sm btn-success" id="create_topup"><i class="fas fa-hand-holding-usd"></i>&nbsp;Request for Topup</a>
+  <a href="{{ url('retailer/passbook-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
                     @if(!empty($filter))
-                    <a href="javascript:void(0);" class="btn btn-sm bg-fuchsia color-palette mr-2" id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
+                    <a href="javascript:void(0);" class="btn btn-sm btn-success" id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
                     @else
-                    <a href="javascript:void(0);" class="btn btn-sm bg-fuchsia color-palette mr-2" id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a>
+                    <a href="javascript:void(0);" class="btn btn-sm btn-success" id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a>
                     @endif
-                    <a href="{{ url('retailer/passbook-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-warning mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
+
                 </div>
             </div>
 
@@ -78,20 +78,20 @@
                         <td>{!!mSign($pb->closing_amount)!!}</td>
 
                         @if($pb->type == 'credit')
-                        <td class="text-success">{{ strtoupper($pb->type) }}</td>
+                        <td class="text-success">{{ ucfirst($pb->type) }}</td>
                           @elseif($pb->type == 'debit')
-                        <td class="text-danger">{{ strtoupper($pb->type) }}</td>
+                        <td class="text-danger">{{ ucfirst($pb->type) }}</td>
                         @else
                          <td class="text-danger">-</td>
                         @endif
 
-                        <td>{{ strtoupper($pb->status) }}</td>
+                        <td>{{ ucfirst($pb->status) }}</td>
                     </tr>
                     @endforeach
 
                 </table>
 
-                {{ $passbook->appends(request()->toArray())->links()}}
+                {{ $passbook->appends($_GET)->links()}}
             </div>
             <!-- /.card-body -->
         </div>

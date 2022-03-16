@@ -72,7 +72,7 @@ $bank_names = [
                                     <span id="amount_msg" class="custom-text-danger"></span>
                                 </div>
 
-                                <div id="charges"></div>
+                                <!-- <div id="charges"></div> -->
                                 <div id="upload_docs">
 
                                 </div>
@@ -230,7 +230,7 @@ $bank_names = [
         e.preventDefault();
 
         var amount = $(this).val();
-        transactionFeeDetails(amount);
+        // transactionFeeDetails(amount);
 
         if (amount >= 25000 && amount < 200000) {
             $('#upload_docs').html(`<div class="form-group">

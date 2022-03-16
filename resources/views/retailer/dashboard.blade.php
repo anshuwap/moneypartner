@@ -2,7 +2,13 @@
 
 @section('content')
 @section('page_heading', 'Dashboard')
-
+<style>
+  @media only screen and (min-width: 320px) {
+    .btn-r {
+      /* left: 0px !important; */
+    }
+  }
+</style>
 <!-- Content Header (Page header) -->
 <div class="content-header">
   <div class="container-fluid">
@@ -26,22 +32,32 @@
   <div class="container-fluid">
 
     <div class="row">
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="pl-3 p-2 card" style="height: 161px;">
+      <div class="col-12 col-sm-6 col-md-5">
+        <div class="pl-3 p-2 card" style="height: 130px;">
           <div class="row">
             <div class="col-md-12">
               <div>Account Balance</div>
               <div>
-                {!!mSign(Auth::user()->available_amount)!!}
+                <strong>{!!mSign(Auth::user()->available_amount)!!}</strong>
               </div>
             </div>
           </div>
 
-
+          <div class="card-tools btn-r" style="position: relative;
+    text-align:center;
+    top: 44px;">
+            @if(!empty(MoneyPartnerOption()->dmt_transfer) && MoneyPartnerOption()->dmt_transfer ==1)
+            <a href="javascript:void(0);" class="btn btn-sm btn-success" id="create_customer"><i class="fas fa-plus-circle"></i>&nbsp;Add DMT</a>
+            @endif
+            @if(!empty(MoneyPartnerOption()->payout) && MoneyPartnerOption()->payout ==1)
+            <a href="javascript:void(0);" class="btn btn-sm btn-success" id="create_payout"><i class="fas fa-plus-circle"></i>&nbsp;Add Payout</a>
+            @endif
+            <a href="javascript:void(0);" id="import" class="btn btn-sm btn-success"><i class="fas fa-cloud-upload-alt"></i>&nbsp;Bulk Upload</a>
+          </div>
         </div>
       </div>
 
-      <div class="col-12 col-sm-6 col-md-4">
+      <!-- <div class="col-12 col-sm-6 col-md-4">
         <div class="info-box" style="height: 161px;">
           <div class="info-box-content">
             <div>
@@ -67,9 +83,9 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
-      <div class="col-12 col-sm-6 col-md-5">
+      <div class="col-12 col-sm-6 col-md-7">
         <div class="info-box">
           <div class="info-box-content">
             <div class="row mb-1">
@@ -93,21 +109,21 @@
                 $class = '';
                 $style = '';
               } ?>
-              <div class="col-md-6 {{ $class}}" style="line-height: 20px; font-size:12px; <?=$style?>">
+              <div class="col-md-6 {{ $class}}" style="line-height: 20px; font-size:12px; <?= $style ?>">
                 <table>
                   <tr>
                     <td>Ac. Holder</td>
-                    <td><span id="text1-{{$key}}">{{ ucwords($account->account_holder_name)}}</span></td>
+                    <th><span id="text1-{{$key}}">{{ ucwords($account->account_holder_name)}}</span></th>
                     <td>
-                      <span><a href="javascript:void(0);" onClick="copyToClipboard('#text0-{{$key}}','#copy0-{{$key}}')" class="text-danger"><i class="fas fa-copy"></i></a></span>
+                      <span><a href="javascript:void(0);" onClick="copyToClipboard('#text0-{{$key}}','#copy0-{{$key}}')" class="text-success"><i class="fas fa-copy"></i></a></span>
                       <span class="ml-4 d-none" id="copy0-{{$key}}"><i class="fas fa-check-circle text-success"></i>Copied</span>
                     </td>
                   </tr>
                   <tr>
                     <td>Bank Name.</td>
-                    <td><span id="text1-{{$key}}">{{ $account->bank_name}}</span></td>
+                    <th><span id="text1-{{$key}}">{{ $account->bank_name}}</span></th>
                     <td>
-                      <span><a href="javascript:void(0);" onClick="copyToClipboard('#text1-{{$key}}','#copy1-{{$key}}')" class="text-danger"><i class="fas fa-copy"></i></a></span>
+                      <span><a href="javascript:void(0);" onClick="copyToClipboard('#text1-{{$key}}','#copy1-{{$key}}')" class="text-success"><i class="fas fa-copy"></i></a></span>
                       <span class="ml-4 d-none" id="copy1-{{$key}}"><i class="fas fa-check-circle text-success"></i>Copied</span>
                     </td>
                   </tr>
@@ -115,7 +131,7 @@
                     <td>A/C No.</td>
                     <th><span id="text2-{{$key}}">{{ $account->account_number}}</span></th>
                     <td>
-                      <span><a href="javascript:void(0);" onClick="copyToClipboard('#text2-{{$key}}','#copy2-{{$key}}')" class="text-danger"><i class="fas fa-copy"></i></a></span>
+                      <span><a href="javascript:void(0);" onClick="copyToClipboard('#text2-{{$key}}','#copy2-{{$key}}')" class="text-success"><i class="fas fa-copy"></i></a></span>
                       <span class="ml-4 d-none" id="copy2-{{$key}}"><i class="fas fa-check-circle text-success"></i>Copied</span>
                     </td>
                   </tr>
@@ -123,7 +139,7 @@
                     <td>IFSC.</td>
                     <th><span id="text3-{{$key}}">{{ $account->ifsc_code }}</span></th>
                     <td>
-                      <span><a href="javascript:void(0);" onClick="copyToClipboard('#text3-{{$key}}','#copy3-{{$key}}')" class="text-danger"><i class="fas fa-copy"></i></a></span>
+                      <span><a href="javascript:void(0);" onClick="copyToClipboard('#text3-{{$key}}','#copy3-{{$key}}')" class="text-success"><i class="fas fa-copy"></i></a></span>
                       <span class="ml-4 d-none" id="copy3-{{$key}}"><i class="fas fa-check-circle text-success"></i>Copied</span>
                     </td>
                   </tr>
@@ -205,86 +221,6 @@
     @include('retailer.dashboard.topup_request')
 
 
-    <!-- Main row -->
-    <div class="row">
-
-      <!-- <section class="col-lg-7 connectedSortable">
-
-        <div class="card card-success">
-          <div class="card-header">
-            <h3 class="card-title">Bar Chart</h3>
-
-            <div class="card-tools">
-              <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fas fa-minus"></i>
-              </button>
-              <button type="button" class="btn btn-tool" data-card-widget="remove">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="chart">
-              <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-            </div>
-          </div>
-
-        </div>
-
-      </section> -->
-
-      <!-- <section class="col-lg-5 connectedSortable">
-
-        <div class="card" style="height: 338px;">
-          <div class="card-header">
-            <h3 class="card-title">Browser Usage</h3>
-
-            <div class="card-tools">
-              <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fas fa-minus"></i>
-              </button>
-              <button type="button" class="btn btn-tool" data-card-widget="remove">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-          </div>
-
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-8">
-                <div class="chart-responsive">
-                  <div class="chartjs-size-monitor">
-                    <div class="chartjs-size-monitor-expand">
-                      <div class=""></div>
-                    </div>
-                    <div class="chartjs-size-monitor-shrink">
-                      <div class=""></div>
-                    </div>
-                  </div>
-                  <canvas id="pieChart" height="147" width="296" style="display: block; height: 118px; width: 237px;" class="chartjs-render-monitor"></canvas>
-                </div>
-
-              </div>
-
-              <div class="col-md-4">
-                <ul class="chart-legend clearfix">
-                  <li><i class="far fa-circle text-danger"></i> Spent Amount</li>
-                  <li><i class="far fa-circle text-success"></i> DMT Amount</li>
-                  <li><i class="far fa-circle text-warning"></i> Bulk Amount</li>
-                  <li><i class="far fa-circle text-info"></i> Topup Amount</li>
-
-                </ul>
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </section> -->
-
-    </div>
 
   </div>
 </section>

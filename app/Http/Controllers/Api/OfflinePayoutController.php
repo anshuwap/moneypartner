@@ -16,7 +16,6 @@ class OfflinePayoutController extends Controller
     //for single payout system
     public function payout(OfflinePayoutValidation $request)
     {
-
         try {
             /*start check amount available in wallet or not*/
             $amount = $request->amount;
@@ -40,7 +39,7 @@ class OfflinePayoutController extends Controller
             $total_amount = $amount + $charges;
 
             if ($total_amount >= Auth()->user()->available_amount)
-                return response(['status' => 'error', 'msg' => 'You have not Sufficient Amount']);
+                return response(['status' => 'error', 'flag'=>'insufficent_amount', 'msg' => 'You have not Sufficient Amount']);
             /*end check amount available in wallet or not*/
 
             $transaction = new Transaction();
@@ -58,11 +57,11 @@ class OfflinePayoutController extends Controller
             $transaction->type            = 'payout_api';
 
             if (!$transaction->save())
-                return response(['status' => 'error', 'msg' => 'Transaction Request not  Created!']);
+                return response(['status' => 'error', 'flag'=>'transaction_not_created', 'msg' => 'Transaction Request not  Created!']);
 
             //update toupup amount here
             if (!spentTopupAmount(Auth()->user()->_id, $total_amount))
-                return response(['status' => 'error', 'msg' => 'Something went wrong!']);
+                return response(['status' => 'error', 'flag'=>'not_debited', 'msg' => 'Something went wrong!']);
 
                 /*start passbook debit functionality*/
                 $amount        = $transaction->amount;
@@ -77,9 +76,9 @@ class OfflinePayoutController extends Controller
                 transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit');
                 /*end passbook debit functionality*/
 
-            return response(['status' => 'success', 'msg' => 'Transaction Request Created Successfully!']);
+            return response(['status' => 'success', 'flag'=>'transaction_created', 'msg' => 'Transaction Request Created Successfully!']);
         } catch (Exception $e) {
-            return response(['status' => 'error', 'msg' => $e->getMessage()]);
+            return response(['status' => 'error', 'flag'=>'system_error', 'msg' => $e->getMessage()]);
         }
     }
 
@@ -92,6 +91,9 @@ class OfflinePayoutController extends Controller
 
             foreach ($request->all() as $res) {
                 $request = (object)$res;
+// print_r($request->base_url);die;
+               if(verify_url($request->base_url))
+                return response(['status' => 'error', 'flag'=>'authentication_error','msg' => 'Please Enter valid base url!']);
 
                 /*start check amount available in wallet or not*/
                 $amount = $request->amount;
@@ -110,12 +112,10 @@ class OfflinePayoutController extends Controller
                         }
                     }
                 }
-
-
                 $total_amount = $amount + $charges;
 
                 if ($total_amount >= Auth()->user()->available_amount)
-                    return response(['status' => 'error', 'msg' => 'Some Transaction Request not Created, Because you have not Sufficient Amount']);
+                    return response(['status' => 'error', 'flag'=>'insufficent_amount','msg' => 'Some Transaction Request not Created, Because you have not Sufficient Amount']);
                 /*end check amount available in wallet or not*/
 
                 $transaction = new Transaction();
@@ -133,11 +133,11 @@ class OfflinePayoutController extends Controller
                 $transaction->type            = 'payout_api';
 
                 if(!$transaction->save())
-                 return response(['status' => 'error', 'msg' => 'Somthing went wrong, Transaction Request not Created!']);
+                 return response(['status' => 'error', 'flag'=>'transaction_not_created', 'msg' => 'Somthing went wrong, Transaction Request not Created!']);
 
                  //update toupup amount here
                 if (!spentTopupAmount(Auth()->user()->_id, $total_amount))
-                 return response(['status' => 'error', 'msg' => 'Something went wrong!']);
+                 return response(['status' => 'error', 'flag'=>'not_debited', 'msg' => 'Something went wrong, Amount Not Debited!']);
 
                  /*start passbook debit functionality*/
                 $amount        = $transaction->amount;
@@ -153,10 +153,10 @@ class OfflinePayoutController extends Controller
                 /*end passbook debit functionality*/
             }
 
-                return response(['status' => 'success', 'msg' => 'Transaction Request Created Successfully!']);
+                return response(['status' => 'success', 'flag'=>'transaction_created', 'msg' => 'Transaction Request Created Successfully!']);
 
         } catch (Exception $e) {
-            return response(['status' => 'error', 'msg' => $e->getMessage()]);
+            return response(['status' => 'error', 'flag'=>'system_error', 'msg' => $e->getMessage()]);
         }
     }
 }

@@ -143,7 +143,7 @@ $bank_names = [
         e.preventDefault();
 
         var amount = $(this).val();
-        payout_transction_api(amount);
+        // payout_transction_api(amount);
 
         if (amount >= 25000 && amount < 200000) {
             // $('#payout_api_upload_docs').html(`<div class="form-group">

@@ -5,6 +5,7 @@ namespace App\Http\Validation;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 
 class BankChargesValidation extends FormRequest
 {
@@ -16,6 +17,7 @@ class BankChargesValidation extends FormRequest
 
     public function rules()
     {
+
         return [
             'from_amount'   => 'required|numeric',
             'to_amount'     => 'required|numeric',

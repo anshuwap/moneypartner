@@ -7,7 +7,7 @@
 
     <li class="nav-item">
       <a href="{{ url('admin/dashboard') }}" class="nav-link {{ (url()->full() == url('admin/dashboard'))? 'active':''}}">
-        <i class="nav-icon fas fa-tachometer-alt text-danger"></i>
+        <i class="nav-icon fas fa-tachometer-alt"></i>
         <p class="text">Dashboard</p>
       </a>
     </li>
@@ -16,7 +16,7 @@
 
     <li class="nav-item">
       <a href="{{ url('admin/outlets') }}" class="nav-link {{ (url()->full() == url('admin/outlets'))? 'active':''}}">
-        <i class=" nav-icon fas fa-store  text-warning"></i>
+        <i class=" nav-icon fas fa-store"></i>
         <p>Outlets</p>
       </a>
     </li>
@@ -28,56 +28,25 @@
       </a>
     </li>
 
-<li class="nav-item">
+    <li class="nav-item">
       <a href="{{ url('admin/passbook') }}" class="nav-link {{ (url()->full() == url('admin/passbook'))? 'active':''}}">
-        <i class="fas fa-solid fa-book nav-icon text-warning"></i>
+        <i class="fas fa-solid fa-book nav-icon"></i>
         <p>Passbook</p>
       </a>
     </li>
 
-    <li class="nav-item {{ (url()->full() == url('admin/bank-account') || url()->full() == url('admin/upi') || url()->full() == url('admin/qr-code'))?'menu-is-opening menu-open':''}}">
-      <a href="javascript:void(0);" class="nav-link">
-        <i class="nav-icon fas fa-money-bill-wave text-success"></i>
-        <p>Payment Mode
-          <i class="right fas fa-angle-left"></i>
-        </p>
-      </a>
-      <ul class="nav nav-treeview">
-        <li class="nav-item {{ (url()->full() == url('admin/bank-account') || url()->full() == url('admin/upi') || url()->full() == url('admin/qr-code'))?'d-block':''}}">
-          <a href="{{ url('admin/bank-account') }}" class="nav-link {{ (url()->full() == url('admin/bank-account'))?'active':''}}">
-            <i class="nav-icon fas fa-university"></i>
-            <p>Bank Account</p>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="{{ url('admin/upi') }}" class="nav-link {{ (url()->full() == url('admin/upi'))? 'active':''}}">
-            <i class="nav-icon fas fa-rupee-sign"></i>
-            <p>
-              UPI
-            </p>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="{{ url('admin/qr-code') }}" class="nav-link {{ (url()->full() == url('admin/qr-code'))? 'active':''}}">
-            <i class="nav-icon fas fa-qrcode"></i>
-            <p>QR Code</p>
-          </a>
-        </li>
-      </ul>
-    </li>
-
     <li class="nav-item">
       <a href="{{ url('admin/topup-list') }}" class="nav-link {{ (url()->full() == url('admin/topup-list'))? 'active':''}}">
-        <i class="fas fa-wallet nav-icon text-info"></i>
+        <i class="fas fa-wallet nav-icon"></i>
         <p class="text">Topup Request</p>
       </a>
     </li>
 
 
-<li class="nav-item">
+    <li class="nav-item">
       <a href="{{ url('admin/a-transaction') }}" class="nav-link {{ (url()->full() == url('admin/a-transaction'))? 'active':''}}">
         <!-- <i class="fas fa-solid fa-book nav-icon text-warning"></i> -->
-        <i class="fas fa-money-bill-wave nav-icon text-primary"></i>
+        <i class="fas fa-money-bill-wave nav-icon"></i>
         <p>Transaction</p>
       </a>
     </li>
@@ -122,7 +91,7 @@
     <li class="nav-item">
       <a href="{{ url('admin/payment-channel') }}" class="nav-link {{ (url()->full() == url('admin/payment-channel'))? 'active':''}}">
 
-        <i class="fas fa-regular fa-dice nav-icon text-danger"></i>
+        <i class="fas fa-regular fa-dice nav-icon"></i>
         <p>Payment Channel</p>
       </a>
     </li>
@@ -137,9 +106,66 @@
 
     <li class="nav-item">
       <a href="{{ url('admin/api-list') }}" class="nav-link {{ (url()->full() == url('admin/api-list'))? 'active':''}}">
-        <i class="fas fa-swatchbook  nav-icon text-danger"></i>
+        <i class="fas fa-swatchbook  nav-icon"></i>
         <p>Api List</p>
       </a>
+    </li>
+
+    <li class="nav-item {{ (url()->full() == url('admin/bank-account') || url()->full() == url('admin/upi') || url()->full() == url('admin/qr-code'))?'menu-is-opening menu-open':''}}">
+      <a href="javascript:void(0);" class="nav-link">
+        <i class="nav-icon fas fa-money-bill-wave"></i>
+        <p>Payment Mode
+          <i class="right fas fa-angle-left"></i>
+        </p>
+      </a>
+      <ul class="nav nav-treeview">
+        <li class="nav-item {{ (url()->full() == url('admin/bank-account') || url()->full() == url('admin/upi') || url()->full() == url('admin/qr-code'))?'d-block':''}}">
+          <a href="{{ url('admin/bank-account') }}" class="nav-link {{ (url()->full() == url('admin/bank-account'))?'active':''}}">
+            <i class="nav-icon fas fa-university"></i>
+            <p>Bank Account</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url('admin/upi') }}" class="nav-link {{ (url()->full() == url('admin/upi'))? 'active':''}}">
+            <i class="nav-icon fas fa-rupee-sign"></i>
+            <p>
+              UPI
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url('admin/qr-code') }}" class="nav-link {{ (url()->full() == url('admin/qr-code'))? 'active':''}}">
+            <i class="nav-icon fas fa-qrcode"></i>
+            <p>QR Code</p>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+
+    <li class="nav-item {{ (url()->full() == url('admin/credit') || url()->full() == url('admin/debit'))?'menu-is-opening menu-open':''}}">
+      <a href="javascript:void(0);" class="nav-link">
+        <i class="fas fa-list nav-icon"></i>
+        <p>Action
+          <i class="right fas fa-angle-left"></i>
+        </p>
+      </a>
+      <ul class="nav nav-treeview">
+        <li class="nav-item {{ (url()->full() == url('admin/credit') || url()->full() == url('admin/debit'))?'d-block':''}}">
+          <a href="{{ url('admin/credit') }}" class="nav-link {{ (url()->full() == url('admin/credit'))?'active':''}}">
+            <i class="fas fa-money-bill nav-icon"></i>
+            <p>Manual Credit</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url('admin/debit') }}" class="nav-link {{ (url()->full() == url('admin/debit'))? 'active':''}}">
+            <i class="fas fa-money-bill nav-icon"></i>
+            <p>
+              Manual Debit
+            </p>
+          </a>
+        </li>
+      </ul>
     </li>
 
     <!-- <li class="nav-header">MULTI LEVEL EXAMPLE</li>

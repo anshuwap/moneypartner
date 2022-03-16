@@ -1,3 +1,49 @@
+.card-primary.card-outline-tabs>.card-header a.active {
+      border-top: 3px solid #2fc296;
+    }
+
+    .add-btn {
+      position: absolute;
+      right: 9px;
+      top: 2px;
+    }
+
+    .btn-danger {
+      background-color: #e26005 !important;
+      border-color: #e26005 !important;
+    }
+
+    .tag-small {
+      font-size: 11px;
+      background: #99d6c4;
+      border: 1px solid #2fc296;
+      border-radius: 9px;
+      width: auto;
+      padding: 3px 10px;
+      color: black;
+    }
+
+    .tag-small-warning{
+      font-size: 11px;
+      background: #e6d08d;
+      border: 1px solid #fcbf07;
+      border-radius: 9px;
+      width: auto;
+      padding: 3px 10px;
+      color: black;
+
+    }
+
+    .tag-small-danger{
+      font-size: 11px;
+      background: #ea9f6a;
+      border: 1px solid #e26005;
+      border-radius: 9px;
+      width: auto;
+      padding: 3px 10px;
+      color: black;
+    }
+
 label {
 
   font-size: 14px;

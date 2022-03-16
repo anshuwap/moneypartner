@@ -41,10 +41,6 @@ class PaymentChannelController extends Controller
     }
 
 
-    public function show(PaymentChannel $PaymentChannel)
-    {
-    }
-
 
     public function edit(PaymentChannel $PaymentChannel)
     {
@@ -128,7 +124,7 @@ class PaymentChannelController extends Controller
 
         foreach ($data as $val) {
             $action = '<a href="javascript:void(0);" class="text-info edit_paymnet_channel" data-toggle="tooltip" data-placement="bottom" title="Edit" paymnet_channel_id="' . $val->_id . '"><i class="far fa-edit"></i></a>&nbsp;&nbsp;';
-            $action .= '<a href="javascript:void(0);" class="text-danger remove_paymnet_channel"  data-toggle="tooltip" data-placement="bottom" title="Remove" paymnet_channel_id="' . $val->_id . '"><i class="fas fa-trash"></i></a>';
+            // $action .= '<a href="javascript:void(0);" class="text-danger remove_paymnet_channel"  data-toggle="tooltip" data-placement="bottom" title="Remove" paymnet_channel_id="' . $val->_id . '"><i class="fas fa-trash"></i></a>';
             if ($val->status == 1) {
                 $status = ' <a href="javascript:void(0);"><span class="badge badge-success activeVer" id="active_' . $val->_id . '" _id="' . $val->_id . '" val="0">Active</span></a>';
             } else {

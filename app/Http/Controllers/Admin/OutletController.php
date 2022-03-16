@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Validation\BankChargesValidation;
 use App\Http\Validation\CreateOutletValidation;
-use App\Http\Validation\OutletValidation;
 use App\Http\Validation\UpdateOutletValidation;
 use App\Models\Outlet;
 use App\Models\User;
+use App\Support\Email;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -39,6 +39,7 @@ class OutletController extends Controller
     public function store(CreateOutletValidation $request)
     {
 
+        $pin = rand(1111, 9999);
         $outlet = new Outlet();
         $outlet->user_id              = Auth::user()->_id;
         $outlet->outlet_no            = rand(1111, 9999);
@@ -61,10 +62,10 @@ class OutletController extends Controller
         $outlet->address_proff        = $request->address_proff;
         $outlet->pancard              = $request->pancard;
         $outlet->outlet_gst_number    = $request->outlet_gst_number;
-        $outlet->money_transfer_option= $request->money_transfer_option;
+        $outlet->money_transfer_option = $request->money_transfer_option;
         $outlet->status               = $request->status;
         $outlet->account_status       = (int)$request->account_status;
-        $outlet->pin                  = "1234";
+        $outlet->pin                  = $pin;
 
         //for office photo
         if (!empty($request->file('office_photo')))
@@ -87,7 +88,18 @@ class OutletController extends Controller
             $outlet->upload_address  = singleFile($request->file('upload_address'), 'attachment');
 
         if ($outlet->save()) {
-            $this->createUser($outlet->_id, $request);
+            $this->createUser($outlet->_id, $request, $pin);
+
+            $msg = '<h3>Welcome in Moneypartner Panel</h3>';
+            $msg .= '<p></p>Your PIN is-' . rand('1111', 9999).'</p>';
+            $msg .= '<p></p>Your User Id is-' . $request->email . '</p>';
+            $msg .= '<p></p>Your Password is-' . $request->password . '</p>';
+            $subject = 'Welcome Message';
+            $dataM = ['msg' => $msg, 'subject' => $subject, 'email' => $request->email];
+            $email = new Email();
+            $email->composeEmail($dataM);
+
+
             return response(['status' => 'success', 'msg' => 'Outlet Created Successfully!']);
         }
 
@@ -96,7 +108,7 @@ class OutletController extends Controller
 
 
 
-    private function createUser($outlet_id, $request)
+    private function createUser($outlet_id, $request, $pin)
     {
         $user = new User();
         $user->full_name     = $request->retailer_name;
@@ -107,12 +119,10 @@ class OutletController extends Controller
         $user->outlet_id     = $outlet_id;
         $user->outlet_name   = $request->outlet_name;
         $user->verify_otp    = 0;
+        $user->pin           = $pin;
         $user->save();
     }
 
-    public function show(outlet $outlet)
-    {
-    }
 
 
     public function edit(outlet $outlet)
@@ -130,14 +140,15 @@ class OutletController extends Controller
     {
 
         $outlet = Outlet::find($id);
+	    $tempEmail = $outlet->email;
 
         $count = $outlet->where('mobile_no', $request->mobile_no)->where('_id', '!=', $id)->count();
         if ($count > 0)
             return response(json_encode(array('validation' => ['mobile_no' => 'This Mobile Number used by Other.'])));
 
-        $count = $outlet->where('mobile_no', $request->mobile_no)->where('_id', '!=', $id)->count();
+        $count = $outlet->where('email', $request->email)->where('_id', '!=', $id)->count();
         if ($count > 0)
-            return response(json_encode(array('validation' => ['mobile_no' => 'This Mobile Number used by Other.'])));
+            return response(json_encode(array('validation' => ['email' => 'This Email used by Other.'])));
 
         $outlet->outlet_type          = $request->outlet_type;
         $outlet->user_type            = $request->user_type;
@@ -159,7 +170,7 @@ class OutletController extends Controller
         $outlet->address_proff        = $request->address_proff;
         $outlet->pancard              = $request->pancard;
         $outlet->outlet_gst_number    = $request->outlet_gst_number;
-        $outlet->money_transfer_option= $request->money_transfer_option;
+        $outlet->money_transfer_option = $request->money_transfer_option;
         $outlet->status               = $request->status;
         $outlet->account_status       = (int)$request->account_status;
 
@@ -183,9 +194,20 @@ class OutletController extends Controller
         if (!empty($request->file('upload_address')))
             $outlet->upload_address  = singleFile($request->file('upload_address'), 'attachment');
 
-        if ($outlet->save())
+        if ($outlet->save()) {
+
+            if($tempEmail != $request->email){
+              $msg = '<h3>Outlet details change</h3>';
+              $msg .= '<p></p>Your email id has been changed</p>';
+              $subject = 'Details change';
+              $dataM = ['msg' => $msg, 'subject' => $subject, 'email' => $request->email];
+              $email = new Email();
+              $email->composeEmail($dataM);
+            }
+
             return response(['status' => 'success', 'msg' => 'Outlet Updated Successfully!']);
 
+        }
         return response(['status' => 'error', 'msg' => 'Outlet not Updated!']);
     }
 
@@ -303,7 +325,7 @@ class OutletController extends Controller
                 $bank_charge = $outlet->bank_charges;
 
             //check name and value is not empry
-            $bank_charge[$key]['from_amount'] = $request->from_amount;
+            $bank_charge[$key]['from_amount']= $request->from_amount;
             $bank_charge[$key]['to_amount']  = $request->to_amount;
             $bank_charge[$key]['type']       = $request->type;
             $bank_charge[$key]['charges']    = $request->charges;

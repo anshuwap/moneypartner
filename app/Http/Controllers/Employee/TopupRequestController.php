@@ -8,7 +8,6 @@ use App\Models\PaymentMode\BankAccount;
 use App\Models\PaymentMode\QrCode;
 use App\Models\PaymentMode\Upi;
 use App\Models\Topup;
-use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,14 +15,13 @@ use Illuminate\Support\Facades\Auth;
 class TopupRequestController extends Controller
 {
 
-
     public function index(Request $request)
     {
-        // try {
+        try {
 
             //  $topups = Topup::get();
 
-            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', "1")->orderBy('created', 'ASC')->get();
+            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->orderBy('created', 'ASC')->get();
             $outlet_id = $request->outlet_id;
             if (empty($request->outlet_id))
                 $outlet_id = $outlets[0]->_id;
@@ -34,15 +32,22 @@ class TopupRequestController extends Controller
                 $query = Topup::query();
                 $outlet_id = '';
             }
-
-            if (!empty($request->start_date) && !empty($request->end_date)) {
-                $start_date = strtotime(trim($request->start_date) . " 00:00:00");
-                $end_date = strtotime(trim($request->end_date) . " 23:59:59");
+            $start_date = '';
+            $end_date   = '';
+            if (!empty($request->date_range)) {
+                $date = explode('-', $request->date_range);
+                $start_date = $date[0];
+                $end_date   = $date[1];
+            }
+            if (!empty($start_date) && !empty($end_date)) {
+                $start_date = strtotime(trim($start_date) . " 00:00:00");
+                $end_date   = strtotime(trim($end_date) . " 23:59:59");
             } else {
                 $crrMonth = (date('Y-m-d'));
                 $start_date = strtotime(trim(date("d-m-Y", strtotime('-30 days', strtotime($crrMonth)))) . " 00:00:00");
-                $end_date = strtotime(trim(date('Y-m-d')) . " 23:59:59");
+                $end_date   = strtotime(trim(date('Y-m-d')) . " 23:59:59");
             }
+
 
             $topups = $query->whereBetween('created', [$start_date, $end_date])->get();
 
@@ -52,7 +57,8 @@ class TopupRequestController extends Controller
 
                 $topup_request[] = (object)[
                     'id'           => $topup->_id,
-                    'retailer_name'=> !empty($topup->RetailerName['full_name'])?$topup->RetailerName['full_name']:'',
+                    'payment_id'   => $topup->payment_id,
+                    'retailer_name' => !empty($topup->RetailerName['full_name']) ? $topup->RetailerName['full_name'] : '',
                     'amount'       => mSign($topup->amount),
                     'payment_mode' => ucwords(str_replace('_', " ", $topup->payment_mode)),
                     'status'       => ucwords($topup->status),
@@ -66,9 +72,9 @@ class TopupRequestController extends Controller
             $data['outlet_id'] = $outlet_id;
 
             return view('employee.topup_request.list', $data);
-        // } catch (Exception $e) {
-        //     return redirect('500');
-        // }
+        } catch (Exception $e) {
+            return redirect('500');
+        }
     }
 
 
@@ -82,15 +88,25 @@ class TopupRequestController extends Controller
             $topup->save();
             if ($topup->status == 'success') {
 
-                $topups = Topup::select('amount')->where('status', 'success')->where('outlet_id', $topup->outlet_id)->get();
+                // $topups = Topup::select('amount')->where('status', 'success')->where('outlet_id', $topup->outlet_id)->get();
 
                 $amount = 0;
-                foreach ($topups as $topupa) {
-                    $amount += $topupa->amount;
-                }
+                if (!empty($topup->amount))
+                    $amount = $topup->amount;
 
                 //add topup amount in retailer wallet
                 addTopupAmount($topup->retailer_id, $amount);
+
+                $retailer_id      = $topup->retailer_id;
+                $amount           = $topup->amount;
+                $receiver_name    = '';
+                $payment_date     = $topup->payment_date;
+                $status           = $topup->status;
+                $payment_mode     = $topup->payment_mode;
+                $type             = $topup->payment_mode;
+                $transaction_fees = 0;
+                //insert data in transfer history collection
+                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'credit');
 
                 return response(['status' => 'success', 'msg' => 'Topup Request success', 'status_msg' => ucwords($topup->status), 'id' => $topup->id]);
             } else if ($topup->status == 'rejected') {
@@ -135,7 +151,7 @@ class TopupRequestController extends Controller
                 </tr>
                 <tr>
                 <th>Attachment</th>
-                <td><a href="' . asset("attachment/payment_request_proff/$topup->attachment") . ' target="_blank">' . $topup->attachment . '</a></td>
+                <td><a href="' . asset("attachment/payment_request_proff/$topup->attachment") . '" target="_blank">' . $topup->attachment . '</a></td>
             </tr>
                 </table>
                     <div><h6>Destination Details</h6></div>
@@ -177,7 +193,7 @@ class TopupRequestController extends Controller
                 </tr>
                 <tr>
                 <th>Attachment</th>
-                <td><a href="' . asset("attachment/payment_request_proff/$topup->attachment") . ' target="_blank">' . $topup->attachment . '</a></td>
+                <td><a href="' . asset("attachment/payment_request_proff/$topup->attachment") . '" target="_blank">' . $topup->attachment . '</a></td>
             </tr>
                 </table>
                     <div><h6>Destination Details</h6></div><table class="table table-sm table-bordered">
@@ -213,7 +229,7 @@ class TopupRequestController extends Controller
                 </tr>
                 <tr>
                 <th>Attachment</th>
-                <td><a href="' . asset("attachment/payment_request_proff/$topup->attachment") . ' target="_blank">' . $topup->attachment . '</a></td>
+                <td><a href="' . asset("attachment/payment_request_proff/$topup->attachment") . '" target="_blank">' . $topup->attachment . '</a></td>
 
             </tr>
                 </table>

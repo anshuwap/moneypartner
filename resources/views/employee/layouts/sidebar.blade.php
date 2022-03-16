@@ -7,7 +7,7 @@
 
     <li class="nav-item">
       <a href="{{ url('employee/dashboard') }}" class="nav-link {{ (url()->full() == url('employee/dashboard'))? 'active':''}}">
-        <i class="nav-icon fas fa-tachometer-alt text-danger"></i>
+        <i class="nav-icon fas fa-tachometer-alt"></i>
         <p class="text">Dashboard</p>
       </a>
     </li>
@@ -15,44 +15,17 @@
 
     <li class="nav-item">
       <a href="{{ url('employee/topup-list') }}" class="nav-link {{ (url()->full() == url('employee/topup-list'))? 'active':''}}">
-        <i class="fas fa-wallet nav-icon text-info"></i>
+        <i class="fas fa-wallet nav-icon"></i>
         <p class="text">Topup Request</p>
       </a>
     </li>
 
-    <li class="nav-item {{ (url()->full() == url('employee/e-customer-trans') || url()->full() == url('employee/e-retailer-trans'))?'menu-is-opening menu-open':''}}">
-      <a href="javascript:void(0);" class="nav-link ">
-      <i class="fas fa-list-ul nav-icon text-primary"></i>
-        <p>Transaction
-        <i class="right fas fa-angle-left"></i>
-        </p>
+    <li class="nav-item">
+      <a href="{{ url('employee/a-transaction') }}" class="nav-link {{ (url()->full() == url('employee/a-transaction'))? 'active':''}}">
+        <!-- <i class="fas fa-solid fa-book nav-icon text-warning"></i> -->
+        <i class="fas fa-money-bill-wave nav-icon"></i>
+        <p>Transaction</p>
       </a>
-      <ul class="nav nav-treeview">
-          <li class="nav-item {{ (url()->full() == url('employee/e-customer-trans') || url()->full() == url('employee/e-retailer-trans'))?'d-block':''}}">
-          <a href="{{ url('employee/e-customer-trans') }}" class="nav-link {{ (url()->full() == url('employee/e-customer-trans'))? 'active':''}}">
-            <i class="fas fa-file-invoice-dollar nav-icon"></i>
-            <p>DMT Transaction</p>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="{{ url('employee/e-retailer-trans') }}" class="nav-link {{ (url()->full() == url('employee/e-retailer-trans'))? 'active':''}}">
-          <i class="fas fa-money-check nav-icon"></i>
-            <p>
-              Payout Transaction
-            </p>
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a href="{{ url('employee/e-offline-payout') }}" class="nav-link {{ (url()->full() == url('employee/e-offline-payout'))? 'active':''}}">
-            <i class="fas fa-hand-holding-usd nav-icon"></i>
-            <p>
-              Payout Api
-            </p>
-          </a>
-        </li>
-
-      </ul>
     </li>
 
 

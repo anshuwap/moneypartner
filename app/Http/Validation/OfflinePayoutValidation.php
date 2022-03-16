@@ -22,7 +22,7 @@ class OfflinePayoutValidation extends FormRequest
             'amount'          => 'required|numeric',
             'receiver_name'   => 'required|string|min:2|max:30',
             'payment_mode'    => 'required|in:bank_account,upi',
-            'payment_channel' => 'required|array',
+            // 'payment_channel' => 'required|array',
             'payment_channel.bank_name'      => 'required|min:2|max:200',
             'payment_channel.account_number' => 'required|numeric',
             'payment_channel.ifsc_code'      => 'required|min:3|max:50'

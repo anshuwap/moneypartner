@@ -220,15 +220,6 @@
                         <span id="gender_msg" class="custom-text-danger"></span>
                     </div>
 
-                    <div class="form-group">
-                        <label>User Type</label>
-                        <select class="form-control form-control-sm" name="user_type">
-                            <option value="">Select</option>
-                            <option value="retailer">Retailer</option>
-                            <option value="distributor">Distributor</option>
-                        </select>
-                        <span id="user_type_msg" class="custom-text-danger"></span>
-                    </div>
 
                     <div class="form-group">
                         <label>Password</label>
@@ -327,7 +318,7 @@
                 <div class="card-body">
 
                     <div class="form-group">
-                        <label>Money Transfer Otions</label><br>
+                        <label>Money Partner Otions</label><br>
                         <input type="checkbox" name="money_transfer_option[dmt_transfer]" value="1">&nbsp;&nbsp;DMT Transfer<br>
                         <input type="checkbox" name="money_transfer_option[payout]" value="1">&nbsp;&nbsp;Payout<br>
                         <input type="checkbox" name="money_transfer_option[payout]" value="1">&nbsp;&nbsp;Payout Api<br>

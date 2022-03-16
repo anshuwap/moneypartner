@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}" />
-  <title>Money Transfer</title>
+  <title>Money Partner</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -32,40 +32,16 @@
 
   <link rel="stylesheet" href="{{ asset('assets') }}/custom/custom.css">
   <style>
-    label {
-      font-size: 14px;
-      margin: 0rem !important;
+    .card-primary.card-outline-tabs>.card-header a.active {
+      border-top: 3px solid #2fc296;
     }
-
-    .form-group {
-      margin-bottom: 0.5rem !important;
-    }
-
-    span.custom-text-danger {
-      font-weight: 500;
-      color: red !important;
-      font-size: 14px;
-    }
-
-    .bg-custom-sidebar {
-      background: #191b2a !important;
-    }
-
-    .card-custom-header {
-      background: #2fc296 !important;
-    }
-    .add-btn{
-  position: absolute;
-    right: 9px;
-    top: 5px;
-}
   </style>
 </head>
 
-<body class="hold-transition sidebar-mini layout-fixed" style="
-    font-family: initial !important;
-    font-size: 15px !important;
-">
+<body class="hold-transition sidebar-mini layout-fixed" style="font-family: IBM Plex Sans,sans-serif!important;
+    font-size: 14px !important;
+    letter-spacing: 0.01em;
+    height: auto;">
   <div class="wrapper">
 
     <!-- Preloader -->
@@ -124,10 +100,10 @@
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4 bg-custom-sidebar">
       <!-- Brand Logo -->
-      <a class="brand-link">
+      <!-- <a class="brand-link">
         <img src="{{ asset('assets') }}/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">Money Transfer</span>
-      </a>
+        <span class="brand-text font-weight-light">Money Partner</span>
+      </a> -->
 
       <!-- Sidebar -->
       <div class="sidebar">
@@ -162,7 +138,7 @@
 
 
     <footer class="main-footer">
-      <strong>Copyright &copy; 2021-{{ date('Y') }} <a href="url('admin/money-transter')">MoneyTransfer</a>.</strong>
+      <strong>Copyright &copy; 2021-{{ date('Y') }} <a href="url('admin/money-transter')">MoneyPartner</a>.</strong>
       All rights reserved.
       <div class="float-right d-none d-sm-inline-block">
         <b>Version</b> 1.0.0-rc
@@ -214,47 +190,76 @@
   <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
 
   <script>
-     $(document).ready(function() {
+    //filter open and close
+    $('#filter-btn').click(function() {
+      $('#filter').toggle();
+      if ($(this).text().trim() === "Filter") {
+        $(this).html('<i class="far fa-times-circle"></i>&nbsp;Close');
+      } else if ($(this).text().trim() === 'Close') {
+        $(this).html('<i class="fas fa-filter"></i>&nbsp;Filter');
+      }
+    })
+
+    $(document).ready(function() {
 
       $('[data-toggle="tooltip"]').tooltip();
 
     });
 
-      //Date range as a button
-      $('#daterange-btn').daterangepicker(
-      {
-        ranges   : {
-          'Today'       : [moment(), moment()],
-          'Yesterday'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-          'Last 7 Days' : [moment().subtract(6, 'days'), moment()],
+    //popover
+    $(document).ready(function() {
+      $('[data-toggle="popover"]').popover();
+    });
+
+    //Date range as a button
+    $('#daterange-btn').daterangepicker({
+        ranges: {
+          'Today': [moment(), moment()],
+          'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'Last 7 Days': [moment().subtract(6, 'days'), moment()],
           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-          'This Month'  : [moment().startOf('month'), moment().endOf('month')],
-          'Last Month'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+          'This Month': [moment().startOf('month'), moment().endOf('month')],
+          'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
         startDate: moment().subtract(29, 'days'),
-        endDate  : moment()
+        endDate: moment()
       },
-      function (start, end) {
+      function(start, end) {
         $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
       }
     )
 
     //show uploaded file name in input field
+
     $(document).on('change', 'input[type=file]', function() {
+
       var fileName = this.files[0].name;
+
       $(this).parent().find('label').html(fileName);
+
     })
 
     /*start single image preview*/
+
     $(document).on('change', '#imgInp', function() {
+
       var fileName = imgInp.files[0].name;
+
       $('.file-name').html(fileName);
+
       const [file] = imgInp.files
+
       if (file) {
+
         $('#avatar').show();
+
         avatar.src = URL.createObjectURL(file)
+
       }
+
     });
+
+
     /*end single image preview*/
   </script>
 

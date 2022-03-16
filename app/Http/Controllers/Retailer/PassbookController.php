@@ -38,8 +38,11 @@ class PassbookController extends Controller
 
             $query->whereBetween('created', [$start_date, $end_date]);
 
-            $data['passbook'] = $query->paginate(config('constants.perPage'));
+            $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
+            $data['passbook'] = $query->orderBy('created', 'DESC')->paginate($perPage);
+
             $request->request->remove('page');
+             $request->request->remove('perPage');
             $data['filter']  = $request->all();
             return view('retailer.passbook.list', $data);
         } catch (Exception $e) {

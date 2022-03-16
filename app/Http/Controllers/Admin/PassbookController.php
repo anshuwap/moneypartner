@@ -24,7 +24,7 @@ class PassbookController extends Controller
                 $end_date   = $date[1];
             }
 
-            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->orderBy('created', 'ASC')->get();
+            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->orderBy('created', 'DESC')->get();
 
             $query = TransferHistory::query();
             if (!empty($request->outlet_id))
@@ -44,9 +44,13 @@ class PassbookController extends Controller
 
             $query->whereBetween('created', [$start_date, $end_date]);
 
-            $data['passbook'] = $query->paginate(config('constants.perPage'));
+            $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
+            $data['passbook'] = $query->paginate($perPage);
+
             $request->request->remove('page');
+            $request->request->remove('perPage');
             $data['filter']  = $request->all();
+
             $data['outlets'] = $outlets;
 
             return view('admin.passbook.list', $data);

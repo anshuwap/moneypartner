@@ -1,56 +1,72 @@
 @extends('admin.layouts.app')
 
 @section('content')
-@section('page_heading', 'Topup List')
 
 <div class="row">
   <div class="col-12 mt-2">
     <div class="card">
+
       <div class="card-header">
-        <h3 class="card-title">Topup List</h3>
-        <div class="card-tools" style="width: 600px;">
+        <div class="row">
+          <div class="col-md-10">
+            <h3 class="card-title">Topup List</h3>
+          </div>
+          <div class="col-md-2 d-flex">
+            <div>
+              @if(!empty($filter))
+              <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
+              @else
+              <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a>
+              @endif
+              <a href="{{ url('admin/topup-list-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
+            </div>
+          </div>
+        </div>
+      </div>
 
-          <form action="{{ url('admin/topup-list') }}" method="GET">
-            <div class="form-row mr-4 mt-1">
-
-              <div class="form-group col-md-6 mt-1">
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">
-                      <i class="far fa-calendar-alt"></i>
-                    </span>
-                  </div>
-                  <input type="text" class="form-control form-control-sm float-right" name="date_range" id="daterange-btn">
-                </div>
+      <div class="row pl-2 pr-2" id="filter" <?= (empty($filter)) ? "style='display:none'" : "" ?>>
+        <div class="col-md-12 ml-auto">
+          <form action="{{ url('admin/topup-list') }}">
+            <div class="form-row">
+              <div class="form-group col-md-2">
+                <label>Data Range</label>
+                <input type="text" class="form-control form-control-sm" value="<?= !empty($filter['date_range']) ? $filter['date_range'] : '' ?>" name="date_range" id="daterange-btn" />
               </div>
-              <div class="form-group col-md-4">
+
+              <div class="form-group col-md-2">
+                <label>Transaction Id</label>
+                <input type="text" class="form-control form-control-sm" placeholder="Transaction ID" value="<?= !empty($filter['transaction_id']) ? $filter['transaction_id'] : '' ?>" name="transaction_id" id="transaction_id" />
+              </div>
+
+              <div class="form-group col-md-2">
+                <label>Outlet Name</label>
                 <select class="form-control-sm form-control" name="outlet_id">
-                  <option value="" >
-                    All
-                  </option>
+                  <option value="" {{ (!empty($filter['outlet_id']) && $filter['outlet_id'] == 'all')?"selected":""}}>All</option>
                   @foreach($outlets as $outlet)
-                  <option value="{{$outlet->_id}}" {{ ($outlet->_id == $outlet_id)?"selected":""}}>{{ ucwords($outlet->outlet_name)}}</option>
+                  <option value="{{$outlet->_id}}" {{ (!empty($filter['outlet_id']) && $filter['outlet_id'] == $outlet->_id)?"selected":""}}>{{ ucwords($outlet->outlet_name)}}</option>
                   @endforeach
 
                 </select>
               </div>
-              <div class="form-group col-md-2">
-                <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i> &nbsp;serach</button>
+
+              <div class="form-group mt-4">
+                <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i>&nbsp;Search</button>
+                <a href="{{ url('admin/topup-list') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
               </div>
             </div>
           </form>
-
         </div>
       </div>
 
       <!-- /.card-header -->
-      <div class="card-body table-responsive py-4">
+      <div class="card-body table-responsive pl-2 pr-2">
         <table id="table" class="table table-hover text-nowrap table-sm">
           <thead>
             <tr>
               <th>Sr No.</th>
+              <th>Outlet</th>
               <th>Transaction Id</th>
-              <th>Retailer Name</th>
+              <th>Channel</th>
               <th>Amount</th>
               <th>Payment Mode</th>
               <th>Payment Date</th>
@@ -59,21 +75,32 @@
             </tr>
           </thead>
           <tbody>
-            @if(!empty($topup_request))
+            @if(!$topup_request->isEmpty())
             @php
             $i =0;
             @endphp
             @foreach($topup_request as $key=>$topup)
+            <?php
+            if ($topup->status == 'success') {
+              $status = 'Approved';
+            } else if ($topup->status == 'rejected') {
+              $status = 'Rejected';
+            } else {
+              $status = 'Pending';
+            }
 
+            ?>
             <tr>
               <td>{{ ++$i }}</td>
-              <td><?= (!empty($topup->payment_id))?$topup->payment_id:''?></td>
-              <td><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="{{ $topup->comment }}">{{ $topup->retailer_name }}</a></td>
-              <td>{!! $topup->amount !!}</td>
-              <td>{{ $topup->payment_mode }}</td>
-              <td>{{ $topup->payment_date }}</td>
+               <td><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="{{ $topup->comment }}">{{ !empty($topup->RetailerName['outlet_name']) ? $topup->RetailerName['outlet_name'] : '' }}</a></td>
+              <td><?= (!empty($topup->payment_id)) ? $topup->payment_id : '' ?></td>
+              <td>{{ (!empty($topup->payment_channel))?ucwords($topup->payment_channel):'-' }}</td>
+
+              <td>{!! mSign($topup->amount) !!}</td>
+              <td>{{ ucwords(str_replace('_', " ", $topup->payment_mode)) }}</td>
+              <td>{{ date('d M Y h:i:s A', $topup->payment_date) }}</td>
               <td id="status-{{ $topup->id }}">
-                {{ $topup->status }}
+                {{ $status }}
               </td>
               <td>
                 <a href="javascript:void(0);" class="text-success view-topup-request" topup_id="{{ $topup->id }}" data-toggle="tooltip" data-placement="bottom" title="View Details"><i class="fas fa-eye"></i></i></a>&nbsp;
@@ -86,6 +113,7 @@
             @endif
           </tbody>
         </table>
+          {{ $topup_request->appends($_GET)->links()}}
       </div>
       <!-- /.card-body -->
 
@@ -119,18 +147,21 @@
 
           <input type="hidden" name="id" id="topup_id" value="">
           <div class="form-group">
-            <select name="status" class="form-control control-sm" required='required'>
+            <select name="status" class="form-control form-control-sm" id="status" required='required'>
               <option value="">Select</option>
-              <option value="success">success</option>
+              <option value="success">Approved</option>
               <option value="rejected">Rejected</option>
             </select>
           </div>
+
+          <div id="topup-channel"></div>
+
           <div class="form-group">
             <textarea name="comment" rqueired="required" id="comment-" class="form-control" rows="5" placeholder="Enter Comment Here"></textarea>
           </div>
           <div class="form-group">
             <input type="submit" class="btn-sm btn btn-success" id="submit_btn" value="Submit">
-            <a class="btn-sm btn btn-danger" id="cancel">Cancel</a>
+            <a class="btn-sm btn btn-danger" data-dismiss="modal" aria-label="Close" id="cancel">Cancel</a>
           </div>
         </form>
 
@@ -156,7 +187,7 @@
 
         </div>
         <div id="topup-form">
-          <a href="javascript:void(0)" class="btn-sm btn-info" id="action1">Action</a>
+          <!-- <a href="javascript:void(0)" class="btn-sm btn-info" id="action1">Action</a> -->
           <div class="row" id="placeComment" style="display: none;">
             <div class="col-md-12 border mt-2">
               <form action="{{ url('admin/topup-request') }}" id="topup-request" method="post">
@@ -165,14 +196,14 @@
                 </div>
                 <input type="hidden" name="id" id="topup_id" value="">
                 <div class="form-group">
-                  <select name="status" class="form-control control-sm" required='required'>
+                  <select name="status" class="form-control form-control-sm" required='required'>
                     <option value="">Select</option>
-                    <option value="success">success</option>
+                    <option value="success">Approved</option>
                     <option value="rejected">Rejected</option>
                   </select>
                 </div>
                 <div class="form-group">
-                  <textarea name="comment" rqueired="required" id="comment-" class="form-control" rows="5" placeholder="Enter Comment Here"></textarea>
+                  <textarea name="comment" rqueired="required" id="comment-" class="form-control" rows="4" placeholder="Enter Comment Here"></textarea>
                 </div>
                 <div class="form-group">
                   <input type="submit" class="btn-sm btn btn-success" value="Submit">
@@ -190,6 +221,23 @@
 <script>
   $(document).ready(function() {
 
+    $('#status').change(function() {
+
+      var status = $(this).val();
+      if (status == 'success') {
+        $('#topup-channel').html(`<div class="form-group">
+                   <select name="payment_channel" class="form-control form-control-sm" id="payment_channel">
+                     <option value="">Select Payment Channel</option>
+                     <?php foreach ($payment_channel as $channel) {
+                        echo '<option value="' . $channel->name . '">' . $channel->name . '</option>';
+                      } ?>
+                   </select>
+                   <span id="payment_channel_msg" class="custom-text-danger"></span>
+                 </div>`);
+      } else {
+        $('#topup-channel').html(``);
+      }
+    })
 
     /*start form submit functionality*/
     $("form#topup-request").submit(function(e) {

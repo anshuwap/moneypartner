@@ -15,7 +15,7 @@
 
             <!-- /.card-header -->
             <div class="card-body table-responsive py-4">
-                <table id="table" class="table table-hover text-nowrap">
+                <table id="table" class="table table-sm table-hover text-nowrap">
                     <thead>
                         <tr>
                             <th>Sl No.</th>

@@ -42,9 +42,7 @@ class TransactionCommentController extends Controller
     }
 
 
-    public function show(TransactionComment $TransactionComment)
-    {
-    }
+
 
 
     public function edit(TransactionComment $TransactionComment,$id)
@@ -130,7 +128,7 @@ class TransactionCommentController extends Controller
 
         foreach ($data as $val) {
             $action = '<a href="javascript:void(0);" class="text-info edit_comment" data-toggle="tooltip" data-placement="bottom" title="Edit" comment_id="' . $val->_id . '"><i class="far fa-edit"></i></a>&nbsp;&nbsp;';
-            $action .= '<a href="javascript:void(0);" class="text-danger remove_comment"  data-toggle="tooltip" data-placement="bottom" title="Remove" comment_id="' . $val->_id . '"><i class="fas fa-trash"></i></a>';
+           // $action .= '<a href="javascript:void(0);" class="text-danger remove_comment"  data-toggle="tooltip" data-placement="bottom" title="Remove" comment_id="' . $val->_id . '"><i class="fas fa-trash"></i></a>';
             if ($val->status == 1) {
                 $status = ' <a href="javascript:void(0);"><span class="badge badge-success activeVer" id="active_' . $val->_id . '" _id="' . $val->_id . '" val="0">Active</span></a>';
             } else {

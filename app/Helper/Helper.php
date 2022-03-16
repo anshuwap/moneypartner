@@ -3,7 +3,9 @@
 use App\Models\Outlet;
 use App\Models\TransferHistory;
 use App\Models\User;
+use App\Models\Webhook;
 use Illuminate\Support\Facades\Auth;
+use Ixudra\Curl\Facades\Curl;
 
 if (!function_exists('uniqCode')) {
     function uniqCode($lenght)
@@ -28,7 +30,7 @@ if (!function_exists('singleFile')) {
             if (!file_exists($folder))
                 mkdir($folder, 0777, true);
 
-            $destinationPath = public_path().'/'.$folder;
+            $destinationPath = public_path() . '/' . $folder;
             $profileImage = date('YmdHis') . "." . $file->getClientOriginalExtension();
             $file->move($destinationPath, $profileImage);
             $fileName = "$profileImage";
@@ -56,7 +58,7 @@ if (!function_exists('profileImage')) {
     {
         $outlet_id = Auth::user()->outlet_id;
         $outlet = Outlet::select('profile_image')->find($outlet_id);
-        return (!empty($outlet->profile_image)) ? asset('attachment') . '/' . $outlet->profile_image :asset('assets/profile/37.jpg');
+        return (!empty($outlet->profile_image)) ? asset('attachment') . '/' . $outlet->profile_image : asset('assets/profile/37.jpg');
     }
 }
 
@@ -67,18 +69,18 @@ if (!function_exists('employeeImage')) {
     {
         $user_id = Auth::user()->_id;
         $user = User::select('employee_img')->find($user_id);
-        return (!empty($user->employee_img)) ? asset('attachment') . '/' . $user->employee_img :asset('assets/profile/37.jpg');
+        return (!empty($user->employee_img)) ? asset('attachment') . '/' . $user->employee_img : asset('assets/profile/37.jpg');
     }
 }
 
 if (!function_exists('transferHistory')) {
-    function transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status,$payment_mode,$transaction_type,$fees,$type)
+    function transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $transaction_type, $fees, $type, $remark = '')
     {
 
         $closing_amount = 0;
-        $A_amount = User::select('available_amount','outlet_id')->find($retailer_id);
-        if(!empty($A_amount))
-        $closing_amount = $A_amount->available_amount;
+        $A_amount = User::select('available_amount', 'outlet_id')->find($retailer_id);
+        if (!empty($A_amount))
+            $closing_amount = $A_amount->available_amount;
 
         $transferHistory = new TransferHistory();
         $transferHistory->retailer_id   = $retailer_id;
@@ -91,7 +93,8 @@ if (!function_exists('transferHistory')) {
         $transferHistory->fees          = $fees;
         $transferHistory->type          = $type;
         $transferHistory->transaction_type = $transaction_type;
-        $transferHistory->closing_amount= $closing_amount;
+        $transferHistory->closing_amount = $closing_amount;
+        $transferHistory->remark        = $remark;
         $transferHistory->save();
     }
 }
@@ -103,7 +106,7 @@ if (!function_exists('mSign')) {
     function mSign($val)
     {
 
-        $val = ($val)?$val:0;
+        $val = ($val) ? number_format($val, 2, '.', '') : 0;
 
         return '<i class="fas fa-rupee-sign" style="font-size: 13px;
     color: #696b74;"></i>&nbsp;' . $val;
@@ -165,14 +168,41 @@ if (!function_exists('addTopupAmount')) {
 }
 
 
-if (!function_exists('moneyTransferOption')) {
+if (!function_exists('MoneyPartnerOption')) {
 
-function moneyTransferOption(){
-$outlet = Outlet::select('*')->find(Auth::user()->outlet_id);
-if(!empty($outlet))
-return (object)$outlet->money_transfer_option;
+    function MoneyPartnerOption()
+    {
+        $outlet = Outlet::select('money_transfer_option')->find(Auth::user()->outlet_id);
+        if (!empty($outlet))
+            return (object)$outlet->money_transfer_option;
 
-return false;
+        return false;
+    }
 }
 
+
+//for push data to using webhook url
+function webhook($data)
+{
+    //get webhook url
+    $webhook = Webhook::select('webhook_url')->where('retailer_id', $data->retailer_id)->first();
+
+    $url = '';
+    if (!empty($webhook))
+        $url = $webhook->webhook_url;
+    if (!empty($url)) {
+        $response = Curl::to($url)
+            ->withData(json_encode($data))
+            ->post();
+        return true;
+    }
+}
+
+function verify_url($base_url)
+{
+    $url = Webhook::where('retailer_id', Auth::user()->_id)->where('type', 'base_url')->first();
+    if (!empty($url->base_url) && $url->base_url == $base_url)
+        return false;
+
+    return true;
 }

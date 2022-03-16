@@ -18,6 +18,13 @@ class LoginController extends Controller
 
     {
         try {
+
+            if(empty(MoneyPartnerOption()->payout_api) && MoneyPartnerOption()->payout_api !=1)
+            return response()->json([
+                'success' => false,
+                'message' => 'You have not Provide this Service.',
+            ], 500);
+
             $credentials = $request->only('email', 'password');
 
             if (!$token = JWTAuth::attempt($credentials)) {

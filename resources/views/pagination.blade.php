@@ -3,11 +3,25 @@
         color: #2fc296;
     }
 </style>
-@if ($paginator->hasPages())
+
 <div class="row">
-    <div class="col-md-6 is-5 mt-4">
+    <?php
+    $perPage = (!empty($_GET['perPage'])) ? (int)$_GET['perPage'] : config('constants.perPage'); ?>
+    <div class="col-md-1 is-5 mt-3">
+        <select class="form-control-sm form-control" name="perPare" id="perPage">
+            <option value="10" {{ ($perPage =="10" )?"selected":"" }}>10</option>
+            <option value="20" {{ ($perPage =="20" )?'selected':''}}>20</option>
+            <option value="50" {{ ($perPage =="50" )?'selected':''}}>50</option>
+            <option value="100" {{ ($perPage =="100" )?'selected':''}}>100</option>
+            <option value="200" {{ ($perPage =="200" )?'selected':''}}>200</option>
+            <option value="500" {{ ($perPage =="500" )?'selected':''}}>500</option>
+        </select>
+    </div>
+@if ($paginator->hasPages())
+
+    <div class="col-md-5 is-5 mt-4">
         <?php
-        $perPage = (!empty($perPage)) ? (int)$perPage : config('constants.perPage');
+        $perPage = (!empty($_GET['perPage'])) ? (int)$_GET['perPage'] : config('constants.perPage');
         $first_record = $paginator->firstItem();
         $current_record = ($perPage * ($paginator->currentPage() - 1)) + $paginator->count();
         $total_record = $paginator->total();
@@ -16,9 +30,7 @@
 
         ?>
     </div>
-    <!-- <div cls>
 
-    </div> -->
     <div class="col-md-6">
         <ul class="pagination justify-content-end">
 
@@ -34,7 +46,6 @@
             @if (is_string($element))
             <li class="disabled page-item"><span>{{ $element }}</span></li>
             @endif
-
 
 
             @if (is_array($element))
@@ -56,4 +67,16 @@
             @endif
         </ul>
     </div>
+
     @endif
+</div>
+    @push('custom-script')
+    <script>
+        $('#perPage').change(function() {
+            var query = '<?=(!empty($_SERVER['QUERY_STRING']))?$_SERVER['QUERY_STRING']:''?>';
+            var perPage = $(this).val();
+            location.href = "{{ url()->current()}}?perPage=" + perPage+'&'+query;
+        })
+    </script>
+
+    @endpush

@@ -39,7 +39,7 @@
               <td>{!! (!empty($bank['from_amount']))?mSign($bank['from_amount']):mSign(0) !!}</td>
               <td>{!! (!empty($bank['to_amount']))?mSign($bank['to_amount']):mSign(0) !!}</td>
               <td>{{ (!empty($bank['type']))?ucwords($bank['type']):'' }}</td>
-              <td>{!! (!empty($bank['charges']))?mSign($bank['charges']):mSign(0) !!}</td>
+              <td>{{ (!empty($bank['charges']))?$bank['charges']:0 }}</td>
               <td>
                 @if (!empty($bank['status']) && $bank['status'] == 1)
 
@@ -93,12 +93,12 @@
               <div class="form-row">
                 <div class="form-group col-md-6">
                   <label>From Amount</label>
-                  <input type="number" name="from_amount" id="from_amount" required  disabled value="{{ (!empty($bank['from_amount']))?$bank['to_amount'] + 1:'0' }}" class="form-control form-control-sm" placeholder="Enter Amount">
+                  <input type="number" name="from_amount" id="from_amount" required value="{{ (!empty($bank['to_amount']))?$bank['to_amount'] + 1:'0' }}" class="form-control form-control-sm" placeholder="Enter Amount" readonly >
                   <span id="from_amount_msg" class="custom-text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
                   <label>To Amount</label>
-                  <input type="number" name="to_amount" id="to_amount" min="{{ (!empty($bank['from_amount']))?$bank['to_amount'] + 1:'0' }}" required class="form-control form-control-sm" placeholder="Enter Amount">
+                  <input type="number" name="to_amount" id="to_amount" min="{{ (!empty($bank['to_amount']))?$bank['to_amount'] + 1:'0' }}" required class="form-control form-control-sm" placeholder="Enter Amount">
                   <span id="to_amount_msg" class="custom-text-danger"></span>
                 </div>
               </div>
@@ -107,7 +107,7 @@
                 <div class="form-group col-md-6">
                   <label>Type</label>
                   <select class="form-control form-control-sm" id="type" required name="type">
-                    <option value=" ">Select</option>
+                    <option value="">Select</option>
                     <option value="persantage">Persantage(%)</option>
                     <option value="inr">INR</option>
 
@@ -116,7 +116,7 @@
                 </div>
                 <div class="form-group col-md-6">
                   <label>Charges</label>
-                  <input type="number" required name="charges" id="charges" class="form-control form-control-sm" placeholder="Enter Charges">
+                  <input type="number" step="any" required name="charges" id="charges" class="form-control form-control-sm" placeholder="Enter Charges">
                   <span id="charges_msg" class="custom-text-danger"></span>
                 </div>
               </div>
@@ -160,6 +160,7 @@
       success: function(res) {
         $('#from_amount').val(res.data.from_amount);
         $('#to_amount').val(res.data.to_amount);
+        $('input#to_amount').prop('min',0);
         $('#type').val(res.data.type);
         $('#charges').val(res.data.charges);
 

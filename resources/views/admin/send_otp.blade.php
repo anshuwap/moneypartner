@@ -2,200 +2,220 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Money Transfer | Send Otp</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login form</title>
 
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="{{ asset('assets') }}/plugins/fontawesome-free/css/all.min.css">
-  <!-- icheck bootstrap -->
-  <link rel="stylesheet" href="{{ asset('assets') }}/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="{{ asset('assets') }}/dist/css/adminlte.min.css">
-  <link rel="stylesheet" href="{{ asset('assets') }}/custom/custom.css">
-</head>
+    <link rel="stylesheet" href="{{ asset('assets') }}/plugins/fontawesome-free/css/all.min.css">
+    <!-- icheck bootstrap -->
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ asset('assets') }}/plugins/fontawesome-free/css/all.min.css">
 
-<body class="hold-transition login-page">
-  <div class="login-box">
-    <div class="login-logo">
-      <a href="#"><b>Money</b>Transfer</a>
-    </div>
-    <!-- /.login-logo -->
-    <div class="card">
-      <div class="card-body login-card-body">
-        <p class="login-box-msg">
-          @if (!empty($msg = Session::get('message')))
-          @if(!empty($message = $msg['msg']))
-          <?= $message ?>
-          @endif
-          @endif
-        </p>
-        <style>
-          .otp {
+
+    <link rel="stylesheet" href="{{ asset('assets') }}/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{{ asset('assets') }}/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/custom/login.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets') }}/custom/custom.css">
+    <style>
+        .alert-success {
+            color: #fff;
+            background-color: #2fc296 !important;
+            border-color: #2fc296 !important;
+        }
+
+        a {
+            text-decoration: auto !important;
+        }
+
+        .otp {
             -moz-appearance: textfield;
-          }
+        }
 
-          input::-webkit-outer-spin-button,
-          input::-webkit-inner-spin-button {
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
-          }
-        </style>
-        <form action="{{ url('verify-mobile') }}" method="post">
-          {{ csrf_field() }}
-          <div class="form-group mb-3">
-            <label class="text-center">Enter OTP</label>
-            <div class="cover-otp d-flex ">
+        }
+    </style>
+</head>
 
-              <input type="number" name="otp[]" " type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f1">
+<body>
+    <!-- <div class="container"> -->
+    <div class="login-section">
+        <div class="login-form-container">
+            <div class="login-form-left-side">
+                <div class="form-box">
+                    <div class="form-logo">
+                        <img src="{{ url('assets')}}/profile/logo.png" alt="">
+                    </div>
+                    <div class="title-container">
+                        <h2>Enter OTP</h2>
+                        <span>for verify your account</span>
+                    </div>
 
-              <input type="number" name="otp[]" " type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f2">
+                    <!-- <div class="form-wrapper"> -->
+                    <p class="login-box-msg" id="otp-msg">
+                        @if (!empty($msg = Session::get('message')))
+                        @if(!empty($message = $msg['msg']))
+                        <?= $message ?>
+                        @endif
+                        @endif
+                    </p>
 
-              <input type="number" name="otp[]" " type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f3">
+                    <div id="timer" class="text-center mt-3"></div>
+                    <div class="w-100 text-center" id="resendOpt" style="display: none;">
+                        <a class="text-center send-otp" href="{{ url('resend-otp') }}">Resend OTP</a>
+                    </div>
 
-              <input type="number" name="otp[]" " type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f4">
+                    <form action="{{ url('verify-mobile') }}" method="post" id="otp-form">
+                        {{ csrf_field() }}
+                        <div class="form-group mb-3">
+                            <!-- <label class="text-center">Enter OTP</label> -->
+                            <div class="cover-otp d-flex ">
+                                <input type="number" name="otp[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f1">
+                                <input type="number" name="otp[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f2">
+                                <input type="number" name="otp[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f3">
+                                <input type="number" name="otp[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f4">
+                            </div>
+                            <span id="otp_verify" class="text-success"></span>
+                            @if ($errors->has('otp'))
+                            <span class="custom-text-danger">{{ $errors->first('otp') }}</span>
+                            @else
+                            <span id="otp_msg" class="custom-text-danger"></span>
+                            @endif
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-success btn-block disabled" id="login">Verify</button>
+                            </div>
+                            <div class="col-md-6 mt-2" style="text-align:initial !important;">
+                                <a href="{{ url('/') }}" class="text-success">Login &nbsp;<i class="fas fa-sign-in-alt"></i></a>
+                            </div>
+                            <div class="col-md-6 mt-2"  style="text-align:end !important;">
+                                <a class="text-center send-otp" href="{{ url('resend-otp') }}" id="resendOpt1" style="display: none;">Resend OTP</a>
+                            </div>
+                            <!-- /.col -->
+                        </div>
+
+                    </form>
+
+                    <!-- </div> -->
+                </div>
             </div>
-            <span id="otp_verify" class="text-success"></span>
-            @if ($errors->has('otp'))
-            <span class="custom-text-danger">{{ $errors->first('otp') }}</span>
-            @else
-            <span id="otp_msg" class="custom-text-danger"></span>
-            @endif
-          </div>
-          <div class="row">
-            <div class="col-12">
-              <button type="submit" class="btn btn-success btn-block">Verify</button>
-            </div>
-            <!-- /.col -->
-          </div>
-        </form>
 
-        <p class="mt-3 mb-1">
-          <a href="{{ url('/') }}">Login &nbsp;<i class="fas fa-sign-in-alt"></i></a>
-        </p>
-      </div>
-      <!-- /.login-card-body -->
+            <div class="login-form-right-side">
+                <div class="login-content">
+                    <h1>OTP Verifaction</h1>
+                    <p>Please verify OTP then Access Panel.</p>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  <!-- /.login-box -->
+</body>
 
-  <!-- jQuery -->
-  <script src="{{ asset('assets') }}/plugins/jquery/jquery.min.js"></script>
-  <!-- Bootstrap 4 -->
-  <script src="{{ asset('assets') }}/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <!-- AdminLTE App -->
-  <script src="{{ asset('assets') }}/dist/js/adminlte.min.js"></script>
+<!-- jQuery -->
+<script src="{{ asset('assets') }}/plugins/jquery/jquery.min.js"></script>
 
-  @if (!empty($msg = Session::get('message')))
-  @if(!empty($otp = $msg['otp']))
-  <script>
-    var otp = "<?= $otp ?>";
-    alert(otp);
-  </script>
-  @endif
-  @endif
+<script>
+    <?php if (!empty($msg = Session::get('message'))) {
 
-  <script>
+        if (!empty($otp = $msg['otp'])) {
+    ?>
+            var otp = "<?= $otp ?>";
+            timer1(119);
+        <?php } else { ?>
+            $('#resendOpt1').show();
+    <?php }
+    } ?>
+
     $('#otp').keyup(function() {
-      var otp = $(this).val();
-      if (otp == "" || otp == null) {
-        $('#otp_msg').html("Please enter OTP.");
-        $('#verify').addClass('disabled');
-        return false;
-      } else if (otp.length < 4 || otp.length > 4) {
-        $('#otp_msg').html("Please Enter 4 Digit OTP.");
-        $('#verify').addClass('disabled');
-        return false;
-      } else {
-        $('#otp_msg').html('');
-        $('#verify').removeClass('disabled')
-        return false;
-      }
+        var otp = $(this).val();
+        if (otp == "" || otp == null) {
+            $('#otp_msg').html("Please enter OTP.");
+            $('#verify').addClass('disabled');
+            return false;
+        } else if (otp.length < 4 || otp.length > 4) {
+            $('#otp_msg').html("Please Enter 4 Digit OTP.");
+            $('#verify').addClass('disabled');
+            return false;
+        } else {
+            $('#otp_msg').html('');
+            $('#verify').removeClass('disabled')
+            return false;
+        }
     })
 
     $('.otp').keypress(function() {
-      if (this.value.length >= 1) {
-        return false;
-      }
+        if (this.value.length >= 1) {
+            return false;
+        }
     });
 
     /*start focus pointer to new field (functionality)*/
     $('#f1').keyup(function() {
-      if ($('#f1').val().length == 1) {
-        $('#f2').focus();
-      }
+        if ($('#f1').val().length == 1) {
+            $('#f2').focus();
+        }
     });
     $('#f2').keyup(function() {
-      if ($('#f2').val().length == 1) {
-        $('#f3').focus();
-      }
+        if ($('#f2').val().length == 1) {
+            $('#f3').focus();
+        }
     });
     $('#f3').keyup(function() {
-      if ($('#f3').val().length == 1) {
-        $('#f4').focus();
-      }
+        if ($('#f3').val().length == 1) {
+            $('#f4').focus();
+        }
     });
     $('#f4').keyup(function() {
-      if ($('#f4').val().length == 1) {
-        $('#login').focus();
-        $("#login").removeClass("disabled");
-      }
+        if ($('#f4').val().length == 1) {
+            $('#login').focus();
+            $("#login").removeClass("disabled");
+        }
     });
     /*end focus pointer to new field (functionality)*/
-  </script>
-</body>
+
+    /*start OTP timer functionality*/
+    var timerOn = true;
+
+    function timer1(remaining) {
+
+        $('#resendOpt').hide();
+
+        var m = Math.floor(remaining / 59);
+        var s = remaining % 59;
+
+        m = m < 10 ? '0' + m : m;
+        s = s < 10 ? '0' + s : s;
+        document.getElementById('timer').innerHTML = m + ':' + s;
+        remaining -= 1;
+        if (remaining >= 0) {
+            setTimeout(function() {
+                timer1(remaining);
+            }, 1000);
+            return;
+        }
+        // Do timeout stuff here
+        // alert('Timeout for otp,Please Resend OTP');
+        $('#otp-msg').html('<span class="text-danger">Timeout for OTP, Please Resend OTP.</span>');
+        $('#resendOpt').show();
+        $('#otp-form').hide();
+        removeOtp();
+    }
+    /*end OTP timer fucntionality*/
+
+    function removeOtp() {
+        $.ajax({
+            url: '{{ url("remove-otp") }}',
+            type: 'GET',
+            dataType: "json",
+            success: function(res) {}
+        });
+    }
+</script>
 
 </html>
-
-
-
-<!--Model-->
-<div class="modal fade" id="logingModal" tabindex="-1" aria-labelledby="logingModal" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content rounded-0 border-0">
-      <div class="modal-header rounded-0 border-0">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body py-5">
-        <div class="cover-logingmodal">
-          <form>
-            <div class="d-flex align-items-center justify-content-around w-100">
-              <div class="form-row">
-                <div class="form-group mb-0 w-50 col-8 col-md-8">
-                  <label class="phn-number">Phone Number</label>
-                  <input type="number" class="form-control rounded-0" id="phoneNo">
-                  <div class="text-danger" id="phoneMsg"></div>
-                </div>
-                <div class="form-group otp-btn col-4 col-md-4" style="margin-top: 31px;">
-
-                  <button class="btn btn-theme send-otp" id="send">Send OTP</button>
-                </div>
-              </div>
-            </div>
-            <div id="staus_msg" class="text-center mt-3"></div>
-            <div id="timer" class="text-center mt-3"></div>
-            <div id="showotp" style="display: none">
-              <div class="cover-otp d-flex ">
-                <input type="text" name="opt[]" maxlength='1' class="otp form-control rounded-0" id="f1">
-                <input type="text" name="otp[]" maxlength='1' class="otp form-control rounded-0" id="f2">
-                <input type="text" name="otp[]" maxlength='1' class="otp form-control rounded-0" id="f3">
-                <input type="text" name="otp[]" maxlength='1' class="otp form-control rounded-0" id="f4">
-              </div>
-              <div class="d-block w-100 text-center">
-                <a class="text-center send-otp" id="resendOpt" href="javascript:void(0);" style="display: none;">Resend OTP</a>
-              </div>
-            </div>
-
-          </form>
-        </div>
-      </div>
-      <div class="modal-footer otp-btn rounded-0 border-0">
-        <a href="javascript:void(0);" id="login" class="btn btn-theme d-block border px-5 py-2 disabled">Login</a>
-      </div>
-    </div>
-  </div>
-</div>

@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 class TopupController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
         try {
             return view('retailer.topup.list');
@@ -125,7 +125,7 @@ class TopupController extends Controller
         $topup = new Topup();
         $topup->retailer_id            = Auth::user()->_id;
         $topup->outlet_id              = Auth::user()->outlet_id;
-        $topup->payment_id             = uniqCode(3).rand(1111,9999);
+        $topup->payment_id             = uniqCode(3) . rand(1111, 9999);
         $topup->payment_has_code       = uniqCode(16);
         $topup->payment_mode           = $request->payment_mode;
         $topup->payment_reference_id   = $request->payment_reference_id;
@@ -145,9 +145,7 @@ class TopupController extends Controller
     }
 
 
-    public function show(Topup $Topup)
-    {
-    }
+
 
 
     public function edit(Topup $Topup)
@@ -257,75 +255,182 @@ class TopupController extends Controller
     }
 
 
-    public function topupHistory()
+    public function topupHistory(Request $request)
     {
         try {
-            return view('retailer.topup.topup_history');
+             $query = Topup::where('retailer_id',Auth::user()->_id);
+
+            if (!empty($request->transaction_id))
+                $query->where('payment_id', $request->transaction_id);
+
+            $start_date = '';
+            $end_date   = '';
+            if (!empty($request->date_range)) {
+                $date = explode('-', $request->date_range);
+                $start_date = $date[0];
+                $end_date   = $date[1];
+            }
+            if (!empty($start_date) && !empty($end_date)) {
+                $start_date = strtotime(trim($start_date) . " 00:00:00");
+                $end_date   = strtotime(trim($end_date) . " 23:59:59");
+            } else {
+                $crrMonth = (date('Y-m-d'));
+                $start_date = strtotime(trim(date("d-m-Y", strtotime('-30 days', strtotime($crrMonth)))) . " 00:00:00");
+                $end_date   = strtotime(trim(date('Y-m-d')) . " 23:59:59");
+            }
+
+            $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
+            $topups = $query->whereBetween('created', [$start_date, $end_date])->paginate($perPage);
+
+            $data['topup_request'] = $topups;
+
+            $request->request->remove('page');
+            $request->request->remove('perPage');
+            $data['filter']  = $request->all();
+            return view('retailer.topup.topup_history',$data);
         } catch (Exception $e) {
             return redirect('500')->with(['error' => $e->getMessage()]);;
         }
     }
 
 
-    public function topupHistoryAjax(Request $request)
-    {
+    // public function topupHistoryAjax(Request $request)
+    // {
 
-        $draw = $request->draw;
-        $start = $request->start;
-        $length = $request->length;
-        $search_arr = $request->search;
-        $searchValue = $search_arr['value'];
+    //     $draw = $request->draw;
+    //     $start = $request->start;
+    //     $length = $request->length;
+    //     $search_arr = $request->search;
+    //     $searchValue = $search_arr['value'];
 
-        // count all data
-        $totalRecords = Topup::AllCount();
+    //     // count all data
+    //     $totalRecords = Topup::AllCount();
 
-        if (!empty($searchValue)) {
-            // count all data
-            $totalRecordswithFilter = Topup::LikeColumn($searchValue);
-            $data = Topup::GetResult($searchValue);
-        } else {
-            // get per page data
-            $totalRecordswithFilter = $totalRecords;
-            $data = Topup::where('retailer_id', Auth::user()->_id)->offset($start)->limit($length)->orderBy('created', 'DESC')->get();
-        }
-        $dataArr = [];
-        $i = 1;
+    //     if (!empty($searchValue)) {
+    //         // count all data
+    //         $totalRecordswithFilter = Topup::LikeColumn($searchValue);
+    //         $data = Topup::GetResult($searchValue);
+    //     } else {
+    //         // get per page data
+    //         $totalRecordswithFilter = $totalRecords;
+    //         $data = Topup::where('retailer_id', Auth::user()->_id)->offset($start)->limit($length)->orderBy('created', 'DESC')->get();
+    //     }
+    //     $dataArr = [];
+    //     $i = 1;
 
-        foreach ($data as $val) {
-            $action = '<a href="javascript:void(0);" class="text-info edit_qr_code" data-toggle="tooltip" data-placement="bottom" title="Edit" qr_code_id="' . $val->_id . '"><i class="far fa-edit"></i></a>&nbsp;&nbsp;';
-            $action .= '<a href="javascript:void(0);" class="text-danger remove_qr_code"  data-toggle="tooltip" data-placement="bottom" title="Remove" qr_code_id="' . $val->_id . '"><i class="fas fa-trash"></i></a>';
+    //     foreach ($data as $val) {
+    //         $action = '<a href="javascript:void(0);" class="text-info edit_qr_code" data-toggle="tooltip" data-placement="bottom" title="Edit" qr_code_id="' . $val->_id . '"><i class="far fa-edit"></i></a>&nbsp;&nbsp;';
+    //         $action .= '<a href="javascript:void(0);" class="text-danger remove_qr_code"  data-toggle="tooltip" data-placement="bottom" title="Remove" qr_code_id="' . $val->_id . '"><i class="fas fa-trash"></i></a>';
 
-            if ($val->status == 'success') {
-                $payment_has_code = '<a href="javacript:void(0);" class="text-success" data-toggle="tooltip" data-placement="bottom" title="' . $val->admin_comment . '">' . $val->payment_id .'</a>';
-                $status = '<strong class="text-success">' . ucwords($val->status) . '</strong>';
-            } else if ($val->status == 'rejected') {
-                $payment_has_code = '<a href="javacript:void(0);" class="text-danger" data-toggle="tooltip" data-placement="bottom" title="' . $val->admin_comment . '">' . $val->payment_id .'</a>';
-                $status = '<strong class="text-danger">' . ucwords($val->status) . '</strong>';
-            } else if ($val->status == 'pending') {
-                $payment_has_code = '<a href="javacript:void(0);" class="text-warning" data-toggle="tooltip" data-placement="bottom" title="' . $val->admin_comment . '">' . $val->payment_id .'</a>';
-                $status = '<strong class="text-warning">' . ucwords($val->status) . '</strong>';
-            }
+    //         if ($val->status == 'success') {
+    //             $payment_has_code = '<a href="javacript:void(0);" class="text-success" data-toggle="tooltip" data-placement="bottom" title="' . $val->admin_comment . '">' . $val->payment_id . '</a>';
+    //             $status = '<strong class="text-success">Approved</strong>';
+    //         } else if ($val->status == 'rejected') {
+    //             $payment_has_code = '<a href="javacript:void(0);" class="text-danger" data-toggle="tooltip" data-placement="bottom" title="' . $val->admin_comment . '">' . $val->payment_id . '</a>';
+    //             $status = '<strong class="text-danger">' . ucwords($val->status) . '</strong>';
+    //         } else if ($val->status == 'pending') {
+    //             $payment_has_code = '<a href="javacript:void(0);" class="text-warning" data-toggle="tooltip" data-placement="bottom" title="' . $val->admin_comment . '">' . $val->payment_id . '</a>';
+    //             $status = '<strong class="text-warning">' . ucwords($val->status) . '</strong>';
+    //         }
 
-            $dataArr[] = [
-                'sr_no'            => $i,
-                'payment_has_code' => $payment_has_code,
-                'payment_mode'     => ucwords(str_replace('_', ' ', $val->payment_mode)),
-                'amount'           => mSign($val->amount),
-                'status'           => $status,
-                'payment_date'     => date('d,M Y h:i A', $val->payment_date),
-                'created_date'     => date('d,M Y', $val->created),
-                // 'action'            => $action
+    //         $dataArr[] = [
+    //             'sr_no'            => $i,
+    //             'payment_has_code' => $payment_has_code,
+    //             'payment_mode'     => ucwords(str_replace('_', ' ', $val->payment_mode)),
+    //             'amount'           => mSign($val->amount),
+    //             'status'           => $status,
+    //             'payment_date'     => date('d,M Y h:i A', $val->payment_date),
+    //             'created_date'     => date('d,M Y', $val->created),
+    //             // 'action'            => $action
+    //         ];
+    //         $i++;
+    //     }
+
+    //     $response = array(
+    //         "draw" => intval($draw),
+    //         "iTotalRecords" =>  $totalRecordswithFilter,
+    //         "iTotalDisplayRecords" => $totalRecords,
+    //         "aaData" => $dataArr
+    //     );
+    //     echo json_encode($response);
+    //     exit;
+    // }
+
+
+    public function export(Request $request){
+
+try {
+            $file_name = 'topup-report';
+
+            $delimiter = ","; //dfine delimiter
+
+            if (!file_exists('exportCsv')) //
+                mkdir('exportCsv', 0777, true);
+
+            $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
+
+            $transactionArray = [
+                'Transaction ID', 'Outlet','Amount','Payment Date','Payment Mode','Channel',
+                'Status', 'Datetime'
             ];
-            $i++;
-        }
+            fputcsv($f, $transactionArray, $delimiter); //put heading here
 
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" =>  $totalRecordswithFilter,
-            "iTotalDisplayRecords" => $totalRecords,
-            "aaData" => $dataArr
-        );
-        echo json_encode($response);
-        exit;
+            $query = Topup::where('retailer_id',Auth::user()->_id);
+
+            if (!empty($request->transaction_id))
+                $query->where('payment_id', $request->transaction_id);
+
+            $start_date = '';
+            $end_date   = '';
+            if (!empty($request->date_range)) {
+                $date = explode('-', $request->date_range);
+                $start_date = $date[0];
+                $end_date   = $date[1];
+            }
+            if (!empty($start_date) && !empty($end_date)) {
+                $start_date = strtotime(trim($start_date) . " 00:00:00");
+                $end_date   = strtotime(trim($end_date) . " 23:59:59");
+            } else {
+                $crrMonth = (date('Y-m-d'));
+                $start_date = strtotime(trim(date("d-m-Y", strtotime('-30 days', strtotime($crrMonth)))) . " 00:00:00");
+                $end_date   = strtotime(trim(date('Y-m-d')) . " 23:59:59");
+            }
+            $topups = $query->get();
+
+            if ($topups->isEmpty())
+                return back()->with('error', 'There is no any record for export!');
+
+            $transactionArr = [];
+            foreach ($topups as $topup) {
+
+                $topup_val[] = $topup->payment_id;
+                $topup_val[] = !empty($topup->RetailerName['outlet_name']) ? $topup->RetailerName['outlet_name'] : '';
+                $topup_val[] = $topup->amount;
+                $topup_val[] = date('Y-m-d H:i:s A', $topup->payment_date);
+                $topup_val[] = !empty($topup->payment_mode)?ucwords(str_replace('_',' ',$topup->payment_mode)):'';
+                $topup_val[] = !empty($topup->payment_channel)?ucwords(str_replace('_',' ',$topup->payment_channel)):'';
+                $topup_val[] = strtoupper($topup->status);
+                $topup_val[] = date('Y-m-d H:i:s A', $topup->created);
+
+                $transactionArr = $topup_val;
+
+                fputcsv($f, $transactionArr, $delimiter); //put heading here
+                $topup_val = [];
+            }
+            // Move back to beginning of file
+            fseek($f, 0);
+
+            // headers to download file
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="' . $file_name . '.csv"');
+            readfile('exportCsv/' . $file_name . '.csv');
+
+            //remove file form server
+            $path = 'exportCsv/' . $file_name . '.csv';
+            if (file_exists($path))
+                unlink($path);
+        } catch (Exception $e) {
+            return redirect('500');
+        }
     }
 }
