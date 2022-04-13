@@ -13,12 +13,33 @@ use Illuminate\Support\Facades\Auth;
 class CreditController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $data['outlets'] = User::select('_id', 'outlet_name')->where('role', 'retailer')->get();
-            $data['credits'] = CreditDebit::where('type', 'credit')->get();
+            $data['outlets'] = User::select('_id', 'outlet_name')->whereIn('role', ['retailer','distributor'])->get();
+
+            $query = CreditDebit::where('type', 'credit');
+            if (!empty($request->outlet_id))
+                $query->where('retailer_id', $request->outlet_id);
+
+            $start_date = $request->start_date;
+            $end_date   = $request->end_date;
+            if (!empty($start_date) && !empty($end_date)) {
+                $start_date = strtotime(trim($start_date) . " 00:00:00");
+                $end_date   = strtotime(trim($end_date) . " 23:59:59");
+            } else {
+                $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
+                $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
+            }
+
+            $query->whereBetween('created', [$start_date, $end_date]);
+
+            $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
+            $data['credits'] = $query->paginate($perPage);;
             $data['payment_channel'] = PaymentChannel::select('_id', 'name')->get();
+            $request->request->remove('page');
+            $request->request->remove('perPage');
+            $data['filter']  = $request->all();
             return view('admin.action.credit', $data);
         } catch (Exception $e) {
             return redirect('500')->with(['error' => $e->getMessage()]);;
@@ -41,9 +62,9 @@ class CreditController extends Controller
             $creditDebit->user_id     = Auth::user()->_id;
             $creditDebit->transaction_id = uniqCode(3) . rand(111111, 999999);
             $creditDebit->amount      = $amount;
-            $creditDebit->payment_date= $payment_date;
+            $creditDebit->payment_date = $payment_date;
             $creditDebit->status      = $status;
-            $creditDebit->payment_mode= $payment_mode;
+            $creditDebit->payment_mode = $payment_mode;
             $creditDebit->remark      = $remark;
             $creditDebit->channel     = $request->payment_channel;
             $creditDebit->paid_status = 'due';
@@ -113,7 +134,7 @@ class CreditController extends Controller
         $creditDebit->paid_status = $request->status;
 
         if ($creditDebit->save())
-        return response(['status' => 'success', 'msg' => 'Paid Status Updated Successfully']);
+            return response(['status' => 'success', 'msg' => 'Paid Status Updated Successfully']);
 
         return response(['status' => 'error', 'msg' => 'Paid Status not updated']);
     }

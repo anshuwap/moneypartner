@@ -36,10 +36,117 @@
       border-top: 3px solid #2fc296;
     }
   </style>
+   <style>
+input{
+  font-family: IBM Plex Sans,sans-serif!important;
+    font-size: 12px !important;
+    letter-spacing: 0.01em;
+    height: auto;
+}
+select{
+  font-family: IBM Plex Sans,sans-serif!important;
+    font-size: 12px !important;
+    letter-spacing: 0.01em;
+    height: auto;
+}
+label{
+  font-family: IBM Plex Sans,sans-serif!important;
+    font-size: 12px !important;
+    letter-spacing: 0.01em;
+    height: auto;
+}
+.card-title{
+  font-family: IBM Plex Sans,sans-serif!important;
+    font-size: 14px !important;
+    letter-spacing: 0.01em;
+    height: auto;
+}
+.btn{
+  font-family: IBM Plex Sans,sans-serif!important;
+    font-size: 12px !important;
+    letter-spacing: 0.01em;
+    height: auto;
+}
+.modal-title{
+  font-family: IBM Plex Sans,sans-serif!important;
+    font-size: 14px !important;
+    letter-spacing: 0.01em;
+    height: auto;
+}
+  </style>
+   <style>
+    input {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    select {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    textarea,
+    .input-group-text {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    label {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    .card-title {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 14px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    .btn {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    .modal-title {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 14px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    .sidebar-mini .main-sidebar .nav-link, .sidebar-mini-md .main-sidebar .nav-link, .sidebar-mini-xs .main-sidebar .nav-link {
+    width: calc(180px - 0.5rem * 2);
+
+}
+
+    .main-sidebar, .main-sidebar::before {
+    transition: margin-left .3s ease-in-out,width .3s ease-in-out;
+    width: 180px;
+}
+
+    @media (min-width: 768px){
+body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper, body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer, body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
+    transition: margin-left .3s ease-in-out;
+    margin-left: 180px;
+}
+    }
+
+  </style>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed" style="font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 14px !important;
+    font-size: 12px !important;
     letter-spacing: 0.01em;
     height: auto;">
   <div class="wrapper">

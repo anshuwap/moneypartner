@@ -35,6 +35,10 @@ class RetailerMiddleware
                 return $next($request);
             } else if (Auth::user()->isEmployee()) {
                 return redirect(url('employee/dashboard'));
+
+            }else if(Auth::user()->isDistributor()){
+                return redirect(url('distributor/dashboard'));
+
             } else {
 
                 return redirect(url('/'));

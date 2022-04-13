@@ -48,6 +48,9 @@ class LoginController extends Controller
                 } else if (Auth::user()->role == 'employee') {
                     return redirect()->intended('employee/dashboard')
                         ->withSuccess('Signed in');
+                } else if (Auth::user()->role == 'distributor') {
+                    return redirect()->intended('distributor/dashboard')
+                        ->withSuccess('Signed in');
                 } else if (Auth::user()->role == 'admin') {
                     return redirect()->intended('admin/dashboard')
                         ->withSuccess('Signed in');
@@ -89,10 +92,24 @@ class LoginController extends Controller
 
     public function sendOtp($otp, $email)
     {
-        $msg = '<h3>Welcome in Moneypartner Panel</h3>';
-        $msg .= '<p></p>Your  OTP is-' . $otp . '</p>';
+        $msg = '<td>
+         <h5 class="text-center">Signin - Your OTP/Verification code is</h3>
+            <h3 class="otp">' . $otp . '</h3>
+            <table cellpadding="0" cellspacing="0">
+            <tbody>
+            <tr>
+            <td class="text-center">
+            <!-- <a href="#" class="btn btn-primary" target="_blank">Click here</a> -->
+            <!-- <span style="font-size: 16px; font-weight:500;"> to complete the verification</span> -->
+            </td>
+            </tr>
+            </tbody>
+            </table>
+        </td>';
+
+        $message = $this->emailTemplate($msg);
         $subject = 'OTP by Moneypartner';
-        $dataM = ['msg' => $msg, 'subject' => $subject, 'email' => $email];
+        $dataM = ['msg' => $message, 'subject' => $subject, 'email' => $email];
         $email = new Email();
         $res = $email->composeEmail($dataM);
 
@@ -148,10 +165,24 @@ class LoginController extends Controller
         $user->token = $token;
         $user->save();
 
-        $msg = '<h3>Welcome in Moneypartner Panel</h3>';
-        $msg .= '<p>Click Here&nbsp;&nbsp;<a href="' . url('forgot-password/' . $token) . '">' . $token . '</a> to Change Your Password</p>';
+        $msg = '<td>
+         <h5 class="text-center">Forgot Password link here.</h3
+           <p>Click Here&nbsp;&nbsp;<a href="' . url('forgot-password/' . $token) . '">' . $token . '</a> to Change Your Password</p>
+            <table cellpadding="0" cellspacing="0">
+            <tbody>
+            <tr>
+            <td class="text-center">
+            <!-- <a href="#" class="btn btn-primary" target="_blank">Click here</a> -->
+            <!-- <span style="font-size: 16px; font-weight:500;"> to complete the verification</span> -->
+            </td>
+            </tr>
+            </tbody>
+            </table>
+        </td>';
+
+        $message = $this->emailTemplate($msg);
         $subject = 'Forgot password Link';
-        $dataM = ['msg' => $msg, 'subject' => $subject, 'email' => $email];
+        $dataM = ['msg' => $message, 'subject' => $subject, 'email' => $email];
         $email = new Email();
         $res = $email->composeEmail($dataM);
 

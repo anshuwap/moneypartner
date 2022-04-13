@@ -90,12 +90,26 @@ class OutletController extends Controller
         if ($outlet->save()) {
             $this->createUser($outlet->_id, $request, $pin);
 
-            $msg = '<h3>Welcome in Moneypartner Panel</h3>';
-            $msg .= '<p></p>Your PIN is-' . rand('1111', 9999).'</p>';
-            $msg .= '<p></p>Your User Id is-' . $request->email . '</p>';
-            $msg .= '<p></p>Your Password is-' . $request->password . '</p>';
+            $msg = '<td>
+         <h5 class="text-center">Welcome in Moneypartner Panel<.</h3
+            <h3 class="otp"> <p>Your PIN is-' . rand('1111', 9999) . '</p>
+            <p>Your User Id is-' . $request->email . '</p>
+            <p>Your Password is-' . $request->password . '</p></h3>
+            <table cellpadding="0" cellspacing="0">
+            <tbody>
+            <tr>
+            <td class="text-center">
+            <!-- <a href="#" class="btn btn-primary" target="_blank">Click here</a> -->
+            <!-- <span style="font-size: 16px; font-weight:500;"> to complete the verification</span> -->
+            </td>
+            </tr>
+            </tbody>
+            </table>
+        </td>';
+            $message = $this->emailTemplate($msg);
+
             $subject = 'Welcome Message';
-            $dataM = ['msg' => $msg, 'subject' => $subject, 'email' => $request->email];
+            $dataM = ['msg' => $message, 'subject' => $subject, 'email' => $request->email];
             $email = new Email();
             $email->composeEmail($dataM);
 
@@ -115,15 +129,31 @@ class OutletController extends Controller
         $user->email         = $request->email;
         $user->mobile_number = $request->mobile_no;
         $user->password      = Hash::make($request->password);
-        $user->role          = 'retailer';
+        $user->role          = ($request->outlet_type == 'distributor') ? 'distributor' : 'retailer';
         $user->outlet_id     = $outlet_id;
         $user->outlet_name   = $request->outlet_name;
         $user->verify_otp    = 0;
         $user->pin           = $pin;
         $user->save();
+
+        if ($user->outlet_type == 'distributor') {
+            $distrubutor = User::find($user->_id);
+            $retailers[] = $user->_id;
+            $distrubutor->retailers = $retailers;
+            $distrubutor->save();
+        }
     }
 
 
+    private function updateUser($outlet_id, $request)
+    {
+        $user = User::where('outlet_id', $outlet_id)->first();
+        $user->full_name     = $request->retailer_name;
+        $user->email         = $request->email;
+        $user->mobile_number = $request->mobile_no;
+        $user->outlet_name   = $request->outlet_name;
+        $user->save();
+    }
 
     public function edit(outlet $outlet)
     {
@@ -140,7 +170,7 @@ class OutletController extends Controller
     {
 
         $outlet = Outlet::find($id);
-	    $tempEmail = $outlet->email;
+        $tempEmail = $outlet->email;
 
         $count = $outlet->where('mobile_no', $request->mobile_no)->where('_id', '!=', $id)->count();
         if ($count > 0)
@@ -196,17 +226,32 @@ class OutletController extends Controller
 
         if ($outlet->save()) {
 
-            if($tempEmail != $request->email){
-              $msg = '<h3>Outlet details change</h3>';
-              $msg .= '<p></p>Your email id has been changed</p>';
-              $subject = 'Details change';
-              $dataM = ['msg' => $msg, 'subject' => $subject, 'email' => $request->email];
-              $email = new Email();
-              $email->composeEmail($dataM);
+            $this->updateUser($outlet->_id, $request);
+
+            if ($tempEmail != $request->email) {
+                $msg = '<td>
+         <h5 class="text-center">Outlet details change<.</h3
+            <h3 class="otp">Email : ' . $request->email . '</h3>
+            <table cellpadding="0" cellspacing="0">
+            <tbody>
+            <tr>
+            <td class="text-center">
+            <!-- <a href="#" class="btn btn-primary" target="_blank">Click here</a> -->
+            <!-- <span style="font-size: 16px; font-weight:500;"> to complete the verification</span> -->
+            </td>
+            </tr>
+            </tbody>
+            </table>
+        </td>';
+
+                $message = $this->emailTemplate($msg);
+                $subject = 'Details change';
+                $dataM = ['msg' => $message, 'subject' => $subject, 'email' => $request->email];
+                $email = new Email();
+                $email->composeEmail($dataM);
             }
 
             return response(['status' => 'success', 'msg' => 'Outlet Updated Successfully!']);
-
         }
         return response(['status' => 'error', 'msg' => 'Outlet not Updated!']);
     }
@@ -325,7 +370,7 @@ class OutletController extends Controller
                 $bank_charge = $outlet->bank_charges;
 
             //check name and value is not empry
-            $bank_charge[$key]['from_amount']= $request->from_amount;
+            $bank_charge[$key]['from_amount'] = $request->from_amount;
             $bank_charge[$key]['to_amount']  = $request->to_amount;
             $bank_charge[$key]['type']       = $request->type;
             $bank_charge[$key]['charges']    = $request->charges;
@@ -418,6 +463,7 @@ class OutletController extends Controller
                 'name'              => $val->retailer_name,
                 'mobile_no'         => $val->mobile_no,
                 'outlet_name'       => $val->outlet_name,
+                'type'              => ucwords($val->outlet_type),
                 'state'             => $val->state,
                 'available_blance'  => (!empty($available_amount)) ? mSign($available_amount) : mSign(0),
 

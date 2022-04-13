@@ -59,9 +59,10 @@
 
             <div class="card-body">
 
+<div>Api Documentation(Postman)</div>
                 <div id="accordion">
 
-                    <div class="card card-secondary">
+                    <!-- <div class="card card-secondary">
                         <div class="card-header">
                             <h4 class="card-title w-100">
                                 <a class="d-block w-100 collapsed" data-toggle="collapse" href="#collapseOne" aria-expanded="false">
@@ -115,8 +116,6 @@
                             </div>
                         </div>
                     </div>
-
-
                     <div class="card card-secondary">
                         <div class="card-header">
                             <h4 class="card-title w-100">
@@ -147,7 +146,7 @@
                                         <td>{<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"amount":"100",<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"beneficiary_name":"Demo",<br>
-                                            <!-- &nbsp;&nbsp;&nbsp;&nbsp;"payment_mode":"bank_account",<br> -->
+
                                             &nbsp;&nbsp;&nbsp;&nbsp;"payment_channel":{<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"bank_name":"SBI Bank",<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"account_number":"9987654322",<br>
@@ -198,7 +197,7 @@
                                             &nbsp;&nbsp; {<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"amount":"100",<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"beneficiary_name":"Demo",<br>
-                                            <!-- &nbsp;&nbsp;&nbsp;&nbsp;"payment_mode":"bank_account",<br> -->
+
                                             &nbsp;&nbsp;&nbsp;&nbsp;"payment_channel":{<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"bank_name":"SBI Bank",<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"account_number":"9987654322",<br>
@@ -208,7 +207,7 @@
                                             &nbsp;&nbsp; {<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"amount":"100",<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"beneficiary_name":"Demo",<br>
-                                            <!-- &nbsp;&nbsp;&nbsp;&nbsp;"payment_mode":"bank_account",<br> -->
+
                                             &nbsp;&nbsp;&nbsp;&nbsp;"payment_channel":{<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"bank_name":"SBI Bank",<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"account_number":"9987654322",<br>
@@ -227,7 +226,7 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                 </div>
             </div>

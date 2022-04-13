@@ -15,11 +15,12 @@ use Illuminate\Support\Facades\Hash;
 class EmployeeController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
         try {
 
-            $data['employees'] = User::where('role', 'employee')->orderBy('created', 'DESC')->paginate(config('constants.perPage'));
+ $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
+            $data['employees'] = User::where('role', 'employee')->orderBy('created_at', 'DESC')->paginate($perPage);
 
             return view('admin.employee.list', $data);
         } catch (Exception $e) {

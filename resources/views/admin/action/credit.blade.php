@@ -9,7 +9,48 @@
 <div class="row">
 
     <div class="col-md-8">
+
         <div class="card-body table-responsive py-2 table-sm">
+            <div class="float-right">
+                @if(!empty($filter))
+                <a href="javascript:void(0);" class="btn btn-sm btn-success" id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
+                @else
+                <a href="javascript:void(0);" class="btn btn-sm btn-success" id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a>
+                @endif
+            </div>
+            <div class="row pl-2 pr-2" id="filter" <?= (empty($filter)) ? "style='display:none'" : "" ?>>
+                <div class="col-md-12 ml-auto">
+                    <form action="{{ url('admin/credit') }}">
+                        <div class="form-row">
+
+                            <div class="form-group col-md-3">
+                                <label>Start Data</label>
+                                <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['start_date']) ? $filter['start_date'] : '' ?>" name="start_date" />
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label>End Data</label>
+                                <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['end_date']) ? $filter['end_date'] : '' ?>" name="end_date" id="end-date" />
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label>Outlet</label>
+                                <select class="form-control form-control-sm" name="outlet_id">
+                                    <option value="">All</option>
+                                    @foreach($outlets as $outlet)
+                                    <option value="{{ $outlet->_id}}" <?= (!empty($filter['outlet_id']) && $filter['outlet_id'] == $outlet->_id) ? 'selected' : '' ?>>{{ ucwords($outlet->outlet_name) }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group mt-4">
+                                <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i>&nbsp;Search</button>
+                                <a href="{{ url('admin/credit') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
             <table id="table" class="table table-hover text-nowrap table-sm">
                 <thead>
                     <tr>
@@ -34,12 +75,13 @@
                         <td>
                             <input type="checkbox" class="btn-xs switch-btn" _id="{{ $credit->_id }}" name="status" id="switch-btn-{{$credit->_id}}" data-toggle="switchbutton" data-onlabel="Approved" data-offlabel="Due" data-onstyle="success" data-offstyle="danger" {{ ($credit->paid_status=='approved')?'checked':'' }}>
                         </td>
-                        <td>{{ date('d M y H:i A')}}</td>
+                        <td>{{ date('d M Y H:i',$credit->created)}}</td>
                         <td><a href="javascript:void(0)" _id="{{ $credit->_id }}" class="text-info edit" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="far fa-edit"></i></a></td>
                     </tr>
                     @endforeach
                 </tbody>
             </table>
+             {{ $credits->appends(request()->toArray())->links() }}
         </div>
     </div>
 

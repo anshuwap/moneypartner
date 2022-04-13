@@ -44,10 +44,23 @@ class ProfileController extends Controller
         $user->token = $token;
         $user->save();
 
-        $msg = '<h3>Welcome in Moneypartner Panel</h3>';
-        $msg .= '<p>Click Here&nbsp;&nbsp;<a href="' . url('/retailer/forgot-pin/' . $token) . '">' . $token . '</a> to Change Your Pin</p>';
+        $msg = '<td>
+         <h5 class="text-center">Forgot Password link here.</h3
+          <p>Click Here&nbsp;&nbsp;<a href="' . url('/retailer/forgot-pin/' . $token) . '">' . $token . '</a> to Change Your Pin</p>
+            <table cellpadding="0" cellspacing="0">
+            <tbody>
+            <tr>
+            <td class="text-center">
+            <!-- <a href="#" class="btn btn-primary" target="_blank">Click here</a> -->
+            <!-- <span style="font-size: 16px; font-weight:500;"> to complete the verification</span> -->
+            </td>
+            </tr>
+            </tbody>
+            </table>
+        </td>';
+        $message = $this->emailTemplate($msg);
         $subject = 'Forgot Pin Link';
-        $dataM = ['msg' => $msg, 'subject' => $subject, 'email' => $email];
+        $dataM = ['msg' => $message, 'subject' => $subject, 'email' => $email];
         $email = new Email();
         $res = $email->composeEmail($dataM);
 

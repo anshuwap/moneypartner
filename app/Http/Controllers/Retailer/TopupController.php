@@ -263,20 +263,14 @@ class TopupController extends Controller
             if (!empty($request->transaction_id))
                 $query->where('payment_id', $request->transaction_id);
 
-            $start_date = '';
-            $end_date   = '';
-            if (!empty($request->date_range)) {
-                $date = explode('-', $request->date_range);
-                $start_date = $date[0];
-                $end_date   = $date[1];
-            }
+           $start_date = $request->start_date;
+            $end_date   = $request->end_date;
             if (!empty($start_date) && !empty($end_date)) {
                 $start_date = strtotime(trim($start_date) . " 00:00:00");
                 $end_date   = strtotime(trim($end_date) . " 23:59:59");
             } else {
-                $crrMonth = (date('Y-m-d'));
-                $start_date = strtotime(trim(date("d-m-Y", strtotime('-30 days', strtotime($crrMonth)))) . " 00:00:00");
-                $end_date   = strtotime(trim(date('Y-m-d')) . " 23:59:59");
+                $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
+                $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
             }
 
             $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
@@ -339,7 +333,7 @@ class TopupController extends Controller
     //             'payment_mode'     => ucwords(str_replace('_', ' ', $val->payment_mode)),
     //             'amount'           => mSign($val->amount),
     //             'status'           => $status,
-    //             'payment_date'     => date('d,M Y h:i A', $val->payment_date),
+    //             'payment_date'     => date('d,M Y H:i', $val->payment_date),
     //             'created_date'     => date('d,M Y', $val->created),
     //             // 'action'            => $action
     //         ];

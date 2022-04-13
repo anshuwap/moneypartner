@@ -25,6 +25,7 @@
               <th>Name</th>
               <th>Mobile No.</th>
               <th>Outlet Name</th>
+              <th>Type</th>
               <th>State/City</th>
               <th>Available Balance</th>
               <th>Created Date</th>
@@ -182,6 +183,9 @@
         },
         {
           data: 'outlet_name'
+        },
+        {
+          data: 'type'
         },
         {
           data: "state"

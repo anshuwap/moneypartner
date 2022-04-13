@@ -321,7 +321,10 @@
                         <label>Money Partner Otions</label><br>
                         <input type="checkbox" name="money_transfer_option[dmt_transfer]" value="1">&nbsp;&nbsp;DMT Transfer<br>
                         <input type="checkbox" name="money_transfer_option[payout]" value="1">&nbsp;&nbsp;Payout<br>
-                        <input type="checkbox" name="money_transfer_option[payout]" value="1">&nbsp;&nbsp;Payout Api<br>
+                        <input type="checkbox" name="money_transfer_option[bulk_payout]" value="1">&nbsp;&nbsp;Bulk Payout<br>
+                        <input type="checkbox" name="money_transfer_option[payout_api]" value="1">&nbsp;&nbsp;Payout Api<br>
+                        <input type="checkbox" name="money_transfer_option[online_payout_api]" value="1">&nbsp;&nbsp;Online Payout Api<br>
+                        <input type="checkbox" name="money_transfer_option[e_collection]" value="1">&nbsp;&nbsp;E-Collection<br>
                         <span id="money_transfer_option_msg" class="custom-text-danger"></span>
                     </div>
 

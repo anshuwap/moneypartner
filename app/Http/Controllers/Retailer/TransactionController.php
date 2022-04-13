@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ApiList;
 use App\Models\Outlet;
 use App\Models\Transaction;
+use App\Support\OdnimoPaymentApi;
 use App\Support\PaymentApi;
 use Exception;
 use Illuminate\Http\Request;
@@ -31,6 +32,8 @@ class TransactionController extends Controller
             if (!empty($request->banficiary))
                 $query->where('receiver_name', $request->banficiary);
 
+            if (!empty($request->account_no))
+                $query->where('payment_channel.account_number', $request->account_no);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
@@ -38,14 +41,17 @@ class TransactionController extends Controller
             if (!empty($start_date) && !empty($end_date)) {
                 $start_date = strtotime(trim($start_date) . " 00:00:00");
                 $end_date   = strtotime(trim($end_date) . " 23:59:59");
-                $query->whereBetween('created', [$start_date, $end_date]);
+            } else {
+                $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
+                $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
             }
+            $query->whereBetween('created', [$start_date, $end_date]);
 
             $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
             $data['transactions']    = $query->orderBy('created', 'DESC')->paginate($perPage);
 
             $request->request->remove('page');
-             $request->request->remove('perPage');
+            $request->request->remove('perPage');
             $data['filter']  = $request->all();
 
             return view('retailer.transaction.display', $data);
@@ -82,6 +88,8 @@ class TransactionController extends Controller
                         }
                     }
                 }
+            } else {
+                return response(['status' => 'error', 'msg' => 'There are no any Slab Avaliable.']);
             }
             $total_amount = $amount + $charges;
 
@@ -110,14 +118,14 @@ class TransactionController extends Controller
 
             $api_status = 'pending';
             /*start api transfer functionality*/
-            if ($total_amount <= 5000) {
+            if ($amount <= 5000) {
 
                 $payment_channel = (object)$request->payment_channel;
 
                 $payment_para = [
                     'account_number' => $payment_channel->account_number,
                     'ifsc_code'     => $payment_channel->ifsc_code,
-                    'amount'        => $total_amount,
+                    'amount'        => $amount,
                     'receiver_name' => $request->receiver_name,
                     'bank_name'     => $payment_channel->bank_name,
                 ];
@@ -125,25 +133,34 @@ class TransactionController extends Controller
 
                 $apiLists = ApiList::where('retailer_ids', 'all', [Auth::user()->_id])->orderBy('sort', 'ASC')->get();
                 $res = '';
-                foreach ($apiLists as $api) {
+                if (!$apiLists->isEmpty()) {
+                    foreach ($apiLists as $api) {
 
-                    if ($api->status == 1 && $api->name == 'Payunie - Preet Kumar') {
-                        $res = $payment_api->payunie($payment_para);
-                    }
+                        if ($api->status == 1 && $api->name == 'Payunie - Preet Kumar') {
+                            $res = $payment_api->payunie($payment_para);
+                        }
 
-                    if ($api->status == 1 && $api->name == 'Payunie - Parveen') {
-                        if ((!empty($res) && $res['status'] == 'error') || empty($res))
-                            $res = $payment_api->payunie1($payment_para);
-                    }
+                        if ($api->status == 1 && $api->name == 'Payunie -Rashid Ali') {
+                            if ((!empty($res['insufficient']) && $res['insufficient'] == 'Insufficient wallet Balance') || empty($res))
+                                $res = $payment_api->payunie1($payment_para);
+                        }
 
-                    if ($api->status == 1 && $api->name == 'Pay2All- Parveen') {
-                        if (!empty($res) && $res['status'] == 'error')
-                            $res =  $payment_api->pay2All($payment_para);
+                        if ($api->status == 1 && $api->name == 'Pay2All- Parveen') {
+                            if ((!empty($res['insufficient']) && $res['insufficient'] == 'Insufficient wallet Balance') || empty($res))
+                                $res =  $payment_api->pay2All($payment_para);
+                        }
+
+                        if ($api->status == 1 && $api->name == 'odinmo') {
+                            if (empty($res)) {
+                                $OdnimoPaymentApi = new OdnimoPaymentApi();
+                                $res = $OdnimoPaymentApi->AddBeneficiary($payment_para);
+                            }
+                        }
                     }
                 }
 
                 $response = [];
-                if (!empty($res) && $res['status'] == 'success') {
+                if (!empty($res)) {
                     $response = $res['response'];
                     $api_status = $res['status'];
                 }
@@ -313,7 +330,7 @@ class TransactionController extends Controller
 
             $api_status = 'pending';
             /*start api transfer functionality*/
-            if ($total_amount <= 5000) {
+            if ($amount <= 5000) {
 
                 // $payunie_parveen = ApiList::where('status',1)->where()->find();
                 $payment_channel = (object)$request->payment_channel;
@@ -322,40 +339,41 @@ class TransactionController extends Controller
                     'mobile_number'  => Auth::user()->mobile_number,
                     'account_number' => $payment_channel->account_number,
                     'ifsc_code'      => $payment_channel->ifsc_code,
-                    'amount'         => $total_amount,
+                    'amount'         => $amount,
                     'receiver_name'  => $request->receiver_name,
                     'bank_name'      => $payment_channel->bank_name,
                 ];
                 $payment_api = new PaymentApi();
-                // $res =  $payment_api->pay2All($payment_para);
-                //  die;
+
                 $apiLists = ApiList::where('retailer_ids', 'all', [Auth::user()->_id])->orderBy('sort', 'ASC')->get();
-                $res = '';
-                foreach ($apiLists as $api) {
+                if (!$apiLists->isEmpty()) {
+                    $res = '';
+                    foreach ($apiLists as $api) {
 
-                    if ($api->status == 1 && $api->name == 'Payunie - Preet Kumar') {
-                        $res = $payment_api->payunie($payment_para);
-                    }
+                        if ($api->status == 1 && $api->name == 'Payunie - Preet Kumar') {
+                            $res = $payment_api->payunie($payment_para);
+                        }
 
-                    if ($api->status == 1 && $api->name == 'Payunie - Parveen') {
-                        if ((!empty($res) && $res['status'] == 'error') || empty($res))
-                            $res = $payment_api->payunie1($payment_para);
-                    }
+                        if ($api->status == 1 && $api->name == 'Payunie -Rashid Ali') {
+                            if ((!empty($res['insufficient']) && $res['insufficient'] == 'Insufficient wallet Balance') || empty($res))
+                                $res = $payment_api->payunie1($payment_para);
+                        }
 
-                    if ($api->status == 1 && $api->name == 'Pay2All- Parveen') {
-                        if (!empty($res) && $res['status'] == 'error')
-                            $res =  $payment_api->pay2All($payment_para);
+                        if ($api->status == 1 && $api->name == 'Pay2All- Parveen') {
+                            if ((!empty($res['insufficient']) && $res['insufficient'] == 'Insufficient wallet Balance') || empty($res))
+                                $res =  $payment_api->pay2All($payment_para);
+                        }
+
+                        if ($api->status == 1 && $api->name == 'odinmo') {
+                            if (empty($res)) {
+                                $OdnimoPaymentApi = new OdnimoPaymentApi();
+                                $res = $OdnimoPaymentApi->AddBeneficiary($payment_para);
+                            }
+                        }
                     }
                 }
-
-                // if ((!empty($res) && $res['status'] == 'error') || empty($res))
-                //     $res = $payment_api->payunie1($payment_para);
-
-                // if (!empty($res) && $res['status'] == 'error')
-                //     $res =  $payment_api->pay2All($payment_para);
-
                 $response = [];
-                if (!empty($res) && $res['status'] == 'success') {
+                if (!empty($res)) {
                     $response = $res['response'];
                     $api_status = $res['status'];
                 }
@@ -559,6 +577,7 @@ class TransactionController extends Controller
 
         </tr>';
         $total_amount = 0;
+        $no = 0;;
         foreach ($previewData as $da) {
             $total_amount += $da['amount'];
 
@@ -570,12 +589,17 @@ class TransactionController extends Controller
             <td>' . mSign($da['amount']) . '</td>
             <td><span class="tag-small-warning">Pending</span></td>
             </tr>';
+            $no++;
         }
         $table_data .= '<tr class="preview-table"><th colspan="4" style="text-align:end;">Total Amount</th>
         <th colspan="2">' . mSign($total_amount) . '</th></tr></table>';
-        return $table_data;
-    }
 
+        // session()->put('total_amount',$total_amount);
+        // session()->put('no_of_record', $no);
+
+        $data = ['table_data' => $table_data, 'total_amount' => $total_amount, 'no_of_record' => $no];
+        return $data;
+    }
 
     public function importSequence(Request $request)
     {
@@ -584,8 +608,11 @@ class TransactionController extends Controller
         // $previewData = session('previewData');
         $import = session('importData');
         $importData = $import[$index];
+        $response = [];
 
         $payment_channel = ['bank_name' => $importData['payment_channel']['bank_name'], 'account_number' => $importData['payment_channel']['account_number'], 'ifsc_code' => $importData['payment_channel']['ifsc_code']];
+
+
 
         /*start check amount available in wallet or not*/
         $amount = $importData['amount'];
@@ -616,6 +643,60 @@ class TransactionController extends Controller
             $comment = '<span class="text-danger">You have not Sufficient Amount.</span>';
             $status = '<span class="tag-small-danger">Failed</span>';
         } else {
+
+
+            $api_status = 'pending';
+            /*start api transfer functionality*/
+            if ($amount <= 5000) {
+
+                // $payunie_parveen = ApiList::where('status',1)->where()->find();
+                $payment_channel1 = (object)$payment_channel;
+
+                $payment_para = [
+                    'mobile_number'  => Auth::user()->mobile_number,
+                    'account_number' => $payment_channel1->account_number,
+                    'ifsc_code'      => $payment_channel1->ifsc_code,
+                    'amount'         => $amount,
+                    'receiver_name'  => $importData['receiver_name'],
+                    'bank_name'      => $payment_channel1->bank_name,
+                ];
+                $payment_api = new PaymentApi();
+
+                $apiLists = ApiList::where('retailer_ids', 'all', [Auth::user()->_id])->orderBy('sort', 'ASC')->get();
+                if (!$apiLists->isEmpty()) {
+                    $res = '';
+                    foreach ($apiLists as $api) {
+
+                        if ($api->status == 1 && $api->name == 'Payunie - Preet Kumar') {
+                            $res = $payment_api->payunie($payment_para);
+                        }
+
+                        if ($api->status == 1 && $api->name == 'Payunie -Rashid Ali') {
+                            if ((!empty($res['insufficient']) && $res['insufficient'] == 'Insufficient wallet Balance') || empty($res))
+                                $res = $payment_api->payunie1($payment_para);
+                        }
+
+                        if ($api->status == 1 && $api->name == 'Pay2All- Parveen') {
+                            if ((!empty($res['insufficient']) && $res['insufficient'] == 'Insufficient wallet Balance') || empty($res))
+                                $res =  $payment_api->pay2All($payment_para);
+                        }
+
+                        if ($api->status == 1 && $api->name == 'odinmo') {
+                            if (empty($res)) {
+                                $OdnimoPaymentApi = new OdnimoPaymentApi();
+                                $res = $OdnimoPaymentApi->AddBeneficiary($payment_para);
+                            }
+                        }
+                    }
+                }
+
+                if (!empty($res)) {
+                    $response = $res['response'];
+                    $api_status = $res['status'];
+                }
+            }
+            /*start api transfer functionality*/
+
             $transaction = new Transaction(); // initialize transaction model
             $transaction->transaction_id   = $importData['transaction_id'];
             $transaction->retailer_id      = $importData['retailer_id'];
@@ -626,8 +707,9 @@ class TransactionController extends Controller
             $transaction->transaction_fees = $charges;
             $transaction->receiver_name    = $importData['receiver_name'];
             $transaction->payment_channel  = $payment_channel;
-            $transaction->status           = 'pending';
+            $transaction->status           = $api_status;
             $transaction->type             = 'bulk_payout';
+            $transaction->response         = $response;
 
             $csvImport =  $transaction->save();
 
@@ -699,9 +781,10 @@ class TransactionController extends Controller
             $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
 
             $transactionArray = [
-                'Transaction ID', 'UTR Number', 'Amount', 'Fees', 'Beneficiary', 'IFSC', 'Account No.', 'Bank Name',
-                'Status', 'Datetime'
+                'Transaction ID', 'Customer Name', 'Customer Phone', 'Mode', 'Channel', 'Amount', 'Fees', 'Beneficiary', 'IFSC', 'Account No.', 'Bank Name',
+                'UTR Number', 'Status', 'Datetime'
             ];
+
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
             $query = Transaction::query();
@@ -709,28 +792,23 @@ class TransactionController extends Controller
             if (!empty($request->type))
                 $query->where('type', $request->type);
 
-            // if (!empty($request->status))
-            //     $query->where('status', $request->status);
-
             if (!empty($request->transaction_id))
                 $query->where('transaction_id', $request->transaction_id);
 
-            $start_date = '';
-            $end_date   = '';
-            if (!empty($request->date_range)) {
-                $date = explode('-', $request->date_range);
-                $start_date = $date[0];
-                $end_date   = $date[1];
-            }
+            if (!empty($request->banficiary))
+                $query->where('receiver_name', $request->banficiary);
+
+
+            $start_date = $request->start_date;
+            $end_date   = $request->end_date;
+
             if (!empty($start_date) && !empty($end_date)) {
                 $start_date = strtotime(trim($start_date) . " 00:00:00");
                 $end_date   = strtotime(trim($end_date) . " 23:59:59");
             } else {
-                $crrMonth = (date('Y-m-d'));
-                $start_date = strtotime(trim(date("d-m-Y", strtotime('-30 days', strtotime($crrMonth)))) . " 00:00:00");
-                $end_date   = strtotime(trim(date('Y-m-d')) . " 23:59:59");
+                $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
+                $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
             }
-
             $query->whereBetween('created', [$start_date, $end_date]);
 
             $transactions = $query->get();
@@ -744,13 +822,17 @@ class TransactionController extends Controller
                 $payment = (object)$transaction->payment_channel;
 
                 $transaction_val[] = $transaction->transaction_id;
-                $transaction_val[] = (!empty($transaction->response['utr_number'])) ? $transaction->response['utr_number'] : '';
+                $transaction_val[] = ucwords($transaction->sender_name);
+                $transaction_val[] = $transaction->mobile_number;
+                $transaction_val[] = ucwords(str_replace('_', ' ', $transaction->type));
+                $transaction_val[] = (!empty($transaction->response['payment_mode'])) ? $transaction->response['payment_mode'] : '';
                 $transaction_val[] = $transaction->amount;
                 $transaction_val[] = (!empty($transaction->transaction_fees)) ? $transaction->transaction_fees : '';
                 $transaction_val[] = ucwords($transaction->receiver_name);
                 $transaction_val[] = (!empty($payment->ifsc_code)) ? $payment->ifsc_code : '';
                 $transaction_val[] = (!empty($payment->account_number)) ? $payment->account_number : $payment->upi_id;
                 $transaction_val[] = (!empty($payment->bank_name)) ? $payment->bank_name : '';
+                $transaction_val[] = (!empty($transaction->response['utr_number'])) ? $transaction->response['utr_number'] : '';
                 $transaction_val[] = strtoupper($transaction->status);
                 $transaction_val[] = date('Y-m-d H:i:s A', $transaction->created);
 

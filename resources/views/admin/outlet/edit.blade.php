@@ -319,7 +319,10 @@
                         <label>Money Partner Otions</label><br>
                         <input type="checkbox" name="money_transfer_option[dmt_transfer]" <?= (!empty($outlet->money_transfer_option["dmt_transfer"]) && $outlet->money_transfer_option["dmt_transfer"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;DMT Transfer<br>
                         <input type="checkbox" name="money_transfer_option[payout]" <?= (!empty($outlet->money_transfer_option["payout"]) && $outlet->money_transfer_option["payout"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Payout<br>
+                        <input type="checkbox" name="money_transfer_option[bulk_payout]" <?= (!empty($outlet->money_transfer_option["bulk_payout"]) && $outlet->money_transfer_option["bulk_payout"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Bulk Payout<br>
                         <input type="checkbox" name="money_transfer_option[payout_api]" <?= (!empty($outlet->money_transfer_option["payout_api"]) && $outlet->money_transfer_option["payout_api"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Payout API<br>
+                        <input type="checkbox" name="money_transfer_option[online_payout_api]" <?= (!empty($outlet->money_transfer_option["online_payout_api"]) && $outlet->money_transfer_option["online_payout_api"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Online Payout Api<br>
+                        <input type="checkbox" name="money_transfer_option[e_collection]"  <?= (!empty($outlet->money_transfer_option["e_collection"]) && $outlet->money_transfer_option["e_collection"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;E-Collection<br>
                         <span id="money_transfer_option_msg" class="custom-text-danger"></span>
                     </div>
 

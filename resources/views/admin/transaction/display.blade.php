@@ -16,7 +16,7 @@
 
                         <div id="bluckAssignBlock" class="mr-1" style="pointer-events:none !important;">
                             <button class="btn btn-sm btn-success" aria-haspopup="true" id="bluckAssignBtn" disabled>
-                                Action
+                                <i class="fas fa-radiation-alt"></i>&nbsp;Action
                             </button>
                         </div>
                         <div>
@@ -38,7 +38,7 @@
 
                             <div class="form-group col-md-2">
                                 <label>Start Data</label>
-                                 <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['start_date']) ? $filter['start_date'] : '' ?>" name="start_date"/>
+                                <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['start_date']) ? $filter['start_date'] : '' ?>" name="start_date" />
                                 <!-- <input type="text" class="form-control form-control-sm" value="<?= !empty($filter['date_range']) ? $filter['date_range'] : '' ?>" name="date_range" id="daterange-btn" /> -->
                             </div>
 
@@ -53,24 +53,20 @@
                             </div>
 
                             <div class="form-group col-md-2">
+                                <label>Account No</label>
+                                <input type="text" class="form-control form-control-sm" placeholder="Account No" value="<?= !empty($filter['account_no']) ? $filter['account_no'] : '' ?>" name="account_no" id="account_no" />
+                            </div>
+
+                            <div class="form-group col-md-2">
                                 <label>Outlet Name</label>
                                 <select class="form-control-sm form-control" name="outlet_id">
-                                     <option value="">All</option>
+                                    <option value="">All</option>
                                     @foreach($outlets as $outlet)
                                     <option value="{{$outlet->_id}}" {{ (!empty($filter['outlet_id']) && $filter['outlet_id'] == $outlet->_id)?"selected":""}}>{{ ucwords($outlet->outlet_name)}}</option>
                                     @endforeach
 
                                 </select>
                             </div>
-
-                            <!-- <div class="form-group col-md-2">
-                                <label>Mode</label>
-                                <select class="form-control form-control-sm" name="mode">
-                                    <option value="">All</option>
-                                    <option value="bank_account" <?= (!empty($filter['mode']) && $filter['mode'] == 'bank_account') ? 'selected' : '' ?>>Bank Account</option>
-                                    <option value="upi" <?= (!empty($filter['mode']) && $filter['mode'] == 'upi') ? 'selected' : '' ?>>UPI</option>
-                                </select>
-                            </div> -->
 
                             <div class="form-group col-md-2">
                                 <label>Type</label>
@@ -89,6 +85,7 @@
                                     <option value="">All</option>
                                     <option value="success" <?= (!empty($filter['status']) && $filter['status'] == 'success') ? 'selected' : '' ?>>Success</option>
                                     <option value="pending" <?= (!empty($filter['status']) && $filter['status'] == 'pending') ? 'selected' : '' ?>>Pending</option>
+                                    <option value="process" <?= (!empty($filter['status']) && $filter['status'] == 'process') ? 'selected' : '' ?>>Process</option>
                                     <option value="reject" <?= (!empty($filter['status']) && $filter['status'] == 'reject') ? 'selected' : '' ?>>Reject</option>
                                 </select>
                             </div>
@@ -110,9 +107,9 @@
                         <tr>
                             <th><input type="checkbox" class="select_all" id="checkAll" /></th>
                             <th>Sr. No.</th>
-                            <!-- <th>Outlet</th> -->
-                            <th>Transaction Id</th>
-                            <th>Mode</th>
+                            <th>Outlet</th>
+                            <!-- <th>Transaction Id</th> -->
+                            <!-- <th>Mode</th> -->
                             <th>Channel</th>
                             <th>Amount</th>
                             <th>Fees</th>
@@ -133,6 +130,7 @@
 
                         $payment = (object)$trans->payment_channel;
                         $comment = !empty($trans->response['msg']) ? $trans->response['msg'] : '';
+                        $type = (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '';
                         if ($trans->status == 'success') {
                             $status = '<span class="tag-small"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                             $action = '';
@@ -141,8 +139,15 @@
                             $status = '<span class="tag-small-danger"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                             $action = '';
                             $checkbox  = '';
+                        } else if ($trans->status == 'process') {
+                            $status = '<span class="tag-small-purple"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
+                            $action = '<a href="javascript:void(0);" class="btn btn-secondary btn-xs payment_status" type="' .  $type . '"  _id="' . $trans->_id . '"><i class="fas fa-check-double"></i>&nbsp;Status</a>';
+                            $checkbox  = '';
+                        } else if ($trans->status == 'failed') {
+                            $status = '<span class="tag-small-danger"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
+                            $action = '<a href="javascript:void(0);" payment_mode="' . $trans->payment_mode . '" class="btn btn-danger btn-xs retailer_trans" _id="' . $trans->_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>';
+                            $checkbox  = '<input type="checkbox" class="select_me checkbox" value="' . $trans->_id . '" />';
                         } else {
-
                             $status = '<span class="tag-small-warning"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                             $action = '<a href="javascript:void(0);" payment_mode="' . $trans->payment_mode . '" class="btn btn-danger btn-xs retailer_trans" _id="' . $trans->_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>';
                             $checkbox = ' <input type="checkbox" class="select_me checkbox" value="' . $trans->_id . '" />';
@@ -152,11 +157,11 @@
                                 {!! $checkbox !!}
                             </td>
                             <td>{{ ++$key }}</td>
-                            <!-- <td>
-                                <div style="display: grid;"><span>{{ ucwords($trans->sender_name)}}</span><span style="font-size: 13px;">{{ $trans->mobile_number }}</span></div>
-                            </td> -->
-                            <td><span  data-toggle="tooltip" data-placement="bottom" title="{{ ucwords($trans->sender_name)}},{{$trans->mobile_number}}">{{ $trans->transaction_id }}</span></td>
-                            <td><span class="tag-small">{{ ucwords(str_replace('_',' ',$trans->type)) }}</span></td>
+                            <td>
+                                <span data-toggle="tooltip" data-placement="bottom" title="{{ $trans->transaction_id }}"> {{ (!empty($trans->OutletName['outlet_name']))?$trans->OutletName['outlet_name']:'-';}}</span>
+                            </td>
+                            <!-- <td><span data-toggle="tooltip" data-placement="bottom" title="{{ ucwords($trans->sender_name)}},{{$trans->mobile_number}}">{{ $trans->transaction_id }}</span></td> -->
+                            <!-- <td><span class="tag-small">{{ ucwords(str_replace('_',' ',$trans->type)) }}</span></td> -->
                             <td><?= (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '-' ?></td>
 
                             <td>{!! mSign($trans->amount) !!}</td>
@@ -170,8 +175,7 @@
                             <!-- <td><?= (!empty($payment->bank_name)) ? $payment->bank_name : '-' ?></td> -->
                             <td> <?= (!empty($trans->response['utr_number'])) ? $trans->response['utr_number'] : '-' ?></td>
                             <td>{!! $status !!}</td>
-                            <td>{{ date('d,M y H:i A',$trans->created) }}</td>
-
+                            <td>{{ date('d,M y H:i',$trans->created) }}</td>
                             <td> <a href="javascript:void(0);" class="btn btn-info btn-xs view_dashboard" _id="{{ $trans->_id }}"><i class="fas fa-eye"></i>&nbsp;view</a>
                                 {!! $action !!}</td>
                         </tr>
@@ -197,7 +201,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="heading_bank_dashboard">success/Reject Request</h5>
+                <h5 class="modal-title" id="heading_bank_dashboard">Success/Reject Request</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -231,7 +235,7 @@
 
                             <div class="form-group" id="comment-field_dashboard" style="display: none;">
                                 <label>Comment</label>
-                                <select name="comment" class="form-control form-control-sm" id="comment_dashboard">
+                                <select name=response[msg] class="form-control form-control-sm" id="comment_dashboard">
 
                                 </select>
                                 <span id="comment_msg" class="custom-text-danger"></span>
@@ -255,6 +259,7 @@
 <div class="modal fade" id="view_modal_dashboard" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
+
             <div class="modal-header">
                 <h5 class="modal-title" id="heading_bank_dashboard">Account Details</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -262,18 +267,58 @@
                 </button>
             </div>
 
-            <div class="cover-loader-modal d-none">
-                <div class="loader-modal"></div>
-            </div>
-
             <div class="modal-body" id="details1_dashboard">
                 <div id="details_dashboard"></div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Change Payment Channel</label>
+                        <input type="hidden" value="" id="view-id" name="id">
+                        <div class="input-group input-group-sm">
+                            <select name="response[payment_mode]" class="form-control form-control-sm" id="channel">
+                                <option value="">Select</option>
+                                <?php foreach ($payment_channel as $channel) {
+                                    echo '<option value="' . $channel->name . '">' . $channel->name . '</option>';
+                                } ?>
+                            </select>
+                            <span class="input-group-append ">
+                                <button type="button" class="btn btn-info btn-flat" id="change-channel">Change</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </div>
 
 <script>
+    $('#change-channel').click(function() {
+        var channel = $('#channel').val();
+        var id = $('#view-id').val();
+        $.ajax({
+            url: "<?= url('admin/change-channel') ?>",
+            data: {
+                'id': id,
+                'channel': channel
+            },
+            type: 'GET',
+            dataType: "json",
+            success: function(res) {
+                /*Start Status message*/
+                if (res.status == 'success' || res.status == 'error') {
+                    Swal.fire(
+                        `${res.status}!`,
+                        res.msg,
+                        `${res.status}`,
+                    )
+                }
+                /*End Status message*/
+            }
+        })
+    });
+
     $(document).on('click', '.retailer_trans', function(e) {
         e.preventDefault();
         $('#trans_id_dahboard').val($(this).attr('_id'));
@@ -289,33 +334,56 @@
             $('#success_dashboard').html(``);
             $('#action').html(``);
         }
+        $('#view_modal_dashboard').modal('hide');
         $('#approve_modal_dashboard').modal('show');
     })
 
+$(document).on('click','.utrupdate',function(){
+$('#utr').toggle();
+})
 
-    function upi() {
-        $('#action').html(` <div class="form-group">
-                                   <label>Action</label>
-                                   <select name="status" id="status-select-dashboard" class="form-control form-control-sm">
-                                       <option value="">Select</option>
-                                       <option value="Success">Success</option>
-                                       <option value="pending">Pending</option>
-                                       <option value="rejected">Rejected</option>
-                                   </select>
-                                   <span id="status_msg" class="custom-text-danger"></span>
-                               </div>
+//check payment status
+        $(document).on('click','#update_utr',function(){
+        var id = $('#trnsaction-id').val();
+        var select = $(this);
+        var utr = $('#utr_no').val();
+        // alert(type);
 
-                                <div class="form-group" id="challel">
-                                   <label>Select Payment Channel</label>
-                                   <select name="response[payment_mode]" class="form-control form-control-sm" id="payment_channel">
-                                       <option value="">Select</option>
-                                       <?php foreach ($payment_channel as $channel) {
-                                            echo '<option value="' . $channel->name . '">' . $channel->name . '</option>';
-                                        } ?>
-                                   </select>
-                                   <span id="payment_channel_msg" class="custom-text-danger"></span>
-                               </div>`);
-    }
+        $.ajax({
+            data: {
+                'utr': utr,
+                'id': id
+            },
+            type: "GET",
+            url: '{{ url("admin/update-utr") }}',
+            dataType: 'json',
+            beforeSend: function() {
+                $(select).html('<span class="spinner-grow spinner-grow-sm" style="width: 0.75rem;height: 0.75rem;"></span>&nbsp;Loading..');
+            },
+            success: function(res) {
+                //hide loader
+
+                //for reset all field
+                if (res.status == 'success') {
+                    $(select).html('<i class="fas fa-check-double"></i>&nbsp;Done');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000)
+                }
+
+                /*Start Status message*/
+                if (res.status == 'error') {
+                    $(select).html('<i class="fas fa-times"></i>&nbsp;Failed');
+                    Swal.fire(
+                        `${res.status}!`,
+                        res.msg,
+                        `${res.status}`,
+                    )
+                }
+                /*End Status message*/
+            }
+        });
+    })
 
 
     $('#type').change(() => {
@@ -326,7 +394,7 @@
                                    <label>Action</label>
                                    <select name="status" id="status-select-dashboard" class="status-select-dashboard form-control form-control-sm">
                                        <option value="">Select</option>
-                                       <option value="Success">Success</option>
+                                       <option value="success">Success</option>
                                        <option value="pending">Pending</option>
                                        <option value="rejected">Rejected</option>
                                    </select>
@@ -338,13 +406,13 @@
                <select class="form-control form-control-sm" name="api" id="api" required>
                <option value=''>Select</option>
                <option value="payunie_preet_kumar">Payunie - PREET KUMAR</option>
-               <option value="payunie_parveen">Payunie - PRAVEEN</option>
+               <option value="payunie_rashid_ali">Payunie -Rashid Ali</option>
                <option value="pay2all">Pay2ALL - PRAVEEN</option>
+               <option value="odnimo">Odnimo</option>
                </select>
                </div>`);
         }
     })
-
 
     $(document).on('change', '#status-select-dashboard', function() {
         let status = $('#status-select-dashboard').val();
@@ -353,7 +421,7 @@
             $('#challel').html(``);
             $('#success_dashboard').html(`<div class="form-group">
                    <label>Select Payment Channel</label>
-                   <select name="response['payment_mode']" class="form-control form-control-sm" id="payment_channel">
+                   <select name="response[payment_mode]" class="form-control form-control-sm" id="payment_channel">
                      <option value="">Select</option>
                      <?php foreach ($payment_channel as $channel) {
                             echo '<option value="' . $channel->name . '">' . $channel->name . '</option>';
@@ -363,7 +431,7 @@
                  </div>
                  <div class="form-group">
                                 <label>UTR/Transaction</label>
-                                <input type="text" placeholder="UTR/Transaction" required id="utr" name="response['utr_transaction']" class="form-control form-control-sm">
+                                <input type="text" placeholder="UTR/Transaction" required id="utr" name="response[utr_number]" class="form-control form-control-sm">
                                 <span id="utr_transaction_msg" class="custom-text-danger"></span>
                             </div>`);
         } else if (status == 'rejected') {
@@ -373,7 +441,7 @@
             $('#challel').html(``);
             $('#success_dashboard').html(`<div class="form-group">
                    <label>Select Payment Channel</label>
-                   <select name="response['payment_mode']" class="form-control form-control-sm" id="payment_channel">
+                   <select name="response[payment_mode]" class="form-control form-control-sm" id="payment_channel">
                      <option value="">Select</option>
                      <?php foreach ($payment_channel as $channel) {
                             echo '<option value="' . $channel->name . '">' . $channel->name . '</option>';
@@ -396,34 +464,12 @@
             dataType: "json",
             success: function(res) {
 
-                $('#details_dashboard').html(res);
+                $('#details_dashboard').html(res.table);
+                $('#view-id').val(res.id);
                 $('#view_modal_dashboard').modal('show');
             }
         })
     });
-
-    // $(document).on('change', '#status-select-dashboard', function(e) {
-    //     e.preventDefault();
-
-    //     var type = $(this).val();
-
-    //     if (type == '') {
-    //         $('#comment-field_dashboard').hide();
-    //     } else {
-    //         $.ajax({
-    //             url: "<?= url('admin/a-trans-comment') ?>",
-    //             data: {
-    //                 'type': type
-    //             },
-    //             type: 'GET',
-    //             dataType: "json",
-    //             success: function(res) {
-    //                 $('#comment-field_dashboard').show();
-    //                 $('#comment_dashboard').html(res);
-    //             }
-    //         })
-    //     }
-    // })
 
     $(document).on('change', '.status-select-dashboard', function(e) {
         e.preventDefault();
@@ -446,6 +492,7 @@
                     $('#comment_field_dashboard1').show();
                     $('#comment_dashboard').html(res);
                     $('#comment_dashboard1').html(res);
+
                 }
             })
         }
@@ -513,7 +560,48 @@
         $temp.remove();
     }
 
+    //check payment status
+    $('.payment_status').click(function() {
+        var id = $(this).attr('_id');
+        var select = $(this);
+        var type = $(this).attr('type');
+        // alert(type);
 
+        $.ajax({
+            data: {
+                'type': type,
+                '_id': id
+            },
+            type: "GET",
+            url: '{{ url("admin/payment-status") }}',
+            dataType: 'json',
+            beforeSend: function() {
+                $(select).html('<span class="spinner-grow spinner-grow-sm" style="width: 0.75rem;height: 0.75rem;"></span>&nbsp;Loading..');
+            },
+            success: function(res) {
+                //hide loader
+
+                //for reset all field
+                if (res.status == 'success') {
+                    $(select).html('<i class="fas fa-check-double"></i>&nbsp;Done');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000)
+                }
+
+                /*Start Status message*/
+                if (res.status == 'error') {
+                    $(select).html('<i class="fas fa-times"></i>&nbsp;Failed');
+                    Swal.fire(
+                        `${res.status}!`,
+                        res.msg,
+                        `${res.status}`,
+                    )
+                }
+                /*End Status message*/
+            }
+        });
+    })
 
     /*start bulk Approve transaction*/
     $('#checkAll').click(function() {
@@ -542,45 +630,6 @@
         }
     });
 
-    $(document).on('change', '#status-select-dashboard1', function() {
-        let status = $('#status-select-dashboard1').val();
-
-        if (status == 'success') {
-            $('#challel').html(``);
-            $('#success_dashboard1').html(`<div class="form-group">
-                   <label>Select Payment Channel</label>
-                   <select name="response[payment_mode]" class="form-control form-control-sm" id="payment_channel">
-                     <option value="">Select</option>
-                     <?php foreach ($payment_channel as $channel) {
-                            echo '<option value="' . $channel->name . '">' . $channel->name . '</option>';
-                        } ?>
-                   </select>
-                   <span id="payment_channel_msg" class="custom-text-danger"></span>
-                 </div>
-                 <div class="form-group">
-                                <label>UTR/Transaction</label>
-                                <input type="text" placeholder="UTR/Transaction" id="utr" required name="response[utr_number]" class="form-control form-control-sm">
-                                <span id="utr_transaction_msg" class="custom-text-danger"></span>
-                            </div>`);
-        } else if (status == 'rejected') {
-            $('#challel1').html(``);
-            $('#success_dashboard1').html(``);
-        } else {
-            $('#challel1').html(``);
-            $('#success_dashboard1').html(`<div class="form-group">
-                   <label>Select Payment Channel</label>
-                   <select name="response[payment_mode]" class="form-control form-control-sm" id="payment_channel">
-                     <option value="">Select</option>
-                     <?php foreach ($payment_channel as $channel) {
-                            echo '<option value="' . $channel->name . '">' . $channel->name . '</option>';
-                        } ?>
-                   </select>
-                   <span id="payment_channel_msg" class="custom-text-danger"></span>
-                 </div>`);
-        }
-    })
-
-
     $('#bluckAssignBtn').click(function() {
         $('#approve_trans_')[0].reset();
         var transID = [];
@@ -592,7 +641,179 @@
         $('#bluckAssignBtn1').modal('show');
     })
     /*end bulk approve transaction*/
+
+
+//for success case functionality
+    $(document).on('click', '.success-action', function(e) {
+        e.preventDefault();
+        $('#trans_id_action').val($(this).attr('_id'));
+        $('#view_modal_dashboard').modal('hide');
+        $('#approve_modal_action').modal('show');
+    })
+
+    $(document).on('change', '#status-select-action', function() {
+        let status = $('#status-select-action').val();
+         if (status == 'rejected') {
+            $('#challel').html(``);
+            $('#success_action').html(``);
+        } else {
+            $('#challel').html(``);
+            $('#success_action').html(`<div class="form-group">
+                   <label>Select Payment Channel</label>
+                   <select name="response[payment_mode]" class="form-control form-control-sm" id="payment_channel">
+                     <option value="">Select</option>
+                     <?php foreach ($payment_channel as $channel) {
+                            echo '<option value="' . $channel->name . '">' . $channel->name . '</option>';
+                        } ?>
+                   </select>
+                   <span id="payment_channel_msg" class="custom-text-danger"></span>
+                 </div>`);
+        }
+    });
+
+
+    $(document).on('change', '.status-select-action', function(e) {
+        e.preventDefault();
+
+        var type = $(this).val();
+
+        if (type == '') {
+            $('#comment_action').hide();
+            $('#comment-field_action').show();
+        } else {
+            $.ajax({
+                url: "<?= url('admin/a-trans-comment') ?>",
+                data: {
+                    'type': type
+                },
+                type: 'GET',
+                dataType: "json",
+                success: function(res) {
+                    // $('#comment_action').show();
+                    $('#comment-field_action').show();
+                    $('#comment_action').html(res);
+                    $('#comment_dashboard1').html(res);
+
+                }
+            })
+        }
+    })
+
+    /*start form submit functionality*/
+    $("form#approve_trans_action").submit(function(e) {
+        e.preventDefault();
+        formData = new FormData(this);
+        var url = $(this).attr('action');
+        $.ajax({
+            data: formData,
+            type: "POST",
+            url: url,
+            dataType: 'json',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('.cover-loader-modal').removeClass('d-none');
+                $('.modal-body').hide();
+            },
+            success: function(res) {
+                //hide loader
+                $('.cover-loader-modal').addClass('d-none');
+                $('.modal-body').show();
+
+
+                /*Start Validation Error Message*/
+                $('span.custom-text-danger').html('');
+                $.each(res.validation, (index, msg) => {
+                    $(`#${index}_msg`).html(`${msg}`);
+                })
+                /*Start Validation Error Message*/
+
+                /*Start Status message*/
+                if (res.status == 'success' || res.status == 'error') {
+                    Swal.fire(
+                        `${res.status}!`,
+                        res.msg,
+                        `${res.status}`,
+                    )
+                }
+                /*End Status message*/
+
+                //for reset all field
+                if (res.status == 'success') {
+                    $('form#approve_trans_action')[0].reset();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000)
+                }
+            }
+        });
+    });
+
+    /*end form submit functionality*/
 </script>
+
+
+<!-- Modal -->
+<div class="modal fade" id="approve_modal_action" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="heading_bank_dashboard">Success/Reject Request</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="cover-loader-modal d-none">
+                <div class="loader-modal"></div>
+            </div>
+
+            <div class="modal-body">
+                <form id="approve_trans_action" action="{{ url('admin/a-transaction') }}" method="post">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="hidden" id="trans_id_action" name="trans_id">
+                            <input type="hidden" id="key_dashboard" name="key">
+
+                            <div class="form-group">
+                                <label>Action</label>
+                                <select name="status" id="status-select-action" class="status-select-action form-control form-control-sm">
+                                    <option value="">Select</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                                <span id="status_msg" class="custom-text-danger"></span>
+                            </div>
+
+                            <div id="action_action">
+                            </div>
+
+                            <div id="success_action"></div>
+
+                            <div class="form-group" id="comment-field_action" style="display: none;">
+                                <label>Comment</label>
+                                <select name=response[msg] class="form-control form-control-sm" id="comment_action">
+
+                                </select>
+                                <span id="comment_msg" class="custom-text-danger"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12 mt-2">
+                            <div class="form-group text-center">
+                                <input type="submit" class="btn btn-success btn-sm" value="Submit">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="modal fade" id="bluckAssignBtn1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -620,8 +841,9 @@
                                 <select class="form-control form-control-sm" name="api" id="api" required>
                                     <option value=''>Select</option>
                                     <option value="payunie_preet_kumar">Payunie - PREET KUMAR</option>
-                                    <option value="payunie_parveen">Payunie - PRAVEEN</option>
+                                    <option value="payunie_rashid_ali">Payunie -Rashid Ali</option>
                                     <option value="pay2all">Pay2ALL - PRAVEEN</option>
+                                     <option value="odnimo">Odnimo</option>
                                 </select>
                             </div>
                         </div>

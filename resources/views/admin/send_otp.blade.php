@@ -121,6 +121,7 @@
 <script src="{{ asset('assets') }}/plugins/jquery/jquery.min.js"></script>
 
 <script>
+
     <?php if (!empty($msg = Session::get('message'))) {
 
         if (!empty($otp = $msg['otp'])) {
@@ -161,20 +162,32 @@
             $('#f2').focus();
         }
     });
-    $('#f2').keyup(function() {
+    $('#f2').keyup(function(e) {
         if ($('#f2').val().length == 1) {
             $('#f3').focus();
         }
+         if (e.keyCode == 8) {
+            $('#f1').focus();
+            $('#f1').val();
+        }
     });
-    $('#f3').keyup(function() {
+    $('#f3').keyup(function(e) {
         if ($('#f3').val().length == 1) {
             $('#f4').focus();
         }
+         if (e.keyCode == 8) {
+            $('#f2').focus();
+            $('#f2').val();
+        }
     });
-    $('#f4').keyup(function() {
+    $('#f4').keyup(function(e) {
         if ($('#f4').val().length == 1) {
             $('#login').focus();
             $("#login").removeClass("disabled");
+        }
+         if (e.keyCode == 8) {
+            $('#f3').focus();
+            $('#f3').val();
         }
     });
     /*end focus pointer to new field (functionality)*/

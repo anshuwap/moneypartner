@@ -26,9 +26,15 @@
                 <div class="col-md-12 ml-auto">
                     <form action="{{ url('retailer/topup-history') }}">
                         <div class="form-row">
+                           <div class="form-group col-md-2">
+                                <label>Start Data</label>
+                                <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['start_date']) ? $filter['start_date'] : '' ?>" name="start_date" />
+                                <!-- <input type="text" class="form-control form-control-sm" value="<?= !empty($filter['date_range']) ? $filter['date_range'] : '' ?>" name="date_range" id="daterange-btn" /> -->
+                            </div>
+
                             <div class="form-group col-md-2">
-                                <label>Data Range</label>
-                                <input type="text" class="form-control form-control-sm" value="<?= !empty($filter['date_range']) ? $filter['date_range'] : '' ?>" name="date_range" id="daterange-btn" />
+                                <label>End Data</label>
+                                <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['end_date']) ? $filter['end_date'] : '' ?>" name="end_date" id="end-date" />
                             </div>
 
                             <div class="form-group col-md-2">
@@ -75,7 +81,7 @@
                             $status = '<strong class="text-danger">' . ucwords($topup->status) . '</strong>';
                         } else if ($topup->status == 'pending') {
                             $payment_has_code = '<a href="javacript:void(0);" class="text-warning" data-toggle="tooltip" data-placement="bottom" title="' . $topup->admin_comment . '">' . $topup->payment_id . '</a>';
-                            $status = '<strong class="text-warning">' . ucwords($val->status) . '</strong>';
+                            $status = '<strong class="text-warning">' . ucwords($topup->status) . '</strong>';
                         }
 
                         ?>

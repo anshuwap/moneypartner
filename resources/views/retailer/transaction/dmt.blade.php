@@ -10,7 +10,7 @@ $bank_names = [
     'South Indian Bank Ltd', 'Tamilnad Mercantile Bank Ltd', 'YES Bank Ltd', 'IDBI Bank Ltd', 'Au Small Finance Bank Limited', 'Capital Small Finance Bank Limited',
     'Equitas Small Finance Bank Limited', 'Suryoday Small Finance Bank Limited', 'Ujjivan Small Finance Bank Limited', 'Utkarsh Small Finance Bank Limited',
     'ESAF Small Finance Bank Limited', 'Fincare Small Finance Bank Limited', 'Jana Small Finance Bank Limited', 'North East Small Finance Bank Limited', 'Shivalik Small Finance Bank Limited',
-    'India Post Payments Bank Limited', 'Fino Payments Bank Limited', 'Paytm Payments Bank Limited', 'Airtel Payments Bank Limited'
+    'India Post Payments Bank Limited', 'Fino Payments Bank Limited', 'Paytm Payments Bank Limited', 'The Panipat Urban Co Operative bank', 'Syndicate Bank', 'Airtel Payments Bank Limited'
 ];
 ?>
 <!-- Modal -->
@@ -161,17 +161,17 @@ $bank_names = [
                                     <div class="form-group mb-3">
                                         <label class="text-center">Enter PIN</label>
                                         <div class="cover-otp d-flex ">
-                                            <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f1">
-                                            <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f2">
-                                            <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f3">
-                                            <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f4">
+                                            <input type="number" name="pin[]" type=" number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==1) return false;"  class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f1">
+                                            <input type="number" name="pin[]" type=" number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==1) return false;"  class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f2">
+                                            <input type="number" name="pin[]" type=" number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==1) return false;"  class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f3">
+                                            <input type="number" name="pin[]" type=" number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==1) return false;"  class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f4">
                                         </div>
                                         <span id="otp_verify" class="text-success"></span>
                                     </div>
                                     <div class="form-group text-center">
                                         <!-- <input type="submit" class="btn btn-success btn-sm" value="Verify"> -->
                                         <a href="javascript:void(0);" class="btn btn-sm btn-warning" id="back"><i class="far fa-arrow-alt-circle-left"></i>&nbsp;Back</a>
-                                        <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-compress-arrows-alt"></i>&nbsp;Verify & Send</button>
+                                        <button type="submit" class="btn btn-success btn-sm disabled" id="login"><i class="fas fa-compress-arrows-alt"></i>&nbsp;Verify & Send</button>
 
                                     </div>
                                 </div>
@@ -516,20 +516,32 @@ $bank_names = [
             $('#f2').focus();
         }
     });
-    $('#f2').keyup(function() {
+    $('#f2').keyup(function(e) {
         if ($('#f2').val().length == 1) {
             $('#f3').focus();
         }
+         if (e.keyCode == 8) {
+            $('#f1p').focus();
+            $('#f1p').val();
+        }
     });
-    $('#f3').keyup(function() {
+    $('#f3').keyup(function(e) {
         if ($('#f3').val().length == 1) {
             $('#f4').focus();
         }
+         if (e.keyCode == 8) {
+            $('#f2p').focus();
+            $('#f2p').val();
+        }
     });
-    $('#f4').keyup(function() {
+    $('#f4').keyup(function(e) {
         if ($('#f4').val().length == 1) {
             $('#login').focus();
             $("#login").removeClass("disabled");
+        }
+         if (e.keyCode == 8) {
+            $('#f3p').focus();
+            $('#f3p').val();
         }
     });
     /*end focus pointer to new field (functionality)*/

@@ -13,7 +13,7 @@
                 <h3 class="card-title">Passbook</h3>
 
                 <div class="card-tools">
-                    <a href="javascript:void(0);" class="btn btn-sm btn-success mr-2" id="create_topup"><i class="fas fa-hand-holding-usd"></i>&nbsp;Request for Topup</a>
+                    <!-- <a href="javascript:void(0);" class="btn btn-sm btn-success mr-2" id="create_topup"><i class="fas fa-hand-holding-usd"></i>&nbsp;Request for Topup</a> -->
 
                     @if(!empty($filter))
                     <a href="javascript:void(0);" class="btn btn-sm btn-success mr-2" id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
@@ -29,11 +29,18 @@
                 <div class="col-md-12 ml-auto">
                     <form action="{{ url('admin/passbook') }}">
                         <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label>Data Range</label>
-                                <input type="text" class="form-control form-control-sm" value="{{ !empty($filter['date_range'])?$filter['date_range']:''}}" name="date_range" id="daterange-btn" />
+
+                            <div class="form-group col-md-2">
+                                <label>Start Data</label>
+                                <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['start_date']) ? $filter['start_date'] : '' ?>" name="start_date" />
                             </div>
-                            <div class="form-group col-md-3">
+
+                            <div class="form-group col-md-2">
+                                <label>End Data</label>
+                                <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['end_date']) ? $filter['end_date'] : '' ?>" name="end_date" id="end-date" />
+                            </div>
+
+                            <div class="form-group col-md-2">
                                 <label>Type</label>
                                 <select class="form-control form-control-sm" name="type">
                                     <option value="">All</option>
@@ -42,7 +49,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-2">
                                 <label>Outlet</label>
                                 <select class="form-control form-control-sm" name="outlet_id">
                                     <option value="">All</option>
@@ -83,7 +90,7 @@
                     <tr>
                         <td>{{ ++$key }}</td>
                         <td>{{ (!empty($pb->OutletName['outlet_name']))?$pb->OutletName['outlet_name']:'-'}}</td>
-                        <td>{{ date('Y-m-d H:i:s A',$pb->created)}}</td>
+                        <td>{{ date('Y-m-d H:i:s',$pb->created)}}</td>
                         <td>{{ !empty($pb->transaction_type)?ucwords(str_replace('_',' ',$pb->transaction_type)):'-' }}</td>
                         <td>{!!mSign($pb->amount)!!}</td>
                         <td>{!!(!empty($pb->fees))?mSign($pb->fees):'-' !!}</td>

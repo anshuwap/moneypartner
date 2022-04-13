@@ -5,7 +5,8 @@
                  <div class="card-header">
                      <h3 class="card-title">Transaction List</h3>
                      <div class="card-tools">
-                         <a href="{{ url('retailer/transaction-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
+
+
                          @if(!empty($filter))
                          <a href="javascript:void(0);" class="btn btn-sm btn-success" id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
                          @else
@@ -56,6 +57,7 @@
                                          <option value="">All</option>
                                          <option value="success" <?= (!empty($filter['status']) && $filter['status'] == 'success') ? 'selected' : '' ?>>Success</option>
                                          <option value="pending1" <?= (!empty($filter['status']) && $filter['status'] == 'pending1') ? 'selected' : '' ?>>Pending</option>
+                                         <option value="progress" <?= (!empty($filter['status']) && $filter['status'] == 'progress') ? 'selected' : '' ?>>Progress</option>
                                          <option value="reject" <?= (!empty($filter['status']) && $filter['status'] == 'reject') ? 'selected' : '' ?>>Reject</option>
                                      </select>
                                  </div>
@@ -79,7 +81,7 @@
                                  <!-- <th>Customer</th> -->
                                  <th>Transaction Id</th>
                                  <!-- <th>Mode</th> -->
-                                 <!-- <th>Channel</th> -->
+                                 <th>Channel</th>
                                  <th>Amount</th>
                                  <th>Beneficiary</th>
                                  <th>IFSC</th>
@@ -101,9 +103,14 @@
                                 if ($trans->status == 'success') {
                                     $status = '<span class="tag-small"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                                     $action = '-';
-                                } else if ($trans->status == 'rejected') {
-                                    $status = '<span class="text-danger"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
+                                } else if ($trans->status == 'process') {
+                                    $status = '<span class="tag-small-purple"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                                     $action = '-';
+                                } else if ($trans->status == 'rejected') {
+                                    $status = '<span class="tag-small-danger"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
+                                    $action = '-';
+                                // } else if ($trans->status == 'failed') {
+                                    // $status = '<span class="tag-small-danger"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                                 } else if (!empty($trans->response)) {
                                     $status = '<span class="tag-small-warning"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">Pending</a></span>';
                                 } else {
@@ -116,20 +123,20 @@
                                  </td> -->
                                  <td>{{ $trans->transaction_id }}</td>
                                  <!-- <td><span class="tag-small">{{ ucwords(str_replace('_',' ',$trans->type)) }}</span></td> -->
-                                 <!-- <td><?= (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '-' ?></td> -->
+                                 <td><?= (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '-' ?></td>
 
                                  <td>{!! mSign($trans->amount) !!}</td>
                                  <td>{{ ucwords($trans->receiver_name)}}</td>
                                  <!-- <td>{{ ucwords(str_replace('_',' ',$trans->payment_mode))}}</td> -->
                                  <!-- <td>{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</td> -->
-                                <td><span data-toggle="tooltip" data-placement="bottom" title="<?= (!empty($payment->bank_name)) ? $payment->bank_name : '' ?>">{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</span></td>
+                                 <td><span data-toggle="tooltip" data-placement="bottom" title="<?= (!empty($payment->bank_name)) ? $payment->bank_name : '' ?>">{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</span></td>
                                  <td><?= (!empty($payment->account_number)) ? $payment->account_number : '' ?>
                                      <?= (!empty($payment->upi_id)) ? $payment->upi_id : '' ?>
                                  </td>
                                  <!-- <td><?= (!empty($payment->bank_name)) ? $payment->bank_name : '-' ?></td> -->
                                  <td>{{ !empty($trans->response['utr_number'])?$trans->response['utr_number']:'-' }}</td>
                                  <td>{!! $status !!}</td>
-                                 <td>{{ date('d M y H:i A',$trans->created) }}</td>
+                                 <td>{{ date('d M y H:i',$trans->created) }}</td>
 
                              </tr>
                              @endforeach

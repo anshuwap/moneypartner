@@ -28,9 +28,15 @@
         <div class="col-md-12 ml-auto">
           <form action="{{ url('admin/topup-list') }}">
             <div class="form-row">
+
               <div class="form-group col-md-2">
-                <label>Data Range</label>
-                <input type="text" class="form-control form-control-sm" value="<?= !empty($filter['date_range']) ? $filter['date_range'] : '' ?>" name="date_range" id="daterange-btn" />
+                <label>Start Data</label>
+                <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['start_date']) ? $filter['start_date'] : '' ?>" name="start_date" />
+              </div>
+
+              <div class="form-group col-md-2">
+                <label>End Data</label>
+                <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['end_date']) ? $filter['end_date'] : '' ?>" name="end_date" id="end-date" />
               </div>
 
               <div class="form-group col-md-2">
@@ -92,7 +98,7 @@
             ?>
             <tr>
               <td>{{ ++$i }}</td>
-               <td><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="{{ $topup->comment }}">{{ !empty($topup->RetailerName['outlet_name']) ? $topup->RetailerName['outlet_name'] : '' }}</a></td>
+              <td><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="{{ $topup->comment }}">{{ !empty($topup->RetailerName['outlet_name']) ? $topup->RetailerName['outlet_name'] : '' }}</a></td>
               <td><?= (!empty($topup->payment_id)) ? $topup->payment_id : '' ?></td>
               <td>{{ (!empty($topup->payment_channel))?ucwords($topup->payment_channel):'-' }}</td>
 
@@ -113,7 +119,7 @@
             @endif
           </tbody>
         </table>
-          {{ $topup_request->appends($_GET)->links()}}
+        {{ $topup_request->appends($_GET)->links()}}
       </div>
       <!-- /.card-body -->
 

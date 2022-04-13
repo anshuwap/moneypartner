@@ -65,8 +65,24 @@
             </div>
 
             <div class="card-body">
+                <div><b>Api Documentation (Postman) :</b>
+                    <span>
+                        <a href="https://documenter.getpostman.com/view/18356665/UVsMtkKY#f427155c-5262-43b0-a799-6c608feca074" target="_blank" id="textl">https://documenter.getpostman.com/view/18356665/UVsMtkKY#f427155c-5262-43b0-a799-6c608feca074</a>
+                    </span>
+                      &nbsp;&nbsp;<span><a href="javascript:void(0);" onClick="copyToClipboard('#textl','#copyl')" class="text-success"><i class="fas fa-copy"></i></a></span>
+                      <span class="ml-2 d-none" id="copyl"><i class="fas fa-check-circle text-success"></i>Copied</span>
 
-                <div id="accordion">
+                </div>
+
+                <div><b>Postman Api Collection URL (JSON) :</b>
+                    <span class="text-danger" id="textc">
+                       https://www.getpostman.com/collections/720dbf608d51665a1d07
+                    </span>
+                   &nbsp;&nbsp; <span><a href="javascript:void(0);" onClick="copyToClipboard('#textc','#copyc')" class="text-success"><i class="fas fa-copy"></i></a></span>
+                      <span class="ml-2 d-none" id="copyc"><i class="fas fa-check-circle text-success"></i>Copied</span>
+                </div>
+
+                <!-- <div id="accordion">
 
                     <div class="card card-secondary">
                         <div class="card-header">
@@ -122,8 +138,6 @@
                             </div>
                         </div>
                     </div>
-
-
                     <div class="card card-secondary">
                         <div class="card-header">
                             <h4 class="card-title w-100">
@@ -154,7 +168,7 @@
                                         <td>{<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"amount":"100",<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"beneficiary_name":"Demo",<br>
-                                            <!-- &nbsp;&nbsp;&nbsp;&nbsp;"payment_mode":"bank_account",<br> -->
+
                                             &nbsp;&nbsp;&nbsp;&nbsp;"payment_channel":{<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"bank_name":"SBI Bank",<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"account_number":"9987654322",<br>
@@ -205,7 +219,7 @@
                                             &nbsp;&nbsp; {<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"amount":"100",<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"beneficiary_name":"Demo",<br>
-                                            <!-- &nbsp;&nbsp;&nbsp;&nbsp;"payment_mode":"bank_account",<br> -->
+
                                             &nbsp;&nbsp;&nbsp;&nbsp;"payment_channel":{<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"bank_name":"SBI Bank",<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"account_number":"9987654322",<br>
@@ -215,7 +229,7 @@
                                             &nbsp;&nbsp; {<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"amount":"100",<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"beneficiary_name":"Demo",<br>
-                                            <!-- &nbsp;&nbsp;&nbsp;&nbsp;"payment_mode":"bank_account",<br> -->
+
                                             &nbsp;&nbsp;&nbsp;&nbsp;"payment_channel":{<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"bank_name":"SBI Bank",<br>
                                             &nbsp;&nbsp;&nbsp;&nbsp;"account_number":"9987654322",<br>
@@ -236,7 +250,7 @@
                         </div>
                     </div>
 
-                </div>
+                </div> -->
             </div>
 
         </div>
@@ -244,7 +258,9 @@
     </div>
 </div>
 <!-- /.row -->
+<div id="details1_dashboard">
 
+</div>
 @push('modal')
 <script>
     $(document).ready(function() {
@@ -286,6 +302,7 @@
 
     })
 
+
     $("#base-url-integrate").click(function(e) {
         e.preventDefault();
         var base_url_id = $('#base_url_id').val();
@@ -320,6 +337,15 @@
             }
         });
     });
+
+     function copyToClipboard(element, copy) {
+    var $temp = $("<input />");
+    $("#details1_dashboard").append($temp);
+    $temp.val($(element).text()).select();
+    document.execCommand("copy");
+    $(copy).removeClass('d-none');
+    $temp.remove();
+  }
 </script>
 @endpush
 

@@ -36,6 +36,15 @@
     </li>
 
 
+  @if(!empty(MoneyPartnerOption()->e_collection) && MoneyPartnerOption()->e_collection ==1)
+    <li class="nav-item">
+      <a href="{{ url('retailer/e-collection') }}" class="nav-link {{ (url()->full() == url('retailer/e-collection'))? 'active':''}}">
+        <i class="fas fa-ethernet  nav-icon"></i>
+        <p>E-Collection</p>
+      </a>
+    </li>
+    @endif
+
     <li class="nav-item {{ (url()->full() == url('retailer/webhook-api') || url()->full() == url('retailer/pin-password'))?'menu-is-opening menu-open':''}}">
       <a href="javascript:void(0);" class="nav-link ">
         <i class="fas fa-cogs nav-icon"></i>

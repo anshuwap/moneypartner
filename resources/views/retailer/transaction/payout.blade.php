@@ -9,7 +9,7 @@ $bank_names = [
     'South Indian Bank Ltd', 'Tamilnad Mercantile Bank Ltd', 'YES Bank Ltd', 'IDBI Bank Ltd', 'Au Small Finance Bank Limited', 'Capital Small Finance Bank Limited',
     'Equitas Small Finance Bank Limited', 'Suryoday Small Finance Bank Limited', 'Ujjivan Small Finance Bank Limited', 'Utkarsh Small Finance Bank Limited',
     'ESAF Small Finance Bank Limited', 'Fincare Small Finance Bank Limited', 'Jana Small Finance Bank Limited', 'North East Small Finance Bank Limited', 'Shivalik Small Finance Bank Limited',
-    'India Post Payments Bank Limited', 'Fino Payments Bank Limited', 'Paytm Payments Bank Limited', 'Airtel Payments Bank Limited'
+    'India Post Payments Bank Limited', 'Fino Payments Bank Limited', 'Paytm Payments Bank Limited', 'The Panipat Urban Co Operative bank', 'Syndicate Bank', 'Airtel Payments Bank Limited'
 ];
 ?>
 <style>
@@ -60,24 +60,26 @@ $bank_names = [
                 </div>
 
                 <div class="d-none" id="show-pin">
+                    <input type="hidden" id="no_of_record">
+                    <input type="hidden" id="total_amount">
                     <div id="preview-import-data">
                     </div>
-                    <div class="col-md-3 ml-auto mr-auto">
+                    <div class="col-md-3 ml-auto mr-auto" id="hide-pin">
                         <div class="card p-2">
                             <div class="form-group mb-3">
                                 <label class="text-center">Enter PIN</label>
                                 <div class="cover-otp d-flex ">
-                                    <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f1p">
-                                    <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f2p">
-                                    <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f3p">
-                                    <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f4p">
+                                    <input type="number" name="pin[]" type=" number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==1) return false;" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f1p">
+                                    <input type="number" name="pin[]" type=" number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==1) return false;" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f2p">
+                                    <input type="number" name="pin[]" type=" number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==1) return false;" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f3p">
+                                    <input type="number" name="pin[]" type=" number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==1) return false;" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f4p">
                                 </div>
                                 <span id="otp_verify" class="text-success"></span>
                             </div>
                             <div class="form-group text-center">
-                                <button type="button" id="verify-import" class="btn btn-success btn-sm"><i class="fas fa-compress-arrows-alt"></i>&nbsp;Verify</button>
+                                <button type="button" id="verify-import" disabled class="btn btn-success btn-sm"><i class="fas fa-compress-arrows-alt"></i>&nbsp;Verify</button>
                                 <button type="button" class="btn btn-sm btn-success" data-dismiss="modal" aria-label="Close">
-                                  <i class="fas fa-times"></i>&nbsp;Close
+                                    <i class="fas fa-times"></i>&nbsp;Close
                                 </button>
                             </div>
                         </div>
@@ -115,7 +117,25 @@ $bank_names = [
                 `error`,
             )
         } else {
-            importSequence(0);
+
+            var no_of_record = $('#no_of_record').val();
+            var total_amount = $('#total_amount').val();
+            Swal.fire({
+                title: '<h6>Number Of Record&nbsp;-<b>' + no_of_record + '</b></h6><h6>Total Amount &nbsp;&nbsp;<b> &#8377;' + total_amount + '</b></h6>',
+                showDenyButton: true,
+                showCancelButton: false,
+                confirmButtonText: 'Confirm',
+                denyButtonText: `Cancel`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    // Swal.fire('Saved!', '', 'success')
+                    $('#hide-pin').hide();
+                    importSequence(0);
+                } else if (result.isDenied) {
+                    Swal.fire('Changes are not saved', '', 'info')
+                }
+            })
         }
     })
 
@@ -273,17 +293,17 @@ $bank_names = [
                                         <div class="form-group mb-3">
                                             <label class="text-center">Enter PIN</label>
                                             <div class="cover-otp d-flex ">
-                                                <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f11p">
-                                                <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f22p">
-                                                <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f33p">
-                                                <input type="number" name="pin[]" type=" number" maxlength="1" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f44p">
+                                                <input type="number" name="pin[]" type="number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==1) return false;" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f11p">
+                                                <input type="number" name="pin[]" type="number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==1) return false;" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f22p">
+                                                <input type="number" name="pin[]" type="number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==1) return false;" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f33p">
+                                                <input type="number" name="pin[]" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==1) return false;" type="number" class="otp form-control rounded-0 border-top-0 border-right-0 border-left-0 m-2" placeholder="0" id="f44p">
                                             </div>
                                             <span id="otp_verify" class="text-success"></span>
                                         </div>
                                         <div class="form-group text-center">
                                             <!-- <input type="submit" class="btn btn-success btn-sm" value="Verify"> -->
                                             <a href="javascript:void(0);" class="btn btn-sm btn-warning" id="p-back"><i class="far fa-arrow-alt-circle-left"></i>&nbsp;Back</a>
-                                            <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-compress-arrows-alt"></i>&nbsp;Verify & Send</button>
+                                            <button type="submit" class="btn btn-success btn-sm disabled" id="verify"><i class="fas fa-compress-arrows-alt"></i>&nbsp;Verify & Send</button>
 
                                         </div>
                                     </div>
@@ -527,7 +547,9 @@ $bank_names = [
                     $('#preview-modal').addClass('modal-lg-custom');
                     $('#preview-modal').removeClass('modal-dialog modal-dialog-centered');
                     $('#show-pin').removeClass('d-none');
-                    $('#preview-import-data').html(res.data);
+                    $('#preview-import-data').html(res.data.table_data);
+                    $('#no_of_record').val(res.data.no_of_record);
+                    $('#total_amount').val(res.data.total_amount);
                 }
                 /*Start Status message*/
 
@@ -560,19 +582,33 @@ $bank_names = [
             $('#f2p').focus();
         }
     });
-    $('#f2p').keyup(function() {
+    $('#f2p').keyup(function(e) {
         if ($('#f2p').val().length == 1) {
             $('#f3p').focus();
         }
+        if (e.keyCode == 8) {
+            $('#f1p').focus();
+            $('#f1p').val();
+        }
     });
-    $('#f3p').keyup(function() {
+    $('#f3p').keyup(function(e) {
         if ($('#f3p').val().length == 1) {
             $('#f4p').focus();
         }
+        if (e.keyCode == 8) {
+            $('#f2p').focus();
+            $('#f2p').val();
+        }
     });
-    $('#f4p').keyup(function() {
+    $('#f4p').keyup(function(e) {
         if ($('#f4p').val().length == 1) {
-            $('#verifyin').focus();
+            $('#verify-import').focus();
+            $("#verify-import").removeClass("disabled");
+            $('#verify-import').attr('disabled',false);
+        }
+        if (e.keyCode == 8) {
+            $('#f3p').focus();
+            $('#f3p').val();
         }
     });
     /*end focus pointer to new field (functionality)*/
@@ -583,21 +619,38 @@ $bank_names = [
             $('#f22p').focus();
         }
     });
-    $('#f22p').keyup(function() {
+    $('#f22p').keyup(function(e) {
         if ($('#f22p').val().length == 1) {
             $('#f33p').focus();
         }
+        if (e.keyCode == 8) {
+            $('#f11p').focus();
+            $('#f11p').val();
+        }
     });
-    $('#f33p').keyup(function() {
+    $('#f33p').keyup(function(e) {
         if ($('#f33p').val().length == 1) {
             $('#f44p').focus();
         }
+        if (e.keyCode == 8) {
+            $('#f22p').focus();
+            $('#f22p').val();
+        }
     });
-    $('#f44p').keyup(function() {
+    $('#f44p').keyup(function(e) {
         if ($('#f44p').val().length == 1) {
-            $('#verifyin').focus();
+            $('#verify').focus();
+            $("#verify").removeClass("disabled");
+        }
+        if (e.keyCode == 8) {
+            $('#f33p').focus();
+            $('#f33p').val();
         }
     });
     /*end focus pointer to new field (functionality)*/
+
+    // $('html').keyup(function(e) {
+    //     if (e.keyCode == 8) alert('backspace trapped')
+    // })
 </script>
 @endpush

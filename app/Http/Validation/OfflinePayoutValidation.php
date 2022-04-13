@@ -17,29 +17,16 @@ class OfflinePayoutValidation extends FormRequest
 
     public function rules(Request $request)
     {
-        if($request->payment_mode =='bank_account')
+
         return [
-            'amount'          => 'required|numeric',
-            'receiver_name'   => 'required|string|min:2|max:30',
-            'payment_mode'    => 'required|in:bank_account,upi',
-            // 'payment_channel' => 'required|array',
+            'base_url'        => 'required',
+            'amount'          => 'required|numeric|not_in:0',
+            'beneficiary_name'   => 'required|string|min:2|max:30',
+            // 'payment_mode'    => 'required|in:bank_account,upi',
+            'payment_channel' => 'required|array',
             'payment_channel.bank_name'      => 'required|min:2|max:200',
             'payment_channel.account_number' => 'required|numeric',
-            'payment_channel.ifsc_code'      => 'required|min:3|max:50'
-        ];
-
-
-        if($request->payment_mode == 'upi')
-         return [
-            'amount'          => 'required|numeric',
-            'receiver_name'   => 'required|string|min:2|max:30',
-            'payment_mode'    => 'required|in:bank_account,upi',
-            'payment_channel' => 'required|array',
-            'payment_channel.upi' => 'required|min:3|max:50'
-        ];
-
-        return [
-            'payment_mode'    => 'required|in:bank_account,upi',
+            'payment_channel.ifsc_code'      => 'required|min:3|max:20'
         ];
     }
 

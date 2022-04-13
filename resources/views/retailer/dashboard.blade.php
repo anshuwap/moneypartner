@@ -35,12 +35,29 @@
       <div class="col-12 col-sm-6 col-md-5">
         <div class="pl-3 p-2 card" style="height: 130px;">
           <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-4">
               <div>Account Balance</div>
               <div>
                 <strong>{!!mSign(Auth::user()->available_amount)!!}</strong>
               </div>
             </div>
+
+            @if(!empty(MoneyPartnerOption()->e_collection) && MoneyPartnerOption()->e_collection ==1)
+            <div class="col-md-4">
+              <div>Settlement Balance</div>
+              <div>
+                <strong>{!!mSign($settlement_amount)!!}</strong>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div>Un-Settlement Balance</div>
+              <div>
+                <strong>{!!mSign($un_settlement_amount)!!}</strong>
+              </div>
+            </div>
+            @endif
+
           </div>
 
           <div class="card-tools btn-r" style="position: relative;
@@ -52,7 +69,9 @@
             @if(!empty(MoneyPartnerOption()->payout) && MoneyPartnerOption()->payout ==1)
             <a href="javascript:void(0);" class="btn btn-sm btn-success" id="create_payout"><i class="fas fa-plus-circle"></i>&nbsp;Add Payout</a>
             @endif
+            @if(!empty(MoneyPartnerOption()->bulk_payout) && MoneyPartnerOption()->bulk_payout ==1)
             <a href="javascript:void(0);" id="import" class="btn btn-sm btn-success"><i class="fas fa-cloud-upload-alt"></i>&nbsp;Bulk Upload</a>
+            @endif
           </div>
         </div>
       </div>
@@ -242,6 +261,7 @@
     $(copy).removeClass('d-none');
     $temp.remove();
   }
+
 </script>
 @endpush
 

@@ -29,24 +29,19 @@ class TopupRequestController extends Controller
             if (!empty($request->transaction_id))
                 $query->where('payment_id', $request->transaction_id);
 
-            $start_date = '';
-            $end_date   = '';
-            if (!empty($request->date_range)) {
-                $date = explode('-', $request->date_range);
-                $start_date = $date[0];
-                $end_date   = $date[1];
-            }
+            $start_date = $request->start_date;
+            $end_date   = $request->end_date;
+
             if (!empty($start_date) && !empty($end_date)) {
                 $start_date = strtotime(trim($start_date) . " 00:00:00");
                 $end_date   = strtotime(trim($end_date) . " 23:59:59");
             } else {
-                $crrMonth = (date('Y-m-d'));
-                $start_date = strtotime(trim(date("d-m-Y", strtotime('-30 days', strtotime($crrMonth)))) . " 00:00:00");
-                $end_date   = strtotime(trim(date('Y-m-d')) . " 23:59:59");
+                $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
+                $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
             }
-
+            $query->whereBetween('created', [$start_date, $end_date]);
             $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
-            $topups = $query->whereBetween('created', [$start_date, $end_date])->orderBy('created', 'DESC')->paginate($perPage);
+            $topups = $query->orderBy('created', 'DESC')->paginate($perPage);
 
             $data['topup_request'] = $topups;
             $data['outlets']   = $outlets;
@@ -78,7 +73,7 @@ class TopupRequestController extends Controller
 
                 $amount = 0;
                 if (!empty($topup->amount))
-                $amount = $topup->amount;
+                    $amount = $topup->amount;
 
                 //add topup amount in retailer wallet
                 addTopupAmount($topup->retailer_id, $amount);
@@ -238,9 +233,10 @@ class TopupRequestController extends Controller
     }
 
 
-    public function export(Request $request){
+    public function export(Request $request)
+    {
 
-try {
+        try {
             $file_name = 'topup-report';
 
             $delimiter = ","; //dfine delimiter
@@ -251,7 +247,7 @@ try {
             $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
 
             $transactionArray = [
-                'Transaction ID', 'Outlet','Amount','Payment Date','Payment Mode','Channel',
+                'Transaction ID', 'Outlet', 'Amount', 'Payment Date', 'Payment Mode', 'Channel',
                 'Status', 'Datetime'
             ];
             fputcsv($f, $transactionArray, $delimiter); //put heading here
@@ -291,8 +287,8 @@ try {
                 $topup_val[] = !empty($topup->RetailerName['outlet_name']) ? $topup->RetailerName['outlet_name'] : '';
                 $topup_val[] = $topup->amount;
                 $topup_val[] = date('Y-m-d H:i:s A', $topup->payment_date);
-                $topup_val[] = !empty($topup->payment_mode)?ucwords(str_replace('_',' ',$topup->payment_mode)):'';
-                $topup_val[] = !empty($topup->payment_channel)?ucwords(str_replace('_',' ',$topup->payment_channel)):'';
+                $topup_val[] = !empty($topup->payment_mode) ? ucwords(str_replace('_', ' ', $topup->payment_mode)) : '';
+                $topup_val[] = !empty($topup->payment_channel) ? ucwords(str_replace('_', ' ', $topup->payment_channel)) : '';
                 $topup_val[] = strtoupper($topup->status);
                 $topup_val[] = date('Y-m-d H:i:s A', $topup->created);
 

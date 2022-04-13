@@ -11,7 +11,7 @@
   <meta name="csrf-token" content="{{ csrf_token() }}" />
 
   <title>Money Partner</title>
- <link rel="icon" type="image/x-icon" href="{{ asset('assets')}}/profile/logo.PNG">
+  <link rel="icon" type="image/x-icon" href="{{ asset('assets')}}/profile/logo.PNG">
   <!-- Google Font: Source Sans Pro -->
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -57,45 +57,76 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
 
   <link rel="stylesheet" href="{{ asset('assets') }}/custom/custom.css">
-<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap-switch-button@1.1.0/css/bootstrap-switch-button.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap-switch-button@1.1.0/dist/bootstrap-switch-button.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap-switch-button@1.1.0/css/bootstrap-switch-button.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap-switch-button@1.1.0/dist/bootstrap-switch-button.min.js"></script>
   <style>
-input{
-  font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 12px !important;
-    letter-spacing: 0.01em;
-    height: auto;
+    input {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    select {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    textarea,
+    .input-group-text {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    label {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    .card-title {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 14px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    .btn {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    .modal-title {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 14px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+    
+    .sidebar-mini .main-sidebar .nav-link, .sidebar-mini-md .main-sidebar .nav-link, .sidebar-mini-xs .main-sidebar .nav-link {
+    width: calc(180px - 0.5rem * 2);
+    
 }
-select{
-  font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 12px !important;
-    letter-spacing: 0.01em;
-    height: auto;
+    
+    .main-sidebar, .main-sidebar::before {
+    transition: margin-left .3s ease-in-out,width .3s ease-in-out;
+    width: 180px;
 }
-label{
-  font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 12px !important;
-    letter-spacing: 0.01em;
-    height: auto;
+    
+    @media (min-width: 768px){
+body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper, body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer, body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
+    transition: margin-left .3s ease-in-out;
+    margin-left: 180px;
 }
-.card-title{
-  font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 14px !important;
-    letter-spacing: 0.01em;
-    height: auto;
-}
-.btn{
-  font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 12px !important;
-    letter-spacing: 0.01em;
-    height: auto;
-}
-.modal-title{
-  font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 14px !important;
-    letter-spacing: 0.01em;
-    height: auto;
-}
+    }
+    
   </style>
 </head>
 
@@ -132,7 +163,12 @@ label{
       <!-- Right navbar links -->
 
       <ul class="navbar-nav ml-auto">
-        <!-- Messages Dropdown Menu -->
+
+        <!-- <li class="nav-item">
+          <a class="btn btn-success btn-xs mt-1"  href="{{ url('admin/check-bulk-status') }}" role="button">
+          <i class="fab fa-audible"></i>&nbsp; Bulk Status
+          </a>
+        </li> -->
 
         <!-- Messages Dropdown Menu -->
         <li class="nav-item dropdown">
@@ -163,13 +199,9 @@ label{
 
 
         <li class="nav-item">
-
           <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-
             <i class="fas fa-expand-arrows-alt"></i>
-
           </a>
-
         </li>
       </ul>
 

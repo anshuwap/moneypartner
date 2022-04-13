@@ -104,12 +104,21 @@
       </a>
     </li>
 
+
+    <li class="nav-item">
+      <a href="{{ url('admin/e-collection') }}" class="nav-link {{ (url()->full() == url('admin/e-collection'))? 'active':''}}">
+        <i class="fas fa-ethernet  nav-icon"></i>
+        <p>E-Collection</p>
+      </a>
+    </li>
+
     <li class="nav-item">
       <a href="{{ url('admin/api-list') }}" class="nav-link {{ (url()->full() == url('admin/api-list'))? 'active':''}}">
         <i class="fas fa-swatchbook  nav-icon"></i>
         <p>Api List</p>
       </a>
     </li>
+
 
     <li class="nav-item {{ (url()->full() == url('admin/bank-account') || url()->full() == url('admin/upi') || url()->full() == url('admin/qr-code'))?'menu-is-opening menu-open':''}}">
       <a href="javascript:void(0);" class="nav-link">

@@ -35,9 +35,7 @@ class PaymentApi
 
         $res = json_decode($http_result);
 
-        if ($res[0]->status !== 'Accepted')
-            $result = ['status' => 'error', 'msg' => $res[0]->statusMessage];
-
+        $result = [];
         if ($res[0]->status === 'Accepted') {
             $result = [
                 'response' => [
@@ -49,6 +47,28 @@ class PaymentApi
                 'status' => 'success'
             ];
         }
+        if ($res[0]->status === 'Failed') {
+            $result = [
+                'response' => [
+                    'msg'            => $res[0]->statusMessage,
+                    'payment_mode'   => 'payunie-Preet Kumar'
+                ],
+                'status' => 'failed'
+            ];
+        }
+
+        if ($res[0]->status !== 'Accepted' || $res[0]->status !== 'Failed')
+            $result = [
+                'response' => [
+                    'msg'            => $res[0]->statusMessage,
+                    'payment_mode'   => 'payunie-Preet Kumar',
+                    'transaction_id' => (!empty($res[0]->TransactionID)) ? $res[0]->TransactionID : '',
+                    // 'msg' =>(!empty($res[0]->error['MESSAGE']))?$res[0]->error['MESSAGE']:''
+                ],
+                'status' => 'process',
+                'insufficient' => $res[0]->statusMessage
+            ];
+
         return $result;
     }
 
@@ -56,7 +76,7 @@ class PaymentApi
     {
         $input = (object)$input;
         $post_data   = array(
-            'key'           => 'vPxce3A8W23XTokxvBbj34Co',
+            'key'           => 'cGb25SnErgsFSyiLCAAba9m9',
             'AccountNumber' => $input->account_number,
             'IFSC'          => $input->ifsc_code,
             'Amount'        => $input->amount,
@@ -82,20 +102,40 @@ class PaymentApi
 
         $res = json_decode($http_result);
 
-        if ($res[0]->status !== 'Accepted')
-            $result = ['status' => 'error', 'msg' => $res[0]->statusMessage];
-
+        $result = [];
         if ($res[0]->status === 'Accepted') {
             $result = [
                 'response' => [
                     'utr_number'     => $res[0]->UTRNUMBER,
                     'transaction_id' => $res[0]->TransactionID,
                     'msg'            => $res[0]->statusMessage,
-                    'payment_mode'   => 'payunie-Parveen'
+                    'payment_mode'   => 'payunie-Rashid Ali'
                 ],
                 'status' => 'success'
             ];
         }
+
+        if ($res[0]->status === 'Failed') {
+            $result = [
+                'response' => [
+                    'msg'            => $res[0]->statusMessage,
+                    'payment_mode'   => 'payunie-Rashid Ali'
+                ],
+                'status' => 'failed'
+            ];
+        }
+
+        if ($res[0]->status !== 'Accepted' || $res[0]->status !== 'Failed')
+            $result = [
+                'response' => [
+                    'msg'            => $res[0]->statusMessage,
+                    'payment_mode'   => 'payunie-Rashid Ali',
+                    'transaction_id' => (!empty($res[0]->TransactionID)) ? $res[0]->TransactionID : '',
+                ],
+                'status' => 'process',
+                'insufficient' => $res[0]->statusMessage
+            ];
+// print_r($result);die;
         return $result;
     }
 
@@ -103,6 +143,43 @@ class PaymentApi
     function pay2All($input)
     {
 
+        $curl1 = curl_init();
+
+        curl_setopt_array($curl1, array(
+            CURLOPT_URL => 'https://api.pay2all.in/token',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => '{
+    "email":"parveenbinjhol70759@gmail.com",
+    "password":"Parveen@123"
+   }',
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json'
+            ),
+        ));
+
+        $response = curl_exec($curl1);
+
+        curl_close($curl1);
+
+        $res = json_decode($response);
+        $token  = $res->access_token;
+        if (empty($token)) {
+            return  $result = [
+                'response' => [
+                    'status'         => "failed",
+                    'msg'            => 'Token not Genrated',
+                    'payment_mode'   => 'Pay2All-Parveen'
+                ],
+                'status' => 'failed'
+            ];
+        }
+        $client_id = uniqCode(4);
         $input = (object)$input;
         $post_data   = array(
             'mobile_number'    => $input->mobile_number,
@@ -111,25 +188,13 @@ class PaymentApi
             'account_number'   => $input->account_number,
             'ifsc'             => $input->ifsc_code,
             'channel_id'       => "2",
-            'PaymentMode'      => 'IMPS',
-            'client_id'        => 'UNI' . uniqCode(4),
+            'client_id'        =>  $client_id,
             'provider_id'      => "143",
         );
-
-print_r('{
-    "mobile_number":"' . $input->mobile_number . '",
-    "amount":"' . $input->amount . '",
-    "beneficiary_name":"' . $input->receiver_name . '",
-    "account_number": "' . $input->account_number . '",
-    "ifsc":"' . $input->ifsc_code . '",
-    "channel_id":"2",
-    "client_id":"pay' . uniqCode(4) . '",
-    "provider_id":"143"
-}');
-die;
         $data = json_encode($post_data);
-        echo $data;
+
         $curl = curl_init();
+
         curl_setopt_array($curl, array(
             CURLOPT_URL => 'https://api.pay2all.in/v1/payout/transfer',
             CURLOPT_RETURNTRANSFER => true,
@@ -139,36 +204,305 @@ die;
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => '{
-    "mobile_number":"' . $input->mobile_number . '",
-    "amount":"' . $input->amount . '",
-    "beneficiary_name":"' . $input->receiver_name . '",
-    "account_number": "' . $input->account_number . '",
-    "ifsc":"' . $input->ifsc_code . '",
-    "channel_id":"2",
-    "client_id":"pay' . uniqCode(4) . '",
-    "provider_id":"143"
-}',
+            CURLOPT_POSTFIELDS => $data,
             CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImE1OWU3ZDllOWIyOTc4ZTljMDdmN2IxZmQ0ZWUxN2NmODExYTMwMDc3NTk1NjE1YTg5MjY1MWQyYWJhMGE4NGVjZTU3M2Y2NTIxYzlkYzJmIn0.eyJhdWQiOiIxIiwianRpIjoiYTU5ZTdkOWU5YjI5NzhlOWMwN2Y3YjFmZDRlZTE3Y2Y4MTFhMzAwNzc1OTU2MTVhODkyNjUxZDJhYmEwYTg0ZWNlNTczZjY1MjFjOWRjMmYiLCJpYXQiOjE2NDY1MDE0NzksIm5iZiI6MTY0NjUwMTQ3OSwiZXhwIjoxNjc4MDM3NDc5LCJzdWIiOiI1MzMiLCJzY29wZXMiOltdfQ.E1G8vjsvSNhp9wONJCwo8n_XuvalYI4j36YBiGnZcuhNjpagzoyCgTyrUttYYGoDVFguH2e6NDWFQyBiS2Il0dL6mtjs3Sl-ChQqSwXicqUJJ54ownC-w2YSo2v0EXlyhZc3oDH6vd3pLhfOf1xA1MasRZn7DEZ9FmtxzP977kpC8jFykvYrX3XI2Yk5EX2SRTWa1KaT9W9ghbMUHiYWX8VPlrTAx2FZq_r606CTeWiyu0J5ygAF7iwzwnsDHYCAQzmaUAR7VzBF3P5K-e2cpKsZwtaWjsduUjMMvjJWJIzTErXTQsEdk1uFU3uLUqn8OWbe0Cjn3Y5LRutLbsnR2BV4UR3SkfHDl6KS-Evjiy8uhDrUDg0v7k2Gy1lsJdRZx3-phNC9XHac2x_hnWpGXtMv16yo_POX6FrhiSnv_UlYq1uJqjD1FLtHHdglyScFwPUxqFJyfH9PZek6HTqdFfl0-1YhqyBb29DeCmewh5ySxFx2pnSTSxm-m0-7wFWPF5nw1uxrketjKJR7zKDOopV8WU4-UYuOiQ2MPyLm83647Xtr3iwwkruePy4yjLfiLgaABEfS16c_YopFoQt1pVnMADjitqv2WD5vi0DVieAq9v_K14b39DQ5bM6503JGXoR9FOZd3ck_uVxr_e3xcoOGwmQeqeriPDMFB1p8oKM',
+                'Accept: application/json',
+                'Authorization: Bearer ' . $token,
                 'Content-Type: application/json'
             ),
         ));
-        $http_result = curl_exec($curl);
-        print_r($http_result);
-        $res = json_decode($http_result);
+
+        $response = curl_exec($curl);
         curl_close($curl);
-        print_r($res);
-        die;
+
+        $res = (array)json_decode($response);
+// print_r($res);die;
+        $result = [];
+
+        if (!empty($res) && empty($res['errors'])) {
+            if ($res['status'] == 0 || $res['status'] == 1) {
+                return $result = [
+                    'response' => [
+                        'utr_number'     => $res['utr'],
+                        'status'         => "success",
+                        'status_id'      => $res['status_id'],
+                        'report_id'      => $res['report_id'],
+                        'orderid'        => $res['orderid'],
+                        'msg'            => $res['message'],
+                        'client_id'      => $client_id,
+                        'payment_mode'   => 'Pay2All-Parveen'
+                    ],
+                    'status' => 'success'
+                ];
+            }
+        }
+
+
+        if (!empty($res['status']) && $res['status'] == 2) {
+            return $result = [
+                'response' => [
+                    'utr_number'     => $res['utr'],
+                    'status'         => "failed",
+                    'status_id'      => $res['status_id'],
+                    'report_id'      => $res['report_id'],
+                    'orderid'        => $res['orderid'],
+                    'msg'            => $res['message'],
+                    'payment_mode'   => 'Pay2All-Parveen'
+                ],
+                'status' => 'failed'
+            ];
+        }
+
+        if (!empty($res['status']) && $res['status'] == 3) {
+            return $result = [
+                'response' => [
+                    'utr_number'     => $res['utr'],
+                    'status'         => "pending",
+                    'status_id'      => $res['status_id'],
+                    'report_id'      => $res['report_id'],
+                    'orderid'        => $res['orderid'],
+                    'msg'            => $res['message'],
+                    'client_id'      => $client_id,
+                    'payment_mode'   => 'Pay2All-Parveen'
+                ],
+                'status' => 'process'
+            ];
+        }
+
+        if (!empty($res) && !empty($res['errors'])) {
+
+            $msg = '';
+            $key = 0;
+            foreach ($res['errors'] as $error) {
+                $msg .= $error[$key++];
+            }
+            return $result = [
+                'response' => [
+                    'msg'            => $msg,
+                    'status'         => "failed",
+                    'payment_mode'   => 'Pay2All-Parveen'
+                ],
+                'status' => 'failed'
+            ];
+        }
+        return $result;
+    }
+
+
+
+    function checkStatusPayunie($trans_id)
+    {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://payunie.com/api/v1/payoutstatus',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => "{
+            'key':'HsFNUzHnm2MQszwQT383c8sWS',
+            'TransactionID':'$trans_id'
+            }",
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json'
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        $res = json_decode($response);
+
+        $result = [];
+        if ($res[0]->statusMessage != 'Success' && $res[0]->statusMessage != 'Fail') {
+            $result = [
+                'response' => [
+                    'msg'            => $res[0]->statusMessage,
+                    'payment_mode'   => 'payunie-Preet Kumar'
+                ],
+                'status' => 'process'
+            ];
+        }
+
+        if ($res[0]->statusMessage === 'Success') {
+            $result = [
+                'response' => [
+                    'msg'            => $res[0]->statusMessage,
+                    'utr_number'     => $res[0]->UTRNUMBER,
+                    'payment_mode'   => 'payunie-Preet Kumar'
+                ],
+                'status' => 'success'
+            ];
+        }
+
+        if ($res[0]->statusMessage === 'Fail') {
+            $result = [
+                'response' => [
+                    'msg'            => $res[0]->statusMessage,
+                    'payment_mode'   => 'payunie-Preet Kumar'
+                ],
+                'status' => 'failed'
+            ];
+        }
+
+        return $result;
+    }
+
+
+
+    function checkStatusPayunie1($trans_id)
+    {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://payunie.com/api/v1/payoutstatus',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => "{
+            'key':'cGb25SnErgsFSyiLCAAba9m9',
+            'TransactionID':'$trans_id'
+            }",
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json'
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        $res = json_decode($response);
+
+
+        $result = [];
+        if ($res[0]->statusMessage != 'Success' && $res[0]->statusMessage != 'Fail') {
+            $result = [
+                'response' => [
+                    'msg'            => $res[0]->statusMessage,
+                    'payment_mode'   => 'payunie-Rashid Ali'
+                ],
+                'status' => 'process'
+            ];
+        }
+
+        if ($res[0]->statusMessage === 'Success') {
+            $result = [
+                'response' => [
+                    'msg'            => $res[0]->statusMessage,
+                    'utr_number'     => $res[0]->UTRNUMBER,
+                    'payment_mode'   => 'payunie-Rashid Ali'
+                ],
+                'status' => 'success'
+            ];
+        }
+
+        if ($res[0]->statusMessage === 'Fail') {
+            $result = [
+                'response' => [
+                    'msg'            => $res[0]->statusMessage,
+                    'payment_mode'   => 'payunie-Rashid Ali'
+                ],
+                'status' => 'failed'
+            ];
+        }
+
+        return $result;
+    }
+
+
+    function checkStatusPay2All($client_id)
+    {
+        $curl1 = curl_init();
+
+        curl_setopt_array($curl1, array(
+            CURLOPT_URL => 'https://api.pay2all.in/token',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => '{
+    "email":"parveenbinjhol70759@gmail.com",
+    "password":"Parveen@123"
+}',
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json'
+            ),
+        ));
+
+        $response = curl_exec($curl1);
+
+        curl_close($curl1);
+
+        $res = json_decode($response);
+        $token  = $res->access_token;
+        if (empty($token)) {
+            return  $result = [
+                'response' => [
+                    'status'         => "failed",
+                    'msg'            => 'Token not Genrated',
+                    'payment_mode'   => 'Pay2All-Parveen'
+                ],
+                'status' => 'failed'
+            ];
+        }
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.pay2all.in/v1/payment/status',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => '{
+    "client_id":' . $client_id . '
+}',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer ' . $token,
+                'Content-Type: application/json'
+            ),
+        ));
+
+        $response1 = curl_exec($curl);
+
+        curl_close($curl);
+        $res = (array)json_decode($response1);
+
+        $result = [];
+        if (empty($res)) {
+            return $result = [
+                'response' => [
+                    'status'         => "pending",
+                    'msg'            => 'not found any response',
+                    'payment_mode'   => 'Pay2All-Parveen'
+                ],
+                'status' => 'process'
+            ];
+        }
+
         if ($res['status'] === 1 || $res['status'] === 0) {
             $result = [
                 'response' => [
                     'utr_number'     => $res['utr'],
                     'status'         => "success",
+                    'number'         => $res['number'],
                     'status_id'      => $res['status_id'],
                     'report_id'      => $res['report_id'],
-                    'orderid'        => $res['orderid'],
-                    'msg'            => $res['message'],
+                    'client_id'      => $res['client_id'],
                     'payment_mode'   => 'Pay2All-Parveen'
                 ],
                 'status' => 'success'
@@ -183,11 +517,9 @@ die;
                     'status'         => "failed",
                     'status_id'      => $res['status_id'],
                     'report_id'      => $res['report_id'],
-                    'orderid'        => $res['orderid'],
-                    'msg'            => $res['message'],
-                    'payment_mode'   => 'Pay2ALL'
+                    'payment_mode'   => 'Pay2All-Parveen'
                 ],
-                'status' => 'error'
+                'status' => 'failed'
             ];
         }
 
@@ -196,13 +528,13 @@ die;
                 'response' => [
                     'utr_number'     => $res['utr'],
                     'status'         => "pending",
+                    'number'         => $res['number'],
                     'status_id'      => $res['status_id'],
                     'report_id'      => $res['report_id'],
-                    'orderid'        => $res['orderid'],
-                    'msg'            => $res['message'],
-                    'payment_mode'   => 'Pay2ALL'
+                    'client_id'      => $res['client_id'],
+                    'payment_mode'   => 'Pay2All-Parveen'
                 ],
-                'status' => 'error'
+                'status' => 'process'
             ];
         }
 

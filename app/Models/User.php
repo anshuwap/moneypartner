@@ -41,6 +41,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->role === 'employee';
     }
 
+    public function isDistributor() {
+        return $this->role === 'distributor';
+    }
+
     public function getJWTIdentifier() {
         return $this->getKey();
     }

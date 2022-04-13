@@ -25,6 +25,10 @@ class EmployeeMiddleware
 
             }else if (Auth::user()->isAdmin()) {  // allow admin to proceed with request
                 return redirect(url('admin/dashboard'));
+
+            }else if(Auth::user()->isDistributor()){
+                return redirect(url('distributor/dashboard'));
+
             }else if(Auth::user()->isEmployee()){
                 return $next($request);
             }else{

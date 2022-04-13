@@ -109,18 +109,20 @@ class QrCodeController extends Controller
             $_id = $request->id;
             $qrCode = QrCode::select('retailer_ids')->find($_id);
 
-            $retailers = User::select('_id','full_name')->where('role', 'retailer')->get();
+            $retailers = User::select('_id','outlet_name','role')->whereIn('role', ['retailer','distributor'])->get();
 
-            $checkbox = '<div class="d-flex">';
+            $checkbox  = '<table class="table table-sm">';
+            $checkbox .= '<tr><th>Outlet Name</th><th>Outlet Type</th></th><th>Action</th></tr>';
             foreach ($retailers as $retailer) {
                 $checked = (!empty($qrCode->retailer_ids) && is_array($qrCode->retailer_ids) && in_array($retailer->id,$qrCode->retailer_ids))?"checked":"";
 
-                $checkbox .= '<div class="custom-control custom-checkbox">
-                <input type="checkbox" value="' . $retailer->_id . '" name="retailers[]" '.$checked.'>
-                <label>' . ucwords($retailer->full_name) . '</label>
-                </div>';
+                $checkbox .= '<tr>';
+                $checkbox .='<td>' . ucwords($retailer->outlet_name) . '</td>';
+                $checkbox .='<td>'.ucwords($retailer->role).'</td>';
+                $checkbox .='<td><input type="checkbox" value="' . $retailer->_id . '" name="retailers[]" '.$checked.'></td>';
+                $checkbox .='</tr>';
             }
-            $checkbox .= '</div>';
+            $checkbox .= '</table>';
 
             die(json_encode($checkbox));
         } catch (Exception $e) {
