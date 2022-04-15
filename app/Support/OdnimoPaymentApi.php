@@ -54,7 +54,7 @@ class OdnimoPaymentApi
             CURLOPT_POSTFIELDS => $para,
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
-                'Authorization: Basic S2V5OlRva2Vu'
+                'Authorization: Basic MTE0RjAyMjk2N0U3NDY2NzFEQzZGMDFENUVDQ0ZFMzgwQjExODdDMCA6TVRZME9ESXdNemMxTWpjek1qSTI='
             ),
         ));
 
@@ -62,7 +62,7 @@ class OdnimoPaymentApi
         curl_close($curl1);
         $resp = json_decode($response1);
 
-
+// print_r($resp);die;
         if (!empty($resp->status) && $resp->code == 'S00') {
             return $result = [
                 'response' => [
@@ -147,6 +147,31 @@ class OdnimoPaymentApi
             $response = curl_exec($curl);
             curl_close($curl);
 
+        // $curl = curl_init();
+
+        // curl_setopt_array($curl, array(
+        // CURLOPT_URL => 'https://payout.merchantpe.in/Api/v2/Client/en/remittance/getBeneId',
+        // CURLOPT_RETURNTRANSFER => true,
+        // CURLOPT_ENCODING => '',
+        // CURLOPT_MAXREDIRS => 10,
+        // CURLOPT_TIMEOUT => 0,
+        // CURLOPT_FOLLOWLOCATION => true,
+        // CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        // CURLOPT_CUSTOMREQUEST => 'POST',
+        // CURLOPT_POSTFIELDS =>'{
+        // "bankAccountNumber": "'.$input->account_number.'",
+        // "ifscCode":"'.$input->ifsc_code.'"
+        // }',
+        // CURLOPT_HTTPHEADER => array(
+        //     'Content-Type: application/json',
+        //     'Authorization: Basic MTE0RjAyMjk2N0U3NDY2NzFEQzZGMDFENUVDQ0ZFMzgwQjExODdDMCA6TVRZME9ESXdNemMxTWpjek1qSTI='
+        // ),
+        // ));
+
+        // $response = curl_exec($curl);
+
+        // curl_close($curl);
+
             $res = json_decode($response);
             if (!empty($res->status) && $res->code == 'F00') {
                 return $response;
@@ -165,7 +190,7 @@ class OdnimoPaymentApi
                 $benefaciry->pincode           = "110096";
                 $benefaciry->vpa               = '';
                 $benefaciry->bankName          = $input->bank_name;
-                $benefaciry->beneficiaryId     = (!empty($res->details['beneficiaryId'])) ? $res->details['beneficiaryId'] : '';
+                $benefaciry->beneficiaryId     = (!empty($res->details->beneficiaryId)) ? $res->details->beneficiaryId : '';
 
                 if ($benefaciry->save())
                     $_id = $benefaciry->_id;
