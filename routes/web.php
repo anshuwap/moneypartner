@@ -141,18 +141,20 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::post('a-store-api',        [AdminTransaction::class, 'storeApi']);
   Route::get('a-trans-detail',      [AdminTransaction::class, 'viewDetail']);
   Route::get('a-trans-comment',     [AdminTransaction::class, 'Comment']);
-  Route::get('a-transaction-export', [AdminTransaction::class, 'export']);
+  Route::get('a-transaction-export',[AdminTransaction::class, 'export']);
   Route::post('bulk-action',        [AdminTransaction::class, 'bulkAction']);
   Route::get('change-channel',      [AdminTransaction::class, 'ChangeChannel']);
   Route::get('payment-status',      [AdminTransaction::class, 'PaymentStatus']);
   Route::get('check-bulk-status',   [AdminTransaction::class, 'checkBulkStatus']);
   Route::get('update-utr',          [AdminTransaction::class, 'updateUtrNo']);
 
-  Route::resource('credit', AdminCredit::class);
-  Route::get('credit-show/{id}',     [AdminCredit::class, 'showBlance']);
-  Route::resource('debit',  AdminDebit::class);
-  Route::get('debit-show/{id}',     [AdminDebit::class, 'showBlance']);
-  Route::post('credit-paid-status',           [AdminCredit::class, 'creditPaidStatus']);
+  Route::resource('credit',           AdminCredit::class);
+  Route::get('credit-export',         [AdminCredit::class, 'export']);
+  Route::get('credit-show',           [AdminCredit::class, 'showBlance']);
+  Route::resource('debit',            AdminDebit::class);
+  Route::get('debit-show/{id}',       [AdminDebit::class, 'showBlance']);
+  Route::get('debit-export',          [AdminDebit::class, 'export']);
+  Route::post('credit-paid-status',   [AdminCredit::class, 'creditPaidStatus']);
 
   Route::resource('api-list', AdminApiList::class);
   Route::post('api-list-editApi', [AdminApiList::class, 'editApi']);

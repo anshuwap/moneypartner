@@ -10,6 +10,7 @@
     <div class="col-md-8">
         <div class="card-body table-responsive py-2 table-sm">
              <div class="float-right">
+                  <a href="{{ url('admin/debit-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
                 @if(!empty($filter))
                 <a href="javascript:void(0);" class="btn btn-sm btn-success" id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
                 @else
