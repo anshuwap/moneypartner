@@ -34,4 +34,9 @@ class Topup extends BaseModel
     {
         return $this->belongsTo('App\Models\User', 'retailer_id', '_id')->select('outlet_name');
     }
+
+    public function UserName()
+    {
+        return $this->belongsTo('App\Models\User', 'action_by', '_id')->select('full_name');
+    }
 }

@@ -18,6 +18,7 @@
                     <thead>
                         <tr>
                             <th>Sr No.</th>
+                            <th>Role</th>
                             <th>Full Name</th>
                             <th>Email</th>
                             <th>Mobile Number</th>
@@ -37,6 +38,7 @@
                         } ?>
                         <tr>
                             <td>{{ ++$key}}</td>
+                            <td>{{ ucwords($employee->role) }}</td>
                             <td>{{ $employee->full_name }}</td>
                             <td>{{ $employee->email}}</td>
                             <td>{{ $employee->mobile_number}}</td>

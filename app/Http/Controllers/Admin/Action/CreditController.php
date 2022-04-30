@@ -16,11 +16,14 @@ class CreditController extends Controller
     public function index(Request $request)
     {
         try {
-            $data['outlets'] = User::select('_id', 'outlet_name')->whereIn('role', ['retailer','distributor'])->get();
+            $data['outlets'] = User::select('_id', 'outlet_name')->whereIn('role', ['retailer', 'distributor'])->get();
 
             $query = CreditDebit::where('type', 'credit');
             if (!empty($request->outlet_id))
                 $query->where('retailer_id', $request->outlet_id);
+
+            if (!empty($request->payment_channel))
+                $query->where('channel', $request->payment_channel);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
@@ -163,12 +166,15 @@ class CreditController extends Controller
 
             $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
 
-            $passbookArray = ['Outlet Name', 'Transaction Id', 'Channel', 'Amount', 'Paid Status','Datetime'];
+            $passbookArray = ['Outlet Name', 'Transaction Id', 'Channel', 'Amount', 'Paid Status', 'Datetime'];
             fputcsv($f, $passbookArray, $delimiter); //put heading here
 
             $query = CreditDebit::where('type', 'credit');
             if (!empty($request->outlet_id))
                 $query->where('retailer_id', $request->outlet_id);
+
+            if (!empty($request->payment_channel))
+                $query->where('channel', $request->payment_channel);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
@@ -183,7 +189,7 @@ class CreditController extends Controller
             $query->whereBetween('created', [$start_date, $end_date]);
 
             $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
-            $credits= $query->paginate($perPage);
+            $credits = $query->paginate($perPage);
 
             if ($credits->isEmpty())
                 return back()->with('error', 'There is no any record for export!');

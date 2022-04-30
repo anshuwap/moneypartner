@@ -9,7 +9,7 @@
       <div class="card-header">
         <div class="row">
           <div class="col-md-10">
-            <h3 class="card-title">All Topup Request</h3>
+            <h3 class="card-title">Pending Topup Request</h3>
           </div>
           <div class="col-md-2 d-flex">
             <div>
@@ -18,7 +18,7 @@
               @else
               <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a>
               @endif
-              <a href="{{ url('admin/topup-list-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
+              <a href="{{ url('admin/pending-topup-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
             </div>
           </div>
         </div>
@@ -26,7 +26,7 @@
 
       <div class="row pl-2 pr-2" id="filter" <?= (empty($filter)) ? "style='display:none'" : "" ?>>
         <div class="col-md-12 ml-auto">
-          <form action="{{ url('admin/topup-list') }}">
+          <form action="{{ url('admin/pending-topup') }}">
             <div class="form-row">
 
               <div class="form-group col-md-2">
@@ -55,19 +55,9 @@
                 </select>
               </div>
 
-              <div class="form-group col-md-2">
-                <label>Status</label>
-                <select class="form-control-sm form-control" name="status">
-                  <option value="" {{ (!empty($filter['status']) && $filter['status'] == 'all')?"selected":""}}>All</option>
-                  <option value="success" {{ (!empty($filter['status']) && $filter['status'] == 'success')?"selected":""}}>Approved</option>\
-                  <option value="rejected" {{ (!empty($filter['status']) && $filter['status'] == 'rejected')?"selected":""}}>Rejected</option>
-                  <option value="pending" {{ (!empty($filter['status']) && $filter['status'] == 'pending')?"selected":""}}>Pending</option>
-                </select>
-              </div>
-
               <div class="form-group mt-4">
                 <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i>&nbsp;Search</button>
-                <a href="{{ url('admin/topup-list') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
+                <a href="{{ url('admin/pending-topup') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
               </div>
             </div>
           </form>
@@ -83,14 +73,11 @@
               <th>Outlet</th>
               <th>Transaction Id</th>
               <th>UTR No.</th>
-              <th>Channel</th>
               <th>Amount</th>
               <th>Payment Mode</th>
               <th>Payment In</th>
               <th>Request Date</th>
               <th>Status</th>
-              <th>Approve/Reject By</th>
-              <th>Approve/Reject Date</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -108,25 +95,20 @@
             } else {
               $status = '<span class="tag-small-warning">Pending</span>';
             }
-            $UserName = !empty($topup->UserName['full_name']) ? 'Action By- ' . $topup->UserName['full_name'] : '';
+            $UserName = !empty($trans->UserName['full_name']) ? 'Action By- ' . $trans->UserName['full_name'] : '';
             ?>
             <tr>
               <td><span data-toggle="tooltip" data-placement="bottom" title="{{$UserName}}">{{++$key}}</span></td>
               <td><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="{{ $topup->comment }}">{{ !empty($topup->RetailerName['outlet_name']) ? $topup->RetailerName['outlet_name'] : '' }}</a></td>
               <td><?= (!empty($topup->payment_id)) ? $topup->payment_id : '' ?></td>
               <td><?= !empty($topup->utr_no) ? $topup->utr_no : '-' ?></td>
-              <td>{{ (!empty($topup->payment_channel))?ucwords($topup->payment_channel):'-' }}</td>
-
               <td>{!! mSign($topup->amount) !!}</td>
               <td>{{ $topup->payment_by }}</td>
               <td>{{ ucwords(str_replace('_', " ", $topup->payment_mode)) }}</td>
               <td>{{ date('d M Y H:i:s', $topup->payment_date) }}</td>
-              <td>{{ !empty($topup->UserName['full_name']) ?$topup->UserName['full_name'] : '-' }}</td>
-              <td>{{ !empty($topup->action_date)?date('d M Y H:i:s', $topup->action_date):'-' }}</td>
               <td id="status-{{ $topup->id }}">
                 {!! $status !!}
               </td>
-
               <td>
                 <a href="javascript:void(0);" class="text-success view-topup-request" topup_id="{{ $topup->id }}" data-toggle="tooltip" data-placement="bottom" title="View Details"><i class="fas fa-eye"></i></i></a>&nbsp;
                 @if(empty($topup->admin_action) && $topup->admin_action == 0 )

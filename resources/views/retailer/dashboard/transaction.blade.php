@@ -87,7 +87,7 @@
                                  <th>IFSC</th>
                                  <th>Account No.</th>
                                  <!-- <th>Bank Name</th> -->
-                                 <Th>URT No</Th>
+                                 <Th>UTR No</Th>
                                  <th>Status</th>
                                  <th>Datetime</th>
 

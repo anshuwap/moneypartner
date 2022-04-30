@@ -25,7 +25,7 @@
             </div>
 
 
-            <div class="row pl-2 pr-2" id="filter" <?=(empty($filter))?"style='display:none'":""?>>
+            <div class="row pl-2 pr-2" id="filter" <?= (empty($filter)) ? "style='display:none'" : "" ?>>
                 <div class="col-md-12 ml-auto">
                     <form action="{{ url('distributor/passbook') }}">
                         <div class="form-row">
@@ -44,8 +44,9 @@
                                 <label>Type</label>
                                 <select class="form-control form-control-sm" name="type">
                                     <option value="">All</option>
-                                    <option value="credit" <?= (!empty($filter['type']) && $filter['type']=='credit')?'selected':'' ?>>Credit</option>
-                                    <option value="debit" <?= (!empty($filter['type']) && $filter['type']=='debit')?'selected':'' ?>>Debit</option>
+                                    <option value="credit" <?= (!empty($filter['type']) && $filter['type'] == 'credit') ? 'selected' : '' ?>>Credit</option>
+                                    <option value="debit" <?= (!empty($filter['type']) && $filter['type'] == 'debit') ? 'selected' : '' ?>>Debit</option>
+                                    <option value="refund" <?= (!empty($filter['type']) && $filter['type'] == 'refund') ? 'selected' : '' ?>>Refund</option>
                                 </select>
                             </div>
 
@@ -54,8 +55,8 @@
                                 <select class="form-control form-control-sm" name="outlet_id">
                                     <option value="">All</option>
                                     @foreach($outlets as $outlet)
-                                    <option value="{{ $outlet->_id}}" <?= (!empty($filter['outlet_id']) && $filter['outlet_id']==$outlet->_id)?'selected':'' ?>>{{ ucwords($outlet->outlet_name) }}</option>
-                                   @endforeach
+                                    <option value="{{ $outlet->_id}}" <?= (!empty($filter['outlet_id']) && $filter['outlet_id'] == $outlet->_id) ? 'selected' : '' ?>>{{ ucwords($outlet->outlet_name) }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 
@@ -101,7 +102,7 @@
                         @elseif($pb->type == 'debit')
                         <td class="text-danger">{{ ucfirst($pb->type) }}</td>
                         @else
-                         <td class="text-danger">-</td>
+                        <td class="text-danger">-</td>
                         @endif
                         <td>{{ ucfirst($pb->status) }}</td>
                     </tr>
@@ -123,7 +124,6 @@
 
 
 <script>
-
     $('#payment_reference').change(function() {
         var payment_mode = $('#payment_mode').val();
         var payment_id = $(this).val();
@@ -141,7 +141,6 @@
             }
         })
     });
-
 </script>
 
 

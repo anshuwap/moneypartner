@@ -12,11 +12,37 @@
       </a>
     </li>
 
-    <li class="nav-item">
+    <!-- <li class="nav-item">
       <a href="{{ url('retailer/topup-history') }}" class="nav-link {{ (url()->full() == url('retailer/topup-history'))? 'active':''}}">
         <i class="fas fa-wallet nav-icon"></i>
         <p>Topup List</p>
       </a>
+    </li> -->
+
+
+     <li class="nav-item {{ (url()->full() == url('retailer/topup-history') || url()->full() == url('retailer/pending-topup'))?'menu-is-opening menu-open':''}}">
+      <a href="javascript:void(0);" class="nav-link">
+       <i class="fas fa-wallet nav-icon"></i>
+        <p>Topup Request
+          <i class="right fas fa-angle-left"></i>
+        </p>
+      </a>
+      <ul class="nav nav-treeview">
+        <li class="nav-item {{ (url()->full() == url('retailer/topup-history') || url()->full() == url('retailer/pending-topup'))?'d-block':''}}">
+          <a href="{{ url('retailer/topup-history') }}" class="nav-link {{ (url()->full() == url('retailer/topup-history'))?'active':''}}">
+            <i class="fas fa-hand-holding-usd nav-icon"></i>
+            <p>All Request</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url('retailer/pending-topup') }}" class="nav-link {{ (url()->full() == url('retailer/pending-topup'))? 'active':''}}">
+            <i class="fas fa-hand-holding-water nav-icon"></i>
+            <p>
+              Pending Request
+            </p>
+          </a>
+        </li>
+      </ul>
     </li>
 
     <li class="nav-item">

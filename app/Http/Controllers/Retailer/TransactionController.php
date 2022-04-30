@@ -205,6 +205,7 @@ class TransactionController extends Controller
                 return response(['status' => 'error', 'msg' => 'Something went wrong!']);
 
             /*start passbook debit functionality*/
+            $transaction_id   = $transaction->_id;
             $amount        = $transaction->amount;
             $receiver_name = $transaction->receiver_name;
             $payment_date  = $transaction->created;
@@ -214,7 +215,7 @@ class TransactionController extends Controller
             $type          = $transaction->type;
             $retailer_id   = $transaction->retailer_id;
 
-            transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit');
+            transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit',$transaction_id);
             /*end passbook debit functionality*/
 
             return response(['status' => 'success', 'msg' => 'Transaction Request Created Successfully!']);
@@ -408,6 +409,7 @@ class TransactionController extends Controller
                 return response(['status' => 'error', 'msg' => 'Something went wrong!']);
 
             /*start passbook debit functionality*/
+            $transaction_id   = $Transaction->_id;
             $amount        = $Transaction->amount;
             $receiver_name = $Transaction->receiver_name;
             $payment_date  = $Transaction->created;
@@ -417,7 +419,7 @@ class TransactionController extends Controller
             $type          = $Transaction->type;
             $retailer_id   = $Transaction->retailer_id;
 
-            transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit');
+            transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit',$transaction_id);
             /*end passbook debit functionality*/
 
             return response(['status' => 'success', 'msg' => 'Transaction Request Created Successfully!']);
@@ -719,6 +721,7 @@ class TransactionController extends Controller
                     return response(['status' => 'error', 'msg' => 'Something went wrong!']);
 
                 /*start passbook debit functionality*/
+                $transaction_id   = $transaction->_id;
                 $amount        = $transaction->amount;
                 $receiver_name = $transaction->receiver_name;
                 $payment_date  = $transaction->created;
@@ -728,7 +731,7 @@ class TransactionController extends Controller
                 $type          = $transaction->type;
                 $retailer_id   = $transaction->retailer_id;
 
-                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit');
+                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit',$transaction_id);
                 /*end passbook debit functionality*/
             }
             $comment = '<span class="text-success">Import Successfully!</span>';
@@ -782,7 +785,7 @@ class TransactionController extends Controller
 
             $transactionArray = [
                 'Transaction ID', 'Customer Name', 'Customer Phone', 'Mode', 'Channel', 'Amount', 'Fees', 'Beneficiary', 'IFSC', 'Account No.', 'Bank Name',
-                'UTR Number', 'Status', 'Datetime'
+                'UTR Number', 'Status', 'Request Date', 'Action By', 'Action Date'
             ];
 
             fputcsv($f, $transactionArray, $delimiter); //put heading here
@@ -834,7 +837,9 @@ class TransactionController extends Controller
                 $transaction_val[] = (!empty($payment->bank_name)) ? $payment->bank_name : '';
                 $transaction_val[] = (!empty($transaction->response['utr_number'])) ? $transaction->response['utr_number'] : '';
                 $transaction_val[] = strtoupper($transaction->status);
-                $transaction_val[] = date('Y-m-d H:i:s A', $transaction->created);
+                $transaction_val[] = date('Y-m-d H:i', $transaction->created);
+                $transaction_val[] = !empty($transaction->UserName['full_name']) ? $transaction->UserName['full_name'] : '';
+                $transaction_val[] = !empty($transaction->response['action_date']) ? date('d,M y H:i', $transaction->response['action_date']) : '';
 
                 $transactionArr = $transaction_val;
 

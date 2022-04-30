@@ -21,8 +21,11 @@ class PassbookController extends Controller
             if (!empty($request->outlet_id))
                 $query->where('outlet_id', $request->outlet_id);
 
-            if (!empty($request->type))
+           if ($request->type == 'refund') {
+                $query->where('transaction_type', 'refund');
+            } else if (!empty($request->type)) {
                 $query->where('type', $request->type);
+            }
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;

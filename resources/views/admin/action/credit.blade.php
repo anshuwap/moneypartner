@@ -35,6 +35,16 @@
                             </div>
 
                             <div class="form-group col-md-3">
+                                <label>Channel</label>
+                                <select name="payment_channel" class="form-control form-control-sm" id="payment_channel">
+                                    <option value="">All</option>
+                                    <?php foreach ($payment_channel as $channel) { ?>
+                                        <option <?= (!empty($filter['payment_channel']) && $filter['payment_channel'] == $channel->name) ? "selected" : "" ?> value="<?= $channel->name ?>"><?= $channel->name ?></option>;
+                                    <?php } ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-3">
                                 <label>Outlet</label>
                                 <select class="form-control form-control-sm" name="outlet_id">
                                     <option value="">All</option>
@@ -62,6 +72,7 @@
                         <!-- <th>Status</th> -->
                         <th>Paid Status</th>
                         <th>Datetime</th>
+                        <th>Created By</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -77,12 +88,13 @@
                             <input type="checkbox" class="btn-xs switch-btn" _id="{{ $credit->_id }}" name="status" id="switch-btn-{{$credit->_id}}" data-toggle="switchbutton" data-onlabel="Approved" data-offlabel="Due" data-onstyle="success" data-offstyle="danger" {{ ($credit->paid_status=='approved')?'checked':'' }}>
                         </td>
                         <td>{{ date('d M Y H:i',$credit->created)}}</td>
+                        <td>{{ !empty($credit->UserName['full_name'])?$credit->UserName['full_name']:''}}</td>
                         <td><a href="javascript:void(0)" _id="{{ $credit->_id }}" class="text-info edit" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="far fa-edit"></i></a></td>
                     </tr>
                     @endforeach
                 </tbody>
             </table>
-             {{ $credits->appends(request()->toArray())->links() }}
+            {{ $credits->appends(request()->toArray())->links() }}
         </div>
     </div>
 

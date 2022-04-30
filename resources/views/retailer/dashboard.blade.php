@@ -7,6 +7,9 @@
     .btn-r {
       /* left: 0px !important; */
     }
+    .h-height{
+      height: 130px !important;
+    }
   }
 </style>
 <!-- Content Header (Page header) -->
@@ -33,12 +36,12 @@
 
     <div class="row">
       <div class="col-12 col-sm-6 col-md-5">
-        <div class="pl-3 p-2 card" style="height: 130px;">
+        <div class="pl-3 p-2 card h-height" style="height: 130px;">
           <div class="row">
             <div class="col-md-4">
               <div>Account Balance</div>
               <div>
-                <strong>{!!mSign(Auth::user()->available_amount)!!}</strong>
+                <h6><strong>{!!mSign(Auth::user()->available_amount)!!}</strong></h6>
               </div>
             </div>
 
@@ -46,14 +49,14 @@
             <div class="col-md-4">
               <div>Settlement Balance</div>
               <div>
-                <strong>{!!mSign($settlement_amount)!!}</strong>
+                <h6> <strong>{!!mSign($settlement_amount)!!}</strong></h6>
               </div>
             </div>
 
             <div class="col-md-4">
               <div>Un-Settlement Balance</div>
               <div>
-                <strong>{!!mSign($un_settlement_amount)!!}</strong>
+                 <h6><strong>{!!mSign($un_settlement_amount)!!}</strong></h6>
               </div>
             </div>
             @endif

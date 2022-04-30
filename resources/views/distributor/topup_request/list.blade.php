@@ -51,7 +51,16 @@
                   @foreach($outlets as $outlet)
                   <option value="{{$outlet->_id}}" {{ (!empty($filter['outlet_id']) && $filter['outlet_id'] == $outlet->_id)?"selected":""}}>{{ ucwords($outlet->outlet_name)}}</option>
                   @endforeach
+                </select>
+              </div>
 
+               <div class="form-group col-md-2">
+                <label>Status</label>
+                <select class="form-control-sm form-control" name="status">
+                  <option value="" {{ (!empty($filter['status']) && $filter['status'] == 'all')?"selected":""}}>All</option>
+                  <option value="success" {{ (!empty($filter['status']) && $filter['status'] == 'success')?"selected":""}}>Approved</option>\
+                  <option value="rejected" {{ (!empty($filter['status']) && $filter['status'] == 'rejected')?"selected":""}}>Rejected</option>
+                  <option value="pending" {{ (!empty($filter['status']) && $filter['status'] == 'pending')?"selected":""}}>Pending</option>
                 </select>
               </div>
 
@@ -68,14 +77,18 @@
       <div class="card-body table-responsive pl-2 pr-2">
         <table id="table" class="table table-hover text-nowrap table-sm">
           <thead>
-            <tr>
+           <tr>
               <th>Sr No.</th>
               <th>Outlet</th>
               <th>Transaction Id</th>
+              <th>UTR No.</th>
               <th>Channel</th>
               <th>Amount</th>
               <th>Payment Mode</th>
-              <th>Payment Date</th>
+              <th>Payment In</th>
+              <th>Request Date</th>
+              <th>Approved By</th>
+              <th>Approve/Reject Date</th>
               <th>Status</th>
               <th>Action</th>
             </tr>
@@ -88,25 +101,29 @@
             @foreach($topup_request as $key=>$topup)
             <?php
             if ($topup->status == 'success') {
-              $status = 'Approved';
+              $status = '<span class="tag-small">Approved</span>';
             } else if ($topup->status == 'rejected') {
-              $status = 'Rejected';
+              $status = '<span class="tag-small-danger">Rejected</span>';
             } else {
-              $status = 'Pending';
+              $status = '<span class="tag-small-warning">Pending</span>';
             }
-
+            $UserName = !empty($trans->UserName['full_name']) ? 'Action By- ' . $trans->UserName['full_name'] : '';
             ?>
             <tr>
-              <td>{{ ++$i }}</td>
+              <td><span data-toggle="tooltip" data-placement="bottom" title="{{$UserName}}">{{++$key}}</span></td>
               <td><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="{{ $topup->comment }}">{{ !empty($topup->RetailerName['outlet_name']) ? $topup->RetailerName['outlet_name'] : '' }}</a></td>
               <td><?= (!empty($topup->payment_id)) ? $topup->payment_id : '' ?></td>
+              <td><?= !empty($topup->utr_no) ? $topup->utr_no : '-' ?></td>
               <td>{{ (!empty($topup->payment_channel))?ucwords($topup->payment_channel):'-' }}</td>
 
               <td>{!! mSign($topup->amount) !!}</td>
+              <td>{{ $topup->payment_by }}</td>
               <td>{{ ucwords(str_replace('_', " ", $topup->payment_mode)) }}</td>
-              <td>{{ date('d M Y h:i:s A', $topup->payment_date) }}</td>
+              <td>{{ date('d M Y H:i:s', $topup->payment_date) }}</td>
+              <td>{{ !empty($topup->UserName['full_name']) ?$topup->UserName['full_name'] : '-' }}</td>
+              <td>{{ !empty($topup->action_date)?date('d M Y H:i:s', $topup->action_date):'-' }}</td>
               <td id="status-{{ $topup->id }}">
-                {{ $status }}
+                {!! $status !!}
               </td>
               <td>
                 <a href="javascript:void(0);" class="text-success view-topup-request" topup_id="{{ $topup->id }}" data-toggle="tooltip" data-placement="bottom" title="View Details"><i class="fas fa-eye"></i></i></a>&nbsp;
@@ -325,6 +342,48 @@
 
     $('#action1').click(function() {
       $('#placeComment').toggle();
+    })
+
+   //update payment channel
+    $(document).on('click', '#update_payment_channel', function() {
+      var id = $('#topup-id').val();
+      var select = $(this);
+      var payment_channel = $('#payment_channel').val();
+
+      $.ajax({
+        data: {
+          'payment_channel': payment_channel,
+          'id': id
+        },
+        type: "GET",
+        url: '{{ url("distributor/topup-payment-channel") }}',
+        dataType: 'json',
+        beforeSend: function() {
+          $(select).html('<span class="spinner-grow spinner-grow-sm" style="width: 0.75rem;height: 0.75rem;"></span>&nbsp;Loading..');
+        },
+        success: function(res) {
+          //hide loader
+
+          //for reset all field
+          if (res.status == 'success') {
+            $(select).html('<i class="fas fa-check-double"></i>&nbsp;Done');
+            setTimeout(function() {
+              location.reload();
+            }, 1000)
+          }
+
+          /*Start Status message*/
+          if (res.status == 'error') {
+            $(select).html('<i class="fas fa-times"></i>&nbsp;Failed');
+            Swal.fire(
+              `${res.status}!`,
+              res.msg,
+              `${res.status}`,
+            )
+          }
+          /*End Status message*/
+        }
+      });
     })
 
   });

@@ -29,7 +29,10 @@
         <div class="card card-success card-outline">
           <div class="card-body box-profile">
             <div class="text-center">
-              <img class="profile-user-img img-fluid img-circle" id="avatar" src="{{ (!empty($outlet->profile_image))?asset('attachment/').'/'.$outlet->profile_image:profileImage() }} " alt="User profile picture">
+              <img class="profile-user-img img-fluid img-circle" id="avatar" src="{{ (!empty($outlet->profile_image))?asset('attachment/').'/'.$outlet->profile_image:profileImage() }} " alt="User profile picture" style="
+    width: 217px !important;
+    height: 200px !important;
+">
             </div>
 
             <h3 class="profile-username text-center">{{ ucwords($outlet->retailer_name) }}</h3>

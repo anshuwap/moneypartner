@@ -128,6 +128,7 @@ class OfflinePayoutController extends Controller
                 return response(['status' => FALSE, 'flag'=>'not_debited', 'msg' => 'Something went wrong!']);
 
                 /*start passbook debit functionality*/
+                $transaction_id   = $transaction->_id;
                 $amount        = $transaction->amount;
                 $receiver_name = $transaction->receiver_name;
                 $payment_date  = $transaction->created;
@@ -137,7 +138,7 @@ class OfflinePayoutController extends Controller
                 $type          = $transaction->type;
                 $retailer_id   = $transaction->retailer_id;
 
-                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit');
+                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit',$transaction_id);
                 /*end passbook debit functionality*/
 
             return response(['status' =>TRUE, 'flag'=>'transaction_created', 'msg' => 'Transaction Request Created Successfully!']);
@@ -258,6 +259,7 @@ class OfflinePayoutController extends Controller
                  return response(['status' => FALSE, 'flag'=>'not_debited', 'msg' => 'Something went wrong, Amount Not Debited!']);
 
                  /*start passbook debit functionality*/
+                 $transaction_id   = $transaction->_id;
                 $amount        = $transaction->amount;
                 $receiver_name = $transaction->receiver_name;
                 $payment_date  = $transaction->created;
@@ -267,7 +269,7 @@ class OfflinePayoutController extends Controller
                 $type          = $transaction->type;
                 $retailer_id   = $transaction->retailer_id;
 
-                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit');
+                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit',$transaction_id);
                 /*end passbook debit functionality*/
             }
 

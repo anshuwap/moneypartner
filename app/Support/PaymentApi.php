@@ -223,7 +223,7 @@ class PaymentApi
             if ($res['status'] == 0 || $res['status'] == 1) {
                 return $result = [
                     'response' => [
-                        'utr_number'     => $res['utr'],
+                        'utr_number'     => !empty($res['utr'])?$res['utr']:'',
                         'status'         => "success",
                         'status_id'      => $res['status_id'],
                         'report_id'      => $res['report_id'],
@@ -241,7 +241,7 @@ class PaymentApi
         if (!empty($res['status']) && $res['status'] == 2) {
             return $result = [
                 'response' => [
-                    'utr_number'     => $res['utr'],
+                    'utr_number'     => !empty($res['utr'])?$res['utr']:'',
                     'status'         => "failed",
                     'status_id'      => $res['status_id'],
                     'report_id'      => $res['report_id'],
@@ -256,7 +256,7 @@ class PaymentApi
         if (!empty($res['status']) && $res['status'] == 3) {
             return $result = [
                 'response' => [
-                    'utr_number'     => $res['utr'],
+                    'utr_number'     => !empty($res['utr'])?$res['utr']:'',
                     'status'         => "pending",
                     'status_id'      => $res['status_id'],
                     'report_id'      => $res['report_id'],

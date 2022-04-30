@@ -10,6 +10,7 @@ use App\Models\Topup;
 use App\Models\Transaction;
 use App\Models\Transaction\CustomerTrans;
 use App\Models\Transaction\RetailerTrans;
+use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
@@ -26,14 +27,20 @@ class DashboardController extends Controller
 
             $data['total_outlet']  = Outlet::count();
 
-            //for topup amount
-            $topups = Topup::select('amount')->where('status', 'success')->get();
-            $total_topup_amount = 0;
-            foreach ($topups as $am) {
-                $total_topup_amount += $am->amount;
+            //for outlet amount
+            $outlets = Outlet::select('amount')->get();
+            $oids =[];
+            foreach ($outlets as $am) {
+                $oids[] = $am->_id;
             }
-            $data['total_topup_amount'] = $total_topup_amount;
+            // $data['oids'] = $oids;
 
+            $users = User::select('available_amount')->whereIn('outlet_id', $oids)->get();
+            $available_amount = 0;
+            foreach ($users as $user) {
+           $available_amount += $user->available_amount;
+            }
+            $data['total_outlet_amount'] = $available_amount;
 
 
             //amout for current month
@@ -69,21 +76,6 @@ class DashboardController extends Controller
             }
             $data['total_bulk_amount']  = $total_bulk_amount;
 
-
-            //             $dmt_date = CustomerTrans::select('updated')->get();
-
-            // $month = ['Jan','Feb'];
-
-            // foreach($dmt_date as $date){
-            // echo date('M',$date->updated);
-            // echo "<br/>";
-            //  }
-            // die;
-
-            //    $data['customer_trans'] = CustomerTrans::select('trans_details','customer_name','mobile_number')->get();
-            //    $data['retailerTrans']  = RetailerTrans::where('status','pending')->get();
-            //    $data['offlinePayouts'] = OfflinePayoutApi::where('status','pending')->get();
-
             $que = Transaction::where('status', 'pending');
             if (!empty($request->mode))
                 $que->where('payment_mode', $request->mode);
@@ -93,7 +85,7 @@ class DashboardController extends Controller
             //for payment channel
             $data['payment_channel'] = PaymentChannel::select('_id', 'name')->get();
 
-              Session::forget('previewTransaction');
+            Session::forget('previewTransaction');
             Session::forget('transaction_ids');
 
             return view('admin.dashboard', $data);

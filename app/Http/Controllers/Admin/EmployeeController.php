@@ -20,7 +20,7 @@ class EmployeeController extends Controller
         try {
 
  $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
-            $data['employees'] = User::where('role', 'employee')->orderBy('created_at', 'DESC')->paginate($perPage);
+            $data['employees'] = User::whereIn('role', ['employee','admin'])->where('user_id',Auth::user()->_id)->orderBy('created_at', 'DESC')->paginate($perPage);
 
             return view('admin.employee.list', $data);
         } catch (Exception $e) {
@@ -41,6 +41,7 @@ class EmployeeController extends Controller
 
     public function store(CreateEmployeeValidation $request)
     {
+        try{
         $employee = new User();
         $employee->user_id       = Auth::user()->_id;
         $employee->full_name     = $request->full_name;
@@ -50,7 +51,7 @@ class EmployeeController extends Controller
         $employee->address       = $request->address;
         $employee->password      = Hash::make($request->password);
         $employee->status        = (int)$request->status;
-        $employee->role          = 'employee';
+        $employee->role          = $request->role;
         //for file uploade
         if (!empty($request->file('employee')))
             $employee->employee_img  = singleFile($request->file('employee'), 'attachment');
@@ -67,6 +68,9 @@ class EmployeeController extends Controller
         $email->composeEmail($dataM);
 
         return response(['status' => 'success', 'msg' => 'Employee Created Successfully!']);
+        }catch(Exception $e){
+             return response(['status' => 'error', 'msg' =>$e->getMessage()]);
+        }
     }
 
 
@@ -101,6 +105,7 @@ class EmployeeController extends Controller
         $employee->address       = $request->address;
         $employee->password      = Hash::make($request->password);
         $employee->status        = (int)$request->status;
+        $employee->role          = $request->role;
         //for file uploade
         if (!empty($request->file('employee')))
             $employee->employee_img  = singleFile($request->file('employee'), 'attachment');

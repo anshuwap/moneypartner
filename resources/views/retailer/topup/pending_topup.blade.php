@@ -1,38 +1,35 @@
-@extends('admin.layouts.app')
+@extends('retailer.layouts.app')
+
 @section('content')
-@section('page_heading', 'Spent Amount Topup List')
+@section('page_heading', 'Topup History')
 
 <div class="row">
-
     <div class="col-12 mt-2">
-
         <div class="card">
-
             <div class="card-header">
-
-                <h3 class="card-title">Passbook</h3>
-
+                <h3 class="card-title">Pending Topup Request</h3>
                 <div class="card-tools">
-                    <!-- <a href="javascript:void(0);" class="btn btn-sm btn-success mr-2" id="create_topup"><i class="fas fa-hand-holding-usd"></i>&nbsp;Request for Topup</a> -->
-
+                    <a href="javascript:void(0);" class="btn btn-sm btn-success" id="create_topup"><i class="fas fa-hand-holding-usd"></i>&nbsp;Request for Topup</a>
+                    <a href="{{ url('retailer/pending-topup-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
                     @if(!empty($filter))
-                    <a href="javascript:void(0);" class="btn btn-sm btn-success mr-2" id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
+                    <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
                     @else
-                    <a href="javascript:void(0);" class="btn btn-sm btn-success mr-2" id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a>
+                    <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a>
                     @endif
-                    <a href="{{ url('admin/passbook-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
+
+
+                    <!-- <a href="{{ url('retailer/topup') }}" class="btn btn-sm btn-warning mr-4" id=""><i class="fas fa-arrow-alt-circle-left"></i>&nbsp;Back</a> -->
                 </div>
             </div>
 
-
             <div class="row pl-2 pr-2" id="filter" <?= (empty($filter)) ? "style='display:none'" : "" ?>>
                 <div class="col-md-12 ml-auto">
-                    <form action="{{ url('admin/passbook') }}">
+                    <form action="{{ url('retailer/pending-topup') }}">
                         <div class="form-row">
-
                             <div class="form-group col-md-2">
                                 <label>Start Data</label>
                                 <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['start_date']) ? $filter['start_date'] : '' ?>" name="start_date" />
+                                <!-- <input type="text" class="form-control form-control-sm" value="<?= !empty($filter['date_range']) ? $filter['date_range'] : '' ?>" name="date_range" id="daterange-btn" /> -->
                             </div>
 
                             <div class="form-group col-md-2">
@@ -41,28 +38,13 @@
                             </div>
 
                             <div class="form-group col-md-2">
-                                <label>Type</label>
-                                <select class="form-control form-control-sm" name="type">
-                                    <option value="">All</option>
-                                    <option value="credit" <?= (!empty($filter['type']) && $filter['type'] == 'credit') ? 'selected' : '' ?>>Credit</option>
-                                    <option value="debit" <?= (!empty($filter['type']) && $filter['type'] == 'debit') ? 'selected' : '' ?>>Debit</option>
-                                    <option value="refund" <?= (!empty($filter['type']) && $filter['type'] == 'refund') ? 'selected' : '' ?>>Refund</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group col-md-2">
-                                <label>Outlet</label>
-                                <select class="form-control form-control-sm" name="outlet_id">
-                                    <option value="">All</option>
-                                    @foreach($outlets as $outlet)
-                                    <option value="{{ $outlet->_id}}" <?= (!empty($filter['outlet_id']) && $filter['outlet_id'] == $outlet->_id) ? 'selected' : '' ?>>{{ ucwords($outlet->outlet_name) }}</option>
-                                    @endforeach
-                                </select>
+                                <label>Transaction Id</label>
+                                <input type="text" class="form-control form-control-sm" placeholder="Transaction ID" value="<?= !empty($filter['transaction_id']) ? $filter['transaction_id'] : '' ?>" name="transaction_id" id="transaction_id" />
                             </div>
 
                             <div class="form-group mt-4">
                                 <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i>&nbsp;Search</button>
-                                <a href="{{ url('admin/passbook') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
+                                <a href="{{ url('admin/pending-topup') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
                             </div>
                         </div>
                     </form>
@@ -70,69 +52,113 @@
             </div>
 
             <!-- /.card-header -->
-            <div class="card-body table-responsive py-1">
-
-                <table id="table" class="table table-hover text-nowrap table-sm">
+            <div class="card-body table-responsive py-4">
+                <table id="" class="table table-sm table-hover text-nowrap">
                     <thead>
                         <tr>
                             <th>Sr No.</th>
-                            <th>Outlet Name</th>
-                            <th>Transaction Time</th>
-                            <th>Mode</th>
-                            <th>Transaction Amount</th>
-                            <th>Fees</th>
-                            <th>Closing Amount</th>
-                            <th>Credit/Debit</th>
+                            <th>Transaction Id</th>
+                            <th>UTR No.</th>
+                            <th>Amount</th>
+                            <th>Payment Mode</th>
+                            <th>Payment In</th>
+                            <th>Requested Date</th>
                             <th>Status</th>
                         </tr>
                     </thead>
+                    <tbody>
+                        @if(!$topup_request->isEmpty())
+                        @php
+                        $i =0;
+                        @endphp
+                        @foreach($topup_request as $key=>$topup)
+                        <?php
+                        if ($topup->status == 'success') {
+                            $payment_has_code = '<a href="javacript:void(0);" class="text-success" data-toggle="tooltip" data-placement="bottom" title="' . $topup->admin_comment . '">' . $topup->payment_id . '</a>';
+                            $status = '<strong class="text-success">Approved</strong>';
+                        } else if ($topup->status == 'rejected') {
+                            $payment_has_code = '<a href="javacript:void(0);" class="text-danger" data-toggle="tooltip" data-placement="bottom" title="' . $topup->admin_comment . '">' . $topup->payment_id . '</a>';
+                            $status = '<strong class="text-danger">' . ucwords($topup->status) . '</strong>';
+                        } else if ($topup->status == 'pending') {
+                            $payment_has_code = '<a href="javacript:void(0);" class="text-warning" data-toggle="tooltip" data-placement="bottom" title="' . $topup->admin_comment . '">' . $topup->payment_id . '</a>';
+                            $status = '<strong class="text-warning">' . ucwords($topup->status) . '</strong>';
+                        }
 
-                    @foreach($passbook as $key=>$pb)
-                    <?php
-                    $refaund = '';
-                    if ($pb->transaction_type == 'refund') {
-                        $account_no = (!empty($pb->bank_details['account_number'])) ? 'Ac No- ' . $pb->bank_details['account_number'] : '';
-                        $refaund = (!empty($pb->receiver_name)) ? $pb->receiver_name . ', ' . $account_no: '';
+                        ?>
+                        <tr>
+                            <td>{{ ++$i }}</td>
+                            <td><?= $payment_has_code; ?></td>
+                            <td><?= !empty($topup->utr_no) ? $topup->utr_no : '-' ?></td>
+                            <td>{!! mSign($topup->amount) !!}</td>
+                            <td>{{ $topup->payment_by }}</td>
+                            <td>{{ ucwords(str_replace('_', " ", $topup->payment_mode)) }}</td>
+                            <td>{{ date('d M Y H:i:s', $topup->payment_date) }}</td>
+                            <td id="status-{{ $topup->id }}">
+                                {!! $status !!}
+                            </td>
 
-                        $initiate_date = (!empty($pb->InitiateDate['created']))?', Initiate Date-'. date('d-m-Y H:i:s',$pb->InitiateDate['created']):'';
-                        $refaund = $refaund . $initiate_date;
-                    }
-                    // print_r($pb->InitiateDate['created']);
-                    ?>
-                    <tr>
-                        <td>{{ ++$key }}</td>
-                        <td>{{ (!empty($pb->OutletName['outlet_name']))?$pb->OutletName['outlet_name']:'-'}}</td>
-                        <td>{{ date('Y-m-d H:i:s',$pb->created)}}</td>
-                        <td><span data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{$refaund}}">{{ !empty($pb->transaction_type)?ucwords(str_replace('_',' ',$pb->transaction_type)):'-' }}</span></td>
-                        <td>{!!mSign($pb->amount)!!}</td>
-                        <td>{!!(!empty($pb->fees))?mSign($pb->fees):'-' !!}</td>
-                        <td>{!!mSign($pb->closing_amount)!!}</td>
-
-                        @if($pb->type == 'credit')
-                        <td class="text-success">{{ ucfirst($pb->type) }}</td>
-                        @elseif($pb->type == 'debit')
-                        <td class="text-danger">{{ ucfirst($pb->type) }}</td>
-                        @else
-                        <td class="text-danger">-</td>
+                        </tr>
+                        @endforeach
                         @endif
-                        <td>{{ ucfirst($pb->status) }}</td>
-                    </tr>
-                    @endforeach
+                    </tbody>
 
                 </table>
-
-                {{ $passbook->appends($_GET)->links()}}
+                {{ $topup_request->appends($_GET)->links()}}
             </div>
             <!-- /.card-body -->
+
         </div>
         <!-- /.card -->
     </div>
 </div>
 <!-- /.row -->
 
-@push('modal')
-<!-- Modal -->
+@push('custom-script')
 
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        $(document).on('click', '.activeVer', function() {
+            var id = $(this).attr('_id');
+            var val = $(this).attr('val');
+            $.ajax({
+                'url': "{{ url('retailer/topup-status') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    'id': id,
+                    'status': val
+                },
+                type: 'POST',
+                dataType: 'json',
+                success: function(res) {
+                    if (res.val == 1) {
+                        $('#active_' + id).text('Active');
+                        $('#active_' + id).attr('val', '0');
+                        $('#active_' + id).removeClass('badge-danger');
+                        $('#active_' + id).addClass('badge-success');
+                    } else {
+                        $('#active_' + id).text('Inactive');
+                        $('#active_' + id).attr('val', '1');
+                        $('#active_' + id).removeClass('badge-success');
+                        $('#active_' + id).addClass('badge-danger');
+                    }
+                    Swal.fire(
+                        `${res.status}!`,
+                        res.msg,
+                        `${res.status}`,
+                    )
+                }
+            })
+
+        })
+
+    });
+</script>
+@endpush
+
+@push('modal')
+
+<!-- Modal -->
 <div class="modal fade" id="add_topup_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -173,8 +199,8 @@
                             </div>
 
                             <div class="" id="show-paymnet-details">
-                            </div>
 
+                            </div>
 
                             <div class="form-group">
                                 <label>Amount</label>
@@ -183,8 +209,26 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Comment</label>
-                                <textarea class="form-control" name="comment" id="comment" rows="5"></textarea>
+                                <label>Payment Mode</label>
+                                <select class="form-control form-control-sm" required id="payment_by" name="payment_by">
+                                    <option>Select</option>
+                                    <option value="IMPS">IMPS</option>
+                                    <option value="NEFT">NEFT</option>
+                                    <option value="Cash Deposit">Cash Deposit</option>
+                                    <option value="Cheque">Cheque</option>
+                                </select>
+                                <span id="payment_reference_id_msg" class="custom-text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>UTR No.</label>
+                                <input type="text" placeholder="Enter UTR No" id="name" required name="utr_no" class="form-control form-control-sm">
+                                <span id="utr_no_msg" class="custom-text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Remarks</label>
+                                <textarea class="form-control" name="comment" id="comment" rows="1"></textarea>
                                 <span id="comment_msg" class="custom-text-danger"></span>
                             </div>
 
@@ -201,7 +245,7 @@
 
                             <div class="form-group">
                                 <label>Payment Data & Time</label>
-                                <input type="datetime-local" id="payment_date" name="payment_date" class="form-control form-control-sm datetimepicker-input" data-target="#reservationdatetime" value="<?= date('Y-m-d\TH:i') ?>" min="<?= date('Y-m-d\TH:i') ?>" max="2030-06-14T00:00">
+                                <input type="datetime-local" id="payment_date" name="payment_date" class="form-control form-control-sm" value="<?= date('Y-m-d\TH:i') ?>" min="<?= date('Y-m-d\TH:i') ?>" max="2030-06-14T00:00">
                             </div>
 
                             <div class="form-group text-center">
@@ -251,24 +295,16 @@
         })
     });
 
+
     $('#create_topup').click(function(e) {
-
         e.preventDefault();
-
         $('form#add_topup_id')[0].reset();
-
         let url = '{{ url("retailer/topup") }}';
-
         $('#heading_topup').html('Request For Topup');
-
         $('#put').html('');
-
         $('form#add_topup_id').attr('action', url);
-
         $('#submit_topup_id').val('Submit');
-
         $('#add_topup_modal').modal('show');
-
     })
 
 
@@ -288,6 +324,7 @@
                 $('#name').val(res.name);
                 $('#topup_id').val(res.topup_id);
                 $('#status').val(res.status);
+
                 let urlU = '{{ url("retailer/topup") }}/' + id;
                 $('#heading_topup').html('Edit topup ID');
                 $('#put').html('<input type="hidden" name="_method" value="PUT">');
@@ -302,34 +339,19 @@
         });
     });
 
-
-
     /*start form submit functionality*/
-
     $("form#add_topup_id").submit(function(e) {
-
         e.preventDefault();
-
         formData = new FormData(this);
-
         var url = $(this).attr('action');
-
         $.ajax({
-
             data: formData,
-
             type: "POST",
-
             url: url,
-
             dataType: 'json',
-
             cache: false,
-
             contentType: false,
-
             processData: false,
-
             beforeSend: function() {
                 $('.cover-loader-modal').removeClass('d-none');
                 $('.modal-body').hide();
@@ -339,6 +361,7 @@
                 $('.cover-loader-modal').addClass('d-none');
                 $('.modal-body').show();
 
+
                 /*Start Validation Error Message*/
                 $('span.custom-text-danger').html('');
                 $.each(res.validation, (index, msg) => {
@@ -347,28 +370,26 @@
                 /*Start Validation Error Message*/
 
                 /*Start Status message*/
-
                 if (res.status == 'success' || res.status == 'error') {
-
                     Swal.fire(
                         `${res.status}!`,
                         res.msg,
                         `${res.status}`,
                     )
+                    setTimeout(function() {
+                        location.reload();
+                    }, 100)
                 }
                 /*End Status message*/
 
                 //for reset all field
                 if (res.status == 'success') {
                     $('form#add_topup_id')[0].reset();
-                    setTimeout(function() {
-                        window.location.href = "{{ url('retailer/topup-history')}}";
-
-                    }, 1000)
                 }
             }
         });
     });
+
     /*end form submit functionality*/
 </script>
 
@@ -419,6 +440,24 @@
         $('#importModal').modal('show');
     })
 
+    $('.view-topup-request').click(function() {
+        var topup_id = $(this).attr('topup_id');
+        $('#topup_id').val(topup_id);
+        $.ajax({
+            url: "{{ url('retailer/topup-request-details') }}/" + topup_id,
+            type: 'GET',
+            dataType: 'JSON',
+            success: function(res) {
+                $('#dataVal').html(res.data);
+
+                $('#topup-form').show();
+                if (res.show_action)
+                    $('#topup-form').hide();
+
+                $('#topup-request-details').modal('show');
+            }
+        })
+    })
 
     /*start form submit functionality*/
     $("form#add_bank_charges").submit(function(e) {
@@ -462,7 +501,7 @@
                     $('form#add_bank_charges')[0].reset();
                     setTimeout(function() {
                         location.reload();
-                    }, 2000)
+                    }, 1000)
 
                 }
             }
@@ -473,5 +512,4 @@
 </script>
 
 @endpush
-
 @endsection

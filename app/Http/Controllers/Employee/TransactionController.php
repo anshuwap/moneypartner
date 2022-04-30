@@ -11,6 +11,7 @@ use App\Support\OdnimoPaymentApi;
 use App\Support\PaymentApi;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
@@ -91,8 +92,12 @@ class TransactionController extends Controller
         if ($transaction->status == 'rejected')
             return response(['status' => 'error', 'msg' => 'This status is already Rejected!']);
 
+        $response =  $request->response;
+        $response['action_by']     = Auth::user()->_id;
+        $response['action_date']   = time();
+        $response['action']        = 'manual update Payment Status';
         $transaction->status       = $request->status;
-        $transaction->response     = $request->response;
+        $transaction->response     = $response;
 
         if (!$transaction->save())
             return response(['status' => 'error', 'msg' => 'Transaction not Made!']);
@@ -115,6 +120,7 @@ class TransactionController extends Controller
             // transferHistory($retailer_id, $amount, $receiver_name, $payment_date,$type, $status, $payment_mode, $transaction_fees, 'debit');
         } else if ($transaction->status == 'rejected') {
             //add toupup amount here
+            $transaction_id   = $transaction->_id;
             $receiver_name    = $transaction->receiver_name;
             $payment_date     = $transaction->created;
             $status           = 'success';
@@ -125,7 +131,7 @@ class TransactionController extends Controller
             $amount           = $transaction->amount;
             addTopupAmount($retailer_id, $amount, $transaction_fees, 1);
             //insert data in transfer history collection
-            transferHistory($retailer_id, $amount + $transaction_fees, $receiver_name, $payment_date, $status, $payment_mode, $type, 0, 'credit');
+            transferHistory($retailer_id, $amount + $transaction_fees, $receiver_name, $payment_date, $status, $payment_mode, $type, 0, 'credit', $transaction_id);
         }
         return response(['status' => 'success', 'msg' => 'Transaction ' . ucwords($transaction->status) . ' Successfully!']);
     }
@@ -178,7 +184,9 @@ class TransactionController extends Controller
                 $api_status = $res['status'];
             }
             /*start transafer functionality*/
-
+            $response['action_by']     = Auth::user()->_id;
+            $response['action_date']   = time();
+            $response['action']        = 'Bulk Approve by API';
             $transaction->status       = $api_status;
             $transaction->response     = $response;
 
@@ -238,7 +246,9 @@ class TransactionController extends Controller
             }
         }
         /*start transafer functionality*/
-
+        $response['action_by']     = Auth::user()->_id;
+        $response['action_date']   = time();
+        $response['action']        = 'Paid from API';
         $transaction->status       = $api_status;
         $transaction->response     = $response;
         // $transaction->admin_action = [];
@@ -264,6 +274,7 @@ class TransactionController extends Controller
             // transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode,$type, $transaction_fees, 'debit');
         } else if ($transaction->status == 'rejected') {
             //add toupup amount here
+            $transaction_id   = $transaction->_id;
             $receiver_name    = $transaction->receiver_name;
             $payment_date     = $transaction->created;
             $status           = 'success';
@@ -274,7 +285,7 @@ class TransactionController extends Controller
             $amount           = $transaction->amount;
             addTopupAmount($retailer_id, $amount, $transaction_fees, 1);
             //insert data in transfer history collection
-            transferHistory($retailer_id, $amount + $transaction_fees, $receiver_name, $payment_date, $status, $payment_mode, $type, 0, 'credit');
+            transferHistory($retailer_id, $amount + $transaction_fees, $receiver_name, $payment_date, $status, $payment_mode, $type, 0, 'credit', $transaction_id);
         }
         return response(['status' => 'success', 'msg' => 'Transaction Made Successfully!']);
     }
@@ -430,24 +441,26 @@ class TransactionController extends Controller
 
     public function updateUtrNo(Request $request)
     {
-        try{
-        $transaction_id = $request->id;
-        $utr = $request->utr;
-        $transaction = Transaction::find($transaction_id);
+        try {
+            $transaction_id = $request->id;
+            $utr = $request->utr;
+            $transaction = Transaction::find($transaction_id);
 
-        if(!empty($transaction->response))
-        $response = $transaction->response;
-        $response['utr_number'] = $utr;
-        $transaction->response = $response;
+            if (!empty($transaction->response))
+                $response = $transaction->response;
+            $response['utr_number'] = $utr;
+            $response['action_by']     = Auth::user()->_id;
+            $response['action_date']   = time();
+            $response['action']        = 'update UTR No';
+            $transaction->response = $response;
 
-        if($transaction->save())
-         return response(['status' => 'success', 'msg' => 'UTR No updated successfully!']);
+            if ($transaction->save())
+                return response(['status' => 'success', 'msg' => 'UTR No updated successfully!']);
 
-          return response(['status' => 'error', 'msg' => 'UTR No not updated!']);
-          } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => 'UTR No not updated!']);
+        } catch (Exception $e) {
             return response(['status' => 'error', 'msg' => $e->getMessage()]);
         }
-
     }
 
     public function Comment(Request $request)
@@ -474,6 +487,9 @@ class TransactionController extends Controller
 
             $exist_response = $transaction->response;
             $exist_response['payment_mode'] = $request->channel;
+            $exist_response['action_by']     = Auth::user()->_id;
+            $exist_response['action_date']   = time();
+            $exist_response['action']        = 'update channel';
             $transaction->response = $exist_response;
             if ($transaction->save())
                 return response(['status' => 'success', 'msg' => 'Channel changed successfully!']);
@@ -518,6 +534,9 @@ class TransactionController extends Controller
                     $api_status = $res['status'];
                 }
 
+                $response['action_by']     = Auth::user()->_id;
+                $response['action_date']   = time();
+                $response['action']        = 'update pednding API amount';
                 $transaction->response = $response;
                 $transaction->status   = $api_status;
                 if ($transaction->save())
@@ -549,7 +568,7 @@ class TransactionController extends Controller
 
             $transactionArray = [
                 'Transaction ID', 'Customer Name', 'Customer Phone', 'Mode', 'Channel', 'Amount', 'Fees', 'Beneficiary', 'IFSC', 'Account No.', 'Bank Name',
-                'UTR Number', 'Status', 'Datetime'
+                'UTR Number', 'Status', 'Request Date', 'Action By', 'Action Date'
             ];
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
@@ -603,7 +622,9 @@ class TransactionController extends Controller
                 $transaction_val[] = (!empty($payment->bank_name)) ? $payment->bank_name : '';
                 $transaction_val[] = (!empty($transaction->response['utr_number'])) ? $transaction->response['utr_number'] : '';
                 $transaction_val[] = strtoupper($transaction->status);
-                $transaction_val[] = date('Y-m-d H:i:s A', $transaction->created);
+                $transaction_val[] = date('Y-m-d H:i', $transaction->created);
+                $transaction_val[] = !empty($transaction->UserName['full_name']) ? $transaction->UserName['full_name'] : '';
+                $transaction_val[] = !empty($transaction->response['action_date']) ? date('d,M y H:i', $transaction->response['action_date']) : '';
 
                 $transactionArr = $transaction_val;
 

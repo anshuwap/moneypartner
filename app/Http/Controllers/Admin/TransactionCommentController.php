@@ -35,6 +35,7 @@ class TransactionCommentController extends Controller
         $transactionComment->comment      = $request->comment;
         $transactionComment->status       = $request->status;
 
+
         if ($transactionComment->save())
             return response(['status' => 'success', 'msg' => 'Transaction Comment Added Successfully!']);
 

@@ -28,6 +28,7 @@
               <th>Type</th>
               <th>State/City</th>
               <th>Available Balance</th>
+
               <th>Created Date</th>
               <th>Status</th>
               <th>Action</th>
@@ -193,6 +194,7 @@
         {
           data: "available_blance"
         },
+
         {
           data: "created_date"
         },

@@ -24,7 +24,7 @@ class DashboardController extends Controller
 
             $topups = Topup::where('status', 'pending')->get();
             $data['topup_request'] = $topups;
-
+// print_r(Auth::user()->retailers);die;
             $que = Transaction::where('status', 'pending')->whereIn('retailer_id', Auth::user()->retailers);
             if (!empty($request->mode))
                 $que->where('payment_mode', $request->mode);

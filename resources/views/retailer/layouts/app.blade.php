@@ -31,6 +31,7 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
 
   <link rel="stylesheet" href="{{ asset('assets') }}/custom/custom.css">
+  <script src="{{ asset('assets') }}/custom/custom.js"></script>
   <style>
     label {
       font-size: 14px;
@@ -42,9 +43,9 @@
     }
 
     span.custom-text-danger {
-      font-weight: 500;
+      font-weight: 600;
       color: red !important;
-      font-size: 14px;
+      font-size: 12px;
     }
 
     .bg-custom-sidebar {
@@ -90,58 +91,85 @@
     }
   </style>
   <style>
-input{
-  font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 12px !important;
-    letter-spacing: 0.01em;
-    height: auto;
-}
-select{
-  font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 12px !important;
-    letter-spacing: 0.01em;
-    height: auto;
-}
-label{
-  font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 12px !important;
-    letter-spacing: 0.01em;
-    height: auto;
-}
-.card-title{
-  font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 14px !important;
-    letter-spacing: 0.01em;
-    height: auto;
-}
-.btn{
-  font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 12px !important;
-    letter-spacing: 0.01em;
-    height: auto;
-}
-.modal-title{
-  font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 14px !important;
-    letter-spacing: 0.01em;
-    height: auto;
-}
-    
-       .sidebar-mini .main-sidebar .nav-link, .sidebar-mini-md .main-sidebar .nav-link, .sidebar-mini-xs .main-sidebar .nav-link {
-    width: calc(180px - 0.5rem * 2);
-    
-}
-    
-    .main-sidebar, .main-sidebar::before {
-    transition: margin-left .3s ease-in-out,width .3s ease-in-out;
-    width: 180px;
-}
+    input {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
 
-  @media (min-width: 768px){
-body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper, body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer, body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
-    transition: margin-left .3s ease-in-out;
-    margin-left: 180px;
-}
+    select {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    label {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    .card-title {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 14px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    .btn {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    .modal-title {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 14px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    .sidebar-mini .main-sidebar .nav-link,
+    .sidebar-mini-md .main-sidebar .nav-link,
+    .sidebar-mini-xs .main-sidebar .nav-link {
+      width: calc(180px - 0.5rem * 2);
+
+    }
+
+    .main-sidebar,
+    .main-sidebar::before {
+      transition: margin-left .3s ease-in-out, width .3s ease-in-out;
+      width: 180px;
+    }
+
+    @media (min-width: 768px) {
+
+      body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper,
+      body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer,
+      body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
+        transition: margin-left .3s ease-in-out;
+        margin-left: 180px;
+      }
+    }
+
+    .auto-field {
+      display: block;
+      font-size: 13px;
+      position: absolute;
+      /* wrap: no-wrap; */
+      top: 100%;
+      max-height: 30vh;
+      overflow-y: auto;
+      min-width: 29rem !important;
+    }
+
+    .custom-auto-field:hover{
+      background: #007bff;
+      padding: 0px 0px 0px 3px;
     }
   </style>
 </head>
@@ -161,8 +189,14 @@ body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-w
     <!-- Navbar -->
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
       <!-- Right navbar links -->
-      <ul class="navbar-nav ml-auto">
 
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav ml-auto">
         <!-- Messages Dropdown Menu -->
         <li class="nav-item dropdown">
           <a class="nav-link" data-toggle="dropdown" href="#">
@@ -207,21 +241,16 @@ body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-w
 
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4 bg-custom-sidebar">
-      <!-- Brand Logo -->
-      <!-- <a class="brand-link">
-        <img src="{{ asset('assets') }}/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">Money Partner</span>
-      </a> -->
 
       <!-- Sidebar -->
       <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-          <div class="image">
-            <img src="{{profileImage()}}" class="img-circle elevation-2" alt="User Image">
+        <div class="user-panel mt-3 pb-3 mb-3 d-">
+          <div class="">
+            <img src="{{profileImage()}}" style="width: 10.1rem !important;" class="img-circle elevation-2" alt="User Image">
           </div>
-          <div class="info">
-            <a href="{{ url('retailer/profile') }}" class="d-block">{{ ucwords(Auth::user()->full_name) }}</a>
+          <!-- <div class="info"> -->
+          <div class="text-center"> <a href="{{ url('retailer/profile') }}" class="d-block">{{ ucwords(Auth::user()->full_name) }}</a>
           </div>
         </div>
 

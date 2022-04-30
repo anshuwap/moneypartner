@@ -74,7 +74,7 @@ if (!function_exists('employeeImage')) {
 }
 
 if (!function_exists('transferHistory')) {
-    function transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $transaction_type, $fees, $type, $remark = '')
+    function transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $transaction_type, $fees, $type, $remark = '',$bank_details='',$transaction_id='')
     {
 
         $closing_amount = 0;
@@ -95,6 +95,10 @@ if (!function_exists('transferHistory')) {
         $transferHistory->transaction_type = $transaction_type;
         $transferHistory->closing_amount = $closing_amount;
         $transferHistory->remark        = $remark;
+        if(!empty($transaction_id))
+        $transferHistory->transaction_id = $transaction_id;
+        if(!empty($bank_details))
+        $transferHistory->bank_details  = $bank_details;
         $transferHistory->save();
     }
 }
@@ -172,7 +176,7 @@ if (!function_exists('MoneyPartnerOption')) {
 
     function MoneyPartnerOption()
     {
-       
+
         $outlet = Outlet::select('money_transfer_option')->find(Auth::user()->outlet_id);
         if (!empty($outlet))
             return (object)$outlet->money_transfer_option;

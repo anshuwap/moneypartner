@@ -12,4 +12,8 @@ class Transaction extends BaseModel
     public function OutletName(){
         return $this->belongsTo('App\Models\Outlet', 'outlet_id', '_id')->select('outlet_name');
     }
+
+     public function UserName(){
+        return $this->belongsTo('App\Models\User', 'response.action_by', '_id')->select('full_name');
+    }
 }

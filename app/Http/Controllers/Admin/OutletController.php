@@ -136,7 +136,7 @@ class OutletController extends Controller
         $user->pin           = $pin;
         $user->save();
 
-        if ($user->outlet_type == 'distributor') {
+        if ($user->role == 'distributor') {
             $distrubutor = User::find($user->_id);
             $retailers[] = $user->_id;
             $distrubutor->retailers = $retailers;
@@ -151,8 +151,20 @@ class OutletController extends Controller
         $user->full_name     = $request->retailer_name;
         $user->email         = $request->email;
         $user->mobile_number = $request->mobile_no;
+        $user->role          = ($request->outlet_type == 'distributor') ? 'distributor' : 'retailer';
         $user->outlet_name   = $request->outlet_name;
         $user->save();
+        if ($user->role == 'distributor') {
+            $distrubutor = User::find($user->_id);
+            $retailers[] = $user->_id;
+            $distrubutor->retailers = $retailers;
+            $distrubutor->save();
+        } else {
+            $distrubutor = User::find($user->_id);
+            $retailers = [];
+            $distrubutor->retailers = $retailers;
+            $distrubutor->save();
+        }
     }
 
     public function edit(outlet $outlet)

@@ -24,8 +24,11 @@ class PassbookController extends Controller
             // }
             $query = TransferHistory::where('retailer_id', Auth::user()->_id);
 
-            if (!empty($request->type))
+            if ($request->type == 'refund') {
+                $query->where('transaction_type', 'refund');
+            } else if (!empty($request->type)) {
                 $query->where('type', $request->type);
+            }
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;

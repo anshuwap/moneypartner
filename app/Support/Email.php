@@ -27,7 +27,7 @@ class Email
         $mail->Host = 'mail.moneypartner.in';            //  smtp host
         $mail->SMTPAuth = true;
         $mail->Username = 'noreply@moneypartner.in';       //  sender username
-        $mail->Password = 'India@2022';             // sender password
+        $mail->Password = 'tm5#y=Y6QyMyByL$';             // sender password
         $mail->SMTPSecure = 'tls';                  // encryption - ssl/tls
         $mail->Port = 587;                          // port - 587/465
 
@@ -57,12 +57,9 @@ class Email
         } else {
             // return back()->with("success", "Email has been sent.");
             return true;
-            // echo "working";
-            // die;
         }
-
         } catch (GlobalException $e) {
-            print_r($e->getMessage());
+          return false;
         }
     }
 }

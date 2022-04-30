@@ -4,14 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Validation\LoginValidation;
-use App\Http\Validation\OTPValidation;
 use App\Models\User;
 use App\Support\Email;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 
 class LoginController extends Controller
 {
@@ -41,8 +40,10 @@ class LoginController extends Controller
                     $user->otp = $otp;
                     if ($user->save()) {
                         $email = $user->email;
-                        $this->sendOtp($otp, $email);
-                        $data  = ['otp' => $otp, 'msg' => '<span class="text-success">Otp Sent Successfully in this ' . $email . ' !</span>'];
+                        $source = $this->sendOtp($otp, $email, $user->mobile_number, $user->full_name);
+
+                        $data  = ['otp' => $otp, 'msg' => '<span class="text-success">Otp Sent Successfully in this ' . $source . ' !</span>'];
+
                         return redirect()->intended('otp-sent')->with('message', $data);
                     }
                 } else if (Auth::user()->role == 'employee') {
@@ -78,11 +79,11 @@ class LoginController extends Controller
         $user->otp = $otp;
         $res1 = $user->save();
 
-        $res = $this->sendOtp($otp, $email);
+        $res = $this->sendOtp($otp, $email, $user->mobile_number, $user->full_name);
 
         if ($res && $res1) {
 
-            $data  = ['otp' => $otp, 'msg' => '<span class="text-success">Otp Sent Successfully in this ' . $email . ' !</span>'];
+            $data  = ['otp' => $otp, 'msg' => '<span class="text-success">Otp Sent Successfully in this ' . $res . ' !</span>'];
             return redirect()->intended('otp-sent')->with('message', $data);
         }
 
@@ -90,7 +91,7 @@ class LoginController extends Controller
         return redirect()->intended('otp-sent')->with('message', $data);
     }
 
-    public function sendOtp($otp, $email)
+    public function sendOtp($otp, $email, $mobile, $name)
     {
         $msg = '<td>
          <h5 class="text-center">Signin - Your OTP/Verification code is</h3>
@@ -109,20 +110,38 @@ class LoginController extends Controller
 
         $message = $this->emailTemplate($msg);
         $subject = 'OTP by Moneypartner';
+        $eemail = $email;
         $dataM = ['msg' => $message, 'subject' => $subject, 'email' => $email];
         $email = new Email();
         $res = $email->composeEmail($dataM);
 
-        if (!$res)
+        if (!$res) {
+            $mobile = $this->sendMobileOtp($otp, $mobile, $name);
+            if ($mobile)
+                return $mobile;
+
+            return false;
+        }
+
+        return $eemail;
+    }
+
+
+    public function sendMobileOtp($otp, $mobile, $name)
+    {
+        $url = 'http://164.52.195.161/API/SendMsg.aspx?uname=20191682&pass=Cool@2020&send=WEBDUN&dest=' . $mobile . '&msg=Hi ' . $name . ', Your OTP for phone verification is ' . $otp . '.';
+
+        $ressponse = Http::get($url);
+
+        if (!$ressponse)
             return false;
 
-        setcookie('logged_in', 'logged', time() + 10800, "/");
-        return true;
+        // setcookie('logged_in', 'logged', time() + 10800, "/");
+        return $mobile;
     }
 
     public function verifyMobile(Request $request)
     {
-
         $validatedData = $request->validate([
             'otp'  => 'required'
         ]);
@@ -136,8 +155,13 @@ class LoginController extends Controller
             $user = User::find($id);
             $user->verify_otp = 1;
 
-            if ($user->save())
+            if ($user->save()) {
+
+                if ($user->verify_otp == 1)
+                    setcookie('logged_in', 'logged', time() + 10800, "/");
+
                 return redirect()->intended('retailer/dashboard');
+            }
 
             return redirect()->back()->with('message', array('otp' => '', 'msg' => '<span class="custom-text-danger">Somthing went wrong, Please contact to Admin.</span>'));
         }

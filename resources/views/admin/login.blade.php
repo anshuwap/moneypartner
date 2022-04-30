@@ -37,6 +37,9 @@
                         </div>
 
                         <div class="form-wrapper">
+                              @if ($message = Session::get('success'))
+                            <div class=" text-danger mb-2"> {!! $message !!}</div>
+                            @endif
                             <form action="{{ url('login') }}" method="post">
                                 @csrf
 

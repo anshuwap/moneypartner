@@ -24,7 +24,7 @@
 <!-- Main content -->
 <section class="content">
   <div class="container-fluid">
-    <!-- <div class="row">
+   <div class="row">
       <div class="col-12 col-sm-6 col-md-3">
         <div class="info-box">
           <span class="info-box-icon bg-info elevation-1"><i class="fas fa-store"></i></span>
@@ -43,13 +43,13 @@
           <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-wallet"></i></span>
 
           <div class="info-box-content">
-            <span class="info-box-text">Topup Amount</span>
-            <span class="info-box-number">{!!mSign($total_topup_amount)!!}</span>
+            <span class="info-box-text">Outlet Amount</span>
+            <span class="info-box-number">{!!mSign($total_outlet_amount)!!}</span>
           </div>
         </div>
       </div>
 
-      <div class="clearfix hidden-md-up"></div>
+      <!-- <div class="clearfix hidden-md-up"></div>
 
       <div class="col-12 col-sm-6 col-md-3">
         <div class="info-box mb-3">
@@ -73,9 +73,9 @@
 
         </div>
 
-      </div>
+      </div> -->
 
-    </div> -->
+    </div>
     <!-- /.row -->
 
     <!-- Transaction Request List -->

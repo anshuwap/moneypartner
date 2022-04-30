@@ -9,7 +9,7 @@ $bank_names = [
     'South Indian Bank Ltd', 'Tamilnad Mercantile Bank Ltd', 'YES Bank Ltd', 'IDBI Bank Ltd', 'Au Small Finance Bank Limited', 'Capital Small Finance Bank Limited',
     'Equitas Small Finance Bank Limited', 'Suryoday Small Finance Bank Limited', 'Ujjivan Small Finance Bank Limited', 'Utkarsh Small Finance Bank Limited',
     'ESAF Small Finance Bank Limited', 'Fincare Small Finance Bank Limited', 'Jana Small Finance Bank Limited', 'North East Small Finance Bank Limited', 'Shivalik Small Finance Bank Limited',
-    'India Post Payments Bank Limited', 'Fino Payments Bank Limited', 'Paytm Payments Bank Limited', 'The Panipat Urban Co Operative bank', 'Syndicate Bank', 'Airtel Payments Bank Limited'
+    'India Post Payments Bank Limited', 'Fino Payments Bank Limited', 'Paytm Payments Bank Limited', 'The Panipat Urban Co Operative bank', 'Syndicate Bank', 'Shivalik Mercantile Co-operative Bank', 'Airtel Payments Bank Limited'
 ];
 ?>
 <style>
@@ -212,6 +212,7 @@ $bank_names = [
                             <div class="form-group">
                                 <label>Amount</label>
                                 <input type="number" placeholder="Enter Amount" id="payout_amount" required name="amount" class="form-control form-control-sm">
+                                <!-- <span id="number_msg" class="text-success" class=""></span> -->
                                 <span id="payout_amount_msg" class="custom-text-danger"></span>
                             </div>
 
@@ -222,21 +223,13 @@ $bank_names = [
                                 <label>Beneficiary Name</label>
                                 <input type="text" placeholder="Enter Beneficiary Name" id="receiver" required name="receiver_name" class="form-control form-control-sm">
                                 <span id="receiver_msg" class="custom-text-danger"></span>
-                            </div>
 
-                            <!-- <div class="form-group">
-                                <label>Select Payment Channel</label>
-                                <select name="payment_mode" class="form-control form-control-sm" id="payout_payment_channel">
-                                    <option value="">Select</option>
-                                    <option value="bank_account">Bank Account</option>
-                                  <option value="upi">UPI</option> -->
-                            <!--  </select>
-                            <span id="receiver_msg" class="custom-text-danger"></span>
-                        </div> -->
+                                <div id="show-autocomplete" style="position: absolute;"></div>
+                            </div>
 
                             <div class="form-group">
                                 <label>Bank Name</label>
-                                <select name="payment_channel[bank_name]" class="form-control form-control-sm" required>
+                                <select name="payment_channel[bank_name]" id="bank" class="form-control form-control-sm" required>
                                     <option value=''>Select Bank Name</option>
                                     <?php foreach ($bank_names as $name) {
                                         echo '<option value="' . $name . '">' . $name . '</option>';
@@ -245,11 +238,13 @@ $bank_names = [
                             </div>
                             <div class="form-group">
                                 <label>Account Number</label>
-                                <input type="number" name="payment_channel[account_number]" class="form-control form-control-sm" placeholder="Enter Account Number">
+                                <input type="number" id="account" name="payment_channel[account_number]" class="form-control form-control-sm" placeholder="Enter Account Number">
+                                <div id="show-autocompleteTwo" style="position: absolute;"></div>
                             </div>
                             <div class="form-group">
                                 <label>IFSC Code</label>
-                                <input type="text" name="payment_channel[ifsc_code]" class="form-control form-control-sm" placeholder="Enter IFSC Code">
+                                <input type="text" id="ifsc" name="payment_channel[ifsc_code]" class="form-control form-control-sm" placeholder="Enter IFSC Code">
+                                <div id="show-autocompleteThree" style="position: absolute;"></div>
                             </div>
 
                             <div id="payput_payment_channel">
@@ -361,8 +356,9 @@ $bank_names = [
         e.preventDefault();
 
         var amount = $(this).val();
-        // payout_transction(amount);
 
+        var words = numberToWord(amount);
+        $('#payout_amount_msg').html(words);
         if (amount >= 25000 && amount < 200000) {
             // $('#payput_upload_docs').html(`<div class="form-group">
             // <label>Pancard Number</label>
@@ -384,7 +380,7 @@ $bank_names = [
             $('#payout_amount').removeAttr('disabled');
         } else {
             $('#payput_upload_docs').html(``);
-            $('#payout_amount_msg').html(``);
+            // $('#payout_amount_msg').html(``);
             $('#payout_trans input,select').removeAttr('disabled');
         }
     })
@@ -604,7 +600,7 @@ $bank_names = [
         if ($('#f4p').val().length == 1) {
             $('#verify-import').focus();
             $("#verify-import").removeClass("disabled");
-            $('#verify-import').attr('disabled',false);
+            $('#verify-import').attr('disabled', false);
         }
         if (e.keyCode == 8) {
             $('#f3p').focus();
@@ -653,4 +649,169 @@ $bank_names = [
     //     if (e.keyCode == 8) alert('backspace trapped')
     // })
 </script>
+
+<script>
+    // auto complete function
+
+    $('[id="bank"]').on('click', function() {
+        $('#show-autocomplete').fadeOut();
+        $('#show-autocomplete').html('');
+        $('#show-autocompleteTwo').fadeOut();
+        $('#show-autocompleteTwo').html('');
+        $('#show-autocompleteThree').fadeOut();
+        $('#show-autocompleteThree').html('');
+    });
+
+    $('[id="payout_amount"]').on('click', function() {
+        $('#show-autocomplete').fadeOut();
+        $('#show-autocomplete').html('');
+        $('#show-autocompleteTwo').fadeOut();
+        $('#show-autocompleteTwo').html('');
+        $('#show-autocompleteThree').fadeOut();
+        $('#show-autocompleteThree').html('');
+    });
+
+    $('.modal-body').on('click', function() {
+        $('#show-autocomplete').fadeOut();
+        $('#show-autocomplete').html('');
+        $('#show-autocompleteTwo').fadeOut();
+        $('#show-autocompleteTwo').html('');
+        $('#show-autocompleteThree').fadeOut();
+        $('#show-autocompleteThree').html('');
+    });
+
+    $('[id="receiver"]').on('input', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        $('#show-autocompleteTwo').fadeOut();
+        $('#show-autocompleteTwo').html('');
+        $('#show-autocompleteThree').fadeOut();
+        $('#show-autocompleteThree').html('');
+        var target = event.target;
+        var query = $(target).val();
+
+        if (query != '') {
+            var _token = $('input[name="_token"]').val();
+            $.ajax({
+                url: "{{ route('autocomplete.fetch') }}",
+                method: "POST",
+                data: {
+                    query: query,
+                    _token: _token,
+                },
+                success: function(data) {
+                    if (data != '<ul class="dropdown-menu px-2" style="display:block; position:absolute; wrap: no-wrap; top: 100%; max-height: 20vh; overflow-y: auto;"></ul>') {
+                        $('#show-autocomplete').fadeIn();
+                        $('#show-autocomplete').html(data);
+                    } else {
+                        $('#show-autocomplete').fadeOut();
+                        $('#show-autocomplete').html('');
+                    }
+                }
+            });
+        } else {
+            $('#show-autocomplete').fadeOut();
+            $('#show-autocomplete').html('');
+        }
+    });
+
+    $(document).on('click', '.custom1', function() {
+        event.stopPropagation();
+        var receiver = $(this).children().data('name');
+        var bank = $(this).children().data('bank');
+        var account = $(this).children().data('account');
+        var ifsc = $(this).children().data('ifsc');
+
+
+        $('[id="receiver"]').val(receiver);
+        $('[id="account"]').val(account);
+        $('[id="ifsc"]').val(ifsc);
+        $('[id="bank"]').val(bank);
+        $('#show-autocomplete').fadeOut();
+        $('#show-autocomplete').html('');
+    });
+
+    $('[id="account"]').on('input', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var target = event.target;
+        var query = $(target).val();
+
+        if (query != '') {
+            var _token = $('input[name="_token"]').val();
+            $.ajax({
+                url: "{{ route('autocomplete.fetchAccount') }}",
+                method: "POST",
+                data: {
+                    query: query,
+                    _token: _token,
+                },
+                success: function(data) {
+                    if (data != '<ul class="dropdown-menu px-2" style="display:block; position:absolute; wrap: no-wrap; top: 100%; max-height: 20vh; overflow-y: auto;"></ul>') {
+                        $('#show-autocompleteTwo').fadeIn();
+                        $('#show-autocompleteTwo').html(data);
+                    } else {
+                        $('#show-autocompleteTwo').fadeOut();
+                        $('#show-autocompleteTwo').html('');
+                    }
+
+                }
+            });
+        } else {
+            $('#show-autocompleteTwo').fadeOut();
+            $('#show-autocompleteTwo').html('');
+        }
+    });
+
+    $(document).on('click', '.custom', function() {
+        event.stopPropagation();
+        var account = $(this).text();
+
+        $('[id="account"]').val(account);
+        $('#show-autocompleteTwo').fadeOut();
+        $('#show-autocompleteTwo').html('');
+    });
+
+    $('[id="ifsc"]').on('input', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var target = event.target;
+        var query = $(target).val();
+
+        if (query != '') {
+            var _token = $('input[name="_token"]').val();
+            $.ajax({
+                url: "{{ route('autocomplete.fetchIfsc') }}",
+                method: "POST",
+                data: {
+                    query: query,
+                    _token: _token,
+                },
+                success: function(data) {
+                    if (data != '<ul class="dropdown-menu px-2" style="display:block; position:absolute; wrap: no-wrap; top: 100%; max-height: 20vh; overflow-y: auto;"></ul>') {
+                        $('#show-autocompleteThree').fadeIn();
+                        $('#show-autocompleteThree').html(data);
+                    } else {
+                        $('#show-autocompleteThree').fadeOut();
+                        $('#show-autocompleteThree').html('');
+                    }
+
+                }
+            });
+        } else {
+            $('#show-autocompleteThree').fadeOut();
+            $('#show-autocompleteThree').html('');
+        }
+    });
+
+    $(document).on('click', '.custom2', function() {
+        event.stopPropagation();
+        var ifsc = $(this).text();
+
+        $('[id="ifsc"]').val(ifsc);
+        $('#show-autocompleteThree').fadeOut();
+        $('#show-autocompleteThree').html('');
+    });
+</script>
+
 @endpush

@@ -205,6 +205,7 @@ class MakeTransactionController extends Controller
                 return response(['status' => 'error', 'msg' => 'Something went wrong!']);
 
             /*start passbook debit functionality*/
+            $transaction_id   = $transaction->_id;
             $amount        = $transaction->amount;
             $receiver_name = $transaction->receiver_name;
             $payment_date  = $transaction->created;
@@ -214,7 +215,7 @@ class MakeTransactionController extends Controller
             $type          = $transaction->type;
             $retailer_id   = $transaction->retailer_id;
 
-            transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit');
+            transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit',$transaction_id);
             /*end passbook debit functionality*/
 
             return response(['status' => 'success', 'msg' => 'Transaction Request Created Successfully!']);
@@ -408,6 +409,7 @@ class MakeTransactionController extends Controller
                 return response(['status' => 'error', 'msg' => 'Something went wrong!']);
 
             /*start passbook debit functionality*/
+            $transaction_id= $Transaction->_id;
             $amount        = $Transaction->amount;
             $receiver_name = $Transaction->receiver_name;
             $payment_date  = $Transaction->created;
@@ -417,7 +419,7 @@ class MakeTransactionController extends Controller
             $type          = $Transaction->type;
             $retailer_id   = $Transaction->retailer_id;
 
-            transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit');
+            transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit',$transaction_id);
             /*end passbook debit functionality*/
 
             return response(['status' => 'success', 'msg' => 'Transaction Request Created Successfully!']);
@@ -719,6 +721,7 @@ class MakeTransactionController extends Controller
                     return response(['status' => 'error', 'msg' => 'Something went wrong!']);
 
                 /*start passbook debit functionality*/
+                $transaction_id   = $transaction->_id;
                 $amount        = $transaction->amount;
                 $receiver_name = $transaction->receiver_name;
                 $payment_date  = $transaction->created;
@@ -728,7 +731,7 @@ class MakeTransactionController extends Controller
                 $type          = $transaction->type;
                 $retailer_id   = $transaction->retailer_id;
 
-                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit');
+                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit',$transaction_id);
                 /*end passbook debit functionality*/
             }
             $comment = '<span class="text-success">Import Successfully!</span>';

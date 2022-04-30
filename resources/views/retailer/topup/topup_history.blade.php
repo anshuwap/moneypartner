@@ -7,7 +7,7 @@
     <div class="col-12 mt-2">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Topup History</h3>
+                <h3 class="card-title">All Topup Request</h3>
                 <div class="card-tools">
                     <a href="javascript:void(0);" class="btn btn-sm btn-success" id="create_topup"><i class="fas fa-hand-holding-usd"></i>&nbsp;Request for Topup</a>
                     <a href="{{ url('retailer/topup-history-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
@@ -26,7 +26,7 @@
                 <div class="col-md-12 ml-auto">
                     <form action="{{ url('retailer/topup-history') }}">
                         <div class="form-row">
-                           <div class="form-group col-md-2">
+                            <div class="form-group col-md-2">
                                 <label>Start Data</label>
                                 <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['start_date']) ? $filter['start_date'] : '' ?>" name="start_date" />
                                 <!-- <input type="text" class="form-control form-control-sm" value="<?= !empty($filter['date_range']) ? $filter['date_range'] : '' ?>" name="date_range" id="daterange-btn" /> -->
@@ -58,12 +58,15 @@
                         <tr>
                             <th>Sr No.</th>
                             <th>Transaction Id</th>
+                            <th>UTR No.</th>
                             <th>Channel</th>
-                            <th>Payment Mode</th>
                             <th>Amount</th>
-                            <th>Status</th>
-                            <th>Payment Date</th>
+                            <th>Payment Mode</th>
+                            <th>Payment In</th>
                             <th>Requested Date</th>
+                            <th>Approve/Reject By</th>
+                            <th>Approve/Reject Date</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -88,14 +91,17 @@
                         <tr>
                             <td>{{ ++$i }}</td>
                             <td><?= $payment_has_code; ?></td>
+                            <td><?= !empty($topup->utr_no) ? $topup->utr_no : '-' ?></td>
                             <td>{{ (!empty($topup->payment_channel))?ucwords($topup->payment_channel):'-' }}</td>
-                            <td>{{ ucwords(str_replace('_', " ", $topup->payment_mode)) }}</td>
                             <td>{!! mSign($topup->amount) !!}</td>
+                            <td>{{ $topup->payment_by }}</td>
+                            <td>{{ ucwords(str_replace('_', " ", $topup->payment_mode)) }}</td>
+                            <td>{{ date('d M Y H:i:s', $topup->payment_date) }}</td>
+                            <td>{{ !empty($topup->UserName['full_name']) ?$topup->UserName['full_name'] : '-' }}</td>
+                            <td>{{ !empty($topup->action_date)?date('d M Y H:i:s', $topup->action_date):'-' }}</td>
                             <td id="status-{{ $topup->id }}">
                                 {!! $status !!}
                             </td>
-                            <td>{{ date('d M Y h:i:s A', $topup->created) }}</td>
-                            <td>{{ date('d M Y h:i:s A', $topup->payment_date) }}</td>
                             <!-- <td>
                                <a href="javascript:void(0);" class="text-success view-topup-request" topup_id="{{ $topup->id }}" data-toggle="tooltip" data-placement="bottom" title="View Details"><i class="fas fa-eye"></i></i></a>
                                 @if(empty($topup->admin_action) && $topup->admin_action == 0 )
@@ -214,8 +220,26 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Comment</label>
-                                <textarea class="form-control" name="comment" id="comment" rows="5"></textarea>
+                                <label>Payment Mode</label>
+                                <select class="form-control form-control-sm" required id="payment_by" name="payment_by">
+                                    <option>Select</option>
+                                    <option value="IMPS">IMPS</option>
+                                    <option value="NEFT">NEFT</option>
+                                    <option value="Cash Deposit">Cash Deposit</option>
+                                    <option value="Cheque">Cheque</option>
+                                </select>
+                                <span id="payment_reference_id_msg" class="custom-text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>UTR No.</label>
+                                <input type="text" placeholder="Enter UTR No" id="name" required name="utr_no" class="form-control form-control-sm">
+                                <span id="utr_no_msg" class="custom-text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Remarks</label>
+                                <textarea class="form-control" name="comment" id="comment" rows="1"></textarea>
                                 <span id="comment_msg" class="custom-text-danger"></span>
                             </div>
 
@@ -232,7 +256,7 @@
 
                             <div class="form-group">
                                 <label>Payment Data & Time</label>
-                                <input type="datetime-local" id="payment_date" name="payment_date" class="form-control form-control-sm datetimepicker-input" data-target="#reservationdatetime" value="<?= date('Y-m-d\TH:i') ?>" min="<?= date('Y-m-d\TH:i') ?>" max="2030-06-14T00:00">
+                                <input type="datetime-local" id="payment_date" name="payment_date" class="form-control form-control-sm" value="<?= date('Y-m-d\TH:i') ?>" min="<?= date('Y-m-d\TH:i') ?>" max="2030-06-14T00:00">
                             </div>
 
                             <div class="form-group text-center">
@@ -427,23 +451,23 @@
         $('#importModal').modal('show');
     })
 
- $('.view-topup-request').click(function() {
-      var topup_id = $(this).attr('topup_id');
-      $('#topup_id').val(topup_id);
-      $.ajax({
-        url: "{{ url('retailer/topup-request-details') }}/" + topup_id,
-        type: 'GET',
-        dataType: 'JSON',
-        success: function(res) {
-          $('#dataVal').html(res.data);
+    $('.view-topup-request').click(function() {
+        var topup_id = $(this).attr('topup_id');
+        $('#topup_id').val(topup_id);
+        $.ajax({
+            url: "{{ url('retailer/topup-request-details') }}/" + topup_id,
+            type: 'GET',
+            dataType: 'JSON',
+            success: function(res) {
+                $('#dataVal').html(res.data);
 
-          $('#topup-form').show();
-          if (res.show_action)
-            $('#topup-form').hide();
+                $('#topup-form').show();
+                if (res.show_action)
+                    $('#topup-form').hide();
 
-          $('#topup-request-details').modal('show');
-        }
-      })
+                $('#topup-request-details').modal('show');
+            }
+        })
     })
 
     /*start form submit functionality*/

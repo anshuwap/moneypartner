@@ -113,7 +113,9 @@
                             <!-- <th>Bank Name</th> -->
                             <th>UTR No.</th>
                             <th>Status</th>
-                            <th>Datetime</th>
+                            <th>Request Date</th>
+                            <th>Action By</th>
+                            <th>Action Date</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -166,6 +168,8 @@
                             <td> <?= (!empty($trans->response['utr_number'])) ? $trans->response['utr_number'] : '-' ?></td>
                             <td>{!! $status !!}</td>
                             <td>{{ date('d,M y H:i',$trans->created) }}</td>
+                            <td>{{ !empty($trans->UserName['full_name']) ?$trans->UserName['full_name'] : '';}}</td>
+                             <td><?php $actionM=!(empty($trans->response['action']))?$trans->response['action']:''; echo !empty($trans->response['action_date'])?'<span data-toggle="tooltip" data-placement="bottom" title="'.$actionM.'">'.date('d,M y H:i',$trans->response['action_date']).'</span>':''?></td>
                             <td> <a href="javascript:void(0);" class="btn btn-info btn-xs view_dashboard" _id="{{ $trans->_id }}"><i class="fas fa-eye"></i>&nbsp;view</a>
                                 {!! $action !!}</td>
                         </tr>
@@ -311,12 +315,12 @@
         $('#approve_modal_dashboard').modal('show');
     })
 
-$(document).on('click','.utrupdate',function(){
-$('#utr').toggle();
-})
+    $(document).on('click', '.utrupdate', function() {
+        $('#utr').toggle();
+    })
 
-//check payment status
-        $(document).on('click','#update_utr',function(){
+    //check payment status
+    $(document).on('click', '#update_utr', function() {
         var id = $('#trnsaction-id').val();
         var select = $(this);
         var utr = $('#utr_no').val();
@@ -616,7 +620,7 @@ $('#utr').toggle();
     /*end bulk approve transaction*/
 
 
-//for success case functionality
+    //for success case functionality
     $(document).on('click', '.success-action', function(e) {
         e.preventDefault();
         $('#trans_id_action').val($(this).attr('_id'));
@@ -626,7 +630,7 @@ $('#utr').toggle();
 
     $(document).on('change', '#status-select-action', function() {
         let status = $('#status-select-action').val();
-         if (status == 'rejected') {
+        if (status == 'rejected') {
             $('#challel').html(``);
             $('#success_action').html(``);
         } else {
@@ -816,7 +820,7 @@ $('#utr').toggle();
                                     <option value="payunie_preet_kumar">Payunie - PREET KUMAR</option>
                                     <option value="payunie_rashid_ali">Payunie -Rashid Ali</option>
                                     <option value="pay2all">Pay2ALL - PRAVEEN</option>
-                                     <option value="odnimo">Odnimo</option>
+                                    <option value="odnimo">Odnimo</option>
                                 </select>
                             </div>
                         </div>

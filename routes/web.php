@@ -30,6 +30,7 @@ use App\Http\Controllers\Retailer\Transaction\OfflinePayoutApiController as Offl
 use App\Http\Controllers\Retailer\Transaction\RetailerTransController as RetailerRetailerTrans;
 use App\Http\Controllers\Retailer\TransactionController as RetailerTransaction;
 use App\Http\Controllers\Retailer\EcollectionController as RetailerECollection;
+use App\Http\Controllers\Retailer\BankAutoCompleteController as BankAuto;
 
 //for employee panel
 use App\Http\Controllers\Employee\LoginController as EmployeeLogin;
@@ -56,7 +57,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
-Route::get("email", [Controller::class, "show"]);
+Route::get("email",       [Controller::class, "show"]);
 Route::get("get-blance0", [Controller::class, "getBlance0"]);
 Route::get("get-blance1", [Controller::class, "getBlance1"]);
 Route::get("get-blance2", [Controller::class, "getBlance2"]);
@@ -65,15 +66,15 @@ Route::get('500', [AdminDashboard::class, 'serverError']);
 // Route::get('404', [AdminDashboard::class, 'notFound']);
 
 Route::group(['middleware' => 'adminRedirect'], function () {
-  Route::get('/', [AdminLogin::class, 'index']);
-  Route::resource('/login', AdminLogin::class);
-  Route::resource('/register', RegisterController::class);
-  Route::get('/send-link', [AdminLogin::class, 'sendLinkview']);
-  Route::get('/resend-otp', [AdminLogin::class, 'resendOtp']);
-  Route::get('/remove-otp', [AdminLogin::class, 'removeOtp']);
-  Route::post('/send-link', [AdminLogin::class, 'sendLink']);
+  Route::get('/',                     [AdminLogin::class, 'index']);
+  Route::resource('/login',           AdminLogin::class);
+  Route::resource('/register',        RegisterController::class);
+  Route::get('/send-link',            [AdminLogin::class, 'sendLinkview']);
+  Route::get('/resend-otp',           [AdminLogin::class, 'resendOtp']);
+  Route::get('/remove-otp',           [AdminLogin::class, 'removeOtp']);
+  Route::post('/send-link',           [AdminLogin::class, 'sendLink']);
   Route::get('/forgot-password/{id}', [AdminLogin::class, 'forgotPassword']);
-  Route::post('/forgot-password', [AdminLogin::class, 'forgotPasswordSave']);
+  Route::post('/forgot-password',     [AdminLogin::class, 'forgotPasswordSave']);
 });
 
 
@@ -86,12 +87,14 @@ Route::group(['middleware' => 'retailerRedirect'], function () {
 Route::get('otp-sent',       [AdminLogin::class, 'otpSent']);
 Route::post('verify-mobile', [AdminLogin::class, 'verifyMobile']);
 
-Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
-  Route::resource('dashboard', AdminDashboard::class);
-  Route::get('export', [AdminDashboard::class, 'export']);
-  Route::post('import', [AdminDashboard::class, 'import']);
 
-  Route::resource('outlets', AdminOutlet::class);
+Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
+
+  Route::resource('dashboard', AdminDashboard::class);
+  Route::get('export',         [AdminDashboard::class, 'export']);
+  Route::post('import',        [AdminDashboard::class, 'import']);
+
+  Route::resource('outlets',     AdminOutlet::class);
   Route::post('outlets-status', [AdminOutlet::class, 'outletStatus']);
 
   Route::get('outlets-ajax',                  [AdminOutlet::class, 'ajaxList']);
@@ -102,42 +105,43 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::post('outlet-update-bank-charges',   [AdminOutlet::class, 'outletUpdateBankCharges']);
   Route::get('outlet-charges-status/{id}/{key}/{status}', [AdminOutlet::class, 'bankChargesStatus']);
 
-  Route::resource('bank-account', AdminBankAccount::class);
-  Route::get('bank-account-ajax', [AdminBankAccount::class, 'ajaxList']);
-  Route::post('bank-account-status', [AdminBankAccount::class, 'bankAccountStatus']);
-  Route::get('b-allocate-retailer', [AdminBankAccount::class, 'allocateRetailer']);
+  Route::resource('bank-account',         AdminBankAccount::class);
+  Route::get('bank-account-ajax',         [AdminBankAccount::class, 'ajaxList']);
+  Route::post('bank-account-status',      [AdminBankAccount::class, 'bankAccountStatus']);
+  Route::get('b-allocate-retailer',       [AdminBankAccount::class, 'allocateRetailer']);
   Route::post('b-save-allocate-retailer', [AdminBankAccount::class, 'saveAllocateRetailer']);
 
-  Route::resource('qr-code', AdminQrCode::class);
-  Route::get('qr-code-ajax', [AdminQrCode::class, 'ajaxList']);
-  Route::post('qr-code-status', [AdminQrCode::class, 'qrCodeStatus']);
-  Route::get('q-allocate-retailer', [AdminQrCode::class, 'allocateRetailer']);
+  Route::resource('qr-code',              AdminQrCode::class);
+  Route::get('qr-code-ajax',              [AdminQrCode::class, 'ajaxList']);
+  Route::post('qr-code-status',           [AdminQrCode::class, 'qrCodeStatus']);
+  Route::get('q-allocate-retailer',       [AdminQrCode::class, 'allocateRetailer']);
   Route::post('q-save-allocate-retailer', [AdminQrCode::class, 'saveAllocateRetailer']);
 
-  Route::resource('upi', AdminUpi::class);
-  Route::get('upi-ajax', [AdminUpi::class, 'ajaxList']);
-  Route::post('upi-status', [AdminUpi::class, 'upiStatus']);
-  Route::get('u-allocate-retailer', [AdminUpi::class, 'allocateRetailer']);
+  Route::resource('upi',                  AdminUpi::class);
+  Route::get('upi-ajax',                  [AdminUpi::class, 'ajaxList']);
+  Route::post('upi-status',               [AdminUpi::class, 'upiStatus']);
+  Route::get('u-allocate-retailer',       [AdminUpi::class, 'allocateRetailer']);
   Route::post('u-save-allocate-retailer', [AdminUpi::class, 'saveAllocateRetailer']);
 
-  Route::resource('payment-channel', AdminPaymentChannel::class);
-  Route::get('payment-channel-ajax', [AdminPaymentChannel::class, 'ajaxList']);
+  Route::resource('payment-channel',    AdminPaymentChannel::class);
+  Route::get('payment-channel-ajax',    [AdminPaymentChannel::class, 'ajaxList']);
   Route::post('payment-channel-status', [AdminPaymentChannel::class, 'paymentChannelStatus']);
 
-  Route::resource('comment', AdminComment::class);
-  Route::get('comment-ajax', [AdminComment::class, 'ajaxList']);
+  Route::resource('comment',    AdminComment::class);
+  Route::get('comment-ajax',    [AdminComment::class, 'ajaxList']);
   Route::post('comment-status', [AdminComment::class, 'commentStatus']);
 
-  Route::get('topup-list', [AdminTopupRequest::class, 'index']);
-  Route::get('topup-list-export', [AdminTopupRequest::class, 'export']);
-
-  Route::post('topup-request', [AdminTopupRequest::class, 'topupRequest']);
+  Route::get('topup-list',                 [AdminTopupRequest::class, 'index']);
+  Route::get('topup-list-export',          [AdminTopupRequest::class, 'export']);
+  Route::post('topup-request',             [AdminTopupRequest::class, 'topupRequest']);
   Route::get('topup-request-details/{id}', [AdminTopupRequest::class, 'topupRequestDetials']);
+  Route::get('topup-payment-channel',      [AdminTopupRequest::class, 'updatePaymentChannel']);
+  Route::get('pending-topup',              [AdminTopupRequest::class, 'pendingRequest']);
+  Route::get('pending-topup-export',       [AdminTopupRequest::class, 'pendingExport']);
+
 
   Route::resource('a-transaction',  AdminTransaction::class);
-
-  Route::get('payToApi',           [AdminTransaction::class, 'payToApi']);
-  // Route::post('a-success-transaction',        [AdminTransaction::class,'storeApi']);
+  Route::get('payToApi',            [AdminTransaction::class, 'payToApi']);
   Route::post('a-store-api',        [AdminTransaction::class, 'storeApi']);
   Route::get('a-trans-detail',      [AdminTransaction::class, 'viewDetail']);
   Route::get('a-trans-comment',     [AdminTransaction::class, 'Comment']);
@@ -156,17 +160,17 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::get('debit-export',          [AdminDebit::class, 'export']);
   Route::post('credit-paid-status',   [AdminCredit::class, 'creditPaidStatus']);
 
-  Route::resource('api-list', AdminApiList::class);
-  Route::post('api-list-editApi', [AdminApiList::class, 'editApi']);
-  Route::get('a-allocate-retailer', [AdminApiList::class, 'allocateRetailer']);
+  Route::resource('api-list',             AdminApiList::class);
+  Route::post('api-list-editApi',         [AdminApiList::class, 'editApi']);
+  Route::get('a-allocate-retailer',       [AdminApiList::class, 'allocateRetailer']);
   Route::post('a-save-allocate-retailer', [AdminApiList::class, 'saveAllocateRetailer']);
 
   Route::resource('e-collection', AdminECollection::class);
 
-  Route::resource('employee', AdminEmployee::class);
+  Route::resource('employee',    AdminEmployee::class);
   Route::post('employee-status', [AdminEmployee::class, 'employeeStatus']);
 
-  Route::get('passbook',  [AdminPassbook::class, 'index']);
+  Route::get('passbook',         [AdminPassbook::class, 'index']);
   Route::get('passbook-export',  [AdminPassbook::class, 'export']);
 
   Route::post('logout',  [AdminLogin::class, 'logout']);
@@ -177,29 +181,36 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 //for retailer
 Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
 
-  Route::resource('profile', RetailerProfile::class);
-  Route::get('pin-password', [RetailerProfile::class, 'pinPassword']);
+  Route::resource('profile',     RetailerProfile::class);
+  Route::get('pin-password',     [RetailerProfile::class, 'pinPassword']);
   Route::post('change-password', [RetailerProfile::class, 'changePassword']);
-  Route::post('change-pin', [RetailerProfile::class, 'ChangePin']);
+  Route::post('change-pin',      [RetailerProfile::class, 'ChangePin']);
   Route::post('send-email-link', [RetailerProfile::class, 'sendLink']);
   Route::get('/forgot-pin/{id}', [RetailerProfile::class, 'forgotPin']);
-  Route::post('/forgot-pin', [RetailerProfile::class, 'forgotPinSave']);
+  Route::post('/forgot-pin',     [RetailerProfile::class, 'forgotPinSave']);
+
+  Route::post('/fetch',        [BankAuto::class, 'fetch'])->name('autocomplete.fetch');
+  Route::post('/fetchAccount', [BankAuto::class, 'fetchAccount'])->name('autocomplete.fetchAccount');
+  Route::post('/fetchIfsc',    [BankAuto::class, 'fetchIfsc'])->name('autocomplete.fetchIfsc');
 
   Route::get('dashboard',  [RetailerDashboard::class, 'index']);
 
-  Route::get('passbook',  [RetailerPassbook::class, 'index']);
+  Route::get('passbook',         [RetailerPassbook::class, 'index']);
   Route::get('passbook-export',  [RetailerPassbook::class, 'export']);
 
 
   Route::resource('e-collection', RetailerECollection::class);
 
-  Route::resource('topup', RetailerTopup::class);
+  Route::resource('topup',            RetailerTopup::class);
   Route::get('outlet-payment-mode',  [RetailerTopup::class, 'outletPaymentMode']);
   Route::get('payment-details',      [RetailerTopup::class, 'paymentDetails']);
   Route::get('topup-history',        [RetailerTopup::class, 'topupHistory']);
   Route::get('transaction-history',  [RetailerTopup::class, 'transactionHistory']);
   Route::get('topup-history-ajax',   [RetailerTopup::class, 'topupHistoryAjax']);
   Route::get('topup-history-export', [RetailerTopup::class, 'export']);
+  Route::get('pending-topup',        [RetailerTopup::class, 'pendingRequest']);
+  Route::get('pending-topup-export', [RetailerTopup::class, 'pendingExport']);
+
 
   //  Route::resource('customer-trans', RetailerCustomerTrans::class);
 
@@ -224,7 +235,7 @@ Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
   Route::resource('offline-payout', OfflinePayout::class);
 
   Route::resource('webhook-api', WebhookApi::class);
-  Route::post('base-url-api', [WebhookApi::class, 'baseUrlApi']);
+  Route::post('base-url-api',    [WebhookApi::class, 'baseUrlApi']);
 
   Route::post('logout',  [AdminLogin::class, 'logout']);
 });
@@ -236,19 +247,22 @@ Route::group(['prefix' => 'employee', 'middleware' => 'employee'], function () {
   Route::resource('e-profile', EmployeeProfile::class);
 
   Route::get('dashboard',  [EmployeeDashboard::class, 'index']);
-  Route::get('export', [EmployeeDashboard::class, 'export']);
-  Route::post('import', [EmployeeDashboard::class, 'import']);
+  Route::get('export',     [EmployeeDashboard::class, 'export']);
+  Route::post('import',    [EmployeeDashboard::class, 'import']);
 
-  Route::get('topup-list',        [EmployeeTopupRequest::class, 'index']);
-  Route::get('topup-list-export', [EmployeeTopupRequest::class, 'export']);
-  Route::post('topup-request',    [EmployeeTopupRequest::class, 'topupRequest']);
+  Route::get('topup-list',                 [EmployeeTopupRequest::class, 'index']);
+  Route::get('topup-list-export',          [EmployeeTopupRequest::class, 'export']);
+  Route::post('topup-request',             [EmployeeTopupRequest::class, 'topupRequest']);
   Route::get('topup-request-details/{id}', [EmployeeTopupRequest::class, 'topupRequestDetials']);
+  Route::get('topup-payment-channel',      [EmployeeTopupRequest::class, 'updatePaymentChannel']);
+  Route::get('pending-topup',              [EmployeeTopupRequest::class, 'pendingRequest']);
+  Route::get('pending-topup-export',       [EmployeeTopupRequest::class, 'pendingExport']);
 
-  Route::resource('a-transaction', EmployeeTransaction::class);
+  Route::resource('a-transaction',  EmployeeTransaction::class);
   Route::post('a-store-api',        [EmployeeTransaction::class, 'storeApi']);
   Route::get('a-trans-detail',      [EmployeeTransaction::class, 'viewDetail']);
   Route::get('a-trans-comment',     [EmployeeTransaction::class, 'Comment']);
-  Route::get('a-transaction-export', [EmployeeTransaction::class, 'export']);
+  Route::get('a-transaction-export',[EmployeeTransaction::class, 'export']);
   Route::post('bulk-action',        [EmployeeTransaction::class, 'bulkAction']);
   Route::get('change-channel',      [EmployeeTransaction::class, 'ChangeChannel']);
   Route::get('payment-status',      [EmployeeTransaction::class, 'PaymentStatus']);
@@ -285,10 +299,13 @@ Route::group(['prefix' => 'distributor', 'middleware' => 'distributor'], functio
   Route::get('passbook',  [DistributorPassbook::class, 'index']);
   Route::get('passbook-export',  [DistributorPassbook::class, 'export']);
 
-  Route::get('topup-list',        [DistributorTopupRequest::class, 'index']);
-  Route::get('topup-list-export', [DistributorTopupRequest::class, 'export']);
-  Route::post('topup-request',    [DistributorTopupRequest::class, 'topupRequest']);
+  Route::get('topup-list',                 [DistributorTopupRequest::class, 'index']);
+  Route::get('topup-list-export',          [DistributorTopupRequest::class, 'export']);
+  Route::post('topup-request',             [DistributorTopupRequest::class, 'topupRequest']);
   Route::get('topup-request-details/{id}', [DistributorTopupRequest::class, 'topupRequestDetials']);
+  Route::get('topup-payment-channel',      [DistributorTopupRequest::class, 'updatePaymentChannel']);
+  Route::get('pending-topup',              [DistributorTopupRequest::class, 'pendingRequest']);
+  Route::get('pending-topup-export',       [DistributorTopupRequest::class, 'pendingExport']);
 
   Route::resource('a-transaction',  DistributorTransaction::class);
   Route::post('a-store-api',        [DistributorTransaction::class, 'storeApi']);

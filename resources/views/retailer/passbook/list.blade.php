@@ -15,7 +15,7 @@
 
                 <div class="card-tools">
                     <a href="javascript:void(0);" class="btn btn-sm btn-success" id="create_topup"><i class="fas fa-hand-holding-usd"></i>&nbsp;Request for Topup</a>
-  <a href="{{ url('retailer/passbook-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
+                    <a href="{{ url('retailer/passbook-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
                     @if(!empty($filter))
                     <a href="javascript:void(0);" class="btn btn-sm btn-success" id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
                     @else
@@ -26,11 +26,11 @@
             </div>
 
 
-            <div class="row pl-2 pr-2" id="filter" <?=(empty($filter))?"style='display:none'":""?>>
+            <div class="row pl-2 pr-2" id="filter" <?= (empty($filter)) ? "style='display:none'" : "" ?>>
                 <div class="col-md-12 ml-auto">
                     <form action="{{ url('retailer/passbook') }}">
                         <div class="form-row">
-                             <div class="form-group col-md-2">
+                            <div class="form-group col-md-2">
                                 <label>Start Data</label>
                                 <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['start_date']) ? $filter['start_date'] : '' ?>" name="start_date" />
                             </div>
@@ -43,8 +43,9 @@
                                 <label>Type</label>
                                 <select class="form-control form-control-sm" name="type">
                                     <option value="">All</option>
-                                    <option value="credit" <?= (!empty($filter['type']) && $filter['type']=='credit')?'selected':'' ?>>Credit</option>
-                                    <option value="debit" <?= (!empty($filter['type']) && $filter['type']=='debit')?'selected':'' ?>>Debit</option>
+                                    <option value="credit" <?= (!empty($filter['type']) && $filter['type'] == 'credit') ? 'selected' : '' ?>>Credit</option>
+                                    <option value="debit" <?= (!empty($filter['type']) && $filter['type'] == 'debit') ? 'selected' : '' ?>>Debit</option>
+                                    <option value="refund" <?= (!empty($filter['type']) && $filter['type'] == 'refund') ? 'selected' : '' ?>>Refund</option>
                                 </select>
                             </div>
                             <div class="form-group mt-4">
@@ -84,10 +85,10 @@
 
                         @if($pb->type == 'credit')
                         <td class="text-success">{{ ucfirst($pb->type) }}</td>
-                          @elseif($pb->type == 'debit')
+                        @elseif($pb->type == 'debit')
                         <td class="text-danger">{{ ucfirst($pb->type) }}</td>
                         @else
-                         <td class="text-danger">-</td>
+                        <td class="text-danger">-</td>
                         @endif
 
                         <td>{{ ucfirst($pb->status) }}</td>
@@ -126,7 +127,7 @@
                 <form id="add_topup_id" action="{{ url('retailer/topup') }}" method="post">
                     @csrf
                     <div id="put"></div>
-                    <div class="row">
+                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Payment Mode</label>
@@ -148,8 +149,8 @@
                             </div>
 
                             <div class="" id="show-paymnet-details">
-                            </div>
 
+                            </div>
 
                             <div class="form-group">
                                 <label>Amount</label>
@@ -158,8 +159,26 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Comment</label>
-                                <textarea class="form-control" name="comment" id="comment" rows="5"></textarea>
+                                <label>Payment Mode</label>
+                                <select class="form-control form-control-sm" required id="payment_by" name="payment_by">
+                                    <option>Select</option>
+                                    <option value="IMPS">IMPS</option>
+                                    <option value="NEFT">NEFT</option>
+                                    <option value="Cash Deposit">Cash Deposit</option>
+                                    <option value="Cheque">Cheque</option>
+                                </select>
+                                <span id="payment_reference_id_msg" class="custom-text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>UTR No.</label>
+                                <input type="text" placeholder="Enter UTR No" id="name" required name="utr_no" class="form-control form-control-sm">
+                                <span id="utr_no_msg" class="custom-text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Remarks</label>
+                                <textarea class="form-control" name="comment" id="comment" rows="1"></textarea>
                                 <span id="comment_msg" class="custom-text-danger"></span>
                             </div>
 
@@ -176,7 +195,7 @@
 
                             <div class="form-group">
                                 <label>Payment Data & Time</label>
-                                <input type="datetime-local" id="payment_date" name="payment_date" class="form-control form-control-sm datetimepicker-input" data-target="#reservationdatetime" value="<?= date('Y-m-d\TH:i') ?>" min="<?= date('Y-m-d\TH:i') ?>" max="2030-06-14T00:00">
+                                <input type="datetime-local" id="payment_date" name="payment_date" class="form-control form-control-sm" value="<?= date('Y-m-d\TH:i') ?>" min="<?= date('Y-m-d\TH:i') ?>" max="2030-06-14T00:00">
                             </div>
 
                             <div class="form-group text-center">

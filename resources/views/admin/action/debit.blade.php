@@ -9,8 +9,8 @@
 <div class="row">
     <div class="col-md-8">
         <div class="card-body table-responsive py-2 table-sm">
-             <div class="float-right">
-                  <a href="{{ url('admin/debit-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
+            <div class="float-right">
+                <a href="{{ url('admin/debit-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
                 @if(!empty($filter))
                 <a href="javascript:void(0);" class="btn btn-sm btn-success" id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
                 @else
@@ -31,7 +31,15 @@
                                 <label>End Data</label>
                                 <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['end_date']) ? $filter['end_date'] : '' ?>" name="end_date" id="end-date" />
                             </div>
-
+                            <div class="form-group col-md-3">
+                                <label>Channel</label>
+                                <select name="payment_channel" class="form-control form-control-sm" id="payment_channel">
+                                    <option value="">Select</option>
+                                    <?php foreach ($payment_channel as $channel) { ?>
+                                        <option <?= (!empty($filter['payment_channel']) && $filter['payment_channel'] == $channel->name) ? "selected" : "" ?> value="<?= $channel->name ?>"><?= $channel->name ?></option>;
+                                    <?php } ?>
+                                </select>
+                            </div>
                             <div class="form-group col-md-3">
                                 <label>Outlet</label>
                                 <select class="form-control form-control-sm" name="outlet_id">
@@ -57,6 +65,7 @@
                         <th>Transaction Id</th>
                         <th>Channel</th>
                         <th>Amount</th>
+                        <th>Created By</th>
                         <th>Datetime</th>
                     </tr>
                 </thead>
@@ -67,12 +76,13 @@
                         <td>{{ $credit->transaction_id }}</td>
                         <td>{{ $credit->channel}}</td>
                         <td>{!!mSign($credit->amount)!!}</td>
+                        <td>{{ !empty($credit->UserName['full_name'])?$credit->UserName['full_name']:''}}</td>
                         <td>{{ date('d M Y H:i',$credit->created)}}</td>
                     </tr>
                     @endforeach
                 </tbody>
             </table>
-             {{ $credits->appends(request()->toArray())->links() }}
+            {{ $credits->appends(request()->toArray())->links() }}
         </div>
     </div>
     <div class="col-md-4">
@@ -107,7 +117,7 @@
                             <input type="number" name="amount" class="form-control form-control-sm" placeholder="Enter Amount" required>
                             <span id="amount_msg" class="custom-text-danger"></span>
                         </div>
-                         <div class="form-group">
+                        <div class="form-group">
                             <label>Payment Channel</label>
                             <select name="payment_channel" class="form-control form-control-sm" id="payment_channel">
                                 <option value="">Select</option>

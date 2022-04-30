@@ -42,4 +42,8 @@ class TransferHistory extends BaseModel
             return $this->belongsTo('App\Models\Outlet','outlet_id','_id')->select('outlet_name');
         }
 
+         public function InitiateDate(){
+            return $this->belongsTo('App\Models\Transaction','transaction_id','_id')->select('created');
+        }
+
 }

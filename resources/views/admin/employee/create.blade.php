@@ -70,8 +70,8 @@
                         </div>
 
                         <div class="form-group">
-                        <label>Address</label>
-                        <textarea class="form-control" id="address" name="address" placeholder="Enter Address" rows="5"></textarea>
+                            <label>Address</label>
+                            <textarea class="form-control" id="address" name="address" placeholder="Enter Address" rows="5"></textarea>
                         </div>
 
                         <div class="form-group">
@@ -80,14 +80,27 @@
                             <span id="password_msg" class="custom-text-danger"></span>
                         </div>
 
-                         <div class="form-group">
-                        <label> Status</label>
-                        <select class="form-control form-control-sm" name="status">
-                            <option value="1">Active</option>
-                            <option value="0">Inactive</option>
-                        </select>
-                        <span id="account_status_msg" class="custom-text-danger"></span>
-                    </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label>Role</label>
+                                <select class="form-control form-control-sm" name="role" required>
+                                    <option value="">Select</option>
+                                    <option value="employee">Employee</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                                <span id="role_msg" class="custom-text-danger"></span>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label> Status</label>
+                                <select class="form-control form-control-sm" name="status">
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
+                                <span id="account_status_msg" class="custom-text-danger"></span>
+                            </div>
+                        </div>
 
                         <div class="">
                             <input type="submit" value="Submit" class="btn btn-sm btn-success">
