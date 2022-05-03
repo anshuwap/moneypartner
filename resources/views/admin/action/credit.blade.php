@@ -69,10 +69,11 @@
                         <th>Transaction Id</th>
                         <th>Channel</th>
                         <th>Amount</th>
-                        <!-- <th>Status</th> -->
                         <th>Paid Status</th>
-                        <th>Datetime</th>
+                        <th>Rquested Date</th>
                         <th>Created By</th>
+                        <th>Modified Date</th>
+                        <th>Mobified By</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -89,6 +90,8 @@
                         </td>
                         <td>{{ date('d M Y H:i',$credit->created)}}</td>
                         <td>{{ !empty($credit->UserName['full_name'])?$credit->UserName['full_name']:''}}</td>
+                        <td><?php $actionM=!(empty($credit->action))?$credit->action:''; echo !empty($credit->action_date)?'<span data-toggle="tooltip" data-placement="bottom" title="'.$actionM.'">'.date('d,M y H:i',$credit->action_date).'</span>':''?></td>
+                        <td>{{ !empty($credit->ModifiedBy['full_name'])?$credit->ModifiedBy['full_name']:'-'}}</td>
                         <td><a href="javascript:void(0)" _id="{{ $credit->_id }}" class="text-info edit" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="far fa-edit"></i></a></td>
                     </tr>
                     @endforeach
@@ -205,7 +208,7 @@
                     $('#put').html('<input type="hidden" name="_method" value="PUT">');
                     $('form#add-employee').attr('action', url);
                     $('#outlet_id').val(res.data.retailer_id);
-                    $('#outlet_id').attr('readonly', 'true');
+                    $('#outlet_id').attr('disabled', 'true');
                     $('#payment_channel').val(res.data.channel);
                     $('#amount').val(res.data.amount);
                     $('#amount').prop('readonly', true);
@@ -229,7 +232,7 @@
         $('#put').html('');
         $('form#add-employee').attr('action', url);
         $('#amount').prop('readonly', false);
-        $('#outlet_id').attr('readonly', false);
+        $('#outlet_id').attr('disabled', false);
         $('#submit').val('Submit');
     });
 

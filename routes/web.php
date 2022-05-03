@@ -145,7 +145,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::post('a-store-api',        [AdminTransaction::class, 'storeApi']);
   Route::get('a-trans-detail',      [AdminTransaction::class, 'viewDetail']);
   Route::get('a-trans-comment',     [AdminTransaction::class, 'Comment']);
-  Route::get('a-transaction-export',[AdminTransaction::class, 'export']);
+  Route::get('a-transaction-export', [AdminTransaction::class, 'export']);
   Route::post('bulk-action',        [AdminTransaction::class, 'bulkAction']);
   Route::get('change-channel',      [AdminTransaction::class, 'ChangeChannel']);
   Route::get('payment-status',      [AdminTransaction::class, 'PaymentStatus']);
@@ -212,9 +212,6 @@ Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
   Route::get('pending-topup-export', [RetailerTopup::class, 'pendingExport']);
 
 
-  //  Route::resource('customer-trans', RetailerCustomerTrans::class);
-
-
   Route::resource('transaction',    RetailerTransaction::class);
   Route::post('dmt-trans',          [RetailerTransaction::class, 'dmtStore']);
   Route::post('payout-trans',       [RetailerTransaction::class, 'payoutStore']);
@@ -226,6 +223,7 @@ Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
   Route::get('send-otp',            [RetailerTransaction::class, 'sendOtp']);
   Route::get('fee-details',         [RetailerTransaction::class, 'feeDetails']);
   Route::get('transaction-export',  [RetailerTransaction::class, 'export']);
+  Route::get('transaction/receipt/{id}',  [RetailerTransaction::class, 'receipt']);
 
   Route::resource('retailer-trans', RetailerRetailerTrans::class);
   Route::get('retailer-trans-ajax', [RetailerRetailerTrans::class, 'ajaxList']);
@@ -262,7 +260,7 @@ Route::group(['prefix' => 'employee', 'middleware' => 'employee'], function () {
   Route::post('a-store-api',        [EmployeeTransaction::class, 'storeApi']);
   Route::get('a-trans-detail',      [EmployeeTransaction::class, 'viewDetail']);
   Route::get('a-trans-comment',     [EmployeeTransaction::class, 'Comment']);
-  Route::get('a-transaction-export',[EmployeeTransaction::class, 'export']);
+  Route::get('a-transaction-export', [EmployeeTransaction::class, 'export']);
   Route::post('bulk-action',        [EmployeeTransaction::class, 'bulkAction']);
   Route::get('change-channel',      [EmployeeTransaction::class, 'ChangeChannel']);
   Route::get('payment-status',      [EmployeeTransaction::class, 'PaymentStatus']);
@@ -311,7 +309,7 @@ Route::group(['prefix' => 'distributor', 'middleware' => 'distributor'], functio
   Route::post('a-store-api',        [DistributorTransaction::class, 'storeApi']);
   Route::get('a-trans-detail',      [DistributorTransaction::class, 'viewDetail']);
   Route::get('a-trans-comment',     [DistributorTransaction::class, 'Comment']);
-  Route::get('a-transaction-export',[DistributorTransaction::class, 'export']);
+  Route::get('a-transaction-export', [DistributorTransaction::class, 'export']);
   Route::post('bulk-action',        [DistributorTransaction::class, 'bulkAction']);
   Route::get('change-channel',      [DistributorTransaction::class, 'ChangeChannel']);
   Route::get('payment-status',      [DistributorTransaction::class, 'PaymentStatus']);
@@ -319,8 +317,8 @@ Route::group(['prefix' => 'distributor', 'middleware' => 'distributor'], functio
   Route::get('update-utr',          [DistributorTransaction::class, 'updateUtrNo']);
 
 
-//for make payment
-  Route::resource('make-transaction',MakeTransaction::class);
+  //for make payment
+  Route::resource('make-transaction', MakeTransaction::class);
   Route::post('dmt-trans',          [MakeTransaction::class, 'dmtStore']);
   Route::post('payout-trans',       [MakeTransaction::class, 'payoutStore']);
   Route::post('payout-api',         [MakeTransaction::class, 'payoutApiStore']);

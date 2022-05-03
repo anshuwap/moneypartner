@@ -215,7 +215,7 @@ class TransactionController extends Controller
             $type          = $transaction->type;
             $retailer_id   = $transaction->retailer_id;
 
-            transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit',$transaction_id);
+            transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit', $transaction_id);
             /*end passbook debit functionality*/
 
             return response(['status' => 'success', 'msg' => 'Transaction Request Created Successfully!']);
@@ -419,7 +419,7 @@ class TransactionController extends Controller
             $type          = $Transaction->type;
             $retailer_id   = $Transaction->retailer_id;
 
-            transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit',$transaction_id);
+            transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit', $transaction_id);
             /*end passbook debit functionality*/
 
             return response(['status' => 'success', 'msg' => 'Transaction Request Created Successfully!']);
@@ -464,6 +464,12 @@ class TransactionController extends Controller
         }
     }
 
+
+    public function receipt($id)
+    {
+        $data['transaction'] = Transaction::find($id);
+        return view('retailer/transaction/receipt', $data);
+    }
 
     //for export sample import csv file
     public function sampleCsv()
@@ -731,7 +737,7 @@ class TransactionController extends Controller
                 $type          = $transaction->type;
                 $retailer_id   = $transaction->retailer_id;
 
-                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit',$transaction_id);
+                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit', $transaction_id);
                 /*end passbook debit functionality*/
             }
             $comment = '<span class="text-success">Import Successfully!</span>';

@@ -65,8 +65,11 @@
                         <th>Transaction Id</th>
                         <th>Channel</th>
                         <th>Amount</th>
+                        <th>Rquested Date</th>
                         <th>Created By</th>
-                        <th>Datetime</th>
+                        <th>Modified Date</th>
+                        <th>Mobified By</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,8 +79,12 @@
                         <td>{{ $credit->transaction_id }}</td>
                         <td>{{ $credit->channel}}</td>
                         <td>{!!mSign($credit->amount)!!}</td>
-                        <td>{{ !empty($credit->UserName['full_name'])?$credit->UserName['full_name']:''}}</td>
                         <td>{{ date('d M Y H:i',$credit->created)}}</td>
+                        <td>{{ !empty($credit->UserName['full_name'])?$credit->UserName['full_name']:''}}</td>
+                         <td><?php $actionM=!(empty($credit->action))?$credit->action:''; echo !empty($credit->action_date)?'<span data-toggle="tooltip" data-placement="bottom" title="'.$actionM.'">'.date('d,M y H:i',$credit->action_date).'</span>':''?></td>
+                        <td>{{ !empty($credit->ModifiedBy['full_name'])?$credit->ModifiedBy['full_name']:'-'}}</td>
+                        <td><a href="javascript:void(0)" _id="{{ $credit->_id }}" class="text-info edit" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="far fa-edit"></i></a></td>
+
                     </tr>
                     @endforeach
                 </tbody>
@@ -90,6 +97,7 @@
             <form id="add-employee" action="{{ url('admin/debit') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <!-- Form Element sizes -->
+                <div id="put"></div>
                 <div class="card card-secondary">
                     <div class="card-header card-custom-header">
                         <h3 class="card-title">Manual Debit</h3>
@@ -114,7 +122,7 @@
 
                         <div class="form-group">
                             <label>Amount</label>
-                            <input type="number" name="amount" class="form-control form-control-sm" placeholder="Enter Amount" required>
+                            <input type="number" name="amount" id="amount" class="form-control form-control-sm" placeholder="Enter Amount" required>
                             <span id="amount_msg" class="custom-text-danger"></span>
                         </div>
                         <div class="form-group">
@@ -213,6 +221,40 @@
     });
 
     /*end form submit functionality*/
+
+
+    $('.edit').click(function() {
+        var id = $(this).attr('_id');
+        $.ajax({
+            url: '{{ url("admin/credit") }}/' + id + '/edit',
+            type: 'GET',
+            dataType: "json",
+            success: function(res) {
+
+                if (res.status == 'success') {
+                    var url = "{{ url('admin/credit/') }}/" + id;
+                    $('#put').html('<input type="hidden" name="_method" value="PUT">');
+                    $('form#add-employee').attr('action', url);
+                    $('#outlet_id').val(res.data.retailer_id);
+                    $('#outlet_id').attr('disabled', 'true');
+                    $('#payment_channel').val(res.data.channel);
+                    //   alert(res.data.channel);
+                    $('#amount').val(res.data.amount);
+                    $('#amount').prop('readonly', true);
+                    $('#remark').val(res.data.remark);
+                    $('#submit').val('Update');
+
+                } else if (res.status == 'error') {
+                    Swal.fire(
+                        `${res.status}!`,
+                        res.msg,
+                        `${res.status}`,
+                    )
+                }
+            }
+        })
+    })
+
 </script>
 @endpush
 

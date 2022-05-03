@@ -129,7 +129,7 @@ class DebitController extends Controller
 
             $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
 
-            $passbookArray = ['Outlet Name', 'Transaction Id', 'Channel', 'Amount', 'Datetime'];
+             $passbookArray = ['Outlet Name', 'Transaction Id', 'Channel', 'Amount','Created Date','Created By','Modified By','Modified Date'];
             fputcsv($f, $passbookArray, $delimiter); //put heading here
 
             $query = CreditDebit::where('type', 'debit');
@@ -150,9 +150,7 @@ class DebitController extends Controller
             }
 
             $query->whereBetween('created', [$start_date, $end_date]);
-
-            $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
-            $credits = $query->paginate($perPage);
+            $credits = $query->get();
 
             if ($credits->isEmpty())
                 return back()->with('error', 'There is no any record for export!');
@@ -164,7 +162,10 @@ class DebitController extends Controller
                 $passbook_val[] = $credit->transaction_id;
                 $passbook_val[] = $credit->channel;
                 $passbook_val[] = $credit->amount;
+                $passbook_val[] = !empty($credit->UserName['full_name'])?$credit->UserName['full_name']:'';
                 $passbook_val[] = date('Y-m-d H:i', $credit->created);
+                $passbook_val[] = !empty($credit->ModifiedBy['full_name'])?$credit->ModifiedBy['full_name']:'';
+                $passbook_val[] = !empty($credit->action_date)?date('d M Y H:i',$credit->action_date):'';
 
                 $passbookArr = $passbook_val;
 

@@ -111,6 +111,7 @@
                             <th>Request Date</th>
                             <th>Action By</th>
                             <th>Action Date</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -158,7 +159,10 @@
                             <td>{!! $status !!}</td>
                             <td>{{ date('d M y H:i',$trans->created) }}</td>
                             <td>{{ !empty($trans->UserName['full_name']) ?$trans->UserName['full_name'] : '';}}</td>
-  <td><?php $actionM=!(empty($trans->response['action']))?$trans->response['action']:''; echo !empty($trans->response['action_date'])?'<span data-toggle="tooltip" data-placement="bottom" title="'.$actionM.'">'.date('d,M y H:i',$trans->response['action_date']).'</span>':''?></td>
+                            <td><?php $actionM = !(empty($trans->response['action'])) ? $trans->response['action'] : '';
+                                echo !empty($trans->response['action_date']) ? '<span data-toggle="tooltip" data-placement="bottom" title="' . $actionM . '">' . date('d,M y H:i', $trans->response['action_date']) . '</span>' : '' ?></td>
+                            <td><a href="{{ url('retailer/transaction/receipt/'.$trans->_id) }}" target="_blank" class="text-success"><i class="fas fa-2x fa-solid fa-file-invoice " data-toggle="tooltip" data-placement="bottom" title="Receipt"></i></a>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>

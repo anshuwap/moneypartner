@@ -90,7 +90,7 @@
                             <td><?= $payment_has_code; ?></td>
                             <td><?= !empty($topup->utr_no) ? $topup->utr_no : '-' ?></td>
                             <td>{!! mSign($topup->amount) !!}</td>
-                            <td>{{ $topup->payment_by }}</td>
+                            <td>{{ !empty($topup->payment_by)?$topup->payment_by:'-' }}</td>
                             <td>{{ ucwords(str_replace('_', " ", $topup->payment_mode)) }}</td>
                             <td>{{ date('d M Y H:i:s', $topup->payment_date) }}</td>
                             <td id="status-{{ $topup->id }}">
@@ -210,8 +210,8 @@
 
                             <div class="form-group">
                                 <label>Payment Mode</label>
-                                <select class="form-control form-control-sm" required id="payment_by" name="payment_by">
-                                    <option>Select</option>
+                                <select class="form-control form-control-sm" id="payment_by" name="payment_by">
+                                    <option value="">Select</option>
                                     <option value="IMPS">IMPS</option>
                                     <option value="NEFT">NEFT</option>
                                     <option value="Cash Deposit">Cash Deposit</option>
@@ -220,7 +220,7 @@
                                 <span id="payment_reference_id_msg" class="custom-text-danger"></span>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" id="hideShowPayment">
                                 <label>UTR No.</label>
                                 <input type="text" placeholder="Enter UTR No" id="name" required name="utr_no" class="form-control form-control-sm">
                                 <span id="utr_no_msg" class="custom-text-danger"></span>
@@ -273,6 +273,11 @@
             success: function(res) {
                 $('#payment_reference').removeAttr('disabled');
                 $('#payment_reference').html(res);
+                if(payment_mode !='bank_account'){
+                    $('#hideShowPayment').hide();
+                }else{
+                    $('#hideShowPayment').show();
+                }
             }
         })
     });

@@ -158,10 +158,10 @@
                                 <span id="amount_msg" class="custom-text-danger"></span>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" id="hideShowPayment">
                                 <label>Payment Mode</label>
-                                <select class="form-control form-control-sm" required id="payment_by" name="payment_by">
-                                    <option>Select</option>
+                                <select class="form-control form-control-sm" id="payment_by" name="payment_by">
+                                    <option value="">Select</option>
                                     <option value="IMPS">IMPS</option>
                                     <option value="NEFT">NEFT</option>
                                     <option value="Cash Deposit">Cash Deposit</option>
@@ -223,6 +223,11 @@
             success: function(res) {
                 $('#payment_reference').removeAttr('disabled');
                 $('#payment_reference').html(res);
+                if(payment_mode !='bank_account'){
+                    $('#hideShowPayment').hide();
+                }else{
+                    $('#hideShowPayment').show();
+                }
             }
         })
     });

@@ -118,6 +118,9 @@ class CreditController extends Controller
             $creditDebit = CreditDebit::find($id);
             $creditDebit->remark      = $remark;
             $creditDebit->channel     = $request->payment_channel;
+            $creditDebit->action_by   = Auth::user()->_id;
+            $creditDebit->action      = 'Updated';
+            $creditDebit->action_date = time();
 
             if ($creditDebit->save()) {
                 return response(['status' => 'success', 'msg' => 'Updated Successfully']);
@@ -133,8 +136,12 @@ class CreditController extends Controller
 
     public function creditPaidStatus(Request $request)
     {
+
         $creditDebit = CreditDebit::find($request->id);
+        $creditDebit->action      = 'Mark ' . $creditDebit->paid_status . ' to ' . $request->status;
         $creditDebit->paid_status = $request->status;
+        $creditDebit->action_by   = Auth::user()->_id;
+        $creditDebit->action_date = time();
 
         if ($creditDebit->save())
             return response(['status' => 'success', 'msg' => 'Paid Status Updated Successfully']);
@@ -166,7 +173,7 @@ class CreditController extends Controller
 
             $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
 
-            $passbookArray = ['Outlet Name', 'Transaction Id', 'Channel', 'Amount', 'Paid Status', 'Datetime'];
+            $passbookArray = ['Outlet Name', 'Transaction Id', 'Channel', 'Amount', 'Paid Status', 'Created Date', 'Created By', 'Modified By', 'Modified Date'];
             fputcsv($f, $passbookArray, $delimiter); //put heading here
 
             $query = CreditDebit::where('type', 'credit');
@@ -188,8 +195,7 @@ class CreditController extends Controller
 
             $query->whereBetween('created', [$start_date, $end_date]);
 
-            $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
-            $credits = $query->paginate($perPage);
+            $credits = $query->get();
 
             if ($credits->isEmpty())
                 return back()->with('error', 'There is no any record for export!');
@@ -202,7 +208,10 @@ class CreditController extends Controller
                 $passbook_val[] = $credit->channel;
                 $passbook_val[] = $credit->amount;
                 $passbook_val[] = ucwords($credit->paid_status);
+                $passbook_val[] = !empty($credit->UserName['full_name']) ? $credit->UserName['full_name'] : '';
                 $passbook_val[] = date('Y-m-d H:i', $credit->created);
+                $passbook_val[] = !empty($credit->ModifiedBy['full_name']) ? $credit->ModifiedBy['full_name'] : '';
+                $passbook_val[] = !empty($credit->action_date) ? date('d M Y H:i', $credit->action_date) : '';
 
                 $passbookArr = $passbook_val;
 

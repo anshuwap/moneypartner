@@ -3,14 +3,32 @@
 @section('content')
 @section('page_heading', 'Dashboard')
 <style>
-  @media only screen and (min-width: 320px) {
-    .btn-r {
-      /* left: 0px !important; */
+  @media only screen and (max-width: 600px) {
+    .h-height {
+      height: auto !important;
     }
-    .h-height{
-      height: 130px !important;
+
+    .btn-r {
+      top: 0px !important;
     }
   }
+
+  .btn-r {
+    position: relative;
+    text-align: center;
+    top: 44px;
+  }
+
+  .cu-icon {
+    width: 34px !important;
+  }
+
+.info-box .info-box-number {
+  margin-top: 0rem!important;
+}
+.info-box{
+  min-height: 0px!important;
+}
 </style>
 <!-- Content Header (Page header) -->
 <div class="content-header">
@@ -56,16 +74,14 @@
             <div class="col-md-4">
               <div>Un-Settlement Balance</div>
               <div>
-                 <h6><strong>{!!mSign($un_settlement_amount)!!}</strong></h6>
+                <h6><strong>{!!mSign($un_settlement_amount)!!}</strong></h6>
               </div>
             </div>
             @endif
 
           </div>
 
-          <div class="card-tools btn-r" style="position: relative;
-    text-align:center;
-    top: 44px;">
+          <div class="card-tools btn-r">
             @if(!empty(MoneyPartnerOption()->dmt_transfer) && MoneyPartnerOption()->dmt_transfer ==1)
             <a href="javascript:void(0);" class="btn btn-sm btn-success" id="create_customer"><i class="fas fa-plus-circle"></i>&nbsp;Add DMT</a>
             @endif
@@ -180,62 +196,80 @@
       </div>
     </div>
 
-    <!-- <div class="row">
-      <div class="col-12 col-sm-6 col-md-3">
+
+    <div class="row">
+      <div class="col-6 col-sm-6 col-md-2">
         <div class="info-box">
-          <span class="info-box-icon bg-info elevation-1"><i class="fas fa-wallet"></i></span>
+          <span class="info-box-icon cu-icon"><i class="fas fa-wallet text-danger"></i></span>
           <div class="info-box-content">
-            <span class="info-box-text">Topup Amount</span>
+            <span class="info-box-text">Topup Request Amount</span>
             <span class="info-box-number">
-              10
+              {!! !empty($total_topup)?mSign($total_topup):0 !!}
             </span>
           </div>
-
         </div>
-
       </div>
 
-      <div class="col-12 col-sm-6 col-md-3">
+      <div class="col-6 col-sm-6 col-md-2">
         <div class="info-box mb-3">
-          <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-money-check"></i></span>
-
+          <span class="info-box-icon cu-icon"><i class="fas fa-hand-holding-usd text-success"></i></span>
           <div class="info-box-content">
-            <span class="info-box-text">Spent Amount</span>
-            <span class="info-box-number">41,410</span>
+            <span class="info-box-text">Approved Topup</span>
+            <span class="info-box-number"> {!! !empty($a_topup)?mSign($a_topup):0 !!}</span>
           </div>
         </div>
+      </div>
 
+      <div class="col-6 col-sm-6 col-md-2">
+        <div class="info-box">
+          <span class="info-box-icon cu-icon"><i class="fas fa-hand-holding-water text-warning"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-text">Pending Topup</span>
+            <span class="info-box-number">
+             {!! !empty($p_topup)?mSign($p_topup):0 !!}
+            </span>
+          </div>
+        </div>
       </div>
 
       <div class="clearfix hidden-md-up"></div>
 
-      <div class="col-12 col-sm-6 col-md-3">
+      <div class="col-6 col-sm-6 col-md-2">
         <div class="info-box mb-3">
-          <span class="info-box-icon bg-success elevation-1"><i class="fas fa-money-bill-alt"></i></span>
+          <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-alt text-info"></i></span>
 
           <div class="info-box-content">
-            <span class="info-box-text">DMT Transfer Amount</span>
-            <span class="info-box-number">760</span>
+            <span class="info-box-text">Payout Request Amount</span>
+            <span class="info-box-number">{!! !empty($total_trans)?mSign($total_trans):0 !!}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-sm-6 col-md-2">
+        <div class="info-box mb-3">
+          <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-alt text-danger"></i></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Approved Payout</span>
+            <span class="info-box-number">{!! !empty($a_trans)?mSign($a_trans):0 !!}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-sm-6 col-md-2">
+        <div class="info-box mb-3">
+          <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-wave text-primary"></i></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Pending Payout</span>
+            <span class="info-box-number">{!! !empty($p_trans)?mSign($p_trans):0 !!}</span>
           </div>
 
         </div>
 
       </div>
 
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="info-box mb-3">
-          <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-money-bill-wave"></i></span>
-
-          <div class="info-box-content">
-            <span class="info-box-text">Blance Amount</span>
-            <span class="info-box-number">2,000</span>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div> -->
+    </div>
 
     @include('retailer.dashboard.transaction')
 
@@ -264,7 +298,6 @@
     $(copy).removeClass('d-none');
     $temp.remove();
   }
-
 </script>
 @endpush
 

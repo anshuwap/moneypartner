@@ -23,4 +23,9 @@ class CreditDebit extends BaseModel
     {
         return $this->belongsTo('App\Models\User', 'user_id', '_id')->select('full_name');
     }
+
+     public function ModifiedBy()
+    {
+        return $this->belongsTo('App\Models\User', 'action_by', '_id')->select('full_name');
+    }
 }
