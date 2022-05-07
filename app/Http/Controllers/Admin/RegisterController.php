@@ -26,12 +26,7 @@ class RegisterController extends Controller
   {
 
     try{
-    // $request->validate([
-    //   'full_name'=> 'required|max:30',
-    //   // 'last_name' => 'required|max:30',
-    //   'email'     => 'required|email|unique:users',
-    //   'password'  => 'required|min:6|max:16',
-    // ]);
+   
 
     $data = $request->all();
     $check = $this->create($data);

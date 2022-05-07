@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Retailer Login</title>
+    <title>Transaction Receipt</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -37,11 +37,13 @@
     <div class="card-body">
         <div class="row mt-5">
             <div class="col-12 mt-2">
-                <div class="border bg-white p-3">
+                <div class="border bg-white p-3" style="width:1000px">
                     <div class="text-center">
                         <h5>Receipt</h5>
+
                     </div>
-                    <table class="table table-sm table-bordered">
+                     <div class="text-right"><small><b>Transaction ID:-</b> {{ $transaction->transaction_id}}</small></div>
+                    <table class="table">
 
                         <tr>
                             <th>#</th>
@@ -49,6 +51,7 @@
                             <th>Beneficiary</th>
                             <th>Account No</th>
                             <th>Bank</th>
+                            <th>Status</th>
                             <th>Amount</th>
                         </tr>
 
@@ -58,11 +61,11 @@
                             <td>{{ucwords($transaction->receiver_name)}}</td>
                             <td>{{!empty($transaction->payment_channel['account_number'])?$transaction->payment_channel['account_number']:''}}</td>
                             <td>{{!empty($transaction->payment_channel['bank_name'])?$transaction->payment_channel['bank_name']:''}}</td>
+                            <td>{{ strtoupper($transaction->status)}}</td>
                             <td>{!! !empty($transaction->amount)?mSign($transaction->amount):0 !!}</td>
                         </tr>
-
                         <tr>
-                            <th colspan="5" class="text-center">Total:</th>
+                            <th colspan="6" class="text-center">Total:</th>
                             <th>{!! !empty($transaction->amount)?mSign($transaction->amount):0 !!}</th>
                         </tr>
                     </table>

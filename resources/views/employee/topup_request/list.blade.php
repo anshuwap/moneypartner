@@ -56,6 +56,17 @@
               </div>
 
               <div class="form-group col-md-2">
+                <label>Payment Mode</label>
+                <select class="form-control-sm form-control" name="payment_by">
+                  <option value="" {{ (!empty($filter['payment_by']) && $filter['payment_by'] == 'all')?"selected":""}}>All</option>
+                  <option value="IMPS" {{ (!empty($filter['payment_by']) && $filter['payment_by'] == 'IMPS')?"selected":""}}>IMPS</option>
+                  <option value="NEFT" {{ (!empty($filter['payment_by']) && $filter['payment_by'] == 'NEFT')?"selected":""}}>NEFT</option>
+                  <option value="Cash Deposit" {{ (!empty($filter['payment_by']) && $filter['payment_by'] == "Cash Deposit")?"selected":""}}>Cash Deposit</option>
+                  <option value="Cheque" {{ (!empty($filter['payment_by']) && $filter['payment_by'] == 'Cheque')?"selected":""}}>Cheque</option>
+                </select>
+              </div>
+
+              <div class="form-group col-md-2">
                 <label>Status</label>
                 <select class="form-control-sm form-control" name="status">
                   <option value="" {{ (!empty($filter['status']) && $filter['status'] == 'all')?"selected":""}}>All</option>
@@ -119,7 +130,7 @@
 
               <td>{!! mSign($topup->amount) !!}</td>
               <td>{{ $topup->payment_by }}</td>
-              <td>{{ ucwords(str_replace('_', " ", $topup->payment_mode)) }}</td>
+              <td>{{ $topup->paymentModeName($topup->payment_mode,$topup->payment_reference_id) }}</td>
               <td>{{ date('d M Y H:i:s', $topup->payment_date) }}</td>
               <td>{{ !empty($topup->UserName['full_name']) ?$topup->UserName['full_name'] : '-' }}</td>
               <td>{{ !empty($topup->action_date)?date('d M Y H:i:s', $topup->action_date):'-' }}</td>

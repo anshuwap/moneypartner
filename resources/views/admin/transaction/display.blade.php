@@ -80,6 +80,17 @@
                             </div>
 
                             <div class="form-group col-md-2">
+                                <label>Channel</label>
+                                <select class="form-control-sm form-control" name="channel">
+                                    <option value="" {{ (!empty($filter['channel']) && $filter['channel'] == 'all')?"selected":""}}>All</option>
+                                    @foreach($payment_channel as $channel)
+                                    <option value="{{$channel->name}}" {{ (!empty($filter['channel']) && $filter['channel'] == $channel->name)?"selected":""}}>{{ ucwords($channel->name)}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+
+                            <div class="form-group col-md-2">
                                 <label>Status</label>
                                 <select class="form-control form-control-sm" name="status">
                                     <option value="">All</option>
@@ -181,7 +192,8 @@
                             <td>{!! $status !!}</td>
                             <td>{{ date('d,M y H:i',$trans->created) }}</td>
                             <td>{{ !empty($trans->UserName['full_name']) ?$trans->UserName['full_name'] : '';}}</td>
-                            <td><?php $actionM=!(empty($trans->response['action']))?$trans->response['action']:''; echo !empty($trans->response['action_date'])?'<span data-toggle="tooltip" data-placement="bottom" title="'.$actionM.'">'.date('d,M y H:i',$trans->response['action_date']).'</span>':''?></td>
+                            <td><?php $actionM = !(empty($trans->response['action'])) ? $trans->response['action'] : '';
+                                echo !empty($trans->response['action_date']) ? '<span data-toggle="tooltip" data-placement="bottom" title="' . $actionM . '">' . date('d,M y H:i', $trans->response['action_date']) . '</span>' : '' ?></td>
                             <td> <a href="javascript:void(0);" class="btn btn-info btn-xs view_dashboard" _id="{{ $trans->_id }}"><i class="fas fa-eye"></i>&nbsp;view</a>
                                 {!! $action !!}</td>
                         </tr>

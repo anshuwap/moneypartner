@@ -265,6 +265,9 @@ class TopupController extends Controller
             if (!empty($request->transaction_id))
                 $query->where('payment_id', $request->transaction_id);
 
+            if (!empty($request->payment_by))
+                $query->where('payment_by', $request->payment_by);
+
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
             if (!empty($start_date) && !empty($end_date)) {
@@ -297,6 +300,9 @@ class TopupController extends Controller
 
             if (!empty($request->transaction_id))
                 $query->where('payment_id', $request->transaction_id);
+
+            if (!empty($request->payment_by))
+                $query->where('payment_by', $request->payment_by);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
@@ -337,7 +343,7 @@ class TopupController extends Controller
 
             $transactionArray = [
                 'Transaction ID', 'UTR No.', 'Channel', 'Amount', 'Payment Mode', 'Payment In',
-                'Requested Date', 'Approve/Reject By','Approve/Reject Date','Status'
+                'Requested Date', 'Approve/Reject By', 'Approve/Reject Date', 'Status'
             ];
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
@@ -345,6 +351,9 @@ class TopupController extends Controller
 
             if (!empty($request->transaction_id))
                 $query->where('payment_id', $request->transaction_id);
+
+            if (!empty($request->payment_by))
+                $query->where('payment_by', $request->payment_by);
 
             $start_date = '';
             $end_date   = '';
@@ -373,10 +382,10 @@ class TopupController extends Controller
                 $topup_val[] = !empty($topup->payment_channel) ? ucwords(str_replace('_', ' ', $topup->payment_channel)) : '';
                 $topup_val[] = $topup->amount;
                 $topup_val[] = $topup->payment_by;
-                $topup_val[] = !empty($topup->payment_mode) ? ucwords(str_replace('_', ' ', $topup->payment_mode)) : '';
-                $topup_val[] = !empty($topup->payment_date)?date('Y-m-d H:i:s', $topup->payment_date):'';
-                $topup_val[] = !empty($topup->UserName['full_name']) ?$topup->UserName['full_name'] : '-';
-                $topup_val[] = !empty($topup->action_date)?date('Y-m-d H:i:s', $topup->action_date):'';
+                $topup_val[] = !empty($topup->payment_mode) ? $topup->paymentModeName($topup->payment_mode, $topup->payment_reference_id) : '';
+                $topup_val[] = !empty($topup->payment_date) ? date('Y-m-d H:i:s', $topup->payment_date) : '';
+                $topup_val[] = !empty($topup->UserName['full_name']) ? $topup->UserName['full_name'] : '-';
+                $topup_val[] = !empty($topup->action_date) ? date('Y-m-d H:i:s', $topup->action_date) : '';
                 $topup_val[] = strtoupper($topup->status);
                 $transactionArr = $topup_val;
 
@@ -425,6 +434,9 @@ class TopupController extends Controller
             if (!empty($request->transaction_id))
                 $query->where('payment_id', $request->transaction_id);
 
+            if (!empty($request->payment_by))
+                $query->where('payment_by', $request->payment_by);
+
             $start_date = '';
             $end_date   = '';
             if (!empty($request->date_range)) {
@@ -451,7 +463,7 @@ class TopupController extends Controller
                 $topup_val[] = $topup->utr_no;
                 $topup_val[] = $topup->amount;
                 $topup_val[] = $topup->payment_by;
-                $topup_val[] = !empty($topup->payment_mode) ? ucwords(str_replace('_', ' ', $topup->payment_mode)) : '';
+                $topup_val[] = !empty($topup->payment_mode) ? $topup->paymentModeName($topup->payment_mode, $topup->payment_reference_id) : '';
                 $topup_val[] = date('Y-m-d H:i:s', $topup->payment_date);
                 $topup_val[] = strtoupper($topup->status);
                 $transactionArr = $topup_val;

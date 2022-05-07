@@ -30,6 +30,9 @@ class TopupRequestController extends Controller
             if (!empty($request->transaction_id))
                 $query->where('payment_id', $request->transaction_id);
 
+            if (!empty($request->payment_by))
+                $query->where('payment_by', $request->payment_by);
+
             if (!empty($request->status))
                 $query->where('status', $request->status);
 
@@ -76,6 +79,9 @@ class TopupRequestController extends Controller
 
             if (!empty($request->transaction_id))
                 $query->where('payment_id', $request->transaction_id);
+
+            if (!empty($request->payment_by))
+                $query->where('payment_by', $request->payment_by);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
@@ -349,6 +355,9 @@ class TopupRequestController extends Controller
             if (!empty($request->transaction_id))
                 $query->where('payment_id', $request->transaction_id);
 
+            if (!empty($request->payment_by))
+                $query->where('payment_by', $request->payment_by);
+
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
 
@@ -361,7 +370,7 @@ class TopupRequestController extends Controller
             }
 
             $query->whereBetween('created', [$start_date, $end_date]);
-            $topups = $query->get();
+            $topups = $query->orderBy('created', 'DESC')->get();
 
             if ($topups->isEmpty())
                 return back()->with('error', 'There is no any record for export!');
@@ -375,7 +384,7 @@ class TopupRequestController extends Controller
                 $topup_val[] = !empty($topup->payment_channel) ? ucwords(str_replace('_', ' ', $topup->payment_channel)) : '';
                 $topup_val[] = $topup->amount;
                 $topup_val[] = $topup->payment_by;
-                $topup_val[] = !empty($topup->payment_mode) ? ucwords(str_replace('_', ' ', $topup->payment_mode)) : '';
+                $topup_val[] = !empty($topup->payment_mode) ? $topup->paymentModeName($topup->payment_mode,$topup->payment_reference_id) : '';
                 $topup_val[] = !empty($topup->payment_date) ? date('Y-m-d H:i:s', $topup->payment_date) : '';
                 $topup_val[] = !empty($topup->UserName['full_name']) ? $topup->UserName['full_name'] : '-';
                 $topup_val[] = !empty($topup->action_date) ? date('Y-m-d H:i:s', $topup->action_date) : '';
@@ -408,70 +417,73 @@ class TopupRequestController extends Controller
     public function pendingExport(Request $request)
     {
         try {
-        $file_name = 'pending-topup-report';
+            $file_name = 'pending-topup-report';
 
-        $delimiter = ","; //dfine delimiter
+            $delimiter = ","; //dfine delimiter
 
-        if (!file_exists('exportCsv')) //
-            mkdir('exportCsv', 0777, true);
+            if (!file_exists('exportCsv')) //
+                mkdir('exportCsv', 0777, true);
 
-        $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
+            $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
 
-        $transactionArray = [
-            'Transaction ID', 'Outlet Name', 'UTR No', 'Amount', 'Payment Mode', 'Payment In', 'Requested Date',
-            'Status'
-        ];
-        fputcsv($f, $transactionArray, $delimiter); //put heading here
+            $transactionArray = [
+                'Transaction ID', 'Outlet Name', 'UTR No', 'Amount', 'Payment Mode', 'Payment In', 'Requested Date',
+                'Status'
+            ];
+            fputcsv($f, $transactionArray, $delimiter); //put heading here
 
-        $query = Topup::query()->where('status', 'pending');
+            $query = Topup::query()->where('status', 'pending');
 
-        if (!empty($request->transaction_id))
-            $query->where('payment_id', $request->transaction_id);
+            if (!empty($request->transaction_id))
+                $query->where('payment_id', $request->transaction_id);
 
-        $start_date = $request->start_date;
-        $end_date   = $request->end_date;
+            if (!empty($request->payment_by))
+                $query->where('payment_by', $request->payment_by);
 
-        if (!empty($start_date) && !empty($end_date)) {
-            $start_date = strtotime(trim($start_date) . " 00:00:00");
-            $end_date   = strtotime(trim($end_date) . " 23:59:59");
-        } else {
-            $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
-            $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
-        }
+            $start_date = $request->start_date;
+            $end_date   = $request->end_date;
 
-        $topups = $query->whereBetween('created', [$start_date, $end_date])->orderBy('created', 'DESC')->get();
+            if (!empty($start_date) && !empty($end_date)) {
+                $start_date = strtotime(trim($start_date) . " 00:00:00");
+                $end_date   = strtotime(trim($end_date) . " 23:59:59");
+            } else {
+                $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
+                $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
+            }
 
-        if ($topups->isEmpty())
-            return back()->with('error', 'There is no any record for export!');;
+            $topups = $query->whereBetween('created', [$start_date, $end_date])->orderBy('created', 'DESC')->get();
 
-        $transactionArr = [];
-        foreach ($topups as $topup) {
+            if ($topups->isEmpty())
+                return back()->with('error', 'There is no any record for export!');;
 
-            $topup_val[] = $topup->payment_id;
-            $topup_val[] = !empty($topup->RetailerName['outlet_name']) ? $topup->RetailerName['outlet_name'] : '';
-            $topup_val[] = $topup->utr_no;
-            $topup_val[] = $topup->amount;
-            $topup_val[] = $topup->payment_by;
-            $topup_val[] = !empty($topup->payment_mode) ? ucwords(str_replace('_', ' ', $topup->payment_mode)) : '';
-            $topup_val[] = date('Y-m-d H:i:s', $topup->payment_date);
-            $topup_val[] = strtoupper($topup->status);
-            $transactionArr = $topup_val;
+            $transactionArr = [];
+            foreach ($topups as $topup) {
 
-            fputcsv($f, $transactionArr, $delimiter); //put heading here
-            $topup_val = [];
-        }
-        // Move back to beginning of file
-        fseek($f, 0);
+                $topup_val[] = $topup->payment_id;
+                $topup_val[] = !empty($topup->RetailerName['outlet_name']) ? $topup->RetailerName['outlet_name'] : '';
+                $topup_val[] = $topup->utr_no;
+                $topup_val[] = $topup->amount;
+                $topup_val[] = $topup->payment_by;
+                $topup_val[] = !empty($topup->payment_mode) ?$topup->paymentModeName($topup->payment_mode,$topup->payment_reference_id) : '';
+                $topup_val[] = date('Y-m-d H:i:s', $topup->payment_date);
+                $topup_val[] = strtoupper($topup->status);
+                $transactionArr = $topup_val;
 
-        // headers to download file
-        header('Content-Type: text/csv');
-        header('Content-Disposition: attachment; filename="' . $file_name . '.csv"');
-        readfile('exportCsv/' . $file_name . '.csv');
+                fputcsv($f, $transactionArr, $delimiter); //put heading here
+                $topup_val = [];
+            }
+            // Move back to beginning of file
+            fseek($f, 0);
 
-        //remove file form server
-        $path = 'exportCsv/' . $file_name . '.csv';
-        if (file_exists($path))
-            unlink($path);
+            // headers to download file
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="' . $file_name . '.csv"');
+            readfile('exportCsv/' . $file_name . '.csv');
+
+            //remove file form server
+            $path = 'exportCsv/' . $file_name . '.csv';
+            if (file_exists($path))
+                unlink($path);
         } catch (Exception $e) {
             return redirect('500');
         }

@@ -14,6 +14,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -21,72 +22,107 @@ class DashboardController extends Controller
     {
 
         try {
-
-            $topups = Topup::where('status', 'pending')->get();
-            $data['topup_request'] = $topups;
-
             $data['total_outlet']  = Outlet::count();
 
             //for outlet amount
-            $outlets = Outlet::select('amount')->get();
-            $oids =[];
+            $outlets = Outlet::select('amount')->where('user_id', Auth::user()->_id)->get();
+            $oids = [];
             foreach ($outlets as $am) {
                 $oids[] = $am->_id;
             }
             // $data['oids'] = $oids;
 
-            $users = User::select('available_amount')->whereIn('outlet_id', $oids)->get();
+            $users = User::select('available_amount', 'outlet_id')->whereIn('outlet_id', $oids)->get();
             $available_amount = 0;
+            $retailers_ids = [];
             foreach ($users as $user) {
-           $available_amount += $user->available_amount;
+                $available_amount += $user->available_amount;
+                $retailers_ids[] = $user->_id;
             }
             $data['total_outlet_amount'] = $available_amount;
 
-
-            //amout for current month
-            $dmts = CustomerTrans::select('total_amount')->get();
-            $current_month_dmt_amount = 0;
-            foreach ($dmts as $am) {
-                $current_month_dmt_amount += $am->total_amount;
-            }
-            $data['current_month_dmt_amount']   = $current_month_dmt_amount;
-
-            //for bulk amount
-            $bulks = RetailerTrans::select('total_amount')->get();
-            $current_month_bulk_amount = 0;
-            foreach ($bulks as $am) {
-                $current_month_bulk_amount += $am->total_amount;
-            }
-            $data['current_month_bulk_amount']  = $current_month_bulk_amount;
-
-
-            //for dmt amount
-            $dmts = CustomerTrans::select('total_amount')->get();
-            $total_dmt_amount = 0;
-            foreach ($dmts as $am) {
-                $total_dmt_amount += $am->total_amount;
-            }
-            $data['total_dmt_amount']   = $total_dmt_amount;
-
-            //for bulk amount
-            $bulks = RetailerTrans::select('total_amount')->get();
-            $total_bulk_amount = 0;
-            foreach ($bulks as $am) {
-                $total_bulk_amount += $am->total_amount;
-            }
-            $data['total_bulk_amount']  = $total_bulk_amount;
 
             $que = Transaction::where('status', 'pending');
             if (!empty($request->mode))
                 $que->where('payment_mode', $request->mode);
 
-            $data['transaction']  = $que->orderBy('created', 'DESC')->get();
+            $data['transaction']  = $que->orderBy('created', 'DESC')->paginate(10);
             $data['mode'] = $request->mode;
             //for payment channel
             $data['payment_channel'] = PaymentChannel::select('_id', 'name')->get();
 
             Session::forget('previewTransaction');
             Session::forget('transaction_ids');
+
+
+            $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
+            $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
+            // $start_date = strtotime('-50days',$start_date);
+
+            $allTopup = Topup::select('amount')->whereIn('retailer_id', $retailers_ids)->whereBetween('created', [$start_date, $end_date])->get();
+
+            $alltopup = 0;
+            foreach ($allTopup as $topup) {
+                $alltopup += (int)$topup->amount;
+            }
+            $data['total_topup'] = $alltopup;
+
+            $pendingTopup = Topup::select('amount')->whereIn('retailer_id', $retailers_ids)->where('status', 'pending')->whereBetween('created', [$start_date, $end_date])->get();
+            $ptopup = 0;
+            foreach ($pendingTopup as $topup) {
+                $ptopup +=  (int)$topup->amount;
+            }
+            $data['p_topup'] = $ptopup;
+
+            $rejectedTopup = Topup::select('amount')->whereIn('retailer_id', $retailers_ids)->where('status', 'rejected')->whereBetween('created', [$start_date, $end_date])->get();
+            $rtopup = 0;
+            foreach ($rejectedTopup as $topup) {
+                $rtopup +=  (int)$topup->amount;
+            }
+            $data['r_topup'] = $rtopup;
+
+
+            $approveTopup = Topup::select('amount')->whereIn('retailer_id', $retailers_ids)->where('status', 'success')->whereBetween('created', [$start_date, $end_date])->get();
+            $atopup = 0;
+            foreach ($approveTopup as $topup) {
+                $atopup +=  (int)$topup->amount;
+            }
+            $data['a_topup'] = $atopup;
+
+            $allTransacation = Transaction::select('amount')->whereIn('retailer_id', $retailers_ids)->whereBetween('created', [$start_date, $end_date])->get();
+            $allTrans = 0;
+            foreach ($allTransacation as $trans) {
+                $allTrans += (int)$trans->amount;
+            }
+            $data['total_trans'] = $allTrans;
+
+            $pendingTrnasaction = Transaction::select('amount')->whereIn('retailer_id', $retailers_ids)->whereIn('status', ['pending', 'process'])->whereBetween('created', [$start_date, $end_date])->get();
+            $pTrans = 0;
+            foreach ($pendingTrnasaction as $trans) {
+                $pTrans +=  (int)$trans->amount;
+            }
+            $data['p_trans'] = $pTrans;
+
+            $failedTrnasaction = Transaction::select('amount')->whereIn('retailer_id', $retailers_ids)->where('status', 'failed')->whereBetween('created', [$start_date, $end_date])->get();
+            $fTrans = 0;
+            foreach ($failedTrnasaction as $trans) {
+            $fTrans +=  (int)$trans->amount;
+            }
+            $data['f_trans'] = $fTrans;
+
+            $rejectedTrnasaction = Transaction::select('amount')->whereIn('retailer_id', $retailers_ids)->where('status', 'rejected')->whereBetween('created', [$start_date, $end_date])->get();
+            $rTrans = 0;
+            foreach ($rejectedTrnasaction as $trans) {
+            $rTrans +=  (int)$trans->amount;
+            }
+            $data['r_trans'] = $rTrans;
+
+            $approveTransaction = Transaction::select('amount')->whereIn('retailer_id', $retailers_ids)->where('status', 'success')->whereBetween('created', [$start_date, $end_date])->get();
+            $aTrans = 0;
+            foreach ($approveTransaction as $trans) {
+                $aTrans +=  (int)$trans->amount;
+            }
+            $data['a_trans'] = $aTrans;
 
             return view('admin.dashboard', $data);
         } catch (Exception $e) {

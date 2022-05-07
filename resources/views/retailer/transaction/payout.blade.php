@@ -358,6 +358,9 @@ $bank_names = [
         var amount = $(this).val();
 
         var words = numberToWord(amount);
+        var words = words?words+" Rupees.":'';
+        $('#payout_amount_msg').removeClass('custom-text-danger');
+        $('#payout_amount_msg').addClass('text-secondary');
         $('#payout_amount_msg').html(words);
         if (amount >= 25000 && amount < 200000) {
             // $('#payput_upload_docs').html(`<div class="form-group">
@@ -375,6 +378,8 @@ $bank_names = [
             // <span id="attachment_msg" class="custom-text-danger"></span>
             // </div>`);
         } else if (amount > 200000) {
+            $('#payout_amount_msg').removeClass('text-secondary');
+            $('#payout_amount_msg').addClass('custom-text-danger');
             $('#payout_trans input,select').attr('disabled', 'disabled');
             $('#payout_amount_msg').html('Alowed only 2 lakh Per Month.');
             $('#payout_amount').removeAttr('disabled');

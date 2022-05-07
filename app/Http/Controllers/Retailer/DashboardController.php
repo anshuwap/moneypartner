@@ -106,6 +106,13 @@ class DashboardController extends Controller
         }
         $data['a_topup'] = $atopup;
 
+        $rejectedTopup = Topup::select('amount')->where('retailer_id', Auth::user()->_id)->where('status', 'rejected')->whereBetween('created', [$start_date, $end_date])->get();
+        $rtopup = 0;
+        foreach ($rejectedTopup as $topup) {
+            $rtopup +=  (int)$topup->amount;
+        }
+        $data['r_topup'] = $rtopup;
+
 
         $allTransacation = Transaction::select('amount')->where('retailer_id', Auth::user()->_id)->whereBetween('created', [$start_date, $end_date])->get();
         $allTrans = 0;
@@ -114,12 +121,12 @@ class DashboardController extends Controller
         }
         $data['total_trans'] = $allTrans;
 
-        $pendingTrnasaction = Transaction::select('amount')->where('retailer_id', Auth::user()->_id)->whereIn('status', ['pending','failed','process'])->whereBetween('created', [$start_date, $end_date])->get();
-        $pTrans = 0;
-        foreach ($pendingTrnasaction as $trans) {
-            $pTrans +=  (int)$trans->amount;
-        }
-        $data['p_trans'] = $pTrans;
+        // $pendingTrnasaction = Transaction::select('amount')->where('retailer_id', Auth::user()->_id)->whereIn('status', ['pending', 'failed', 'process'])->whereBetween('created', [$start_date, $end_date])->get();
+        // $pTrans = 0;
+        // foreach ($pendingTrnasaction as $trans) {
+        //     $pTrans +=  (int)$trans->amount;
+        // }
+        // $data['p_trans'] = $pTrans;
 
 
         $approveTransaction = Transaction::select('amount')->where('retailer_id', Auth::user()->_id)->where('status', 'success')->whereBetween('created', [$start_date, $end_date])->get();
@@ -128,6 +135,28 @@ class DashboardController extends Controller
             $aTrans +=  (int)$trans->amount;
         }
         $data['a_trans'] = $aTrans;
+
+
+        $pendingTrnasaction = Transaction::select('amount')->where('retailer_id', Auth::user()->_id)->whereIn('status', ['pending', 'process'])->whereBetween('created', [$start_date, $end_date])->get();
+        $pTrans = 0;
+        foreach ($pendingTrnasaction as $trans) {
+            $pTrans +=  (int)$trans->amount;
+        }
+        $data['p_trans'] = $pTrans;
+
+        $failedTrnasaction = Transaction::select('amount')->where('retailer_id', Auth::user()->_id)->where('status', 'failed')->whereBetween('created', [$start_date, $end_date])->get();
+        $fTrans = 0;
+        foreach ($failedTrnasaction as $trans) {
+            $fTrans +=  (int)$trans->amount;
+        }
+        $data['f_trans'] = $fTrans;
+
+        $rejectedTrnasaction = Transaction::select('amount')->where('retailer_id', Auth::user()->_id)->where('status', 'rejected')->whereBetween('created', [$start_date, $end_date])->get();
+        $rTrans = 0;
+        foreach ($rejectedTrnasaction as $trans) {
+            $rTrans +=  (int)$trans->amount;
+        }
+        $data['r_trans'] = $rTrans;
 
 
         return view('retailer.dashboard', $data);

@@ -207,7 +207,6 @@
                         @if(!empty($outlet->upload_id))
                         <div class="col-md-12">
                           <div class="card p-2"><strong>{{ ucwords(str_replace('_',' ',$outlet->id_proff)) }}</strong>
-                            <img src">
                             <span>Attachment Link- <a href="{{ (!empty($outlet->upload_id))?asset('attachment/').'/'.$outlet->upload_id:'' }}" target="_blank">{{$outlet->upload_id}}</a></span>
                           </div>
                         </div>

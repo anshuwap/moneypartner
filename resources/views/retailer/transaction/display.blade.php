@@ -124,17 +124,25 @@
                         if ($trans->status == 'success') {
                             $status = '<span class="tag-small"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                             $action = '-';
+                            $receipt = '<a href="' . url('retailer/transaction/receipt/' . $trans->_id) . '" target="_blank" class="text-success"><i class="fas fa-2x fa-solid fa-file-invoice " data-toggle="tooltip" data-placement="bottom" title="Receipt"></i></a>';
                         } else if ($trans->status == 'rejected') {
                             $status = '<span class="tag-small-danger"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                             $action = '-';
+                            // $receipt = '-';
+                             $receipt = '<a href="'. url('retailer/transaction/receipt/'.$trans->_id).'" target="_blank" class="text-success"><i class="fas fa-2x fa-solid fa-file-invoice " data-toggle="tooltip" data-placement="bottom" title="Receipt"></i></a>';
                         } else if ($trans->status == 'process') {
                             $status = '<span class="tag-small-purple"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                             $action = '-';
+                            $receipt = '-';
                         } else if (!empty($trans->response)) {
                             $status = '<span class="tag-small-warning"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">Pending</a></span>';
+                            $receipt = '-';
                         } else if ($trans->status == 'failed') {
                             $status = '<span class="tag-small-danger"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
+                            // $receipt = '<a href="'. url('retailer/transaction/receipt/'.$trans->_id).'" target="_blank" class="text-success"><i class="fas fa-2x fa-solid fa-file-invoice " data-toggle="tooltip" data-placement="bottom" title="Receipt"></i></a>';
+                            $receipt = '-';
                         } else {
+                            $receipt = '-';
                             $status = '<span class="tag-small"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">Success</a></span>';
                         } ?>
                         <tr>
@@ -161,7 +169,7 @@
                             <td>{{ !empty($trans->UserName['full_name']) ?$trans->UserName['full_name'] : '';}}</td>
                             <td><?php $actionM = !(empty($trans->response['action'])) ? $trans->response['action'] : '';
                                 echo !empty($trans->response['action_date']) ? '<span data-toggle="tooltip" data-placement="bottom" title="' . $actionM . '">' . date('d,M y H:i', $trans->response['action_date']) . '</span>' : '' ?></td>
-                            <td><a href="{{ url('retailer/transaction/receipt/'.$trans->_id) }}" target="_blank" class="text-success"><i class="fas fa-2x fa-solid fa-file-invoice " data-toggle="tooltip" data-placement="bottom" title="Receipt"></i></a>
+                            <td>{!! $receipt !!}
                             </td>
                         </tr>
                         @endforeach

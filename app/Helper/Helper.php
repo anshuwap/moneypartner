@@ -62,6 +62,13 @@ if (!function_exists('profileImage')) {
     }
 }
 
+if (!function_exists('adminProfileImage')) {
+
+    function adminProfileImage()
+    {
+        return (!empty(Auth::user()->profile_image)) ? asset('attachment') . '/' . Auth::user()->profile_image : asset('assets/profile/37.jpg');
+    }
+}
 
 if (!function_exists('employeeImage')) {
 

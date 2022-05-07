@@ -171,6 +171,10 @@
       background: #007bff;
       padding: 0px 0px 0px 3px;
     }
+
+    .form-group.mb-3{
+      padding: 0px 50px 0px 50px;
+}
   </style>
 </head>
 

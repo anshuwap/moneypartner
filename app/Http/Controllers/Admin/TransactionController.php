@@ -42,6 +42,8 @@ class TransactionController extends Controller
             if (!empty($request->account_no))
                 $query->where('payment_channel.account_number', $request->account_no);
 
+            if (!empty($request->channel))
+                $query->where('response.payment_mode', $request->channel);
             // $start_date = '';
             // $end_date   = '';
             // if (!empty($request->date_range)) {
@@ -392,7 +394,7 @@ class TransactionController extends Controller
             }
         }
         /*start transafer functionality*/
-         $response['action_by']     = Auth::user()->_id;
+        $response['action_by']     = Auth::user()->_id;
         $response['action_date']   = time();
         $response['action']        = 'Paid from API';
         $transaction->status       = $api_status;
@@ -716,7 +718,7 @@ class TransactionController extends Controller
 
             $transactionArray = [
                 'Transaction ID', 'Customer Name', 'Customer Phone', 'Mode', 'Channel', 'Amount', 'Fees', 'Beneficiary', 'IFSC', 'Account No.', 'Bank Name',
-                'UTR Number', 'Status', 'Request Date','Action By','Action Date'
+                'UTR Number', 'Status', 'Request Date', 'Action By', 'Action Date'
             ];
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
@@ -733,6 +735,9 @@ class TransactionController extends Controller
 
             if (!empty($request->transaction_id))
                 $query->where('transaction_id', $request->transaction_id);
+
+            if (!empty($request->channel))
+                $query->where('response.payment_mode', $request->channel);
 
             $start_date1 = $request->start_date;
             $end_date1   = $request->end_date;
@@ -771,8 +776,8 @@ class TransactionController extends Controller
                 $transaction_val[] = (!empty($transaction->response['utr_number'])) ? $transaction->response['utr_number'] : '';
                 $transaction_val[] = strtoupper($transaction->status);
                 $transaction_val[] = date('Y-m-d H:i', $transaction->created);
-                $transaction_val[] = !empty($transaction->UserName['full_name']) ?$transaction->UserName['full_name'] : '';
-                $transaction_val[] = !empty($transaction->response['action_date'])? date('d,M y H:i',$transaction->response['action_date']):'';
+                $transaction_val[] = !empty($transaction->UserName['full_name']) ? $transaction->UserName['full_name'] : '';
+                $transaction_val[] = !empty($transaction->response['action_date']) ? date('d,M y H:i', $transaction->response['action_date']) : '';
 
                 $transactionArr = $transaction_val;
 

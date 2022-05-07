@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use App\Models\BaseModel;
+use App\Models\PaymentMode\BankAccount;
+use App\Models\PaymentMode\QrCode;
+use App\Models\PaymentMode\Upi;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,6 +32,32 @@ class Topup extends BaseModel
         return $query->get();
     }
 
+    public function paymentModeName($type, $id)
+    {
+        switch ($type) {
+            case 'bank_account':
+                $value = BankAccount::select('bank_name')->find($id);
+                $name = '-';
+                if (!empty($value))
+                    $name = $value->bank_name;
+                break;
+            case 'upi_id':
+                $value = Upi::select('upi_id')->find($id);
+                $name = '-';
+                if (!empty($value))
+                    $name = $value->upi_id;
+                break;
+            case 'qr_code':
+                $value = QrCode::select('name')->find($id);
+                if (!empty($value))
+                    $name = $value->name;
+                break;
+            default:
+                $name = '';
+                break;
+        }
+        return $name;
+    }
 
     public function RetailerName()
     {

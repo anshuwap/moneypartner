@@ -55,6 +55,17 @@
                 </select>
               </div>
 
+              <div class="form-group col-md-2">
+                <label>Payment Mode</label>
+                <select class="form-control-sm form-control" name="payment_by">
+                  <option value="" {{ (!empty($filter['payment_by']) && $filter['payment_by'] == 'all')?"selected":""}}>All</option>
+                  <option value="IMPS" {{ (!empty($filter['payment_by']) && $filter['payment_by'] == 'IMPS')?"selected":""}}>IMPS</option>
+                  <option value="NEFT" {{ (!empty($filter['payment_by']) && $filter['payment_by'] == 'NEFT')?"selected":""}}>NEFT</option>
+                  <option value="Cash Deposit" {{ (!empty($filter['payment_by']) && $filter['payment_by'] == "Cash Deposit")?"selected":""}}>Cash Deposit</option>
+                  <option value="Cheque" {{ (!empty($filter['payment_by']) && $filter['payment_by'] == 'Cheque')?"selected":""}}>Cheque</option>
+                </select>
+              </div>
+
               <div class="form-group mt-4">
                 <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i>&nbsp;Search</button>
                 <a href="{{ url('employee/pending-topup') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
@@ -104,7 +115,7 @@
               <td><?= !empty($topup->utr_no) ? $topup->utr_no : '-' ?></td>
               <td>{!! mSign($topup->amount) !!}</td>
               <td>{{ $topup->payment_by }}</td>
-              <td>{{ ucwords(str_replace('_', " ", $topup->payment_mode)) }}</td>
+              <td>{{ $topup->paymentModeName($topup->payment_mode,$topup->payment_reference_id) }}</td>
               <td>{{ date('d M Y H:i:s', $topup->payment_date) }}</td>
               <td id="status-{{ $topup->id }}">
                 {!! $status !!}

@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\EcollectionController;
 use App\Http\Controllers\Admin\PassbookController as AdminPassbook;
 use App\Http\Controllers\Admin\Action\CreditController as AdminCredit;
 use App\Http\Controllers\Admin\Action\DebitController as AdminDebit;
+use App\Http\Controllers\Admin\ProfileController as AdminProfile;
 use App\Http\Controllers\Controller;
 //for retailer panel
 use App\Http\Controllers\Retailer\WebhookApiController as WebhookApi;
@@ -91,6 +92,12 @@ Route::post('verify-mobile', [AdminLogin::class, 'verifyMobile']);
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 
   Route::resource('dashboard', AdminDashboard::class);
+
+  Route::resource('profile',     AdminProfile::class);
+  Route::get('pin-password',     [AdminProfile::class, 'pinPassword']);
+  Route::post('change-password', [AdminProfile::class, 'changePassword']);
+
+
   Route::get('export',         [AdminDashboard::class, 'export']);
   Route::post('import',        [AdminDashboard::class, 'import']);
 

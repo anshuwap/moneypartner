@@ -3,6 +3,35 @@
 @section('content')
 @section('page_heading', 'Dashboard')
 
+<style>
+  @media only screen and (max-width: 600px) {
+    .h-height {
+      height: auto !important;
+    }
+
+    .btn-r {
+      top: 0px !important;
+    }
+  }
+
+  .btn-r {
+    position: relative;
+    text-align: center;
+    top: 44px;
+  }
+
+  .cu-icon {
+    width: 34px !important;
+  }
+
+  .info-box .info-box-number {
+    margin-top: 0rem !important;
+  }
+
+  .info-box {
+    min-height: 0px !important;
+  }
+</style>
 <!-- Content Header (Page header) -->
 <div class="content-header">
   <div class="container-fluid">
@@ -25,7 +54,7 @@
 <section class="content">
   <div class="container-fluid">
    <div class="row">
-      <div class="col-12 col-sm-6 col-md-3">
+      <div class="col-6 col-sm-6 col-md-2">
         <div class="info-box">
           <span class="info-box-icon bg-info elevation-1"><i class="fas fa-store"></i></span>
 
@@ -38,7 +67,7 @@
         </div>
       </div>
 
-      <div class="col-12 col-sm-6 col-md-3">
+      <div class="col-6 col-sm-6 col-md-2">
         <div class="info-box mb-3">
           <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-wallet"></i></span>
 
@@ -49,34 +78,114 @@
         </div>
       </div>
 
-      <!-- <div class="clearfix hidden-md-up"></div>
 
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="info-box mb-3">
-          <span class="info-box-icon bg-success elevation-1"><i class="fas fa-money-bill-alt"></i></span>
-
+ <div class="col-6 col-sm-6 col-md-2">
+        <div class="info-box">
+          <span class="info-box-icon cu-icon"><i class="fas fa-wallet text-secondary"></i></span>
           <div class="info-box-content">
-            <span class="info-box-text">DMT Amount</span>
-            <span class="info-box-number">{!!mSign($current_month_dmt_amount + $current_month_bulk_amount)!!}</span>
+            <span class="info-box-text">Topup Req. Amount</span>
+            <span class="info-box-number">
+              {!! !empty($total_topup)?mSign($total_topup):0 !!}
+            </span>
           </div>
         </div>
       </div>
 
-      <div class="col-12 col-sm-6 col-md-3">
+      <div class="col-6 col-sm-6 col-md-2">
         <div class="info-box mb-3">
-          <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-money-bill-wave"></i></span>
-
+          <span class="info-box-icon cu-icon"><i class="fas fa-hand-holding-usd text-secondary"></i></span>
           <div class="info-box-content">
-            <span class="info-box-text">Total DMT Amount</span>
-            <span class="info-box-number">{!!mSign($total_bulk_amount + $total_dmt_amount)!!}</span>
+            <span class="info-box-text">Approved Topup</span>
+            <span class="info-box-number"> {!! !empty($a_topup)?mSign($a_topup):0 !!}</span>
           </div>
-
         </div>
+      </div>
 
-      </div> -->
+      <div class="col-6 col-sm-6 col-md-2">
+        <div class="info-box">
+          <span class="info-box-icon cu-icon"><i class="fas fa-hand-holding-water text-secondary"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-text">Pending Topup</span>
+            <span class="info-box-number">
+              {!! !empty($p_topup)?mSign($p_topup):0 !!}
+            </span>
+          </div>
+        </div>
+      </div>
+
+
+       <div class="col-6 col-sm-6 col-md-2">
+        <div class="info-box mb-3">
+          <span class="info-box-icon cu-icon"><i class="fas fa-hand-holding-usd text-secondary"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-text">Rejected Topup</span>
+            <span class="info-box-number"> {!! !empty($r_topup)?mSign($r_topup):0 !!}</span>
+          </div>
+        </div>
+      </div>
 
     </div>
     <!-- /.row -->
+
+
+    <div class="row">
+
+
+      <div class="clearfix hidden-md-up"></div>
+
+      <div class="col-6 col-sm-6 col-md-2">
+        <div class="info-box mb-3">
+          <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-alt text-secondary"></i></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Payout Req. Amount</span>
+            <span class="info-box-number">{!! !empty($total_trans)?mSign($total_trans):0 !!}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-sm-6 col-md-2">
+        <div class="info-box mb-3">
+          <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-alt text-secondary"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-text">Approved Payout</span>
+            <span class="info-box-number">{!! !empty($a_trans)?mSign($a_trans):0 !!}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-sm-6 col-md-2">
+        <div class="info-box mb-3">
+          <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-wave text-secondary"></i></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Pending Payout</span>
+            <span class="info-box-number">{!! !empty($p_trans)?mSign($p_trans):0 !!}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-sm-6 col-md-2">
+        <div class="info-box mb-3">
+          <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-alt text-secondary"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-text">Failed Payout</span>
+            <span class="info-box-number">{!! !empty($f_trans)?mSign($f_trans):0 !!}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-sm-6 col-md-2">
+        <div class="info-box mb-3">
+          <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-wave text-secondary"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-text">Rejected Payout</span>
+            <span class="info-box-number">{!! !empty($r_trans)?mSign($r_trans):0 !!}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
 
     <!-- Transaction Request List -->
     @include('admin.dashboard.all_transaction')

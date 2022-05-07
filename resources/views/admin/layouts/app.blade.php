@@ -109,24 +109,29 @@
       letter-spacing: 0.01em;
       height: auto;
     }
-    
-    .sidebar-mini .main-sidebar .nav-link, .sidebar-mini-md .main-sidebar .nav-link, .sidebar-mini-xs .main-sidebar .nav-link {
-    width: calc(180px - 0.5rem * 2);
-    
-}
-    
-    .main-sidebar, .main-sidebar::before {
-    transition: margin-left .3s ease-in-out,width .3s ease-in-out;
-    width: 180px;
-}
-    
-    @media (min-width: 768px){
-body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper, body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer, body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
-    transition: margin-left .3s ease-in-out;
-    margin-left: 180px;
-}
+
+    .sidebar-mini .main-sidebar .nav-link,
+    .sidebar-mini-md .main-sidebar .nav-link,
+    .sidebar-mini-xs .main-sidebar .nav-link {
+      width: calc(180px - 0.5rem * 2);
+
     }
-    
+
+    .main-sidebar,
+    .main-sidebar::before {
+      transition: margin-left .3s ease-in-out, width .3s ease-in-out;
+      width: 180px;
+    }
+
+    @media (min-width: 768px) {
+
+      body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper,
+      body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer,
+      body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
+        transition: margin-left .3s ease-in-out;
+        margin-left: 180px;
+      }
+    }
   </style>
 </head>
 
@@ -179,11 +184,11 @@ body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-w
 
             <!-- Message Start -->
 
-            <a href="javascript:void(0);" class="pro-li dropdown-item"><span><img class="profile-small img-fluid img-circle" id="" src="{{ asset('assets') }}/profile/37.jpg" alt="User profile picture"></span> <span>{{ ucwords(Auth::user()->full_name)}}</span></a>
+            <a href="javascript:void(0);" class="pro-li dropdown-item"><span><img class="profile-small img-fluid img-circle" id="" src="{{ adminProfileImage() }}" alt="User profile picture"></span> <span>{{ ucwords(Auth::user()->full_name)}}</span></a>
 
-            <!-- <a href="{{ url('admin/profile') }}" class="pro-li dropdown-item">
+            <a href="{{ url('admin/profile') }}" class="pro-li dropdown-item">
               <span><i class="far fa-user"></i></span> Profile
-            </a> -->
+            </a>
             <a class="dropdown-item" href="{{ url('admin/logout') }}" onclick="event.preventDefault();
                      document.getElementById('logout-form').submit();">
               <button class="btn btn-danger logout-button w-100"><span class="icon is-small"> <i data-feather="log-out"></i> </span>
@@ -233,7 +238,7 @@ body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-w
 
           <div class="image">
 
-            <img src="{{ asset('assets') }}/profile/37.jpg" class="img-circle elevation-2" alt="User Image">
+            <img src="{{ adminProfileImage() }}" class="img-circle elevation-2" alt="User Image">
 
           </div>
 
