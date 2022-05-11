@@ -67,6 +67,22 @@
               </div>
 
               <div class="form-group col-md-2">
+                <label>Channel</label>
+                <select class="form-control-sm form-control" name="channel">
+                  <option value="" {{ (!empty($filter['channel']) && $filter['channel'] == 'all')?"selected":""}}>All</option>
+                  @foreach($bank_accounts as $account)
+                  <option value="{{ $account->_id }}" {{ (!empty($filter['channel']) && $filter['channel'] == $account->_id)?"selected":""}}>{{ $account->bank_name }} / {{ $account->account_holder_name}}</option>
+                  @endforeach
+                  @foreach($upis as $upi)
+                  <option value="{{ $upi->_id }}" {{ (!empty($filter['channel']) && $filter['channel'] == $upi->_id)?"selected":""}}>{{ $upi->upi_id}} / {{ $upi->name }}</option>
+                  @endforeach
+                  @foreach($qrcodes as $qr)
+                  <option value="{{ $qr->_id }}" {{ (!empty($filter['channel']) && $filter['channel'] == $qr->_id)?"selected":""}}>QR Code / {{ $qr->name }}</option>
+                  @endforeach
+                </select>
+              </div>
+
+              <div class="form-group col-md-2">
                 <label>Status</label>
                 <select class="form-control-sm form-control" name="status">
                   <option value="" {{ (!empty($filter['status']) && $filter['status'] == 'all')?"selected":""}}>All</option>
@@ -97,7 +113,7 @@
               <th>Channel</th>
               <th>Amount</th>
               <th>Payment Mode</th>
-              <th>Payment In</th>
+              <!-- <th>Payment In</th> -->
               <th>Request Date</th>
               <th>Approved By</th>
               <th>Approve/Reject Date</th>
@@ -126,11 +142,12 @@
               <td><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="{{ $topup->comment }}">{{ !empty($topup->RetailerName['outlet_name']) ? $topup->RetailerName['outlet_name'] : '' }}</a></td>
               <td><?= (!empty($topup->payment_id)) ? $topup->payment_id : '' ?></td>
               <td><?= !empty($topup->utr_no) ? $topup->utr_no : '-' ?></td>
-              <td>{{ (!empty($topup->payment_channel))?ucwords($topup->payment_channel):'-' }}</td>
+              <!-- <td>{{ (!empty($topup->payment_channel))?ucwords($topup->payment_channel):'-' }}</td> -->
+              <td>{!! $topup->paymentModeName($topup->payment_mode,$topup->payment_reference_id) !!}</td>
 
               <td>{!! mSign($topup->amount) !!}</td>
               <td>{{ $topup->payment_by }}</td>
-              <td>{{ $topup->paymentModeName($topup->payment_mode,$topup->payment_reference_id) }}</td>
+
               <td>{{ date('d M Y H:i:s', $topup->payment_date) }}</td>
               <td>{{ !empty($topup->UserName['full_name']) ?$topup->UserName['full_name'] : '-' }}</td>
               <td>{{ !empty($topup->action_date)?date('d M Y H:i:s', $topup->action_date):'-' }}</td>
@@ -263,9 +280,15 @@
         $('#topup-channel').html(`<div class="form-group">
                    <select name="payment_channel" class="form-control form-control-sm" id="payment_channel">
                      <option value="">Select Payment Channel</option>
-                     <?php foreach ($payment_channel as $channel) {
-                        echo '<option value="' . $channel->name . '">' . $channel->name . '</option>';
-                      } ?>
+                                         <?php foreach ($bank_accounts as $account) {
+                                            echo '<option value="' . $account->_id . '-bank_account">' . $account->bank_name . ' / ' . $account->account_holder_name . '</option>';
+                                          }
+                                          foreach ($upis as $upi) {
+                                            echo '<option value="' . $upi->_id . '-upi_id">' . $upi->upi_id . ' / ' . $upi->name . '</option>';
+                                          }
+                                          foreach ($qrcodes as $qrcode) {
+                                            echo '<option value="' . $qrcode->_id . '-qr_code">QR Code / ' . $qrcode->name . '</option>';
+                                          } ?>
                    </select>
                    <span id="payment_channel_msg" class="custom-text-danger"></span>
                  </div>`);

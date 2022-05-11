@@ -53,6 +53,22 @@
                                 </select>
                             </div>
 
+                            <div class="form-group col-md-2">
+                                <label>Channel</label>
+                                <select class="form-control-sm form-control" name="channel">
+                                    <option value="" {{ (!empty($filter['channel']) && $filter['channel'] == 'all')?"selected":""}}>All</option>
+                                    @foreach($bank_accounts as $account)
+                                    <option value="{{ $account->_id }}" {{ (!empty($filter['channel']) && $filter['channel'] == $account->_id)?"selected":""}}>{{ $account->bank_name }} / {{ $account->account_holder_name}}</option>
+                                    @endforeach
+                                    @foreach($upis as $upi)
+                                    <option value="{{ $upi->_id }}" {{ (!empty($filter['channel']) && $filter['channel'] == $upi->_id)?"selected":""}}>{{ $upi->upi_id}} / {{ $upi->name }}</option>
+                                    @endforeach
+                                    @foreach($qrcodes as $qr)
+                                    <option value="{{ $qr->_id }}" {{ (!empty($filter['channel']) && $filter['channel'] == $qr->_id)?"selected":""}}>QR Code / {{ $qr->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
                             <div class="form-group mt-4">
                                 <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i>&nbsp;Search</button>
                                 <a href="{{ url('admin/pending-topup') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
@@ -72,7 +88,7 @@
                             <th>UTR No.</th>
                             <th>Amount</th>
                             <th>Payment Mode</th>
-                            <th>Payment In</th>
+                            <!-- <th>Payment In</th> -->
                             <th>Requested Date</th>
                             <th>Status</th>
                         </tr>
@@ -100,9 +116,11 @@
                             <td>{{ ++$i }}</td>
                             <td><?= $payment_has_code; ?></td>
                             <td><?= !empty($topup->utr_no) ? $topup->utr_no : '-' ?></td>
+                            <td>{!! $topup->paymentModeName($topup->payment_mode,$topup->payment_reference_id) !!}</td>
+
                             <td>{!! mSign($topup->amount) !!}</td>
                             <td>{{ !empty($topup->payment_by)?$topup->payment_by:'-' }}</td>
-                            <td>{{ $topup->paymentModeName($topup->payment_mode,$topup->payment_reference_id) }}</td>
+
                             <td>{{ date('d M Y H:i:s', $topup->payment_date) }}</td>
                             <td id="status-{{ $topup->id }}">
                                 {!! $status !!}

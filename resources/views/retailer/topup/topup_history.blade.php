@@ -43,6 +43,22 @@
                             </div>
 
                             <div class="form-group col-md-2">
+                                <label>Channel</label>
+                                <select class="form-control-sm form-control" name="channel">
+                                    <option value="" {{ (!empty($filter['channel']) && $filter['channel'] == 'all')?"selected":""}}>All</option>
+                                    @foreach($bank_accounts as $account)
+                                    <option value="{{ $account->_id }}" {{ (!empty($filter['channel']) && $filter['channel'] == $account->_id)?"selected":""}}>{{ $account->bank_name }} / {{$account->account_holder_name}}</option>
+                                    @endforeach
+                                    @foreach($upis as $upi)
+                                    <option value="{{ $upi->_id }}" {{ (!empty($filter['channel']) && $filter['channel'] == $upi->_id)?"selected":""}}>{{ $upi->upi_id}} / {{ $upi->name }}</option>
+                                    @endforeach
+                                    @foreach($qrcodes as $qr)
+                                    <option value="{{ $qr->_id }}" {{ (!empty($filter['channel']) && $filter['channel'] == $qr->_id)?"selected":""}}>QR Code / {{ $qr->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-2">
                                 <label>Payment Mode</label>
                                 <select class="form-control-sm form-control" name="payment_by">
                                     <option value="" {{ (!empty($filter['payment_by']) && $filter['payment_by'] == 'all')?"selected":""}}>All</option>
@@ -73,7 +89,7 @@
                             <th>Channel</th>
                             <th>Amount</th>
                             <th>Payment Mode</th>
-                            <th>Payment In</th>
+                            <!-- <th>Payment In</th> -->
                             <th>Requested Date</th>
                             <th>Approve/Reject By</th>
                             <th>Approve/Reject Date</th>
@@ -103,10 +119,12 @@
                             <td>{{ ++$i }}</td>
                             <td><?= $payment_has_code; ?></td>
                             <td><?= !empty($topup->utr_no) ? $topup->utr_no : '-' ?></td>
-                            <td>{{ (!empty($topup->payment_channel))?ucwords($topup->payment_channel):'-' }}</td>
+                            <!-- <td>{{ (!empty($topup->payment_channel))?ucwords($topup->payment_channel):'-' }}</td> -->
+                            <td>{!! $topup->paymentModeName($topup->payment_mode,$topup->payment_reference_id) !!}</td>
+
                             <td>{!! mSign($topup->amount) !!}</td>
                             <td>{{ !empty($topup->payment_by)?$topup->payment_by:'-' }}</td>
-                            <td>{{ $topup->paymentModeName($topup->payment_mode,$topup->payment_reference_id) }}</td>
+
                             <td>{{ date('d M Y H:i:s', $topup->payment_date) }}</td>
                             <td>{{ !empty($topup->UserName['full_name']) ?$topup->UserName['full_name'] : '-' }}</td>
                             <td>{{ !empty($topup->action_date)?date('d M Y H:i:s', $topup->action_date):'-' }}</td>

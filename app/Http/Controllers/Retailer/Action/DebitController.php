@@ -162,9 +162,8 @@ class DebitController extends Controller
                 $passbook_val[] = $credit->transaction_id;
                 $passbook_val[] = $credit->channel;
                 $passbook_val[] = $credit->amount;
-                 $passbook_val[] = date('Y-m-d H:i', $credit->created);
                 $passbook_val[] = !empty($credit->UserName['full_name'])?$credit->UserName['full_name']:'';
-
+                $passbook_val[] = date('Y-m-d H:i', $credit->created);
                 $passbook_val[] = !empty($credit->ModifiedBy['full_name'])?$credit->ModifiedBy['full_name']:'';
                 $passbook_val[] = !empty($credit->action_date)?date('d M Y H:i',$credit->action_date):'';
 

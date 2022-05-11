@@ -66,6 +66,19 @@
                 </select>
               </div>
 
+              <div class="form-group col-md-2">
+                <label>Channel</label>
+                <select class="form-control-sm form-control" name="channel">
+                  <option value="" {{ (!empty($filter['channel']) && $filter['channel'] == 'all')?"selected":""}}>All</option>
+                  @foreach($bank_accounts as $account)
+                  <option value="{{ $account->_id }}" {{ (!empty($filter['channel']) && $filter['channel'] == $account->_id)?"selected":""}}>{{ $account->bank_name }} / {{ $account->account_holder_name}}</option>
+                  @endforeach
+                  @foreach($upis as $upi)
+                  <option value="{{ $upi->_id }}" {{ (!empty($filter['channel']) && $filter['channel'] == $upi->_id)?"selected":""}}>{{ $account->upi_id}} / {{ $upi->name }}</option>
+                  @endforeach
+                </select>
+              </div>
+
               <div class="form-group mt-4">
                 <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i>&nbsp;Search</button>
                 <a href="{{ url('employee/pending-topup') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
@@ -84,9 +97,10 @@
               <th>Outlet</th>
               <th>Transaction Id</th>
               <th>UTR No.</th>
+              <th>Channel</th>
               <th>Amount</th>
               <th>Payment Mode</th>
-              <th>Payment In</th>
+              <!-- <th>Payment In</th> -->
               <th>Request Date</th>
               <th>Status</th>
               <th>Action</th>
@@ -113,9 +127,10 @@
               <td><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="{{ $topup->comment }}">{{ !empty($topup->RetailerName['outlet_name']) ? $topup->RetailerName['outlet_name'] : '' }}</a></td>
               <td><?= (!empty($topup->payment_id)) ? $topup->payment_id : '' ?></td>
               <td><?= !empty($topup->utr_no) ? $topup->utr_no : '-' ?></td>
+              <td>{!! $topup->paymentModeName($topup->payment_mode,$topup->payment_reference_id) !!}</td>
               <td>{!! mSign($topup->amount) !!}</td>
               <td>{{ $topup->payment_by }}</td>
-              <td>{{ $topup->paymentModeName($topup->payment_mode,$topup->payment_reference_id) }}</td>
+
               <td>{{ date('d M Y H:i:s', $topup->payment_date) }}</td>
               <td id="status-{{ $topup->id }}">
                 {!! $status !!}
@@ -246,9 +261,12 @@
         $('#topup-channel').html(`<div class="form-group">
                    <select name="payment_channel" class="form-control form-control-sm" id="payment_channel">
                      <option value="">Select Payment Channel</option>
-                     <?php foreach ($payment_channel as $channel) {
-                        echo '<option value="' . $channel->name . '">' . $channel->name . '</option>';
-                      } ?>
+                                          <?php foreach ($bank_accounts as $account) {
+                                            echo '<option value="' . $account->_id . '">' . $account->bank_name . ' / ' . $account->account_holder_name . '</option>';
+                                          }
+                                          foreach ($upis as $upi) {
+                                            echo '<option value="' . $upi->_id . '">' . $upi->upi_id . ' / ' . $upi->name . '</option>';
+                                          } ?>
                    </select>
                    <span id="payment_channel_msg" class="custom-text-danger"></span>
                  </div>`);

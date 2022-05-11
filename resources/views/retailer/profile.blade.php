@@ -29,9 +29,9 @@
         <div class="card card-success card-outline">
           <div class="card-body box-profile">
             <div class="text-center">
-              <img class="profile-user-img img-fluid img-circle" id="avatar" src="{{ (!empty($outlet->profile_image))?asset('attachment/').'/'.$outlet->profile_image:profileImage() }} " alt="User profile picture" style="
-    width: 217px !important;
-    height: 200px !important;
+              <img class="profile-user-img img-fluid imircle" id="avatar" src="{{ (!empty($outlet->profile_image))?asset('attachment/').'/'.$outlet->profile_image:profileImage() }} " alt="User profile picture" style="
+    width: 290px !important;
+    height: 250px !important;
 ">
             </div>
 

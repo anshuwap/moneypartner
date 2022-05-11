@@ -239,7 +239,7 @@
 
                             <div class="form-group" id="type-m">
                                 <label>Select</label>
-                                <select name="type" class="form-control form-control-sm" id="type">
+                                <select name="type" required class="form-control form-control-sm" id="type">
                                     <option value="">Select</option>
                                     <option value="api">Api</option>
                                     <option value="manual">Manual</option>
@@ -410,7 +410,7 @@
             $('#approve_trans_dashboard').attr('action', '{{url("admin/a-transaction")}}');
             $('#action').html(` <div class="form-group">
                                    <label>Action</label>
-                                   <select name="status" id="status-select-dashboard" class="status-select-dashboard form-control form-control-sm">
+                                   <select name="status" id="status-select-dashboard" required class="status-select-dashboard form-control form-control-sm">
                                        <option value="">Select</option>
                                        <option value="success">Success</option>
                                        <option value="pending">Pending</option>
@@ -439,7 +439,7 @@
             $('#challel').html(``);
             $('#success_dashboard').html(`<div class="form-group">
                    <label>Select Payment Channel</label>
-                   <select name="response[payment_mode]" class="form-control form-control-sm" id="payment_channel">
+                   <select name="response[payment_mode]" required class="form-control form-control-sm" id="payment_channel">
                      <option value="">Select</option>
                      <?php foreach ($payment_channel as $channel) {
                             echo '<option value="' . $channel->name . '">' . $channel->name . '</option>';
@@ -459,7 +459,7 @@
             $('#challel').html(``);
             $('#success_dashboard').html(`<div class="form-group">
                    <label>Select Payment Channel</label>
-                   <select name="response[payment_mode]" class="form-control form-control-sm" id="payment_channel">
+                   <select name="response[payment_mode]" required class="form-control form-control-sm" id="payment_channel">
                      <option value="">Select</option>
                      <?php foreach ($payment_channel as $channel) {
                             echo '<option value="' . $channel->name . '">' . $channel->name . '</option>';

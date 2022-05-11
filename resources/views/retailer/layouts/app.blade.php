@@ -251,7 +251,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-">
           <div class="">
-            <img src="{{profileImage()}}" style="width: 10.1rem !important;" class="img-circle elevation-2" alt="User Image">
+            <img src="{{profileImage()}}" style="width: 10.1rem !important;" class=" elevation-2" alt="User Image">
           </div>
           <!-- <div class="info"> -->
           <div class="text-center"> <a href="{{ url('retailer/profile') }}" class="d-block">{{ ucwords(Auth::user()->full_name) }}</a>

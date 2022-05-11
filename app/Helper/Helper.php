@@ -117,7 +117,8 @@ if (!function_exists('mSign')) {
     function mSign($val)
     {
 
-        $val = ($val) ? number_format($val, 2, '.', '') : 0;
+        // $val = ($val) ? number_format($val, 2, '.', '') : 0;
+         $val = ($val) ? number_format($val, 2) : 0;
 
         return '<i class="fas fa-rupee-sign" style="font-size: 13px;
     color: #696b74;"></i>&nbsp;' . $val;

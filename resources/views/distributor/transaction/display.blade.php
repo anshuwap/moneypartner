@@ -215,7 +215,7 @@
 
                             <div class="form-group" id="type-m">
                                 <label>Select</label>
-                                <select name="type" class="form-control form-control-sm" id="type">
+                                <select name="type" required class="form-control form-control-sm" id="type">
                                     <option value="">Select</option>
                                     <option value="api">Api</option>
                                     <option value="manual">Manual</option>
@@ -369,7 +369,7 @@
             $('#approve_trans_dashboard').attr('action', '{{url("distributor/a-transaction")}}');
             $('#action').html(` <div class="form-group">
                                    <label>Action</label>
-                                   <select name="status" id="status-select-dashboard" class="status-select-dashboard form-control form-control-sm">
+                                   <select name="status" required id="status-select-dashboard" class="status-select-dashboard form-control form-control-sm">
                                        <option value="">Select</option>
                                        <option value="success">Success</option>
                                        <option value="pending">Pending</option>
@@ -380,7 +380,7 @@
         } else if (status == 'api') {
             $('#approve_trans_dashboard').attr('action', '{{url("distributor/a-store-api")}}');
             $('#action').html(`<div class="form-group">
-               <select class="form-control form-control-sm" name="api" id="api" required>
+               <select class="form-control required form-control-sm" name="api" id="api" required>
                <option value=''>Select</option>
                <option value="payunie_preet_kumar">Payunie - PREET KUMAR</option>
                <option value="payunie_rashid_ali">Payunie -Rashid Ali</option>
@@ -398,7 +398,7 @@
             $('#challel').html(``);
             $('#success_dashboard').html(`<div class="form-group">
                    <label>Select Payment Channel</label>
-                   <select name="response[payment_mode]" class="form-control form-control-sm" id="payment_channel">
+                   <select name="response[payment_mode]" required class="form-control form-control-sm" id="payment_channel">
                      <option value="">Select</option>
                      <?php foreach ($payment_channel as $channel) {
                             echo '<option value="' . $channel->name . '">' . $channel->name . '</option>';
@@ -408,7 +408,7 @@
                  </div>
                  <div class="form-group">
                                 <label>UTR/Transaction</label>
-                                <input type="text" placeholder="UTR/Transaction" required id="utr" name="response[utr_number]" class="form-control form-control-sm">
+                                <input type="text" required placeholder="UTR/Transaction" required id="utr" name="response[utr_number]" class="form-control form-control-sm">
                                 <span id="utr_transaction_msg" class="custom-text-danger"></span>
                             </div>`);
         } else if (status == 'rejected') {
@@ -418,7 +418,7 @@
             $('#challel').html(``);
             $('#success_dashboard').html(`<div class="form-group">
                    <label>Select Payment Channel</label>
-                   <select name="response[payment_mode]" class="form-control form-control-sm" id="payment_channel">
+                   <select name="response[payment_mode]" required class="form-control form-control-sm" id="payment_channel">
                      <option value="">Select</option>
                      <?php foreach ($payment_channel as $channel) {
                             echo '<option value="' . $channel->name . '">' . $channel->name . '</option>';

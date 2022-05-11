@@ -32,6 +32,8 @@ use App\Http\Controllers\Retailer\Transaction\RetailerTransController as Retaile
 use App\Http\Controllers\Retailer\TransactionController as RetailerTransaction;
 use App\Http\Controllers\Retailer\EcollectionController as RetailerECollection;
 use App\Http\Controllers\Retailer\BankAutoCompleteController as BankAuto;
+use App\Http\Controllers\Retailer\Action\CreditController as RetailerCredit;
+use App\Http\Controllers\Retailer\Action\DebitController as RetailerDebit;
 
 //for employee panel
 use App\Http\Controllers\Employee\LoginController as EmployeeLogin;
@@ -241,6 +243,10 @@ Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
 
   Route::resource('webhook-api', WebhookApi::class);
   Route::post('base-url-api',    [WebhookApi::class, 'baseUrlApi']);
+
+  Route::resource('credit-report',           RetailerCredit::class);
+    Route::get('credit-export',              [RetailerCredit::class, 'export']);
+  Route::resource('debit-report',            RetailerDebit::class);
 
   Route::post('logout',  [AdminLogin::class, 'logout']);
 });

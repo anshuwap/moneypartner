@@ -36,16 +36,16 @@ class Topup extends BaseModel
     {
         switch ($type) {
             case 'bank_account':
-                $value = BankAccount::select('bank_name')->find($id);
+                $value = BankAccount::select('bank_name','account_holder_name')->find($id);
                 $name = '-';
                 if (!empty($value))
-                    $name = $value->bank_name;
+                    $name = $value->bank_name.'<br><small>'.$value->account_holder_name.'</small>';
                 break;
             case 'upi_id':
-                $value = Upi::select('upi_id')->find($id);
+                $value = Upi::select('upi_id','name')->find($id);
                 $name = '-';
                 if (!empty($value))
-                    $name = $value->upi_id;
+                    $name = $value->upi_id.'<br><small>'.$value->name.'<small>';
                 break;
             case 'qr_code':
                 $value = QrCode::select('name')->find($id);
@@ -58,6 +58,35 @@ class Topup extends BaseModel
         }
         return $name;
     }
+
+
+    public function paymentModeNameExcel($type, $id)
+    {
+        switch ($type) {
+            case 'bank_account':
+                $value = BankAccount::select('bank_name','account_holder_name')->find($id);
+                $name = '-';
+                if (!empty($value))
+                    $name = $value->bank_name.' / '.$value->account_holder_name;
+                break;
+            case 'upi_id':
+                $value = Upi::select('upi_id','name')->find($id);
+                $name = '-';
+                if (!empty($value))
+                    $name = $value->upi_id.' / '.$value->name;
+                break;
+            case 'qr_code':
+                $value = QrCode::select('name')->find($id);
+                if (!empty($value))
+                    $name = $value->name;
+                break;
+            default:
+                $name = '';
+                break;
+        }
+        return $name;
+    }
+
 
     public function RetailerName()
     {

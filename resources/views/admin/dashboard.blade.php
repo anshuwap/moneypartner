@@ -53,8 +53,8 @@
 <!-- Main content -->
 <section class="content">
   <div class="container-fluid">
-   <div class="row">
-      <div class="col-6 col-sm-6 col-md-2">
+    <div class="row">
+      <!-- <div class="col-6 col-sm-6 col-md-2">
         <div class="info-box">
           <span class="info-box-icon bg-info elevation-1"><i class="fas fa-store"></i></span>
 
@@ -65,27 +65,38 @@
             </span>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div class="col-6 col-sm-6 col-md-2">
-        <div class="info-box mb-3">
-          <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-wallet"></i></span>
+        <!-- <div class="info-box mb-3">
+          <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-store"></i></span>
 
           <div class="info-box-content">
             <span class="info-box-text">Outlet Amount</span>
             <span class="info-box-number">{!!mSign($total_outlet_amount)!!}</span>
           </div>
+        </div> -->
+
+        <div class="info-box">
+          <span class="info-box-icon cu-icon"><i class="fas fa-store text-secondary"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-text">Outlets Amount</span>
+            <span class="info-box-number">
+              {!! !empty($total_outlet_amount)?mSign($total_outlet_amount):0 !!} || {{ $total_outlet}}
+            </span>
+          </div>
         </div>
+
       </div>
 
 
- <div class="col-6 col-sm-6 col-md-2">
+      <div class="col-6 col-sm-6 col-md-2">
         <div class="info-box">
           <span class="info-box-icon cu-icon"><i class="fas fa-wallet text-secondary"></i></span>
           <div class="info-box-content">
             <span class="info-box-text">Topup Req. Amount</span>
             <span class="info-box-number">
-              {!! !empty($total_topup)?mSign($total_topup):0 !!}
+              {!! !empty($total_topup)?mSign($total_topup):0 !!} || {{ $ac_topup}}
             </span>
           </div>
         </div>
@@ -96,7 +107,7 @@
           <span class="info-box-icon cu-icon"><i class="fas fa-hand-holding-usd text-secondary"></i></span>
           <div class="info-box-content">
             <span class="info-box-text">Approved Topup</span>
-            <span class="info-box-number"> {!! !empty($a_topup)?mSign($a_topup):0 !!}</span>
+            <span class="info-box-number"> {!! !empty($a_topup)?mSign($a_topup):0 !!} || {{ $apc_topup }}</span>
           </div>
         </div>
       </div>
@@ -107,19 +118,19 @@
           <div class="info-box-content">
             <span class="info-box-text">Pending Topup</span>
             <span class="info-box-number">
-              {!! !empty($p_topup)?mSign($p_topup):0 !!}
+              {!! !empty($p_topup)?mSign($p_topup):0 !!} || {{ $pc_topup }}
             </span>
           </div>
         </div>
       </div>
 
 
-       <div class="col-6 col-sm-6 col-md-2">
+      <div class="col-6 col-sm-6 col-md-2">
         <div class="info-box mb-3">
           <span class="info-box-icon cu-icon"><i class="fas fa-hand-holding-usd text-secondary"></i></span>
           <div class="info-box-content">
             <span class="info-box-text">Rejected Topup</span>
-            <span class="info-box-number"> {!! !empty($r_topup)?mSign($r_topup):0 !!}</span>
+            <span class="info-box-number"> {!! !empty($r_topup)?mSign($r_topup):0 !!} || {{ $rc_topup }}</span>
           </div>
         </div>
       </div>
@@ -139,7 +150,7 @@
 
           <div class="info-box-content">
             <span class="info-box-text">Payout Req. Amount</span>
-            <span class="info-box-number">{!! !empty($total_trans)?mSign($total_trans):0 !!}</span>
+            <span class="info-box-number">{!! !empty($total_trans)?mSign($total_trans):0 !!} || {{ $ac_trans}}</span>
           </div>
         </div>
       </div>
@@ -149,7 +160,7 @@
           <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-alt text-secondary"></i></span>
           <div class="info-box-content">
             <span class="info-box-text">Approved Payout</span>
-            <span class="info-box-number">{!! !empty($a_trans)?mSign($a_trans):0 !!}</span>
+            <span class="info-box-number">{!! !empty($a_trans)?mSign($a_trans):0 !!} || {{ $apc_trans}}</span>
           </div>
         </div>
       </div>
@@ -160,7 +171,7 @@
 
           <div class="info-box-content">
             <span class="info-box-text">Pending Payout</span>
-            <span class="info-box-number">{!! !empty($p_trans)?mSign($p_trans):0 !!}</span>
+            <span class="info-box-number">{!! !empty($p_trans)?mSign($p_trans):0 !!} || {{ $pc_trans}}</span>
           </div>
         </div>
       </div>
@@ -170,7 +181,7 @@
           <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-alt text-secondary"></i></span>
           <div class="info-box-content">
             <span class="info-box-text">Failed Payout</span>
-            <span class="info-box-number">{!! !empty($f_trans)?mSign($f_trans):0 !!}</span>
+            <span class="info-box-number">{!! !empty($f_trans)?mSign($f_trans):0 !!} || {{ $fc_trans}}</span>
           </div>
         </div>
       </div>
@@ -180,7 +191,7 @@
           <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-wave text-secondary"></i></span>
           <div class="info-box-content">
             <span class="info-box-text">Rejected Payout</span>
-            <span class="info-box-number">{!! !empty($r_trans)?mSign($r_trans):0 !!}</span>
+            <span class="info-box-number">{!! !empty($r_trans)?mSign($r_trans):0 !!} || {{ $rc_trans}}</span>
           </div>
         </div>
       </div>

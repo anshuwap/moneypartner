@@ -78,6 +78,10 @@ class TopupController extends Controller
             case "bank_account":
                 $payment = BankAccount::find($request->payment_id);
                 $data = '<table class="table table-sm table-bordered">
+                 <tr>
+                    <th>Ac. Holder</th>
+                    <td>' . ucwords($payment->account_holder_name) . '</td>
+                </tr>
                 <tr>
                     <th>Bank Name</th>
                     <td>' . ucwords($payment->bank_name) . '</td>
@@ -260,6 +264,26 @@ class TopupController extends Controller
     public function topupHistory(Request $request)
     {
         try {
+
+            $query_u = Upi::select('_id', 'name', 'upi_id')->where('account_status', 1);
+            $rId = Auth::user()->_id;
+            $query_u->where(function ($q) use ($rId) {
+                $q->where('retailer_ids', 'all', [$rId]);
+            });
+            $data['upis'] = $query_u->get();
+
+            $query_b = BankAccount::select('_id', 'bank_name', 'account_holder_name')->where('account_status', 1);
+            $query_b->where(function ($q) use ($rId) {
+                $q->where('retailer_ids', 'all', [$rId]);
+            });
+            $data['bank_accounts'] =  $query_b->get();
+
+            $query_q =  QrCode::select('_id', 'name')->where('account_status', 1);
+            $query_q->where(function ($q) use ($rId) {
+                $q->where('retailer_ids', 'all', [$rId]);
+            });
+            $data['qrcodes'] =  $query_q->get();
+
             $query = Topup::where('retailer_id', Auth::user()->_id);
 
             if (!empty($request->transaction_id))
@@ -267,6 +291,9 @@ class TopupController extends Controller
 
             if (!empty($request->payment_by))
                 $query->where('payment_by', $request->payment_by);
+
+            if (!empty($request->channel))
+                $query->where('payment_reference_id', $request->channel);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
@@ -296,6 +323,26 @@ class TopupController extends Controller
     public function pendingRequest(Request $request)
     {
         try {
+
+            $query_u = Upi::select('_id', 'name', 'upi_id')->where('account_status', 1);
+            $rId = Auth::user()->_id;
+            $query_u->where(function ($q) use ($rId) {
+                $q->where('retailer_ids', 'all', [$rId]);
+            });
+            $data['upis'] = $query_u->get();
+
+            $query_b = BankAccount::select('_id', 'bank_name', 'account_holder_name')->where('account_status', 1);
+            $query_b->where(function ($q) use ($rId) {
+                $q->where('retailer_ids', 'all', [$rId]);
+            });
+            $data['bank_accounts'] =  $query_b->get();
+
+            $query_q =  QrCode::select('_id', 'name')->where('account_status', 1);
+            $query_q->where(function ($q) use ($rId) {
+                $q->where('retailer_ids', 'all', [$rId]);
+            });
+            $data['qrcodes'] =  $query_q->get();
+
             $query = Topup::where('retailer_id', Auth::user()->_id);
 
             if (!empty($request->transaction_id))
@@ -303,6 +350,9 @@ class TopupController extends Controller
 
             if (!empty($request->payment_by))
                 $query->where('payment_by', $request->payment_by);
+
+            if (!empty($request->channel))
+                $query->where('payment_reference_id', $request->channel);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
@@ -342,7 +392,7 @@ class TopupController extends Controller
             $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
 
             $transactionArray = [
-                'Transaction ID', 'UTR No.', 'Channel', 'Amount', 'Payment Mode', 'Payment In',
+                'Transaction ID', 'UTR No.', 'Channel', 'Amount', 'Payment Mode', //'Payment In',
                 'Requested Date', 'Approve/Reject By', 'Approve/Reject Date', 'Status'
             ];
             fputcsv($f, $transactionArray, $delimiter); //put heading here
@@ -354,6 +404,9 @@ class TopupController extends Controller
 
             if (!empty($request->payment_by))
                 $query->where('payment_by', $request->payment_by);
+
+            if (!empty($request->channel))
+                $query->where('payment_reference_id', $request->channel);
 
             $start_date = '';
             $end_date   = '';
@@ -379,10 +432,11 @@ class TopupController extends Controller
 
                 $topup_val[] = $topup->payment_id;
                 $topup_val[] = $topup->utr_no;
-                $topup_val[] = !empty($topup->payment_channel) ? ucwords(str_replace('_', ' ', $topup->payment_channel)) : '';
+                // $topup_val[] = !empty($topup->payment_channel) ? ucwords(str_replace('_', ' ', $topup->payment_channel)) : '';
+                $topup_val[] = !empty($topup->payment_mode) ? $topup->paymentModeNameExcel($topup->payment_mode, $topup->payment_reference_id) : '';
                 $topup_val[] = $topup->amount;
                 $topup_val[] = $topup->payment_by;
-                $topup_val[] = !empty($topup->payment_mode) ? $topup->paymentModeName($topup->payment_mode, $topup->payment_reference_id) : '';
+
                 $topup_val[] = !empty($topup->payment_date) ? date('Y-m-d H:i:s', $topup->payment_date) : '';
                 $topup_val[] = !empty($topup->UserName['full_name']) ? $topup->UserName['full_name'] : '-';
                 $topup_val[] = !empty($topup->action_date) ? date('Y-m-d H:i:s', $topup->action_date) : '';
@@ -424,7 +478,8 @@ class TopupController extends Controller
             $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
 
             $transactionArray = [
-                'Transaction ID', 'UTR No', 'Amount', 'Payment Mode', 'Payment In', 'Requested Date',
+                'Transaction ID', 'UTR No', 'Channel', 'Amount', 'Payment Mode', //'Payment In',
+                'Requested Date',
                 'Status'
             ];
             fputcsv($f, $transactionArray, $delimiter); //put heading here
@@ -436,6 +491,9 @@ class TopupController extends Controller
 
             if (!empty($request->payment_by))
                 $query->where('payment_by', $request->payment_by);
+
+            if (!empty($request->channel))
+                $query->where('payment_reference_id', $request->channel);
 
             $start_date = '';
             $end_date   = '';
@@ -461,9 +519,10 @@ class TopupController extends Controller
 
                 $topup_val[] = $topup->payment_id;
                 $topup_val[] = $topup->utr_no;
+                $topup_val[] = !empty($topup->payment_mode) ? $topup->paymentModeNameExcel($topup->payment_mode, $topup->payment_reference_id) : '';
                 $topup_val[] = $topup->amount;
                 $topup_val[] = $topup->payment_by;
-                $topup_val[] = !empty($topup->payment_mode) ? $topup->paymentModeName($topup->payment_mode, $topup->payment_reference_id) : '';
+
                 $topup_val[] = date('Y-m-d H:i:s', $topup->payment_date);
                 $topup_val[] = strtoupper($topup->status);
                 $transactionArr = $topup_val;

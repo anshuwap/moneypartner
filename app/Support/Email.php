@@ -11,7 +11,6 @@ use PHPMailer\PHPMailer\Exception;
 class Email
 {
 
-    // ========== [ Compose Email ] ================
     public function composeEmail($data)
     {
         $request = (object)$data;
@@ -27,7 +26,7 @@ class Email
         $mail->Host = 'mail.moneypartner.in';            //  smtp host
         $mail->SMTPAuth = true;
         $mail->Username = 'noreply@moneypartner.in';       //  sender username
-        $mail->Password = 'tm5#y=Y6QyMyByL$';             // sender password
+        $mail->Password = '$Zs4zxGV2N5Wk5A';             // sender password
         $mail->SMTPSecure = 'tls';                  // encryption - ssl/tls
         $mail->Port = 587;                          // port - 587/465
 

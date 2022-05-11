@@ -20,9 +20,9 @@
     </li> -->
 
 
-     <li class="nav-item {{ (url()->full() == url('retailer/topup-history') || url()->full() == url('retailer/pending-topup'))?'menu-is-opening menu-open':''}}">
+    <li class="nav-item {{ (url()->full() == url('retailer/topup-history') || url()->full() == url('retailer/pending-topup'))?'menu-is-opening menu-open':''}}">
       <a href="javascript:void(0);" class="nav-link">
-       <i class="fas fa-wallet nav-icon"></i>
+        <i class="fas fa-wallet nav-icon"></i>
         <p>Topup Request
           <i class="right fas fa-angle-left"></i>
         </p>
@@ -52,7 +52,6 @@
       </a>
     </li>
 
-
     <li class="nav-item">
       <a href="{{ url('retailer/transaction') }}" class="nav-link {{ (url()->full() == url('retailer/transaction'))? 'active':''}}">
         <!-- <i class="fas fa-solid fa-book nav-icon text-warning"></i> -->
@@ -61,8 +60,40 @@
       </a>
     </li>
 
+      <li class="nav-item {{ (url()->full() == url('retailer/credit-report') || url()->full() == url('retailer/debit-report'))?'d-block':''}}">
+          <a href="{{ url('retailer/credit-report') }}" class="nav-link {{ (url()->full() == url('retailer/credit-report'))?'active':''}}">
+            <i class="fas fa-money-bill nav-icon"></i>
+            <p>Manual Credit</p>
+          </a>
+        </li>
 
-  @if(!empty(MoneyPartnerOption()->e_collection) && MoneyPartnerOption()->e_collection ==1)
+    <!-- <li class="nav-item {{ (url()->full() == url('retailer/credit-report') || url()->full() == url('retailer/debit-report'))?'menu-is-opening menu-open':''}}">
+      <a href="javascript:void(0);" class="nav-link">
+        <i class="fas fa-list nav-icon"></i>
+        <p>Credit/Debit
+          <i class="right fas fa-angle-left"></i>
+        </p>
+      </a>
+      <ul class="nav nav-treeview">
+        <li class="nav-item {{ (url()->full() == url('retailer/credit-report') || url()->full() == url('retailer/debit-report'))?'d-block':''}}">
+          <a href="{{ url('retailer/credit-report') }}" class="nav-link {{ (url()->full() == url('retailer/credit-report'))?'active':''}}">
+            <i class="fas fa-money-bill nav-icon"></i>
+            <p>Manual Credit</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url('retailer/debit-report') }}" class="nav-link {{ (url()->full() == url('retailer/debit-report'))? 'active':''}}">
+            <i class="fas fa-money-bill nav-icon"></i>
+            <p>
+              Manual Debit
+            </p>
+          </a>
+        </li>
+      </ul>
+    </li> -->
+
+
+    @if(!empty(MoneyPartnerOption()->e_collection) && MoneyPartnerOption()->e_collection ==1)
     <li class="nav-item">
       <a href="{{ url('retailer/e-collection') }}" class="nav-link {{ (url()->full() == url('retailer/e-collection'))? 'active':''}}">
         <i class="fas fa-ethernet  nav-icon"></i>
