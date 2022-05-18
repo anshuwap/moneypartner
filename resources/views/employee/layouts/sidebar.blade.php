@@ -46,15 +46,39 @@
       </ul>
     </li>
 
-    <li class="nav-item">
+    <!-- <li class="nav-item">
       <a href="{{ url('employee/a-transaction') }}" class="nav-link {{ (url()->full() == url('employee/a-transaction'))? 'active':''}}">
-        <!-- <i class="fas fa-solid fa-book nav-icon text-warning"></i> -->
+
         <i class="fas fa-money-bill-wave nav-icon"></i>
         <p>Transaction</p>
       </a>
+    </li> -->
+
+
+<li class="nav-item {{ (url()->full() == url('employee/a-transaction') || url()->full() == url('employee/refund-pending'))?'menu-is-opening menu-open':''}}">
+      <a href="javascript:void(0);" class="nav-link">
+        <i class="fas fa-wallet nav-icon"></i>
+        <p>Transaction
+          <i class="right fas fa-angle-left"></i>
+        </p>
+      </a>
+      <ul class="nav nav-treeview">
+        <li class="nav-item {{ (url()->full() == url('employee/a-transaction') || url()->full() == url('employee/refund-pending'))?'d-block':''}}">
+          <a href="{{ url('employee/a-transaction') }}" class="nav-link {{ (url()->full() == url('employee/a-transaction'))?'active':''}}">
+            <i class="fas fa-hand-holding-usd nav-icon"></i>
+            <p>All Transaction</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url('employee/refund-pending') }}" class="nav-link {{ (url()->full() == url('employee/refund-pending'))? 'active':''}}">
+            <i class="fas fa-hand-holding-water nav-icon"></i>
+            <p>
+              Refund Pending
+            </p>
+          </a>
+        </li>
+      </ul>
     </li>
-
-
 
 
     <!-- <li class="nav-header">MULTI LEVEL EXAMPLE</li>

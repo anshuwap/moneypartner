@@ -8,7 +8,7 @@
         <div class="card">
 
             <div class="card-header">
-                <h3 class="card-title">Transaction List</h3>
+                <h3 class="card-title">Refund Pending List</h3>
                 <div class="card-tools">
                     @if(!empty(MoneyPartnerOption()->dmt_transfer) && MoneyPartnerOption()->dmt_transfer ==1)
                     <a href="javascript:void(0);" class="btn btn-sm btn-success" id="create_customer"><i class="fas fa-plus-circle"></i>&nbsp;Add DMT</a>
@@ -21,7 +21,7 @@
                     <a href="javascript:void(0);" id="import" class="btn btn-sm btn-success"><i class="fas fa-cloud-upload-alt"></i>&nbsp;Bulk Upload</a>
                     @endif
 
-                    <a href="{{ url('retailer/transaction-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
+                    <a href="{{ url('retailer/refund-pending-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
                     @if(!empty($filter))
                     <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
                     @else
@@ -33,7 +33,7 @@
 
             <div class="row pl-2 pr-2" id="filter" <?= (empty($filter)) ? "style='display:none'" : "" ?>>
                 <div class="col-md-12 ml-auto">
-                    <form action="{{ url('retailer/transaction') }}">
+                    <form action="{{ url('retailer/refund-pending') }}">
                         <div class="form-row">
                             <div class="form-group col-md-2">
                                 <label>Start Data</label>
@@ -65,7 +65,7 @@
                                 <label>Type</label>
                                 <select class="form-control form-control-sm" name="type">
                                     <option value="">All</option>
-                                    <option value="dmt_transfer" <?= (!empty($filter['type']) && $filter['type'] == 'success') ? 'selected' : '' ?>>DMT Transfer</option>
+                                    <option value="dmt_transfer" <?= (!empty($filter['type']) && $filter['type'] == 'dmt_transfer') ? 'selected' : '' ?>>DMT Transfer</option>
                                     <option value="payout" <?= (!empty($filter['type']) && $filter['type'] == 'payout') ? 'selected' : '' ?>>Payput</option>
                                     <option value="payout_api" <?= (!empty($filter['type']) && $filter['type'] == 'payout_api') ? 'selected' : '' ?>>Payout Api</option>
                                     <option value="bulk_payout" <?= (!empty($filter['type']) && $filter['type'] == 'bulk_payout') ? 'selected' : '' ?>>Bulk Payout</option>
@@ -84,7 +84,7 @@
 
                             <div class="form-group mt-4">
                                 <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i>&nbsp;Search</button>
-                                <a href="{{ url('retailer/transaction') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
+                                <a href="{{ url('retailer/refund-pending') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
                             </div>
                         </div>
                     </form>
@@ -121,41 +121,12 @@
                         $payment = (object)$trans->payment_channel;
                         $comment = !empty($trans->response['msg']) ? $trans->response['msg'] : '';
 
-$clame = '';
-                        if ($trans->status == 'success') {
-                            $status = '<span class="tag-small"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
-                            $action = '-';
-                            $receipt = '<a href="' . url('retailer/transaction/receipt/' . $trans->_id) . '" target="_blank" class="btn-success btn btn-xs"><i class="fas fa-solid fa-file-invoice "></i>&nbsp;Receipt</a>';
-                        } else if ($trans->status == 'refund') {
-                            $status = '<span class="tag-small"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
-                            $action = '-';
-                            $receipt = '-';
-                        } else if ($trans->status == 'rejected') {
-                            $status = '<span class="tag-small-danger"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
-                            $action = '-';
-                            // $receipt = '-';
-                            $receipt = '<a href="' . url('retailer/transaction/receipt/' . $trans->_id) . '" target="_blank" class="btn-success btn btn-xs"><i class="fas fa-solid fa-file-invoice "></i>&nbsp;Receipt</a>';
-                        } else if ($trans->status == 'process') {
-                            $status = '<span class="tag-small-purple"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
-                            $action = '-';
-                            $receipt = '-';
-                        } else if ($trans->status == 'failed') {
-                            $status = '<span class="tag-small-danger"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
-                            // $receipt = '<a href="'. url('retailer/transaction/receipt/'.$trans->_id).'" target="_blank" class="text-success"><i class="fas fa-2x fa-solid fa-file-invoice " data-toggle="tooltip" data-placement="bottom" title="Receipt"></i></a>';
-                            $receipt = '-';
-                        } else if ($trans->status == 'refund_pending') {
+                        $clame = '';
+                        $status ='';
+                        if ($trans->status == 'refund_pending') {
                             $status = '<span class="tag-small-meganta"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords(str_replace('_', ' ', $trans->status)) . '</a></span>';
-                            // $receipt = '<a href="'. url('retailer/transaction/receipt/'.$trans->_id).'" target="_blank" class="text-success"><i class="fas fa-2x fa-solid fa-file-invoice " data-toggle="tooltip" data-placement="bottom" title="Receipt"></i></a>';
-                            $receipt = '-';
-                             $clame = '<a href="javascript:void(0)" trans_id = "' . $trans->_id . '" trans_no="' . $trans->transaction_id . '" amount="' . $trans->amount . '" class="clame ml-2 btn btn-xs btn-danger">Clame</a>';
-                        } else if (!empty($trans->response)) {
-                            $status = '<span class="tag-small-warning"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">Pending</a></span>';
-                            $receipt = '-';
-                        } else {
-                            $receipt = '-';
-                            $status = '<span class="tag-small"><a href="javascript:void(0)" class="text-dark mt-1" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">Success</a></span>';
                         }
-
+                        $clame = '<a href="javascript:void(0)" trans_id = "' . $trans->_id . '" trans_no="' . $trans->transaction_id . '" amount="' . $trans->amount . '" class="clame ml-2 btn btn-xs btn-danger">Clame</a>';
                         ?>
                         <tr>
                             <td>{{ ++$key }}</td>
@@ -181,7 +152,7 @@ $clame = '';
                             <td>{{ !empty($trans->UserName['full_name']) ?$trans->UserName['full_name'] : '';}}</td>
                             <td><?php $actionM = !(empty($trans->response['action'])) ? $trans->response['action'] : '';
                                 echo !empty($trans->response['action_date']) ? '<span data-toggle="tooltip" data-placement="bottom" title="' . $actionM . '">' . date('d,M y H:i', $trans->response['action_date']) . '</span>' : '' ?></td>
-                            <td>{!! $receipt !!}{!! $clame !!}
+                            <td>{!! $clame !!}
                             </td>
                         </tr>
                         @endforeach
@@ -200,4 +171,5 @@ $clame = '';
 
 @include('retailer.transaction.dmt')
 @include('retailer.transaction.payout')
+@include('retailer.transaction.clame')
 @endsection

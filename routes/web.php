@@ -160,6 +160,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::get('payment-status',      [AdminTransaction::class, 'PaymentStatus']);
   Route::get('check-bulk-status',   [AdminTransaction::class, 'checkBulkStatus']);
   Route::get('update-utr',          [AdminTransaction::class, 'updateUtrNo']);
+  Route::post('split-transaction',  [AdminTransaction::class, 'splitTransaction']);
+  Route::get('refund-pending',         [AdminTransaction::class, 'refundPending']);
+  Route::get('refund-pending-export',  [AdminTransaction::class, 'refundPendingExport']);
 
   Route::resource('credit',           AdminCredit::class);
   Route::get('credit-export',         [AdminCredit::class, 'export']);
@@ -233,6 +236,9 @@ Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
   Route::get('fee-details',         [RetailerTransaction::class, 'feeDetails']);
   Route::get('transaction-export',  [RetailerTransaction::class, 'export']);
   Route::get('transaction/receipt/{id}',  [RetailerTransaction::class, 'receipt']);
+  Route::post('payout-clame',         [RetailerTransaction::class, 'payoutClame']);
+  Route::get('refund-pending',         [RetailerTransaction::class, 'refundPending']);
+  Route::get('refund-pending-export',  [RetailerTransaction::class, 'refundPendingExport']);
 
   Route::resource('retailer-trans', RetailerRetailerTrans::class);
   Route::get('retailer-trans-ajax', [RetailerRetailerTrans::class, 'ajaxList']);
@@ -245,7 +251,7 @@ Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
   Route::post('base-url-api',    [WebhookApi::class, 'baseUrlApi']);
 
   Route::resource('credit-report',           RetailerCredit::class);
-    Route::get('credit-export',              [RetailerCredit::class, 'export']);
+  Route::get('credit-export',              [RetailerCredit::class, 'export']);
   Route::resource('debit-report',            RetailerDebit::class);
 
   Route::post('logout',  [AdminLogin::class, 'logout']);
@@ -279,6 +285,9 @@ Route::group(['prefix' => 'employee', 'middleware' => 'employee'], function () {
   Route::get('payment-status',      [EmployeeTransaction::class, 'PaymentStatus']);
   Route::get('check-bulk-status',   [EmployeeTransaction::class, 'checkBulkStatus']);
   Route::get('update-utr',          [EmployeeTransaction::class, 'updateUtrNo']);
+  Route::post('split-transaction',  [EmployeeTransaction::class, 'splitTransaction']);
+  Route::get('refund-pending',         [EmployeeTransaction::class, 'refundPending']);
+  Route::get('refund-pending-export',  [EmployeeTransaction::class, 'refundPendingExport']);
 
   Route::post('logout',  [EmployeeLogin::class, 'logout']);
 });
@@ -328,6 +337,7 @@ Route::group(['prefix' => 'distributor', 'middleware' => 'distributor'], functio
   Route::get('payment-status',      [DistributorTransaction::class, 'PaymentStatus']);
   Route::get('check-bulk-status',   [DistributorTransaction::class, 'checkBulkStatus']);
   Route::get('update-utr',          [DistributorTransaction::class, 'updateUtrNo']);
+  Route::post('split-transaction',  [DistributorTransaction::class, 'splitTransaction']);
 
 
   //for make payment

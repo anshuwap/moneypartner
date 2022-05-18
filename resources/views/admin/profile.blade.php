@@ -30,7 +30,7 @@
           <div class="card-body box-profile">
             <div class="text-center">
               <img class="profile-user-img img-fluid" style="width: 290px !important;
-    height: 250px !important;" id="avatar" src="{{ (!empty($user->profile_image))?asset('attachment/').'/'.$user->profile_image:profileImage() }} " alt="User profile picture">
+              height: 250px !important;" id="avatar" src="{{ (!empty($user->profile_image))?asset('attachment/').'/'.$user->profile_image:profileImage() }} " alt="User profile picture">
             </div>
 
             <h3 class="profile-username text-center">{{ ucwords($user->full_name) }}</h3>
@@ -218,9 +218,9 @@
 
         //for reset all field
         if (res.status == 'success') {
-          setTimeout(function(){
+          setTimeout(function() {
             location.reload();
-          },1000)
+          }, 1000)
         }
       }
     });

@@ -44,7 +44,7 @@
 
     <li class="nav-item {{ (url()->full() == url('admin/topup-list') || url()->full() == url('admin/pending-topup'))?'menu-is-opening menu-open':''}}">
       <a href="javascript:void(0);" class="nav-link">
-       <i class="fas fa-wallet nav-icon"></i>
+        <i class="fas fa-wallet nav-icon"></i>
         <p>Topup Request
           <i class="right fas fa-angle-left"></i>
         </p>
@@ -68,14 +68,38 @@
     </li>
 
 
-    <li class="nav-item">
+    <!-- <li class="nav-item">
       <a href="{{ url('admin/a-transaction') }}" class="nav-link {{ (url()->full() == url('admin/a-transaction'))? 'active':''}}">
-        <!-- <i class="fas fa-solid fa-book nav-icon text-warning"></i> -->
         <i class="fas fa-money-bill-wave nav-icon"></i>
         <p>Transaction</p>
       </a>
-    </li>
+    </li> -->
 
+
+    <li class="nav-item {{ (url()->full() == url('admin/a-transaction') || url()->full() == url('admin/refund-pending'))?'menu-is-opening menu-open':''}}">
+      <a href="javascript:void(0);" class="nav-link">
+        <i class="fas fa-wallet nav-icon"></i>
+        <p>Transaction
+          <i class="right fas fa-angle-left"></i>
+        </p>
+      </a>
+      <ul class="nav nav-treeview">
+        <li class="nav-item {{ (url()->full() == url('admin/a-transaction') || url()->full() == url('admin/refund-pending'))?'d-block':''}}">
+          <a href="{{ url('admin/a-transaction') }}" class="nav-link {{ (url()->full() == url('admin/a-transaction'))?'active':''}}">
+            <i class="fas fa-hand-holding-usd nav-icon"></i>
+            <p>All Transaction</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url('admin/refund-pending') }}" class="nav-link {{ (url()->full() == url('admin/refund-pending'))? 'active':''}}">
+            <i class="fas fa-hand-holding-water nav-icon"></i>
+            <p>
+              Refund Pending
+            </p>
+          </a>
+        </li>
+      </ul>
+    </li>
 
     <!-- <li class="nav-item {{ (url()->full() == url('admin/a-customer-trans') || url()->full() == url('admin/a-retailer-trans'))?'menu-is-opening menu-open':''}}">
       <a href="javascript:void(0);" class="nav-link ">

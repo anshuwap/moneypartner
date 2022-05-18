@@ -146,6 +146,17 @@
       width: 180px;
     }
 
+
+    .tag-small-meganta {
+      font-size: 11px;
+      background: #e5b9c9;
+      border: 1px solid #e2729b;
+      border-radius: 9px;
+      width: auto;
+      padding: 3px 10px;
+      color: black;
+    }
+
     @media (min-width: 768px) {
 
       body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper,
@@ -167,14 +178,14 @@
       min-width: 29rem !important;
     }
 
-    .custom-auto-field:hover{
+    .custom-auto-field:hover {
       background: #007bff;
       padding: 0px 0px 0px 3px;
     }
 
-    .form-group.mb-3{
+    .form-group.mb-3 {
       padding: 0px 50px 0px 50px;
-}
+    }
   </style>
 </head>
 

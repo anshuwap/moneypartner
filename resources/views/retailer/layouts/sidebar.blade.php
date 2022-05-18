@@ -52,20 +52,45 @@
       </a>
     </li>
 
-    <li class="nav-item">
+    <!-- <li class="nav-item">
       <a href="{{ url('retailer/transaction') }}" class="nav-link {{ (url()->full() == url('retailer/transaction'))? 'active':''}}">
-        <!-- <i class="fas fa-solid fa-book nav-icon text-warning"></i> -->
+
         <i class="fas fa-money-bill-wave nav-icon"></i>
         <p>Transaction</p>
       </a>
-    </li>
+    </li> -->
 
-      <li class="nav-item {{ (url()->full() == url('retailer/credit-report') || url()->full() == url('retailer/debit-report'))?'d-block':''}}">
-          <a href="{{ url('retailer/credit-report') }}" class="nav-link {{ (url()->full() == url('retailer/credit-report'))?'active':''}}">
-            <i class="fas fa-money-bill nav-icon"></i>
-            <p>Manual Credit</p>
+     <li class="nav-item {{ (url()->full() == url('retailer/transaction') || url()->full() == url('retailer/refund-pending'))?'menu-is-opening menu-open':''}}">
+      <a href="javascript:void(0);" class="nav-link">
+        <i class="fas fa-wallet nav-icon"></i>
+        <p>Transaction
+          <i class="right fas fa-angle-left"></i>
+        </p>
+      </a>
+      <ul class="nav nav-treeview">
+        <li class="nav-item {{ (url()->full() == url('retailer/transaction') || url()->full() == url('retailer/refund-pending'))?'d-block':''}}">
+          <a href="{{ url('retailer/transaction') }}" class="nav-link {{ (url()->full() == url('retailer/transaction'))?'active':''}}">
+            <i class="fas fa-hand-holding-usd nav-icon"></i>
+            <p>All Transaction</p>
           </a>
         </li>
+        <li class="nav-item">
+          <a href="{{ url('retailer/refund-pending') }}" class="nav-link {{ (url()->full() == url('retailer/refund-pending'))? 'active':''}}">
+            <i class="fas fa-hand-holding-water nav-icon"></i>
+            <p>
+              Refund Pending
+            </p>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <li class="nav-item {{ (url()->full() == url('retailer/credit-report') || url()->full() == url('retailer/debit-report'))?'d-block':''}}">
+      <a href="{{ url('retailer/credit-report') }}" class="nav-link {{ (url()->full() == url('retailer/credit-report'))?'active':''}}">
+        <i class="fas fa-money-bill nav-icon"></i>
+        <p>Manual Credit</p>
+      </a>
+    </li>
 
     <!-- <li class="nav-item {{ (url()->full() == url('retailer/credit-report') || url()->full() == url('retailer/debit-report'))?'menu-is-opening menu-open':''}}">
       <a href="javascript:void(0);" class="nav-link">

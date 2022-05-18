@@ -63,10 +63,15 @@
                 } else if ($trans->status == 'rejected') {
                     $status = '<span class="tag-small-danger"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                     $action = '-';
+                }
+                if ($trans->status == 'refund_pending') {
+                    $status = '<span class="tag-small-danger"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
+                    $action = '-';
                 } else {
 
                     $status = '<span class="tag-small-warning"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                     $action = '<a href="javascript:void(0);" payment_mode="' . $trans->payment_mode . '" class="btn btn-danger btn-xs retailer_trans" _id="' . $trans->_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>';
+                    $action .= '<a href="javascript:void(0);" class="ml-2 btn btn-success btn-sm split" _id="' . $trans->_id . '"><i class="fas fa-solid fa-splotch"></i>&nbsp;Split</a>';
                 } ?>
               <tr>
                   <td>
@@ -186,6 +191,7 @@
                               <div class="form-group" id="comment-field_dashboard" style="display: none;">
                                   <label>Comment</label>
                                   <select name="response[msg]" class="form-control form-control-sm" id="comment_dashboard">
+                                      <option value="">Select</option>
                                   </select>
                                   <span id="comment_msg" class="custom-text-danger"></span>
                               </div>
@@ -243,6 +249,7 @@
                                        <option value="success">Success</option>
                                        <option value="pending">Pending</option>
                                        <option value="rejected">Rejected</option>
+                                       <option value="refund_pending">Refund Pending</option>
                                    </select>
                                    <span id="status_msg" class="custom-text-danger"></span>
                                </div>`);
@@ -284,8 +291,9 @@
                                 <input type="text" placeholder="UTR/Transaction" required id="utr" name="response[utr_number]" class="form-control form-control-sm">
                                 <span id="utr_transaction_msg" class="custom-text-danger"></span>
                             </div>`);
-          } else if (status == 'rejected') {
-
+          } else if (status === 'rejected' || status === 'refund_pending') {
+              $('#success_dashboard').html('');
+              $('#challel').html(``);
           } else {
               $('#challel').html(``);
               $('#success_dashboard').html(`<div class="form-group">
@@ -323,6 +331,7 @@
                       $('#comment_field_dashboard1').show();
                       $('#comment_dashboard').html(res);
                       $('#comment_dashboard1').html(res);
+                      $('#split-comment').html(res);
                   }
               })
           }
@@ -613,7 +622,7 @@
               dataType: 'json',
               success: function(res) {
                   if (index == 0)
-                  $('.preview-table').remove();
+                      $('.preview-table').remove();
 
                   $('#preview-table').append(res.data);
 
@@ -633,3 +642,4 @@
 
   @endpush
   <!--end retailer transer module-->
+  @include('admin.transaction.splitTransaction')

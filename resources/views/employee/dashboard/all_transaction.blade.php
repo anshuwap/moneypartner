@@ -67,6 +67,7 @@
 
                     $status = '<span class="tag-small-warning"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                     $action = '<a href="javascript:void(0);" payment_mode="' . $trans->payment_mode . '" class="btn btn-danger btn-xs retailer_trans" _id="' . $trans->_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>';
+                    $action .= '<a href="javascript:void(0);" class="ml-2 btn btn-success btn-sm split" _id="' . $trans->_id . '"><i class="fas fa-solid fa-splotch"></i>&nbsp;Split</a>';
                 } ?>
               <tr>
                   <td>
@@ -243,6 +244,7 @@
                                        <option value="success">Success</option>
                                        <option value="pending">Pending</option>
                                        <option value="rejected">Rejected</option>
+                                        <option value="refund_pending">Refund Pending</option>
                                    </select>
                                    <span id="status_msg" class="custom-text-danger"></span>
                                </div>`);
@@ -599,3 +601,4 @@
   </script>
   @endpush
   <!--end retailer transer module-->
+   @include('employee.transaction.splitTransaction')

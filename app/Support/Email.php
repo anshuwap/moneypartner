@@ -25,12 +25,12 @@ class Email
         $mail->isSMTP();
         $mail->Host = 'mail.moneypartner.in';            //  smtp host
         $mail->SMTPAuth = true;
-        $mail->Username = 'noreply@moneypartner.in';       //  sender username
-        $mail->Password = '$Zs4zxGV2N5Wk5A';             // sender password
+        $mail->Username = 'info@moneypartner.in';       //  sender username
+        $mail->Password = 'info@123&#12info';             // sender password
         $mail->SMTPSecure = 'tls';                  // encryption - ssl/tls
         $mail->Port = 587;                          // port - 587/465
 
-        $mail->setFrom('noreply@moneypartner.in', 'Moneypartner');
+        $mail->setFrom('info@moneypartner.in', 'Moneypartner');
         $mail->addAddress($request->email);
         // $mail->addCC($request->emailCc);
         // $mail->addBCC($request->emailBcc);

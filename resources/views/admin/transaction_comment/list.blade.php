@@ -164,13 +164,14 @@
 
                             <div class="form-row">
 
-                               <div class="form-group col-md-6">
+                                <div class="form-group col-md-6">
                                     <label>Action</label>
                                     <select class="form-control form-control-sm" required id="type" name="type">
                                         <option value=" ">Select</option>
                                         <option value="success">Success</option>
                                         <option value="pending">Pending</option>
                                         <option value="rejected">Rejected</option>
+                                        <option value="refund_pending">Refund Pending</option>
                                     </select>
                                     <span id="action_msg" class="custom-text-danger"></span>
                                 </div>

@@ -72,7 +72,7 @@
                                 <label>Type</label>
                                 <select class="form-control form-control-sm" name="type">
                                     <option value="">All</option>dmt_transfer
-                                    <option value="dmt_transfer" <?= (!empty($filter['type']) && $filter['type'] == 'success') ? 'selected' : '' ?>>DMT Transfer</option>
+                                    <option value="dmt_transfer" <?= (!empty($filter['type']) && $filter['type'] == 'dmt_transfer') ? 'selected' : '' ?>>DMT Transfer</option>
                                     <option value="payout" <?= (!empty($filter['type']) && $filter['type'] == 'payout') ? 'selected' : '' ?>>Payput</option>
                                     <option value="payout_api" <?= (!empty($filter['type']) && $filter['type'] == 'payout_api') ? 'selected' : '' ?>>Payout Api</option>
                                     <option value="bulk_payout" <?= (!empty($filter['type']) && $filter['type'] == 'bulk_payout') ? 'selected' : '' ?>>Bulk Payout</option>
@@ -84,9 +84,13 @@
                                 <select class="form-control form-control-sm" name="status">
                                     <option value="">All</option>
                                     <option value="success" <?= (!empty($filter['status']) && $filter['status'] == 'success') ? 'selected' : '' ?>>Success</option>
-                                    <option value="pending" <?= (!empty($filter['status']) && $filter['status'] == 'pending') ? 'selected' : '' ?>>Pending</option>
+                                    <!-- <option value="pending" <?= (!empty($filter['status']) && $filter['status'] == 'pending') ? 'selected' : '' ?>>Pending</option> -->
                                     <option value="process" <?= (!empty($filter['status']) && $filter['status'] == 'process') ? 'selected' : '' ?>>Process</option>
-                                    <option value="reject" <?= (!empty($filter['status']) && $filter['status'] == 'reject') ? 'selected' : '' ?>>Reject</option>
+                                    <option value="rejected" <?= (!empty($filter['status']) && $filter['status'] == 'rejected') ? 'selected' : '' ?>>Rejected</option>
+                                    <option value="refund_pending" <?= (!empty($filter['status']) && $filter['status'] == 'refund_pending') ? 'selected' : '' ?>>Refund Pending</option>
+                                    <option value="refund_pending" <?= (!empty($filter['status']) && $filter['status'] == 'refund_pending') ? 'selected' : '' ?>>Refund Pending</option>
+                                    <option value="failed" <?= (!empty($filter['status']) && $filter['status'] == 'failed') ? 'selected' : '' ?>>Failed</option>
+                                    <option value="process" <?= (!empty($filter['status']) && $filter['status'] == 'process') ? 'selected' : '' ?>>Process</option>
                                 </select>
                             </div>
 
@@ -136,6 +140,10 @@
                             $status = '<span class="tag-small"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                             $action = '';
                             $checkbox = '';
+                        } else if ($trans->status == 'refund') {
+                            $status = '<span class="tag-small"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
+                            $action = '-';
+                            $checkbox = '-';
                         } else if ($trans->status == 'rejected') {
                             $status = '<span class="tag-small-danger"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                             $action = '';
@@ -148,6 +156,10 @@
                             $status = '<span class="tag-small-danger"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                             $action = '<a href="javascript:void(0);" payment_mode="' . $trans->payment_mode . '" class="btn btn-danger btn-xs retailer_trans" _id="' . $trans->_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>';
                             $checkbox  = '<input type="checkbox" class="select_me checkbox" value="' . $trans->_id . '" />';
+                        } else if ($trans->status == 'refund_pending') {
+                            $status = '<span class="tag-small-meganta"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords(str_replace('_', ' ', $trans->status)) . '</a></span>';
+                            $action = '';
+                            $checkbox  = '';
                         } else {
                             $status = '<span class="tag-small-warning"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                             $action = '<a href="javascript:void(0);" payment_mode="' . $trans->payment_mode . '" class="btn btn-danger btn-xs retailer_trans" _id="' . $trans->_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>';
@@ -178,7 +190,8 @@
                             <td>{!! $status !!}</td>
                             <td>{{ date('d,M y H:i',$trans->created) }}</td>
                             <td>{{ !empty($trans->UserName['full_name']) ?$trans->UserName['full_name'] : '';}}</td>
-                            <td><?php $actionM=!(empty($trans->response['action']))?$trans->response['action']:''; echo !empty($trans->response['action_date'])?'<span data-toggle="tooltip" data-placement="bottom" title="'.$actionM.'">'.date('d,M y H:i',$trans->response['action_date']).'</span>':''?></td>
+                            <td><?php $actionM = !(empty($trans->response['action'])) ? $trans->response['action'] : '';
+                                echo !empty($trans->response['action_date']) ? '<span data-toggle="tooltip" data-placement="bottom" title="' . $actionM . '">' . date('d,M y H:i', $trans->response['action_date']) . '</span>' : '' ?></td>
                             <td> <a href="javascript:void(0);" class="btn btn-info btn-xs view_dashboard" _id="{{ $trans->_id }}"><i class="fas fa-eye"></i>&nbsp;view</a>
                                 {!! $action !!}</td>
                         </tr>
@@ -400,6 +413,7 @@
                                        <option value="success">Success</option>
                                        <option value="pending">Pending</option>
                                        <option value="rejected">Rejected</option>
+                                        <option value="refund_pending">Refund Pending</option>
                                    </select>
                                    <span id="status_msg" class="custom-text-danger"></span>
                                </div>`);
@@ -917,4 +931,5 @@
 
 @endpush
 <!--end retailer transer module-->
+@include('employee.transaction.splitTransaction2')
 @endsection

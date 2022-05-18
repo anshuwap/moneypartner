@@ -36,45 +36,50 @@
       border-top: 3px solid #2fc296;
     }
   </style>
-   <style>
-input{
-  font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 12px !important;
-    letter-spacing: 0.01em;
-    height: auto;
-}
-select{
-  font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 12px !important;
-    letter-spacing: 0.01em;
-    height: auto;
-}
-label{
-  font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 12px !important;
-    letter-spacing: 0.01em;
-    height: auto;
-}
-.card-title{
-  font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 14px !important;
-    letter-spacing: 0.01em;
-    height: auto;
-}
-.btn{
-  font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 12px !important;
-    letter-spacing: 0.01em;
-    height: auto;
-}
-.modal-title{
-  font-family: IBM Plex Sans,sans-serif!important;
-    font-size: 14px !important;
-    letter-spacing: 0.01em;
-    height: auto;
-}
+  <style>
+    input {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    select {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    label {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    .card-title {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 14px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    .btn {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
+
+    .modal-title {
+      font-family: IBM Plex Sans, sans-serif !important;
+      font-size: 14px !important;
+      letter-spacing: 0.01em;
+      height: auto;
+    }
   </style>
-   <style>
+  <style>
     input {
       font-family: IBM Plex Sans, sans-serif !important;
       font-size: 12px !important;
@@ -125,23 +130,38 @@ label{
       height: auto;
     }
 
-    .sidebar-mini .main-sidebar .nav-link, .sidebar-mini-md .main-sidebar .nav-link, .sidebar-mini-xs .main-sidebar .nav-link {
-    width: calc(180px - 0.5rem * 2);
-
-}
-
-    .main-sidebar, .main-sidebar::before {
-    transition: margin-left .3s ease-in-out,width .3s ease-in-out;
-    width: 180px;
-}
-
-    @media (min-width: 768px){
-body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper, body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer, body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
-    transition: margin-left .3s ease-in-out;
-    margin-left: 180px;
-}
+    .tag-small-meganta {
+      font-size: 11px;
+      background: #e5b9c9;
+      border: 1px solid #e2729b;
+      border-radius: 9px;
+      width: auto;
+      padding: 3px 10px;
+      color: black;
     }
 
+    .sidebar-mini .main-sidebar .nav-link,
+    .sidebar-mini-md .main-sidebar .nav-link,
+    .sidebar-mini-xs .main-sidebar .nav-link {
+      width: calc(180px - 0.5rem * 2);
+
+    }
+
+    .main-sidebar,
+    .main-sidebar::before {
+      transition: margin-left .3s ease-in-out, width .3s ease-in-out;
+      width: 180px;
+    }
+
+    @media (min-width: 768px) {
+
+      body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper,
+      body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer,
+      body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
+        transition: margin-left .3s ease-in-out;
+        margin-left: 180px;
+      }
+    }
   </style>
 </head>
 
@@ -160,7 +180,7 @@ body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-w
     <!-- Navbar -->
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
       <!-- Right navbar links -->
-       <ul class="navbar-nav">
+      <ul class="navbar-nav">
         <li class="nav-item">
           <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
@@ -180,7 +200,7 @@ body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-w
             <a href="javascript:void(0);" class="pro-li dropdown-item"><span><img class="profile-small img-fluid img-circle" id="avatar" src="{{ employeeImage() }}" alt="User profile picture"></span> <span>{{ ucwords(Auth::user()->full_name)}}</span></a>
 
             <a href="{{ url('employee/e-profile') }}" class="pro-li dropdown-item">
-             <span><i class="far fa-user"></i></span> Profile
+              <span><i class="far fa-user"></i></span> Profile
             </a>
             <a class="dropdown-item" href="{{ url('employee/logout') }}" onclick="event.preventDefault();
                      document.getElementById('logout-form').submit();">

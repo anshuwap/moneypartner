@@ -117,6 +117,17 @@
 
     }
 
+
+    .tag-small-meganta {
+      font-size: 11px;
+      background: #e5b9c9;
+      border: 1px solid #e2729b;
+      border-radius: 9px;
+      width: auto;
+      padding: 3px 10px;
+      color: black;
+    }
+
     .main-sidebar,
     .main-sidebar::before {
       transition: margin-left .3s ease-in-out, width .3s ease-in-out;
