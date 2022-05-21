@@ -147,7 +147,7 @@ $clame = '';
                             $status = '<span class="tag-small-meganta"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords(str_replace('_', ' ', $trans->status)) . '</a></span>';
                             // $receipt = '<a href="'. url('retailer/transaction/receipt/'.$trans->_id).'" target="_blank" class="text-success"><i class="fas fa-2x fa-solid fa-file-invoice " data-toggle="tooltip" data-placement="bottom" title="Receipt"></i></a>';
                             $receipt = '-';
-                             $clame = '<a href="javascript:void(0)" trans_id = "' . $trans->_id . '" trans_no="' . $trans->transaction_id . '" amount="' . $trans->amount . '" class="clame ml-2 btn btn-xs btn-danger">Clame</a>';
+                             $clame = '<a href="javascript:void(0)" trans_id = "' . $trans->_id . '" trans_no="' . $trans->transaction_id . '" amount="' . $trans->amount . '" class="clame ml-2 btn btn-xs btn-danger">Claim</a>';
                         } else if (!empty($trans->response)) {
                             $status = '<span class="tag-small-warning"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">Pending</a></span>';
                             $receipt = '-';

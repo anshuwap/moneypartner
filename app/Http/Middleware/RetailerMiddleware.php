@@ -15,6 +15,8 @@ class RetailerMiddleware
 
             // if user is not admin take him to his dashboard
             if (Auth::user()->isAdmin()) {
+                if (empty(Auth::user()->verify_otp) || !Auth::user()->verify_otp)
+                    return redirect(url('otp-sent'));
 
                 return redirect(url('admin/dashboard'));
             }
@@ -26,7 +28,7 @@ class RetailerMiddleware
                 if (empty(Auth::user()->verify_otp) || !Auth::user()->verify_otp) {
                     if (!empty($_COOKIE['logged_in']) && $_COOKIE['logged_in'] == 'logged') {
                         // return redirect(url('retailer/dashboard'));
-                         return $next($request);
+                        return $next($request);
                     } else {
                         return redirect(url('otp-sent'));
                     }
@@ -35,10 +37,8 @@ class RetailerMiddleware
                 return $next($request);
             } else if (Auth::user()->isEmployee()) {
                 return redirect(url('employee/dashboard'));
-
-            }else if(Auth::user()->isDistributor()){
+            } else if (Auth::user()->isDistributor()) {
                 return redirect(url('distributor/dashboard'));
-
             } else {
 
                 return redirect(url('/'));

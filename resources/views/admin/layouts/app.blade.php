@@ -32,6 +32,8 @@
 
   <link rel="stylesheet" href="{{ asset('assets') }}/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
 
+  <link rel="stylesheet" href="{{ asset('assets') }}/plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="{{ asset('assets') }}/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
   <!-- JQVMap -->
 
   <link rel="stylesheet" href="{{ asset('assets') }}/plugins/jqvmap/jqvmap.min.css">
@@ -142,6 +144,12 @@
         transition: margin-left .3s ease-in-out;
         margin-left: 180px;
       }
+    }
+
+    .select2-selection__choice {
+      background-color: #2fc296 !important;
+      border-color: #07a979 !important;
+      font-size: 12px !important;
     }
   </style>
 </head>
@@ -331,6 +339,7 @@
   <script src="{{ asset('assets') }}/dist/js/adminlte.js"></script>
   <!-- AdminLTE for demo purposes -->
   <script src="{{ asset('assets') }}/plugins/chart.js/Chart.js"></script>
+  <script src="{{ asset('assets') }}/plugins/select2/js/select2.full.min.js"></script>
   <!-- <script src="{{ asset('assets') }}/dist/js/demo.js"></script> -->
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
   <!-- <script src="{{ asset('assets') }}/dist/js/pages/dashboard.js"></script> -->
@@ -407,9 +416,20 @@
       }
 
     });
-
-
     /*end single image preview*/
+
+
+    $(function() {
+      //Initialize Select2 Elements
+      $('.select2').select2()
+
+      //Initialize Select2 Elements
+      $('.select2bs4').select2({
+        theme: 'bootstrap4',
+        placeholder: "Select",
+        allowClear: true
+      })
+    })
   </script>
 
   @stack('custom-script')

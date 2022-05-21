@@ -5,7 +5,7 @@
     }
 </style>
 <div class="modal fade" id="slitPopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 1100px !important" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="heading_bank_dashboard">Split Amount</h5>
@@ -139,11 +139,17 @@
         var x = parseInt(j) + parseInt(1);
         $('#split-field').append(`<div class="form-row" id="remove-${x}">
 
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <span>Amount</span>
                                         <input type="text" value="" required name="response[${x}][amount]" class="form-control form-control-sm" placeholder="Enter Amount">
                                     </div>
-                                    <div class="col-md-2">
+
+                                     <div class="col-md-2">
+                                        <span>Charges</span>
+                                        <input type="text" value="" required name="response[0][charges]" class="form-control form-control-sm" placeholder="Enter charges">
+                                    </div>
+
+                                    <div class="col-md-1">
                                         <span>Action</span>
                                         <select name="response[${x}][status]" attr="${x}" id="action" class="action form-control form-control-sm" required>
                                             <option value="">Select</option>

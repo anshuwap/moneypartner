@@ -468,7 +468,7 @@
                                       <option value="payunie_preet_kumar">Payunie - PREET KUMAR</option>
                                       <option value="payunie_rashid_ali">Payunie -Rashid Ali</option>
                                       <option value="pay2all">Pay2ALL - PRAVEEN</option>
-                                       <option value="odnimo">Odnimo</option>
+                                      <option value="odnimo">Odnimo</option>
                                   </select>
                               </div>
                           </div>
@@ -538,67 +538,67 @@
       });
 
 
-        /*start import functionality*/
-    $("form#import").submit(function(e) {
-        e.preventDefault();
+      /*start import functionality*/
+      $("form#import").submit(function(e) {
+          e.preventDefault();
 
-        var formData = new FormData(this);
-        var url = $(this).attr('action');
+          var formData = new FormData(this);
+          var url = $(this).attr('action');
 
-        $.ajax({
-            data: formData,
-            type: "post",
-            url: url,
-            dataType: 'json',
-            cache: false,
-            contentType: false,
-            processData: false,
-            beforeSend: function() {
-                $('.cover-loader-modal').removeClass('d-none');
-                $('.modal-body').hide();
-            },
-            success: function(res) {
-                //hide loader
-                $('.cover-loader-modal').addClass('d-none');
-                $('.modal-body').show();
-                /*Start Validation Error Message*/
-                if (res.file) {
-                    $('#fileMsg').html(res.file);
-                } else {
-                    $('#fileMsg').html('');
-                }
-                /*Start Validation Error Message*/
+          $.ajax({
+              data: formData,
+              type: "post",
+              url: url,
+              dataType: 'json',
+              cache: false,
+              contentType: false,
+              processData: false,
+              beforeSend: function() {
+                  $('.cover-loader-modal').removeClass('d-none');
+                  $('.modal-body').hide();
+              },
+              success: function(res) {
+                  //hide loader
+                  $('.cover-loader-modal').addClass('d-none');
+                  $('.modal-body').show();
+                  /*Start Validation Error Message*/
+                  if (res.file) {
+                      $('#fileMsg').html(res.file);
+                  } else {
+                      $('#fileMsg').html('');
+                  }
+                  /*Start Validation Error Message*/
 
-                if (res.status == 'preview') {
-                    $('#import-file').addClass('d-none');
-                    $('#preview-modal').addClass('modal-lg-custom');
-                    $('#preview-modal').removeClass('modal-dialog modal-dialog-centered');
-                    $('#show-pin').removeClass('d-none');
-                    $('#preview-import-data').html(res.data);
-                }
-                /*Start Status message*/
+                  if (res.status == 'preview') {
+                      $('#import-file').addClass('d-none');
+                      $('#preview-modal').addClass('modal-lg-custom');
+                      $('#preview-modal').removeClass('modal-dialog modal-dialog-centered');
+                      $('#show-pin').removeClass('d-none');
+                      $('#preview-import-data').html(res.data);
+                  }
+                  /*Start Status message*/
 
-                if (res.status == 'success' || res.status == 'error') {
-                    Swal.fire(
-                        `${res.status}!`,
-                        `${res.msg}`,
-                        `${res.status}`,
-                    )
-                }
-                /*End Status message*/
+                  if (res.status == 'success' || res.status == 'error') {
+                      Swal.fire(
+                          `${res.status}!`,
+                          `${res.msg}`,
+                          `${res.status}`,
+                      )
+                  }
+                  /*End Status message*/
 
-                //for reset all field
+                  //for reset all field
 
-                if (res.status == 'success') {
-                    setTimeout(function() {
-                        location.reload();
-                    }, 1000);
-                }
-            }
-        });
-    });
-    /*end import functionality*/
+                  if (res.status == 'success') {
+                      setTimeout(function() {
+                          location.reload();
+                      }, 1000);
+                  }
+              }
+          });
+      });
+      /*end import functionality*/
   </script>
   @endpush
   <!--end retailer transer module-->
-   @include('employee.transaction.splitTransaction')
+  @include('employee.transaction.splitTransaction')

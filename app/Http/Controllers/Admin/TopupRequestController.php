@@ -36,8 +36,8 @@ class TopupRequestController extends Controller
             if (!empty($request->payment_by))
                 $query->where('payment_by', $request->payment_by);
 
-            if (!empty($request->channel))
-                $query->where('payment_reference_id', $request->channel);
+            if (!empty($request->channel) && is_array($request->channel))
+                $query->whereIn('payment_reference_id', $request->channel);
 
             if (!empty($request->status))
                 $query->where('status', $request->status);
@@ -92,8 +92,8 @@ class TopupRequestController extends Controller
             if (!empty($request->payment_by))
                 $query->where('payment_by', $request->payment_by);
 
-            if (!empty($request->channel))
-                $query->where('payment_reference_id', $request->channel);
+             if (!empty($request->channel) && is_array($request->channel))
+                $query->whereIn('payment_reference_id', $request->channel);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
@@ -401,8 +401,8 @@ class TopupRequestController extends Controller
             if (!empty($request->payment_by))
                 $query->where('payment_by', $request->payment_by);
 
-            if (!empty($request->channel))
-                $query->where('payment_reference_id', $request->channel);
+            if (!empty($request->channel) && is_array($request->channel))
+                $query->whereIn('payment_reference_id', $request->channel);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
@@ -488,8 +488,8 @@ class TopupRequestController extends Controller
             if (!empty($request->payment_by))
                 $query->where('payment_by', $request->payment_by);
 
-            if (!empty($request->channel))
-                $query->where('payment_reference_id', $request->channel);
+            if (!empty($request->channel) && is_array($request->channel))
+                $query->whereIn('payment_reference_id', $request->channel);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;

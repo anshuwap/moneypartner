@@ -39,8 +39,8 @@ class TopupRequestController extends Controller
             if (!empty($request->payment_by))
                 $query->where('payment_by', $request->payment_by);
 
-            if (!empty($request->channel))
-                $query->where('payment_reference_id', $request->channel);
+            if (!empty($request->channel) && is_array($request->channel))
+                $query->whereIn('payment_reference_id', $request->channel);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
@@ -92,8 +92,8 @@ class TopupRequestController extends Controller
             if (!empty($request->payment_by))
                 $query->where('payment_by', $request->payment_by);
 
-            if (!empty($request->channel))
-                $query->where('payment_reference_id', $request->channel);
+            if (!empty($request->channel) && is_array($request->channel))
+                $query->whereIn('payment_reference_id', $request->channel);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
@@ -186,7 +186,7 @@ class TopupRequestController extends Controller
             $show_action = (empty($topup->admin_action) && $topup->admin_action == 0) ? 0 : 1;
 
             // $payment_channel = PaymentChannel::select('_id', 'name')->get();
-           $bank_accounts =   BankAccount::select('_id', 'bank_name', 'account_holder_name')->where('status', 1)->get();
+            $bank_accounts =   BankAccount::select('_id', 'bank_name', 'account_holder_name')->where('status', 1)->get();
             $upis          =   Upi::select('_id', 'name', 'upi_id')->where('status', 1)->get();
             $qrcodes      =   QrCode::select('_id', 'name')->where('status', 1)->get();
 
@@ -212,7 +212,7 @@ class TopupRequestController extends Controller
                         <div class="input-group input-group-sm">
                        <select name="payment_channel" class="form-control form-control-sm" id="payment_channel">
                      <option value="">Select Payment Channel</option>
-                    ' . $option . $option2 . $option3.'
+                    ' . $option . $option2 . $option3 . '
                    </select>
                             <span class="input-group-append ">
                                 <button type="button" class="btn btn-danger btn-flat" id="update_payment_channel">Update</button>
@@ -351,7 +351,7 @@ class TopupRequestController extends Controller
     public function updatePaymentChannel(Request $request)
     {
         try {
-             $bank_referance = [];
+            $bank_referance = [];
             if ($request->payment_channel) {
                 $bank_referance = explode('-', $request->payment_channel);
             }
@@ -400,8 +400,8 @@ class TopupRequestController extends Controller
             if (!empty($request->payment_by))
                 $query->where('payment_by', $request->payment_by);
 
-            if (!empty($request->channel))
-                $query->where('payment_reference_id', $request->channel);
+            if (!empty($request->channel) && is_array($request->channel))
+                $query->whereIn('payment_reference_id', $request->channel);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
@@ -487,8 +487,8 @@ class TopupRequestController extends Controller
             if (!empty($request->payment_by))
                 $query->where('payment_by', $request->payment_by);
 
-            if (!empty($request->channel))
-                $query->where('payment_reference_id', $request->channel);
+            if (!empty($request->channel) && is_array($request->channel))
+                $query->whereIn('payment_reference_id', $request->channel);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;

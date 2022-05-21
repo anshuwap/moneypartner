@@ -71,6 +71,7 @@
 
                     $status = '<span class="tag-small-warning"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                     $action = '<a href="javascript:void(0);" payment_mode="' . $trans->payment_mode . '" class="btn btn-danger btn-xs retailer_trans" _id="' . $trans->_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>';
+                   if($trans->amount >=5000)
                     $action .= '<a href="javascript:void(0);" class="ml-2 btn btn-success btn-sm split" _id="' . $trans->_id . '"><i class="fas fa-solid fa-splotch"></i>&nbsp;Split</a>';
                 } ?>
               <tr>
@@ -638,6 +639,67 @@
       $('#previewModal').on('hidden.bs.modal', function() {
           location.reload();
       });
+
+       /*start import functionality*/
+      $("form#import").submit(function(e) {
+          e.preventDefault();
+
+          var formData = new FormData(this);
+          var url = $(this).attr('action');
+
+          $.ajax({
+              data: formData,
+              type: "post",
+              url: url,
+              dataType: 'json',
+              cache: false,
+              contentType: false,
+              processData: false,
+              beforeSend: function() {
+                  $('.cover-loader-modal').removeClass('d-none');
+                  $('.modal-body').hide();
+              },
+              success: function(res) {
+                  //hide loader
+                  $('.cover-loader-modal').addClass('d-none');
+                  $('.modal-body').show();
+                  /*Start Validation Error Message*/
+                  if (res.file) {
+                      $('#fileMsg').html(res.file);
+                  } else {
+                      $('#fileMsg').html('');
+                  }
+                  /*Start Validation Error Message*/
+
+                  if (res.status == 'preview') {
+                      $('#import-file').addClass('d-none');
+                      $('#preview-modal').addClass('modal-lg-custom');
+                      $('#preview-modal').removeClass('modal-dialog modal-dialog-centered');
+                      $('#show-pin').removeClass('d-none');
+                      $('#preview-import-data').html(res.data);
+                  }
+                  /*Start Status message*/
+
+                  if (res.status == 'success' || res.status == 'error') {
+                      Swal.fire(
+                          `${res.status}!`,
+                          `${res.msg}`,
+                          `${res.status}`,
+                      )
+                  }
+                  /*End Status message*/
+
+                  //for reset all field
+
+                  if (res.status == 'success') {
+                      setTimeout(function() {
+                          location.reload();
+                      }, 1000);
+                  }
+              }
+          });
+      });
+      /*end import functionality*/
   </script>
 
   @endpush

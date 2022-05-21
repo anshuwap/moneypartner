@@ -20,45 +20,52 @@ class Email
 
         try {
 
-        // Email server settings
-        $mail->SMTPDebug = 0;
-        $mail->isSMTP();
-        $mail->Host = 'mail.moneypartner.in';            //  smtp host
-        $mail->SMTPAuth = true;
-        $mail->Username = 'info@moneypartner.in';       //  sender username
-        $mail->Password = 'info@123&#12info';             // sender password
-        $mail->SMTPSecure = 'tls';                  // encryption - ssl/tls
-        $mail->Port = 587;                          // port - 587/465
+            // Email server settings
+            $mail->SMTPDebug = 0;
+            $mail->isSMTP();
+            $mail->Host = 'smtp.google.com';            //  smtp host
+            $mail->SMTPAuth = false;
+            $mail->Username = 'websiteduniya2019@gmail.com';       //  sender username
+            $mail->Password = 'Trick@123';             // sender password
+            $mail->SMTPSecure = 'tls';                  // encryption - ssl/tls
+            $mail->Port = 25;                          // port - 587/465
 
-        $mail->setFrom('info@moneypartner.in', 'Moneypartner');
-        $mail->addAddress($request->email);
-        // $mail->addCC($request->emailCc);
-        // $mail->addBCC($request->emailBcc);
+            //$mail->setFrom('websiteduniya2019@gmail.com', 'Nitu Singh');
+          	$mail->setFrom('info@moneypartner.in', 'Money Partner');
+            $mail->addAddress($request->email);
+            // $mail->addCC($request->emailCc);
+            // $mail->addBCC($request->emailBcc);
 
-        //$mail->addReplyTo('sender@example.com', 'SenderReplyName');
+            //$mail->addReplyTo('sender@example.com', 'SenderReplyName');
 
-        if (isset($_FILES['emailAttachments'])) {
-            for ($i = 0; $i < count($_FILES['emailAttachments']['tmp_name']); $i++) {
-                $mail->addAttachment($_FILES['emailAttachments']['tmp_name'][$i], $_FILES['emailAttachments']['name'][$i]);
+            if (isset($_FILES['emailAttachments'])) {
+                for ($i = 0; $i < count($_FILES['emailAttachments']['tmp_name']); $i++) {
+                    $mail->addAttachment($_FILES['emailAttachments']['tmp_name'][$i], $_FILES['emailAttachments']['name'][$i]);
+                }
             }
-        }
 
-        $mail->isHTML(true);                // Set email content format to HTML
+            $mail->isHTML(true);                // Set email content format to HTML
 
-        $mail->Subject = $request->subject;
-        $mail->Body    = $request->msg;
+            $mail->Subject = $request->subject;
+            $mail->Body    = $request->msg;
 
-        // $mail->AltBody = plain text version of email body;
+            // $mail->AltBody = plain text version of email body;
 
-        if (!$mail->send()) {
-            // return back()->with("failed", "Email not sent.")->withErrors($mail->ErrorInfo);
-            return false;
-        } else {
-            // return back()->with("success", "Email has been sent.");
+            //$res = $mail->send();
+
+           // json_encode($res);
+
+           if (!$mail->send()) {
+            //     // return back()->with("failed", "Email not sent.")->withErrors($mail->ErrorInfo);
+               return false;
+             } else {
+            //     // return back()->with("success", "Email has been sent.");
             return true;
-        }
-        } catch (GlobalException $e) {
-          return false;
+            }
+        } catch (Exception $e) {
+           return false;
+
+            //return json_encode($e->getMessage());
         }
     }
 }

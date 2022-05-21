@@ -26,6 +26,7 @@ class LoginController extends Controller
 
             $remember_me = $request->has('remember_me') ? true : false;
             $credentials = $request->only('email', 'password');
+            $otp = mt_rand(1111, 9999);
 
             if (Auth::attempt($credentials)) {
 
@@ -33,8 +34,6 @@ class LoginController extends Controller
 
                     if (!empty($_COOKIE['logged_in']) && $_COOKIE['logged_in'] == 'logged')
                         return redirect()->intended('retailer/dashboard');
-
-                    $otp = mt_rand(1111, 9999);
 
                     $user = User::where('_id', Auth::user()->_id)->where('mobile_number', Auth::user()->mobile_number)->first();
                     $user->otp = $otp;
@@ -53,8 +52,17 @@ class LoginController extends Controller
                     return redirect()->intended('distributor/dashboard')
                         ->withSuccess('Signed in');
                 } else if (Auth::user()->role == 'admin') {
-                    return redirect()->intended('admin/dashboard')
-                        ->withSuccess('Signed in');
+
+                   $user = User::where('_id', Auth::user()->_id)->where('mobile_number', Auth::user()->mobile_number)->first();
+                    $user->otp = $otp;
+                    if ($user->save()) {
+                        $email = $user->email;
+                        $source = $this->sendOtp($otp, $email, $user->mobile_number, $user->full_name);
+                        $data  = ['otp' => $otp, 'msg' => '<span class="text-success">Otp Sent Successfully in this ' . $source . ' !</span>'];
+                        return redirect()->intended('otp-sent')->with('message', $data);
+                    }
+                    // return redirect()->intended('admin/dashboard')
+                    //     ->withSuccess('Signed in');
                 }
             }
             return redirect()->back()->with('success', 'Invalid credentials!');

@@ -55,22 +55,6 @@
               </div>
 
               <div class="form-group col-md-2">
-                <label>Channel</label>
-                <select class="form-control-sm form-control" name="channel">
-                  <option value="" {{ (!empty($filter['channel']) && $filter['channel'] == 'all')?"selected":""}}>All</option>
-                  @foreach($bank_accounts as $account)
-                  <option value="{{ $account->_id }}" {{ (!empty($filter['channel']) && $filter['channel'] == $account->_id)?"selected":""}}>{{ $account->bank_name }} / {{ $account->account_holder_name}}</option>
-                  @endforeach
-                  @foreach($upis as $upi)
-                  <option value="{{ $upi->_id }}" {{ (!empty($filter['channel']) && $filter['channel'] == $upi->_id)?"selected":""}}>{{ $upi->upi_id}} / {{ $upi->name }}</option>
-                  @endforeach
-                  @foreach($qrcodes as $qr)
-                  <option value="{{ $qr->_id }}" {{ (!empty($filter['channel']) && $filter['channel'] == $qr->_id)?"selected":""}}>QR Code / {{ $qr->name }}</option>
-                  @endforeach
-                </select>
-              </div>
-
-              <div class="form-group col-md-2">
                 <label>Payment Mode</label>
                 <select class="form-control-sm form-control" name="payment_by">
                   <option value="" {{ (!empty($filter['payment_by']) && $filter['payment_by'] == 'all')?"selected":""}}>All</option>
@@ -88,6 +72,22 @@
                   <option value="success" {{ (!empty($filter['status']) && $filter['status'] == 'success')?"selected":""}}>Approved</option>\
                   <option value="rejected" {{ (!empty($filter['status']) && $filter['status'] == 'rejected')?"selected":""}}>Rejected</option>
                   <option value="pending" {{ (!empty($filter['status']) && $filter['status'] == 'pending')?"selected":""}}>Pending</option>
+                </select>
+              </div>
+
+              <div class="form-group col-md-3">
+                <label>Channel</label>
+                <select class="select2 form-control-sm form-control" multiple="multiple" name="channel[]">
+                  <!-- <option value="" {{ (!empty($filter['channel']) && $filter['channel'] == 'all')?"selected":""}}>All</option> -->
+                  @foreach($bank_accounts as $account)
+                  <option value="{{ $account->_id }}" {{ (!empty($filter['channel']) && in_array($account->_id,$filter['channel']))?"selected":""}}>{{ $account->bank_name }} / {{ $account->account_holder_name}}</option>
+                  @endforeach
+                  @foreach($upis as $upi)
+                  <option value="{{ $upi->_id }}" {{ (!empty($filter['channel']) && in_array($upi->_id,$filter['channel']))?"selected":""}}>{{ $upi->upi_id}} / {{ $upi->name }}</option>
+                  @endforeach
+                  @foreach($qrcodes as $qr)
+                  <option value="{{ $qr->_id }}" {{ (!empty($filter['channel']) && in_array($qr->_id,$filter['channel']))?"selected":""}}>QR Code / {{ $qr->name }}</option>
+                  @endforeach
                 </select>
               </div>
 
@@ -422,6 +422,7 @@
     })
 
   });
+
 </script>
 
 @endpush

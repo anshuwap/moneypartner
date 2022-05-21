@@ -52,6 +52,7 @@
                             <th>Account No</th>
                             <th>Bank</th>
                             <th>Status</th>
+                            <th>UTR No</th>
                             <th>Amount</th>
                         </tr>
 
@@ -62,10 +63,11 @@
                             <td>{{!empty($transaction->payment_channel['account_number'])?$transaction->payment_channel['account_number']:''}}</td>
                             <td>{{!empty($transaction->payment_channel['bank_name'])?$transaction->payment_channel['bank_name']:''}}</td>
                             <td>{{ strtoupper($transaction->status)}}</td>
-                            <td>{!! !empty($transaction->amount)?mSign($transaction->amount):0 !!}</td>
+                            <td>{{ !empty($transaction->response['utr_number'])?$transaction->response['utr_number']:'-' }}</td>
+                             <td>{!! !empty($transaction->amount)?mSign($transaction->amount):0 !!}</td>
                         </tr>
                         <tr>
-                            <th colspan="6" class="text-center">Total:</th>
+                            <th colspan="7" class="text-center">Total:</th>
                             <th>{!! !empty($transaction->amount)?mSign($transaction->amount):0 !!}</th>
                         </tr>
                     </table>

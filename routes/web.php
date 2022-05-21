@@ -166,7 +166,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 
   Route::resource('credit',           AdminCredit::class);
   Route::get('credit-export',         [AdminCredit::class, 'export']);
-  Route::get('credit-show',           [AdminCredit::class, 'showBlance']);
+  Route::get('credit-show/{id}',      [AdminCredit::class, 'showBlance']);
   Route::resource('debit',            AdminDebit::class);
   Route::get('debit-show/{id}',       [AdminDebit::class, 'showBlance']);
   Route::get('debit-export',          [AdminDebit::class, 'export']);

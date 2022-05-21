@@ -55,18 +55,18 @@
                 </select>
               </div>
 
-              <div class="form-group col-md-2">
+             <div class="form-group col-md-3">
                 <label>Channel</label>
-                <select class="form-control-sm form-control" name="channel">
-                  <option value="" {{ (!empty($filter['channel']) && $filter['channel'] == 'all')?"selected":""}}>All</option>
+                <select class="select2 form-control-sm form-control" multiple="multiple" name="channel[]">
+                  <!-- <option value="" {{ (!empty($filter['channel']) && $filter['channel'] == 'all')?"selected":""}}>All</option> -->
                   @foreach($bank_accounts as $account)
-                  <option value="{{ $account->_id }}" {{ (!empty($filter['channel']) && $filter['channel'] == $account->_id)?"selected":""}}>{{ $account->bank_name }} / {{$account->account_holder_name}}</option>
+                  <option value="{{ $account->_id }}" {{ (!empty($filter['channel']) && in_array($account->_id,$filter['channel']))?"selected":""}}>{{ $account->bank_name }} / {{ $account->account_holder_name}}</option>
                   @endforeach
                   @foreach($upis as $upi)
-                  <option value="{{ $upi->_id }}" {{ (!empty($filter['channel']) && $filter['channel'] == $upi->_id)?"selected":""}}>{{ $upi->upi_id}} / {{ $upi->name }}</option>
+                  <option value="{{ $upi->_id }}" {{ (!empty($filter['channel']) && in_array($upi->_id,$filter['channel']))?"selected":""}}>{{ $upi->upi_id}} / {{ $upi->name }}</option>
                   @endforeach
                   @foreach($qrcodes as $qr)
-                  <option value="{{ $qr->_id }}" {{ (!empty($filter['channel']) && $filter['channel'] == $qr->_id)?"selected":""}}>QR Code / {{ $qr->name }}</option>
+                  <option value="{{ $qr->_id }}" {{ (!empty($filter['channel']) && in_array($qr->_id,$filter['channel']))?"selected":""}}>QR Code / {{ $qr->name }}</option>
                   @endforeach
                 </select>
               </div>

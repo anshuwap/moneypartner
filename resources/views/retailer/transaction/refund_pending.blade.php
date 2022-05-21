@@ -99,14 +99,10 @@
                             <th>Sr No.</th>
                             <!-- <th>Customer</th> -->
                             <th>Transaction Id</th>
-                            <!-- <th>Mode</th> -->
-                            <th>Channel</th>
                             <th>Amount</th>
                             <th>Beneficiary</th>
                             <th>IFSC</th>
                             <th>Account No.</th>
-                            <!-- <th>Bank Name</th> -->
-                            <th>UTR No.</th>
                             <th>Status</th>
                             <th>Request Date</th>
                             <th>Action By</th>
@@ -126,27 +122,19 @@
                         if ($trans->status == 'refund_pending') {
                             $status = '<span class="tag-small-meganta"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords(str_replace('_', ' ', $trans->status)) . '</a></span>';
                         }
-                        $clame = '<a href="javascript:void(0)" trans_id = "' . $trans->_id . '" trans_no="' . $trans->transaction_id . '" amount="' . $trans->amount . '" class="clame ml-2 btn btn-xs btn-danger">Clame</a>';
+                        $clame = '<a href="javascript:void(0)" trans_id = "' . $trans->_id . '" trans_no="' . $trans->transaction_id . '" amount="' . $trans->amount . '" class="clame ml-2 btn btn-xs btn-danger">Claim</a>';
                         ?>
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <!-- <td>
-                                <div style="display: grid;"><span>{{ ucwords($trans->sender_name)}}</span><span style="font-size: 13px;">{{ $trans->mobile_number }}</span></div>
-                            </td> -->
                             <td style="width: 100px;">
                                 {{ $trans->transaction_id }}
                             </td>
-                            <!-- <td><span class="tag-small">{{ ucwords(str_replace('_',' ',$trans->type)) }}</span></td> -->
-                            <td><?= (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '-' ?></td>
                             <td>{!! mSign($trans->amount) !!}</td>
                             <td>{{ ucwords($trans->receiver_name)}}</td>
-                            <!-- <td>{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</td> -->
                             <td><span data-toggle="tooltip" data-placement="bottom" title="<?= (!empty($payment->bank_name)) ? $payment->bank_name : '' ?>">{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</span></td>
                             <td><?= (!empty($payment->account_number)) ? $payment->account_number : '' ?>
                                 <?= (!empty($payment->upi_id)) ? $payment->upi_id : '' ?>
                             </td>
-                            <!-- <td><?= (!empty($payment->bank_name)) ? $payment->bank_name : '-' ?></td> -->
-                            <td> <?= (!empty($trans->response['utr_number'])) ? $trans->response['utr_number'] : '-' ?></td>
                             <td>{!! $status !!}</td>
                             <td>{{ date('d M y H:i',$trans->created) }}</td>
                             <td>{{ !empty($trans->UserName['full_name']) ?$trans->UserName['full_name'] : '';}}</td>

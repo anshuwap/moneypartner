@@ -611,7 +611,7 @@ class TransactionController extends Controller
             if (
                 !empty($details->response['payment_mode']) && $details->response['payment_mode'] != 'payunie-Preet Kumar'
                 && $details->response['payment_mode'] != 'payunie-Rashid Ali' &&  $details->response['payment_mode'] != 'Pay2All-Parveen' &&
-                $details->response['payment_mode'] != 'Odnimo - api' && $details->status == 'success' && $details->trans_type != 'split'
+                $details->response['payment_mode'] != 'Odnimo - api' && $details->status == 'success' && $details->amount >= 5000
             )
                 $split = '<a href="javascript:void(0);" class=" btn btn-success btn-xs split" _id="' . $details->_id . '"><i class="fas fa-solid fa-splotch"></i>&nbsp;Split</a>';
 
@@ -973,14 +973,20 @@ class TransactionController extends Controller
             $transaction = Transaction::find($id);
 
             $amount = $transaction->amount;
+            $changes = $transaction->transaction_fees;
             $responseData = $request->response;
             $total_amount = 0;
+            $total_changes = 0;
             foreach ($responseData as $res) {
                 $total_amount += $res['amount'];
+                $total_changes += $res['charges'];
             }
             // echo '/'.$total_amount;
             if ($amount != $total_amount)
                 return response(['status' => 'error', 'msg' => 'Total Amount must be- ' . $amount]);
+
+            if ($changes != $total_changes)
+                return response(['status' => 'error', 'msg' => 'Total Charges must be- ' . $changes]);
 
             /*start first transaction Update*/
             $response['action_by']     = Auth::user()->_id;
@@ -990,6 +996,7 @@ class TransactionController extends Controller
             $response['utr_number']    = !empty($responseData[0]['utr_number']) ? $responseData[0]['utr_number'] : '';
             $response['msg']           = !empty($responseData[0]['msg']) ? $responseData[0]['msg'] : '';
 
+            $transaction->transaction_fees  = !empty($responseData[0]['charges']) ? $responseData[0]['charges'] : '';
             $transaction->amount       = !empty($responseData[0]['amount']) ? $responseData[0]['amount'] : $amount;
             $transaction->status       = !empty($responseData[0]['status']) ? $responseData[0]['status'] : 'pending';
             $transaction->response     = $response;
@@ -1010,7 +1017,7 @@ class TransactionController extends Controller
                 $transactionN->mobile_number     = $transaction->mobile_number;
                 $transactionN->sender_name       = $transaction->sender_name;
                 $transactionN->amount            = !empty($responseData[$key]['amount']) ? $responseData[$key]['amount'] : $amount;
-                $transactionN->transactionN_fees = 0;
+                $transactionN->transaction_fees  = !empty($responseData[$key]['charges']) ? $responseData[$key]['charges'] : '';
                 $transactionN->receiver_name     = $transaction->receiver_name;
                 $transactionN->payment_mode      = 'bank_account'; //$request->payment_mode;
                 $transactionN->payment_channel   = $transaction->payment_channel;
