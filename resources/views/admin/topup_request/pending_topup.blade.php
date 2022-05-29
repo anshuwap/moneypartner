@@ -55,7 +55,7 @@
                 </select>
               </div>
 
-             <div class="form-group col-md-3">
+              <div class="form-group col-md-3">
                 <label>Channel</label>
                 <select class="select2 form-control-sm form-control" multiple="multiple" name="channel[]">
                   <!-- <option value="" {{ (!empty($filter['channel']) && $filter['channel'] == 'all')?"selected":""}}>All</option> -->
@@ -70,6 +70,16 @@
                   @endforeach
                 </select>
               </div>
+
+              <div class="form-group col-md-3">
+                <label>Channel 2</label>
+                <select class="select2 form-control-sm form-control" multiple="multiple" name="channel2[]">
+                  <?php foreach ($payment_channel as $channel) { ?>
+                    <option value="<?= $channel->_id ?>" <?= (!empty($filter['channe2']) && in_array($channel->_id, $filter['channel2'])) ? "selected" : "" ?>><?= $channel->name ?></option>';
+                  <?php } ?>
+                </select>
+              </div>
+
 
               <div class="form-group col-md-2">
                 <label>Payment Mode</label>
@@ -101,6 +111,7 @@
               <th>Transaction Id</th>
               <th>UTR No.</th>
               <th>Channel</th>
+              <th>Channel2</th>
               <th>Amount</th>
               <th>Payment Mode</th>
               <!-- <th>Payment In</th> -->
@@ -131,6 +142,7 @@
               <td><?= (!empty($topup->payment_id)) ? $topup->payment_id : '' ?></td>
               <td><?= !empty($topup->utr_no) ? $topup->utr_no : '-' ?></td>
               <td>{!! $topup->paymentModeName($topup->payment_mode,$topup->payment_reference_id) !!}</td>
+              <td>{{ (!empty($topup->ChannelName['name']))?ucwords($topup->ChannelName['name']):'-' }}</td>
               <td>{!! mSign($topup->amount) !!}</td>
               <td>{{ $topup->payment_by }}</td>
 
@@ -275,6 +287,14 @@
                       } ?>
                    </select>
                    <span id="payment_channel_msg" class="custom-text-danger"></span>
+                 </div>
+                  <div class="form-group">
+                 <select name="payment_channel2" class="form-control form-control-sm" id="payment_channel2">
+                  <option value="">Select Payment Channel 2</option>
+                 <?php foreach ($payment_channel as $channel) {
+                    echo '<option value="' . $channel->_id . '">' . $channel->name . '</option>';
+                  } ?>
+                 </select>
                  </div>`);
       } else {
         $('#topup-channel').html(``);

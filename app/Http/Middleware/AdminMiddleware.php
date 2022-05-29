@@ -26,7 +26,7 @@ class AdminMiddleware
                 return redirect(url('employee/dashboard'));
 
             } else if (Auth::user()->isAdmin()) {  // allow admin to proceed with request
-                if (empty(Auth::user()->verify_otp) || !Auth::user()->verify_otp) {
+                if (!empty(Auth::user()->verify_otp) && Auth::user()->verify_otp) {
                     return $next($request);
                 } else {
                     return redirect(url('otp-sent'));

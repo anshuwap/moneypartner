@@ -198,107 +198,129 @@
     </div>
 
 
-    <div class="row">
-      <div class="col-6 col-sm-6 col-md-2">
-        <div class="info-box">
-          <span class="info-box-icon cu-icon"><i class="fas fa-wallet text-secondary"></i></span>
-          <div class="info-box-content">
-            <span class="info-box-text">Topup Req. Amount</span>
-            <span class="info-box-number">
-              {!! !empty($total_topup)?mSign($total_topup):0 !!} || {{ $ac_topup}}
-            </span>
+
+    <div id="accordion">
+      <div class="card">
+        <div class="card-header p-0" id="headingOne" style="background: #bcb9b9;">
+          <h5 class="mb-0">
+            <button class="btn btn-link text-dark" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              <b>Statics</b>
+            </button>
+          </h5>
+        </div>
+
+        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+          <div class="p-2">
+
+
+            <div class="row">
+              <div class="col-6 col-sm-6 col-md-2">
+                <div class="info-box">
+                  <span class="info-box-icon cu-icon"><i class="fas fa-wallet text-secondary"></i></span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Topup Req. Amount</span>
+                    <span class="info-box-number">
+                      {!! !empty($total_topup)?mSign($total_topup):0 !!} || {{ $ac_topup}}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 col-sm-6 col-md-2">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon cu-icon"><i class="fas fa-hand-holding-usd text-secondary"></i></span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Approved Topup</span>
+                    <span class="info-box-number"> {!! !empty($a_topup)?mSign($a_topup):0 !!} || {{ $apc_topup}}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 col-sm-6 col-md-2">
+                <div class="info-box">
+                  <span class="info-box-icon cu-icon"><i class="fas fa-hand-holding-water text-secondary"></i></span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Pending Topup</span>
+                    <span class="info-box-number">
+                      {!! !empty($p_topup)?mSign($p_topup):0 !!} || {{ $pc_topup}}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-6 col-sm-6 col-md-2">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon cu-icon"><i class="fas fa-hand-holding-usd text-secondary"></i></span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Rejected Topup</span>
+                    <span class="info-box-number"> {!! !empty($r_topup)?mSign($r_topup):0 !!} || {{ $rc_topup}}</span>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="clearfix hidden-md-up"></div>
+
+              <div class="col-6 col-sm-6 col-md-2">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-alt text-secondary"></i></span>
+
+                  <div class="info-box-content">
+                    <span class="info-box-text">Payout Req. Amount</span>
+                    <span class="info-box-number">{!! !empty($total_trans)?mSign($total_trans):0 !!} || {{ $ac_trans}}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 col-sm-6 col-md-2">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-alt text-secondary"></i></span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Approved Payout</span>
+                    <span class="info-box-number">{!! !empty($a_trans)?mSign($a_trans):0 !!} || {{ $apc_trans}}</span>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-6 col-sm-6 col-md-2">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-wave text-secondary"></i></span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Pending Payout</span>
+                    <span class="info-box-number">{!! !empty($p_trans)?mSign($p_trans):0 !!} || {{ $pc_trans}}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 col-sm-6 col-md-2">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-alt text-secondary"></i></span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Failed Payout</span>
+                    <span class="info-box-number">{!! !empty($f_trans)?mSign($f_trans):0 !!} || {{ $fc_trans}}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 col-sm-6 col-md-2">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-wave text-secondary"></i></span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Rejected Payout</span>
+                    <span class="info-box-number">{!! !empty($r_trans)?mSign($r_trans):0 !!} || {{ $rc_trans}}</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
           </div>
         </div>
+
+
       </div>
-
-      <div class="col-6 col-sm-6 col-md-2">
-        <div class="info-box mb-3">
-          <span class="info-box-icon cu-icon"><i class="fas fa-hand-holding-usd text-secondary"></i></span>
-          <div class="info-box-content">
-            <span class="info-box-text">Approved Topup</span>
-            <span class="info-box-number"> {!! !empty($a_topup)?mSign($a_topup):0 !!} || {{ $apc_topup}}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-6 col-sm-6 col-md-2">
-        <div class="info-box">
-          <span class="info-box-icon cu-icon"><i class="fas fa-hand-holding-water text-secondary"></i></span>
-          <div class="info-box-content">
-            <span class="info-box-text">Pending Topup</span>
-            <span class="info-box-number">
-              {!! !empty($p_topup)?mSign($p_topup):0 !!} || {{ $pc_topup}}
-            </span>
-          </div>
-        </div>
-      </div>
-
-
-       <div class="col-6 col-sm-6 col-md-2">
-        <div class="info-box mb-3">
-          <span class="info-box-icon cu-icon"><i class="fas fa-hand-holding-usd text-secondary"></i></span>
-          <div class="info-box-content">
-            <span class="info-box-text">Rejected Topup</span>
-            <span class="info-box-number"> {!! !empty($r_topup)?mSign($r_topup):0 !!} || {{ $rc_topup}}</span>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="clearfix hidden-md-up"></div>
-
-      <div class="col-6 col-sm-6 col-md-2">
-        <div class="info-box mb-3">
-          <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-alt text-secondary"></i></span>
-
-          <div class="info-box-content">
-            <span class="info-box-text">Payout Req. Amount</span>
-            <span class="info-box-number">{!! !empty($total_trans)?mSign($total_trans):0 !!} || {{ $ac_trans}}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-6 col-sm-6 col-md-2">
-        <div class="info-box mb-3">
-          <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-alt text-secondary"></i></span>
-          <div class="info-box-content">
-            <span class="info-box-text">Approved Payout</span>
-            <span class="info-box-number">{!! !empty($a_trans)?mSign($a_trans):0 !!} || {{ $apc_trans}}</span>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="col-6 col-sm-6 col-md-2">
-        <div class="info-box mb-3">
-          <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-wave text-secondary"></i></span>
-          <div class="info-box-content">
-            <span class="info-box-text">Pending Payout</span>
-            <span class="info-box-number">{!! !empty($p_trans)?mSign($p_trans):0 !!} || {{ $pc_trans}}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-6 col-sm-6 col-md-2">
-        <div class="info-box mb-3">
-          <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-alt text-secondary"></i></span>
-          <div class="info-box-content">
-            <span class="info-box-text">Failed Payout</span>
-            <span class="info-box-number">{!! !empty($f_trans)?mSign($f_trans):0 !!} || {{ $fc_trans}}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-6 col-sm-6 col-md-2">
-        <div class="info-box mb-3">
-          <span class="info-box-icon cu-icon"><i class="fas fa-money-bill-wave text-secondary"></i></span>
-          <div class="info-box-content">
-            <span class="info-box-text">Rejected Payout</span>
-            <span class="info-box-number">{!! !empty($r_trans)?mSign($r_trans):0 !!} || {{ $rc_trans}}</span>
-          </div>
-        </div>
-      </div>
-
     </div>
 
     @include('retailer.dashboard.transaction')

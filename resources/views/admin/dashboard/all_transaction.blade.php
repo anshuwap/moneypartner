@@ -30,76 +30,78 @@
       <div class="card-body pl-2 pr-2">
           <!-- Conversations are loaded here -->
 
-          <table id="table" class="table table-hover table-sm">
+          <div class="table-responsive">
+              <table id="table" class="table table-hover table-sm">
+                  <tr>
+                      <th><input type="checkbox" class="select_all" id="checkAll" /></th>
+                      <th style="width:55px;">#</th>
+                      <th style="width: 110px;">Outlet</th>
+                      <!-- <th style="width: 115px;"> Transaction Id</th> -->
+                      <th style="width:100px;">Mode</th>
+                      <th>Amount</th>
+                      <th>Beneficiary </th>
+                      <th>IFSC</th>
+                      <th>Account No.</th>
+                      <!-- <th>Bank Name</th> -->
+                      <th>Status</th>
+                      <th>Datetime</th>
+                      <th>Action</th>
+                  </tr>
 
-              <tr>
-                  <th><input type="checkbox" class="select_all" id="checkAll" /></th>
-                  <th style="width:55px;">Sr. No.</th>
-                  <th style="width: 110px;">Outlet</th>
-                  <!-- <th style="width: 115px;"> Transaction Id</th> -->
-                  <th style="width:100px;">Mode</th>
-                  <th>Amount</th>
-                  <th>Beneficiary </th>
-                  <th>IFSC</th>
-                  <th>Account No.</th>
-                  <!-- <th>Bank Name</th> -->
-                  <th>Status</th>
-                  <th>Datetime</th>
-                  <th>Action</th>
-              </tr>
+                  @foreach($transaction as $key=>$trans)
+                  <?php
 
-              @foreach($transaction as $key=>$trans)
-              <?php
+                    $payment = (object)$trans->payment_channel;
+                    $comment = !empty($trans->response['msg']) ? $trans->response['msg'] : '';
 
-                $payment = (object)$trans->payment_channel;
-                $comment = !empty($trans->response['msg']) ? $trans->response['msg'] : '';
+                    if ($trans->status == 'success') {
+                        $status = '<span class="tag-small"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
+                        $action = '-';
+                    } else if ($trans->status == 'progress') {
+                        $status = '<span class="tag-small-purple"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
+                        $action = '-';
+                    } else if ($trans->status == 'rejected') {
+                        $status = '<span class="tag-small-danger"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
+                        $action = '-';
+                    }
+                    if ($trans->status == 'refund_pending') {
+                        $status = '<span class="tag-small-danger"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
+                        $action = '-';
+                    } else {
 
-                if ($trans->status == 'success') {
-                    $status = '<span class="tag-small"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
-                    $action = '-';
-                } else if ($trans->status == 'progress') {
-                    $status = '<span class="tag-small-purple"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
-                    $action = '-';
-                } else if ($trans->status == 'rejected') {
-                    $status = '<span class="tag-small-danger"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
-                    $action = '-';
-                }
-                if ($trans->status == 'refund_pending') {
-                    $status = '<span class="tag-small-danger"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
-                    $action = '-';
-                } else {
+                        $status = '<span class="tag-small-warning"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
+                        $action = '<a href="javascript:void(0);" payment_mode="' . $trans->payment_mode . '" class="btn btn-danger btn-xs retailer_trans" _id="' . $trans->_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>';
+                        if ($trans->amount >= 5000)
+                            $action .= '<a href="javascript:void(0);" class="ml-2 btn btn-success btn-sm split" _id="' . $trans->_id . '"><i class="fas fa-solid fa-splotch"></i>&nbsp;Split</a>';
+                    } ?>
+                  <tr>
+                      <td>
+                          <input type="checkbox" class="select_me checkbox" value="{{ $trans->_id }}" />
+                      </td>
+                      <td>{{ ++$key }}</td>
+                      <td>
+                          <span data-toggle="tooltip" data-placement="bottom" title="{{ $trans->transaction_id }}"> {{ (!empty($trans->OutletName['outlet_name']))?$trans->OutletName['outlet_name']:'-';}}</span>
+                      </td>
+                      <!-- <td><span data-toggle="tooltip" data-placement="bottom" title="{{ ucwords($trans->sender_name)}},{{$trans->mobile_number}}">{{ $trans->transaction_id }}</span></td> -->
+                      <td><span class="tag-small">{{ ucwords(str_replace('_',' ',$trans->type)) }}</span></td>
+                      <td style="width: 90px;">{!! mSign($trans->amount) !!}</td>
+                      <td>{{ ucwords($trans->receiver_name)}}</td>
+                      <td><span data-toggle="tooltip" data-placement="bottom" title="<?= (!empty($payment->bank_name)) ? $payment->bank_name : '' ?>">{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</span></td>
+                      <td><?= (!empty($payment->account_number)) ? $payment->account_number : '' ?>
+                          <?= (!empty($payment->upi_id)) ? $payment->upi_id : '' ?>
+                      </td>
+                      <!-- <td><?= (!empty($payment->bank_name)) ? $payment->bank_name : '-' ?></td> -->
+                      <td>{!! $status !!}</td>
+                      <td>{{ date('d M y H:i',$trans->created) }}</td>
+                      <td>
+                          {!! $action !!}</td>
+                  </tr>
+                  @endforeach
 
-                    $status = '<span class="tag-small-warning"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
-                    $action = '<a href="javascript:void(0);" payment_mode="' . $trans->payment_mode . '" class="btn btn-danger btn-xs retailer_trans" _id="' . $trans->_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>';
-                   if($trans->amount >=5000)
-                    $action .= '<a href="javascript:void(0);" class="ml-2 btn btn-success btn-sm split" _id="' . $trans->_id . '"><i class="fas fa-solid fa-splotch"></i>&nbsp;Split</a>';
-                } ?>
-              <tr>
-                  <td>
-                      <input type="checkbox" class="select_me checkbox" value="{{ $trans->_id }}" />
-                  </td>
-                  <td>{{ ++$key }}</td>
-                  <td>
-                      <span data-toggle="tooltip" data-placement="bottom" title="{{ $trans->transaction_id }}"> {{ (!empty($trans->OutletName['outlet_name']))?$trans->OutletName['outlet_name']:'-';}}</span>
-                  </td>
-                  <!-- <td><span data-toggle="tooltip" data-placement="bottom" title="{{ ucwords($trans->sender_name)}},{{$trans->mobile_number}}">{{ $trans->transaction_id }}</span></td> -->
-                  <td><span class="tag-small">{{ ucwords(str_replace('_',' ',$trans->type)) }}</span></td>
-                  <td style="width: 90px;">{!! mSign($trans->amount) !!}</td>
-                  <td>{{ ucwords($trans->receiver_name)}}</td>
-                  <td><span data-toggle="tooltip" data-placement="bottom" title="<?= (!empty($payment->bank_name)) ? $payment->bank_name : '' ?>">{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</span></td>
-                  <td><?= (!empty($payment->account_number)) ? $payment->account_number : '' ?>
-                      <?= (!empty($payment->upi_id)) ? $payment->upi_id : '' ?>
-                  </td>
-                  <!-- <td><?= (!empty($payment->bank_name)) ? $payment->bank_name : '-' ?></td> -->
-                  <td>{!! $status !!}</td>
-                  <td>{{ date('d M y H:i',$trans->created) }}</td>
-                  <td>
-                      {!! $action !!}</td>
-              </tr>
-              @endforeach
-
-          </table>
+              </table>
+          </div>
       </div>
+  </div>
   </div>
 
   <!--start retailer transfer module-->
@@ -265,7 +267,7 @@
                <option value="payunie_preet_kumar">Payunie - PREET KUMAR</option>
                <option value="payunie_rashid_ali">Payunie -Rashid Ali</option>
                <option value="pay2all">Pay2ALL - PRAVEEN</option>
-                <option value="odnimo">Odnimo</option>
+               <option value="odnimo">Odnimo</option>
                </select>
                </div>`);
           }
@@ -640,7 +642,29 @@
           location.reload();
       });
 
-       /*start import functionality*/
+
+      $(document).on('click', '.remove-record', function() {
+          var key = $(this).attr('key');
+          var url1 = '{{ url("admin/removeIndex")}}/' + key;
+          $.ajax({
+              type: "GET",
+              url: url1,
+              dataType: 'json',
+              success: function(res) {
+                  if (res.flag == 1) {
+                      $("#fade-" + key).fadeOut('slow');
+                      alert(res.flag);
+                      $('#no_of_record').val(res.no_of_record);
+                      $('#total_amount').val(res.total_amount);
+                      $('#tl-amount').html(res.tl_amount);
+                  }
+
+
+              }
+          });
+      })
+
+      /*start import functionality*/
       $("form#import").submit(function(e) {
           e.preventDefault();
 

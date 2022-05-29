@@ -150,6 +150,7 @@ class LoginController extends Controller
 
     public function verifyMobile(Request $request)
     {
+      
         $validatedData = $request->validate([
             'otp'  => 'required'
         ]);
@@ -168,6 +169,9 @@ class LoginController extends Controller
                 if ($user->verify_otp == 1)
                     setcookie('logged_in', 'logged', time() + 10800, "/");
 
+              if($user->role=='admin')
+     return redirect()->intended('admin/dashboard');
+              
                 return redirect()->intended('retailer/dashboard');
             }
 
@@ -268,4 +272,13 @@ class LoginController extends Controller
         Auth::logout();
         return redirect('/');
     }
+  
+  public function dashboardRedirect(){
+    
+     if(Auth::user()->role=='admin'){
+       return redirect()->intended('admin/dashboard');
+      }else if(Auth::user()->role =='retailer'){
+        return redirect()->intended('retailer/dashboard');
+      }
+  }
 }

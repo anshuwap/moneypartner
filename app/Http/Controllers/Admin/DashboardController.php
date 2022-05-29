@@ -25,7 +25,7 @@ class DashboardController extends Controller
             $data['total_outlet']  = Outlet::count();
 
             //for outlet amount
-            $outlets = Outlet::select('amount')->where('user_id', Auth::user()->_id)->get();
+            $outlets = Outlet::select('amount')->get();
             $oids = [];
             foreach ($outlets as $am) {
                 $oids[] = $am->_id;
@@ -46,7 +46,7 @@ class DashboardController extends Controller
             if (!empty($request->mode))
                 $que->where('payment_mode', $request->mode);
 
-            $data['transaction']  = $que->orderBy('created', 'DESC')->get();
+            $data['transaction']  = $que->orderBy('created', 'DESC')->paginate(10);
             $data['mode'] = $request->mode;
             //for payment channel
             $data['payment_channel'] = PaymentChannel::select('_id', 'name')->get();

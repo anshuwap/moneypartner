@@ -42,6 +42,9 @@ class TopupRequestController extends Controller
             if (!empty($request->channel) && is_array($request->channel))
                 $query->whereIn('payment_reference_id', $request->channel);
 
+            if (!empty($request->channel2) && is_array($request->channel2))
+                $query->whereIn('payment_channel2', $request->channel2);
+
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
 
@@ -94,6 +97,9 @@ class TopupRequestController extends Controller
 
             if (!empty($request->channel) && is_array($request->channel))
                 $query->whereIn('payment_reference_id', $request->channel);
+
+            if (!empty($request->channel2) && is_array($request->channel2))
+                $query->whereIn('payment_channel2', $request->channel2);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
@@ -185,7 +191,7 @@ class TopupRequestController extends Controller
 
             $show_action = (empty($topup->admin_action) && $topup->admin_action == 0) ? 0 : 1;
 
-            // $payment_channel = PaymentChannel::select('_id', 'name')->get();
+            $payment_channel = PaymentChannel::select('_id', 'name')->get();
             $bank_accounts =   BankAccount::select('_id', 'bank_name', 'account_holder_name')->where('status', 1)->get();
             $upis          =   Upi::select('_id', 'name', 'upi_id')->where('status', 1)->get();
             $qrcodes      =   QrCode::select('_id', 'name')->where('status', 1)->get();
@@ -216,6 +222,27 @@ class TopupRequestController extends Controller
                    </select>
                             <span class="input-group-append ">
                                 <button type="button" class="btn btn-danger btn-flat" id="update_payment_channel">Update</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>';
+
+            $channeld = '';
+            foreach ($payment_channel as $channel) {
+                $channeld .= '<option value="' . $channel->_id . '">' . $channel->name . '</option>';
+            }
+
+            $change_channel .= '<div class="row" id="utr">
+                        <div class="col-md-12 form-group">
+                        <label>Update Payment Channel2</label>
+                        <input type="hidden" value="' . $topup->_id . '" id="topup-id" name="id">
+                        <div class="input-group input-group-sm">
+                       <select name="payment_channel2" class="form-control form-control-sm" id="payment_channel2">
+                     <option value="">Select Payment Channel</option>
+                    ' . $channeld . '
+                   </select>
+                            <span class="input-group-append ">
+                                <button type="button" class="btn btn-danger btn-flat" id="update_payment_channel2">Update</button>
                             </span>
                         </div>
                     </div>
@@ -384,7 +411,7 @@ class TopupRequestController extends Controller
             $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
 
             $transactionArray = [
-                'Transaction ID', 'Outlet Name', 'UTR No.', 'Channel', 'Amount', 'Payment Mode', //'Payment In',
+                'Transaction ID', 'Outlet Name', 'UTR No.', 'Channel', 'Channel2', 'Amount', 'Payment Mode', //'Payment In',
                 'Requested Date', 'Approve/Reject By', 'Approve/Reject Date', 'Status'
             ];
             fputcsv($f, $transactionArray, $delimiter); //put heading here
@@ -402,6 +429,9 @@ class TopupRequestController extends Controller
 
             if (!empty($request->channel) && is_array($request->channel))
                 $query->whereIn('payment_reference_id', $request->channel);
+
+            if (!empty($request->channel2) && is_array($request->channel2))
+                $query->whereIn('payment_channel2', $request->channel2);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
@@ -428,6 +458,7 @@ class TopupRequestController extends Controller
                 $topup_val[] = $topup->utr_no;
                 // $topup_val[] = !empty($topup->payment_channel) ? ucwords(str_replace('_', ' ', $topup->payment_channel)) : '';
                 $topup_val[] = !empty($topup->payment_mode) ? $topup->paymentModeNameExcel($topup->payment_mode, $topup->payment_reference_id) : '';
+                $topup_val[] = (!empty($topup->ChannelName['name'])) ? ucwords($topup->ChannelName['name']) : '-';
                 $topup_val[] = $topup->amount;
                 $topup_val[] = $topup->payment_by;
 
@@ -473,7 +504,7 @@ class TopupRequestController extends Controller
             $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
 
             $transactionArray = [
-                'Transaction ID', 'Outlet Name', 'UTR No', 'Channel', 'Amount', 'Payment Mode', //'Payment In',
+                'Transaction ID', 'Outlet Name', 'UTR No', 'Channel', 'Channel2', 'Amount', 'Payment Mode', //'Payment In',
                 'Requested Date',
                 'Status'
             ];
@@ -489,6 +520,9 @@ class TopupRequestController extends Controller
 
             if (!empty($request->channel) && is_array($request->channel))
                 $query->whereIn('payment_reference_id', $request->channel);
+
+            if (!empty($request->channel2) && is_array($request->channel2))
+                $query->whereIn('payment_channel2', $request->channel2);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
@@ -513,6 +547,7 @@ class TopupRequestController extends Controller
                 $topup_val[] = !empty($topup->RetailerName['outlet_name']) ? $topup->RetailerName['outlet_name'] : '';
                 $topup_val[] = $topup->utr_no;
                 $topup_val[] = !empty($topup->payment_mode) ? $topup->paymentModeNameExcel($topup->payment_mode, $topup->payment_reference_id) : '';
+                $topup_val[] = (!empty($topup->ChannelName['name'])) ? ucwords($topup->ChannelName['name']) : '-';
                 $topup_val[] = $topup->amount;
                 $topup_val[] = $topup->payment_by;
 

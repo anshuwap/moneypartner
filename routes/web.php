@@ -78,6 +78,7 @@ Route::group(['middleware' => 'adminRedirect'], function () {
   Route::post('/send-link',           [AdminLogin::class, 'sendLink']);
   Route::get('/forgot-password/{id}', [AdminLogin::class, 'forgotPassword']);
   Route::post('/forgot-password',     [AdminLogin::class, 'forgotPasswordSave']);
+  // Route::post('verify-mobile', [AdminLogin::class, 'verifyMobile']);
 });
 
 
@@ -85,10 +86,12 @@ Route::group(['middleware' => 'retailerRedirect'], function () {
   // Route::get('/retailer',      [RetailerLogin::class,'index']);
 
   //Route::post('retailer/login',[RetailerLogin::class,'store']);
+  //Route::post('verify-mobile', [AdminLogin::class, 'verifyMobile']);
 });
 
 Route::get('otp-sent',       [AdminLogin::class, 'otpSent']);
 Route::post('verify-mobile', [AdminLogin::class, 'verifyMobile']);
+Route::get('verify-mobile',  [AdminLogin::class, 'dashboardRedirect']);
 
 
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
@@ -145,6 +148,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::post('topup-request',             [AdminTopupRequest::class, 'topupRequest']);
   Route::get('topup-request-details/{id}', [AdminTopupRequest::class, 'topupRequestDetials']);
   Route::get('topup-payment-channel',      [AdminTopupRequest::class, 'updatePaymentChannel']);
+  Route::get('topup-payment-channel2',     [AdminTopupRequest::class, 'updatePaymentChannel2']);
   Route::get('pending-topup',              [AdminTopupRequest::class, 'pendingRequest']);
   Route::get('pending-topup-export',       [AdminTopupRequest::class, 'pendingExport']);
 
@@ -163,6 +167,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::post('split-transaction',  [AdminTransaction::class, 'splitTransaction']);
   Route::get('refund-pending',         [AdminTransaction::class, 'refundPending']);
   Route::get('refund-pending-export',  [AdminTransaction::class, 'refundPendingExport']);
+  Route::get('removeIndex/{key}',  [AdminTransaction::class, 'removeIndex']);
+
+
 
   Route::resource('credit',           AdminCredit::class);
   Route::get('credit-export',         [AdminCredit::class, 'export']);

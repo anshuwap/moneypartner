@@ -225,7 +225,7 @@ public function refundPending(Request $request)
             $transaction->customer_name  = $request->sender_name;
 
             $transaction->transaction_id = uniqCode(3) . rand(111111, 999999);
-            $transaction->sender_name    = $request->sender_name;
+            $transaction->sender_name    = trim($request->sender_name);
             $transaction->amount         = $request->amount;
             $transaction->transaction_fees = $charges;
             $transaction->receiver_name  = $request->receiver_name;
@@ -706,7 +706,7 @@ public function refundPending(Request $request)
 
                 $payment_para = [
                     'mobile_number'  => Auth::user()->mobile_number,
-                    'account_number' => $payment_channel1->account_number,
+                    'account_number' => trim($payment_channel1->account_number),
                     'ifsc_code'      => $payment_channel1->ifsc_code,
                     'amount'         => $amount,
                     'receiver_name'  => $importData['receiver_name'],

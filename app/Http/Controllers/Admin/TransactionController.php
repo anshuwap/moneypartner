@@ -144,55 +144,58 @@ class TransactionController extends Controller
 
     public function store(Request $request)
     {
+        try {
+            $transaction = Transaction::find($request->trans_id);
 
-        $transaction = Transaction::find($request->trans_id);
+            if ($transaction->status == 'rejected')
+                return response(['status' => 'error', 'msg' => 'This status is already Rejected!']);
 
-        if ($transaction->status == 'rejected')
-            return response(['status' => 'error', 'msg' => 'This status is already Rejected!']);
+            $response =  $request->response;
+            $response['action_by']     = Auth::user()->_id;
+            $response['action_date']   = time();
+            $response['action']        = 'manual update Payment Status';
+            $transaction->status       = $request->status;
+            $transaction->response     = $response;
 
-        $response =  $request->response;
-        $response['action_by']     = Auth::user()->_id;
-        $response['action_date']   = time();
-        $response['action']        = 'manual update Payment Status';
-        $transaction->status       = $request->status;
-        $transaction->response     = $response;
+            if (!$transaction->save())
+                return response(['status' => 'error', 'msg' => 'Transaction not Made!']);
 
-        if (!$transaction->save())
-            return response(['status' => 'error', 'msg' => 'Transaction not Made!']);
+            if ($transaction->type == 'payout_api')
+                webhook($transaction);
 
-        if ($transaction->type == 'payout_api')
-            webhook($transaction);
+            if ($transaction->status == 'success') {
+                // $amount        = $transaction->amount;
+                // $receiver_name = $transaction->receiver_name;
+                // $payment_date  = $transaction->created;
+                // $status        = $transaction->status;
+                // $payment_mode  = $transaction->payment_mode;
+                // $type          = $transaction->type;
+                // $transaction_fees = $transaction->transaction_fees;
 
-        if ($transaction->status == 'success') {
-            // $amount        = $transaction->amount;
-            // $receiver_name = $transaction->receiver_name;
-            // $payment_date  = $transaction->created;
-            // $status        = $transaction->status;
-            // $payment_mode  = $transaction->payment_mode;
-            // $type          = $transaction->type;
-            // $transaction_fees = $transaction->transaction_fees;
+                // $retailer_id   = $transaction->retailer_id;
 
-            // $retailer_id   = $transaction->retailer_id;
-
-            // //insert data in transfer history collection
-            // transferHistory($retailer_id, $amount, $receiver_name, $payment_date,$type, $status, $payment_mode, $transaction_fees, 'debit');
-        } else if ($transaction->status == 'rejected') {
-            //add toupup amount here
-            $transaction_id   = $transaction->_id;
-            $receiver_name    = $transaction->receiver_name;
-            $payment_date     = $transaction->created;
-            $status           = 'success';
-            $payment_mode     = $transaction->payment_mode;
-            $type             = 'refund';
-            $retailer_id      = $transaction->retailer_id;
-            $transaction_fees = $transaction->transaction_fees;
-            $amount           = $transaction->amount;
-            $bank_details     = $transaction->payment_channel;
-            addTopupAmount($retailer_id, $amount, $transaction_fees, 1);
-            //insert data in transfer history collection
-            transferHistory($retailer_id, $amount + $transaction_fees, $receiver_name, $payment_date, $status, $payment_mode, $type, 0, 'credit', 0, $bank_details, $transaction_id);
+                // //insert data in transfer history collection
+                // transferHistory($retailer_id, $amount, $receiver_name, $payment_date,$type, $status, $payment_mode, $transaction_fees, 'debit');
+            } else if ($transaction->status == 'rejected') {
+                //add toupup amount here
+                $transaction_id   = $transaction->_id;
+                $receiver_name    = $transaction->receiver_name;
+                $payment_date     = $transaction->created;
+                $status           = 'success';
+                $payment_mode     = $transaction->payment_mode;
+                $type             = 'refund';
+                $retailer_id      = $transaction->retailer_id;
+                $transaction_fees = $transaction->transaction_fees;
+                $amount           = $transaction->amount;
+                $bank_details     = $transaction->payment_channel;
+                addTopupAmount($retailer_id, $amount, $transaction_fees, 1);
+                //insert data in transfer history collection
+                transferHistory($retailer_id, $amount + $transaction_fees, $receiver_name, $payment_date, $status, $payment_mode, $type, 0, 'credit', 0, $bank_details, $transaction_id);
+            }
+            return response(['status' => 'success', 'msg' => 'Transaction ' . ucwords($transaction->status) . ' Successfully!']);
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
         }
-        return response(['status' => 'success', 'msg' => 'Transaction ' . ucwords($transaction->status) . ' Successfully!']);
     }
 
 
@@ -238,15 +241,16 @@ class TransactionController extends Controller
         <th>IFSC</th>
         <th>Account No</th>
         <th colspan="2">Status</th>
-
+       <th></th>
         </tr>';
         $total_amount = 0;
-        $no = 0;;
+        $no = 0;
+        $sr = 0;
         foreach ($previewData as $key => $da) {
             $total_amount += $da['amount'];
 
-            $table_data .= '<tr class="preview-table">
-            <td>' . ++$key . '</td>
+            $table_data .= '<tr id="fade-' . $key . '" class="preview-table">
+            <td>' . ++$sr . '</td>
             <td>' . $da['outlet'] . '</td>
             <td>' . $da['mode'] . '</td>
             <td>' . mSign($da['amount']) . '</td>
@@ -254,14 +258,46 @@ class TransactionController extends Controller
             <td>' . $da['ifsc'] . '</td>
             <td>' . $da['account_no'] . '</td>
             <td>' . $da['status'] . '</td>
+            <td><a href="javascript:void(0);" key="' . $key . '" class="btn btn-danger btn-xs remove-record">Remove</a></td>
             </tr>';
             $no++;
         }
-        $table_data .= '<tr class="preview-table"><th colspan="4" style="text-align:end;">Total Amount</th>
-        <th colspan="2">' . mSign($total_amount) . '</th></tr></table>';
+        $table_data .= '<tr class="preview-table"><th colspan="3" style="text-align:end;">Total Amount</th>
+        <th colspan="6" id="tl-amount">' . mSign($total_amount) . '</th></tr></table>';
 
         $data = ['table_data' => $table_data, 'total_amount' => $total_amount, 'no_of_record' => $no];
         return $data;
+    }
+
+
+    public function removeIndex($index = ' ')
+    {
+        try {
+
+            if ($index == ' ')
+                return response(['status' => 'error', 'msg' => 'invalid Index']);
+
+            $ids = session('transaction_ids');
+
+            $flag = 0;
+            if (!empty($ids[$index])) {
+                unset($ids[$index]);
+                $flag = 1;
+            }
+
+            $total_amount = 0;
+            $no = 0;
+            foreach ($ids as $tran_id) {
+                $transaction = Transaction::find($tran_id);
+                $total_amount += $transaction->amount;
+                $no++;
+            }
+            session()->put('transaction_ids', $ids);
+
+            return response(['flag' => $flag, 'total_amount' => $total_amount, 'tl_amount'=>mSign($total_amount), 'no_of_record' => $no]);
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
+        }
     }
 
     public function payToApi(Request $request)
@@ -272,6 +308,10 @@ class TransactionController extends Controller
 
         $index = $request->index;
         $transaction_ids = session('transaction_ids');
+
+        if (empty($transaction_ids[$index])) {
+            return response(['status' => 'preview', 'all_row' => count($transaction_ids)+1, 'index' => $index + 1, 'data' => '']);
+        }
         $tran_id = $transaction_ids[$index];
 
         if (empty($tran_id))
@@ -365,7 +405,7 @@ class TransactionController extends Controller
             'ifsc' => (!empty($transaction->payment_channel['ifsc_code'])) ? $transaction->payment_channel['ifsc_code'] : '',
             'account_no' => (!empty($transaction->payment_channel['account_number'])) ? $transaction->payment_channel['account_number'] : '',
             'status' => $status,
-            'comment' => $comment
+            'comment' => $comment,
         ];
 
         $dataV = '';
@@ -599,11 +639,7 @@ class TransactionController extends Controller
                 </td>';
 
             $update_utr = '';
-            if (
-                !empty($details->response['payment_mode']) && $details->response['payment_mode'] != 'payunie-Preet Kumar'
-                && $details->response['payment_mode'] != 'payunie-Rashid Ali' &&  $details->response['payment_mode'] != 'Pay2All-Parveen' &&
-                $details->response['payment_mode'] != 'Odnimo - api'
-            ) {
+            if (!empty($details->response['payment_mode'])) {
                 $update_utr = '<a href="javascript:void(0);" class="btn btn-xs btn-success utrupdate"><i class="fas fa-edit"></i>&nbsp;Edit UTR</a>';
             }
 
@@ -628,11 +664,12 @@ class TransactionController extends Controller
 
             $utr_no = !empty($details->response['utr_number']) ? $details->response['utr_number'] : '';
 
-            if (
-                !empty($details->response['payment_mode']) && $details->response['payment_mode'] != 'payunie-Preet Kumar'
-                && $details->response['payment_mode'] != 'payunie-Rashid Ali' &&  $details->response['payment_mode'] != 'Pay2All-Parveen' &&
-                $details->response['payment_mode'] != 'Odnimo - api'
-            ) {
+            // if (
+            //   !empty($details->response['payment_mode']) && $details->response['payment_mode'] != 'payunie-Preet Kumar'
+            // && $details->response['payment_mode'] != 'payunie-Rashid Ali' &&  $details->response['payment_mode'] != 'Pay2All-Parveen' &&
+            //$details->response['payment_mode'] != 'Odnimo - api'
+            //)
+            if (!empty($details->response['payment_mode'])) {
 
                 $table .= '<div class="row" style="display:none;" id="utr">
                     <div class="col-md-12 form-group">
@@ -978,7 +1015,7 @@ class TransactionController extends Controller
             $total_amount = 0;
             $total_changes = 0;
             foreach ($responseData as $res) {
-                $total_amount += $res['amount'];
+                $total_amount += !empty($res['amount']) ? $res['amount'] : 0;
                 $total_changes += $res['charges'];
             }
             // echo '/'.$total_amount;
@@ -991,7 +1028,7 @@ class TransactionController extends Controller
             /*start first transaction Update*/
             $response['action_by']     = Auth::user()->_id;
             $response['action_date']   = time();
-            $response['action']        = 'manual update Payment Status (Split Transaction)';
+            $response['action']        = 'manual update Payment Status (Split Transaction) - Parent Txn';
             $response['payment_mode']  = !empty($responseData[0]['payment_mode']) ? $responseData[0]['payment_mode'] : '';
             $response['utr_number']    = !empty($responseData[0]['utr_number']) ? $responseData[0]['utr_number'] : '';
             $response['msg']           = !empty($responseData[0]['msg']) ? $responseData[0]['msg'] : '';
@@ -1027,7 +1064,8 @@ class TransactionController extends Controller
 
                 $response['action_by']     = Auth::user()->_id;
                 $response['action_date']   = time();
-                $response['action']        = 'manual update Payment Status (Split Transaction)';
+                $response['parent_txn_id'] = $transaction->_id;
+                $response['action']        = 'manual update Payment Status (Split Transaction) - Parent Txn no. ' . $transaction->transaction_id;
                 $response['payment_mode']  = !empty($responseData[$key]['payment_mode']) ? $responseData[$key]['payment_mode'] : '';
                 $response['utr_number']    = !empty($responseData[$key]['utr_number']) ? $responseData[$key]['utr_number'] : '';
                 $response['msg']           = !empty($responseData[$key]['msg']) ? $responseData[$key]['msg'] : '';

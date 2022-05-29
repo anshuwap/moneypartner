@@ -91,6 +91,17 @@
                 </select>
               </div>
 
+              <div class="form-group col-md-3">
+                <label>Channel 2</label>
+                <select class="select2 form-control-sm form-control" multiple="multiple" name="channel2[]">
+                  <?php foreach ($payment_channel as $channel) { ?>
+                     <option value="<?=$channel->_id?>" <?=(!empty($filter['channe2']) && in_array($channel->_id,$filter['channel2']))?"selected":""?>><?=$channel->name?></option>';
+                 <?php } ?>
+                </select>
+              </div>
+
+
+
               <div class="form-group mt-4">
                 <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i>&nbsp;Search</button>
                 <a href="{{ url('admin/topup-list') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
@@ -110,6 +121,7 @@
               <th>Transaction Id</th>
               <th>UTR No.</th>
               <th>Channel</th>
+              <th>Channel2</th>
               <th>Amount</th>
               <th>Payment Mode</th>
               <!-- <th>Payment In</th> -->
@@ -143,7 +155,7 @@
               <td><?= !empty($topup->utr_no) ? $topup->utr_no : '-' ?></td>
               <!-- <td>{{ (!empty($topup->payment_channel))?ucwords($topup->payment_channel):'-' }}</td> -->
               <td>{!! $topup->paymentModeName($topup->payment_mode,$topup->payment_reference_id) !!}</td>
-
+              <td>{{ (!empty($topup->ChannelName['name']))?ucwords($topup->ChannelName['name']):'-' }}</td>
               <td>{!! mSign($topup->amount) !!}</td>
               <td>{{ $topup->payment_by }}</td>
               <td>{{ date('d M Y H:i:s', $topup->payment_date) }}</td>
@@ -291,7 +303,15 @@
 
                    </select>
                    <span id="payment_channel_msg" class="custom-text-danger"></span>
-                 </div>`);
+                 </div>
+                 <div class="form-group">
+                 <select name="payment_channel2" class="form-control form-control-sm" id="payment_channel2">
+                  <option value="">Select Payment Channel 2</option>
+                 <?php foreach ($payment_channel as $channel) {
+                    echo '<option value="' . $channel->_id . '">' . $channel->name . '</option>';
+                  } ?>
+                 </select></div>
+                 `);
       } else {
         $('#topup-channel').html(``);
       }
@@ -421,8 +441,50 @@
       });
     })
 
-  });
 
+     //update payment channel2
+    $(document).on('click', '#update_payment_channel2', function() {
+      var id = $('#topup-id').val();
+      var select = $(this);
+      var payment_channel = $('#payment_channel2').val();
+
+      $.ajax({
+        data: {
+          'payment_channel2': payment_channel,
+          'id': id
+        },
+        type: "GET",
+        url: '{{ url("admin/topup-payment-channel2") }}',
+        dataType: 'json',
+        beforeSend: function() {
+          $(select).html('<span class="spinner-grow spinner-grow-sm" style="width: 0.75rem;height: 0.75rem;"></span>&nbsp;Loading..');
+        },
+        success: function(res) {
+          //hide loader
+
+          //for reset all field
+          if (res.status == 'success') {
+            $(select).html('<i class="fas fa-check-double"></i>&nbsp;Done');
+            setTimeout(function() {
+              location.reload();
+            }, 1000)
+          }
+
+          /*Start Status message*/
+          if (res.status == 'error') {
+            $(select).html('<i class="fas fa-times"></i>&nbsp;Failed');
+            Swal.fire(
+              `${res.status}!`,
+              res.msg,
+              `${res.status}`,
+            )
+          }
+          /*End Status message*/
+        }
+      });
+    })
+
+  });
 </script>
 
 @endpush

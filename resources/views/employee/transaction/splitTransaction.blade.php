@@ -146,7 +146,7 @@
 
                                      <div class="col-md-2">
                                         <span>Charges</span>
-                                        <input type="text" value="" required name="response[0][charges]" class="form-control form-control-sm" placeholder="Enter charges">
+                                        <input type="text" value="" required name="response[${x}][charges]" class="form-control form-control-sm" placeholder="Enter charges">
                                     </div>
 
                                     <div class="col-md-1">

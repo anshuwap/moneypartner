@@ -54,7 +54,7 @@ class TransactionController extends Controller
 
             if (!empty($start_date) && !empty($end_date)) {
                 $start_date = strtotime(trim($start_date) . " 00:00:00");
-                $end_date   = strtotime(trim($end_date) . " 23:59:59");
+                $end_date   = strtotime(trim($end_date) . " 24:00:00");
             } else {
                 $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
                 $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
@@ -449,13 +449,18 @@ class TransactionController extends Controller
                 </td>';
 
             $update_utr = '';
-            if (
-                !empty($details->response['payment_mode']) && $details->response['payment_mode'] != 'payunie-Preet Kumar'
-                && $details->response['payment_mode'] != 'payunie-Rashid Ali' &&  $details->response['payment_mode'] != 'Pay2All-Parveen' &&
-                $details->response['payment_mode'] != 'Odnimo - api'
-            ) {
+            //if (
+              //  !empty($details->response['payment_mode']) && $details->response['payment_mode'] != 'payunie-Preet Kumar'
+                //&& $details->response['payment_mode'] != 'payunie-Rashid Ali' &&  $details->response['payment_mode'] != 'Pay2All-Parveen' &&
+                //$details->response['payment_mode'] != 'Odnimo - api'
+          //  ) {
+            //    $update_utr = '<a href="javascript:void(0);" class="btn btn-xs btn-success utrupdate"><i class="fas fa-edit"></i>&nbsp;Edit UTR</a>';
+            //}
+          
+           if (!empty($details->response['payment_mode'])) {
                 $update_utr = '<a href="javascript:void(0);" class="btn btn-xs btn-success utrupdate"><i class="fas fa-edit"></i>&nbsp;Edit UTR</a>';
             }
+          
 
             $split = '';
             if (
@@ -478,11 +483,7 @@ class TransactionController extends Controller
 
             $utr_no = !empty($details->response['utr_number']) ? $details->response['utr_number'] : '';
 
-            if (
-                !empty($details->response['payment_mode']) && $details->response['payment_mode'] != 'payunie-Preet Kumar'
-                && $details->response['payment_mode'] != 'payunie-Rashid Ali' &&  $details->response['payment_mode'] != 'Pay2All-Parveen' &&
-                $details->response['payment_mode'] != 'Odnimo - api'
-            ) {
+            if (!empty($details->response['payment_mode'])) {
 
                 $table .= '<div class="row" style="display:none;" id="utr">
                     <div class="col-md-12 form-group">
@@ -837,7 +838,7 @@ class TransactionController extends Controller
             /*start first transaction Update*/
             $response['action_by']     = Auth::user()->_id;
             $response['action_date']   = time();
-            $response['action']        = 'manual update Payment Status (Split Transaction)';
+            $response['action']        = 'manual update Payment Status (Split Transaction) - Parent Txn';
             $response['payment_mode']  = !empty($responseData[0]['payment_mode']) ? $responseData[0]['payment_mode'] : '';
             $response['utr_number']    = !empty($responseData[0]['utr_number']) ? $responseData[0]['utr_number'] : '';
             $response['msg']           = !empty($responseData[0]['msg']) ? $responseData[0]['msg'] : '';
@@ -872,7 +873,8 @@ class TransactionController extends Controller
 
                 $response['action_by']     = Auth::user()->_id;
                 $response['action_date']   = time();
-                $response['action']        = 'manual update Payment Status (Split Transaction)';
+                $response['parent_txn_id'] = $transaction->_id;
+                $response['action']        = 'manual update Payment Status (Split Transaction) - Parent Txn no. '. $transaction->transaction_id;
                 $response['payment_mode']  = !empty($responseData[$key]['payment_mode']) ? $responseData[$key]['payment_mode'] : '';
                 $response['utr_number']    = !empty($responseData[$key]['utr_number']) ? $responseData[$key]['utr_number'] : '';
                 $response['msg']           = !empty($responseData[$key]['msg']) ? $responseData[$key]['msg'] : '';
