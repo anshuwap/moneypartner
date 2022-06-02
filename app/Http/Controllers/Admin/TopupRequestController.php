@@ -172,8 +172,9 @@ class TopupRequestController extends Controller
                 $payment_mode     = $topup->payment_mode;
                 $type             = $topup->payment_mode;
                 $transaction_fees = 0;
+                $source = 'Credited By Topup Request';
                 //insert data in transfer history collection
-                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'credit');
+                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'credit','','','',$source);
 
                 return response(['status' => 'success', 'msg' => 'Topup Request Success', 'status_msg' => ucwords($topup->status), 'id' => $topup->id]);
             } else if ($topup->status == 'rejected') {

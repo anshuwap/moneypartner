@@ -2,18 +2,24 @@
       <div class="card-header">
 
           <div class="row">
-              <div class="col-md-10">
+              <div class="col-md-9">
                   <h3 class="card-title">Transaction Request</h3>
               </div>
-              <div class="col-md-2 d-flex">
-                  <div>
-                      <a href="javascript:void(0);" id="import" class="btn btn-sm btn-success"><i class="fas fa-cloud-upload-alt"></i>&nbsp;Bulk Upload</a>
-                  </div>
-                  <div id="bluckAssignBlock" style="pointer-events:none !important;" class="ml-1">
+              <div class="col-md-3 d-flex">
+                  <div id="bluckAssignBlock" style="pointer-events:none !important;" class="mr-1">
                       <button class="btn btn-sm btn-success" aria-haspopup="true" id="bluckAssignBtn" disabled>
                           <i class="fas fa-radiation-alt"></i>&nbsp; Action
                       </button>
                   </div>
+                  <div>
+                      <a href="javascript:void(0);" id="import" class="btn btn-sm btn-success"><i class="fas fa-cloud-upload-alt"></i>&nbsp;Bulk Upload</a>
+                      @if(!empty($filter))
+                      <!-- <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a> -->
+                      @else
+                      <!-- <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a> -->
+                      @endif
+                  </div>
+
               </div>
               <!-- <div class="col-md-2 float-right">
                   <select class="form-control-sm form-control" name="type" id="mode">
@@ -23,6 +29,40 @@
                   </select>
 
               </div> -->
+          </div>
+      </div>
+
+      <div class="row pl-2 pr-2" id="filter" <?= (empty($filter)) ? "style='display:none'" : "" ?>>
+          <div class="col-md-12 ml-auto">
+              <form action="{{ url('admin/dashboard') }}">
+                  <div class="form-row">
+
+                      <div class="form-group col-md-2">
+                          <label>Min Amount</label>
+                          <input type="number" class="form-control form-control-sm" value="<?= !empty($filter['min_amount']) ? $filter['min_amount'] : '' ?>" name="min_amount"  placeholder="Min Amount"/>
+                      </div>
+
+                      <div class="form-group col-md-2">
+                          <label>Max Amount</label>
+                          <input type="number" class="form-control form-control-sm" value="<?= !empty($filter['max_amount']) ? $filter['max_amount'] : '' ?>" name="max_amount" id="end-date" placeholder="Max Amount" />
+                      </div>
+
+                      <div class="form-group col-md-2">
+                          <label>Outlet Name</label>
+                          <select class="form-control-sm form-control" name="outlet_id">
+                              <option value="" {{ (!empty($filter['outlet_id']) && $filter['outlet_id'] == 'all')?"selected":""}}>All</option>
+                              @foreach($outlets as $outlet)
+                              <option value="{{$outlet->_id}}" {{ (!empty($filter['outlet_id']) && $filter['outlet_id'] == $outlet->_id)?"selected":""}}>{{ ucwords($outlet->outlet_name)}}</option>
+                              @endforeach
+                          </select>
+                      </div>
+
+                      <div class="form-group mt-4">
+                          <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i>&nbsp;Search</button>
+                          <a href="{{ url('admin/dashboard') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
+                      </div>
+                  </div>
+              </form>
           </div>
       </div>
 

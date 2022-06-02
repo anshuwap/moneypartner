@@ -54,6 +54,7 @@
                             <th>Status</th>
                             <th>UTR No</th>
                             <th>Amount</th>
+                            <th>Request Date</th>
                         </tr>
 
                         <tr>
@@ -64,11 +65,12 @@
                             <td>{{!empty($transaction->payment_channel['bank_name'])?$transaction->payment_channel['bank_name']:''}}</td>
                             <td>{{ strtoupper($transaction->status)}}</td>
                             <td>{{ !empty($transaction->response['utr_number'])?$transaction->response['utr_number']:'-' }}</td>
-                             <td>{!! !empty($transaction->amount)?mSign($transaction->amount):0 !!}</td>
+                            <td>{!! !empty($transaction->amount)?mSign($transaction->amount):0 !!}</td>
+                          <td>{{!empty($transaction->created)?date('d-m-Y H:i',$transaction->created):''}}</td>
                         </tr>
                         <tr>
                             <th colspan="7" class="text-center">Total:</th>
-                            <th>{!! !empty($transaction->amount)?mSign($transaction->amount):0 !!}</th>
+                            <th colspan="2">{!! !empty($transaction->amount)?mSign($transaction->amount):0 !!}</th>
                         </tr>
                     </table>
                     <hr />

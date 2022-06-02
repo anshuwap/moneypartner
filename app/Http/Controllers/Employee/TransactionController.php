@@ -184,9 +184,10 @@ class TransactionController extends Controller
             $retailer_id      = $transaction->retailer_id;
             $transaction_fees = $transaction->transaction_fees;
             $amount           = $transaction->amount;
+            $source           = 'Credited By Reject Transaction';
             addTopupAmount($retailer_id, $amount, $transaction_fees, 1);
             //insert data in transfer history collection
-            transferHistory($retailer_id, $amount + $transaction_fees, $receiver_name, $payment_date, $status, $payment_mode, $type, 0, 'credit', $transaction_id);
+            transferHistory($retailer_id, $amount + $transaction_fees, $receiver_name, $payment_date, $status, $payment_mode, $type, 0, 'credit', '', '', $transaction_id, $source);
         }
         return response(['status' => 'success', 'msg' => 'Transaction ' . ucwords($transaction->status) . ' Successfully!']);
     }
@@ -450,17 +451,17 @@ class TransactionController extends Controller
 
             $update_utr = '';
             //if (
-              //  !empty($details->response['payment_mode']) && $details->response['payment_mode'] != 'payunie-Preet Kumar'
-                //&& $details->response['payment_mode'] != 'payunie-Rashid Ali' &&  $details->response['payment_mode'] != 'Pay2All-Parveen' &&
-                //$details->response['payment_mode'] != 'Odnimo - api'
-          //  ) {
+            //  !empty($details->response['payment_mode']) && $details->response['payment_mode'] != 'payunie-Preet Kumar'
+            //&& $details->response['payment_mode'] != 'payunie-Rashid Ali' &&  $details->response['payment_mode'] != 'Pay2All-Parveen' &&
+            //$details->response['payment_mode'] != 'Odnimo - api'
+            //  ) {
             //    $update_utr = '<a href="javascript:void(0);" class="btn btn-xs btn-success utrupdate"><i class="fas fa-edit"></i>&nbsp;Edit UTR</a>';
             //}
-          
-           if (!empty($details->response['payment_mode'])) {
+
+            if (!empty($details->response['payment_mode'])) {
                 $update_utr = '<a href="javascript:void(0);" class="btn btn-xs btn-success utrupdate"><i class="fas fa-edit"></i>&nbsp;Edit UTR</a>';
             }
-          
+
 
             $split = '';
             if (
@@ -874,7 +875,7 @@ class TransactionController extends Controller
                 $response['action_by']     = Auth::user()->_id;
                 $response['action_date']   = time();
                 $response['parent_txn_id'] = $transaction->_id;
-                $response['action']        = 'manual update Payment Status (Split Transaction) - Parent Txn no. '. $transaction->transaction_id;
+                $response['action']        = 'manual update Payment Status (Split Transaction) - Parent Txn no. ' . $transaction->transaction_id;
                 $response['payment_mode']  = !empty($responseData[$key]['payment_mode']) ? $responseData[$key]['payment_mode'] : '';
                 $response['utr_number']    = !empty($responseData[$key]['utr_number']) ? $responseData[$key]['utr_number'] : '';
                 $response['msg']           = !empty($responseData[$key]['msg']) ? $responseData[$key]['msg'] : '';

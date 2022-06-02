@@ -188,9 +188,10 @@ class TransactionController extends Controller
                 $transaction_fees = $transaction->transaction_fees;
                 $amount           = $transaction->amount;
                 $bank_details     = $transaction->payment_channel;
+                $source           = 'Credited By Reject Transaction';
                 addTopupAmount($retailer_id, $amount, $transaction_fees, 1);
                 //insert data in transfer history collection
-                transferHistory($retailer_id, $amount + $transaction_fees, $receiver_name, $payment_date, $status, $payment_mode, $type, 0, 'credit', 0, $bank_details, $transaction_id);
+                transferHistory($retailer_id, $amount + $transaction_fees, $receiver_name, $payment_date, $status, $payment_mode, $type, 0, 'credit', 0, $bank_details, $transaction_id,$source);
             }
             return response(['status' => 'success', 'msg' => 'Transaction ' . ucwords($transaction->status) . ' Successfully!']);
         } catch (Exception $e) {
@@ -528,9 +529,10 @@ class TransactionController extends Controller
             $transaction_fees = $transaction->transaction_fees;
             $amount           = $transaction->amount;
             $bank_details     = $transaction->payment_channel;
+               $source           = 'Credited By Reject Transaction';
             addTopupAmount($retailer_id, $amount, $transaction_fees, 1);
             //insert data in transfer history collection
-            transferHistory($retailer_id, $amount + $transaction_fees, $receiver_name, $payment_date, $status, $payment_mode, $type, 0, 'credit', $bank_details, $transaction_id);
+            transferHistory($retailer_id, $amount + $transaction_fees, $receiver_name, $payment_date, $status, $payment_mode, $type, 0, 'credit', '',$bank_details, $transaction_id,$source);
         }
         return response(['status' => 'success', 'msg' => 'Transaction Made Successfully!']);
     }

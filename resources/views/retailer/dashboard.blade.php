@@ -56,31 +56,6 @@
     <div class="row">
       <div class="col-12 col-sm-6 col-md-5">
         <div class="pl-3 p-2 card h-height" style="height: 130px;">
-          <div class="row">
-            <div class="col-md-4">
-              <div>Account Balance</div>
-              <div>
-                <h6><strong>{!!mSign(Auth::user()->available_amount)!!}</strong></h6>
-              </div>
-            </div>
-
-            @if(!empty(MoneyPartnerOption()->e_collection) && MoneyPartnerOption()->e_collection ==1)
-            <div class="col-md-4">
-              <div>Settlement Balance</div>
-              <div>
-                <h6> <strong>{!!mSign($settlement_amount)!!}</strong></h6>
-              </div>
-            </div>
-
-            <div class="col-md-4">
-              <div>Un-Settlement Balance</div>
-              <div>
-                <h6><strong>{!!mSign($un_settlement_amount)!!}</strong></h6>
-              </div>
-            </div>
-            @endif
-
-          </div>
 
           <div class="card-tools btn-r">
             @if(!empty(MoneyPartnerOption()->dmt_transfer) && MoneyPartnerOption()->dmt_transfer ==1)
@@ -135,7 +110,6 @@
                 <span>Outlat Name :</span>&nbsp;&nbsp;&nbsp;<span class="font-weight-bold">{{ ucwords(Auth::user()->outlet_name) }}</span>
               </div>
             </div>
-
 
             <div class="row">
               @foreach($bank_accounts as $key=>$account)
@@ -210,10 +184,52 @@
         </div>
 
         <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-          <div class="p-2">
-
+          <div class="p-3">
 
             <div class="row">
+              <div class="col-6 col-sm-6 col-md-2">
+                <div class="info-box">
+                  <span class="info-box-icon cu-icon"><i class="fas fa-wallet text-secondary"></i></span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Account Balance</span>
+                    <span class="info-box-number">
+                      {!!mSign(Auth::user()->available_amount)!!}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+
+              @if(!empty(MoneyPartnerOption()->e_collection) && MoneyPartnerOption()->e_collection ==1)
+              <div class="col-6 col-sm-6 col-md-2">
+                <div class="info-box">
+                  <span class="info-box-icon cu-icon"><i class="fas fa-wallet text-secondary"></i></span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Settlement Balance</span>
+                    <span class="info-box-number">
+                      {!!mSign($settlement_amount)!!}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 col-sm-6 col-md-2">
+                <div class="info-box">
+                  <span class="info-box-icon cu-icon"><i class="fas fa-wallet text-secondary"></i></span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Un-Settlement Balance</span>
+                    <span class="info-box-number">
+                      {!!mSign($un_settlement_amount)!!}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              @endif
+
+            <!-- </div>
+
+
+            <div class="row"> -->
               <div class="col-6 col-sm-6 col-md-2">
                 <div class="info-box">
                   <span class="info-box-icon cu-icon"><i class="fas fa-wallet text-secondary"></i></span>

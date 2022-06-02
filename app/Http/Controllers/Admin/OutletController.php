@@ -66,6 +66,7 @@ class OutletController extends Controller
         $outlet->status               = $request->status;
         $outlet->account_status       = (int)$request->account_status;
         $outlet->pin                  = $pin;
+        $outlet->security_amount      = $request->security_amount;
 
         //for office photo
         if (!empty($request->file('office_photo')))
@@ -215,6 +216,7 @@ class OutletController extends Controller
         $outlet->money_transfer_option = $request->money_transfer_option;
         $outlet->status               = $request->status;
         $outlet->account_status       = (int)$request->account_status;
+        $outlet->security_amount      = $request->security_amount;
 
         //for office photo
         if (!empty($request->file('office_photo')))

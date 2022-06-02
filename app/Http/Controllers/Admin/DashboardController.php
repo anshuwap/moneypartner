@@ -25,7 +25,7 @@ class DashboardController extends Controller
             $data['total_outlet']  = Outlet::count();
 
             //for outlet amount
-            $outlets = Outlet::select('amount')->get();
+            $outlets = Outlet::select('amount', 'outlet_name', '_id')->get();
             $oids = [];
             foreach ($outlets as $am) {
                 $oids[] = $am->_id;
@@ -46,7 +46,17 @@ class DashboardController extends Controller
             if (!empty($request->mode))
                 $que->where('payment_mode', $request->mode);
 
-            $data['transaction']  = $que->orderBy('created', 'DESC')->paginate(10);
+            if ($request->outlet_id)
+                $que->where('outlet_id', $request->outlet_id);
+
+            $min_amount = $request->min_amount;
+            $max_amount = $request->max_amount;
+
+            if (!empty($min_amount) && !empty($max_amount))
+                $que->whereBetween('amount', [(string)$min_amount, (string)$max_amount]);
+
+            $data['transaction']  = $que->orderBy('created', 'DESC')->get();
+
             $data['mode'] = $request->mode;
             //for payment channel
             $data['payment_channel'] = PaymentChannel::select('_id', 'name')->get();
@@ -125,8 +135,8 @@ class DashboardController extends Controller
             $fTrans = 0;
             $fc_trans = 0;
             foreach ($failedTrnasaction as $trans) {
-            $fTrans +=  (int)$trans->amount;
-            ++$fc_trans;
+                $fTrans +=  (int)$trans->amount;
+                ++$fc_trans;
             }
             $data['f_trans'] = $fTrans;
             $data['fc_trans'] = $fc_trans;
@@ -135,8 +145,8 @@ class DashboardController extends Controller
             $rTrans = 0;
             $rc_trans = 0;
             foreach ($rejectedTrnasaction as $trans) {
-            $rTrans +=  (int)$trans->amount;
-            ++$rc_trans;
+                $rTrans +=  (int)$trans->amount;
+                ++$rc_trans;
             }
             $data['r_trans'] = $rTrans;
             $data['rc_trans'] = $rc_trans;
@@ -150,6 +160,11 @@ class DashboardController extends Controller
             }
             $data['a_trans'] = $aTrans;
             $data['apc_trans'] = $apc_trans;
+
+            $data['outlets'] = $outlets;
+            $request->request->remove('page');
+            $request->request->remove('perPage');
+            $data['filter']  = $request->all();
 
             return view('admin.dashboard', $data);
         } catch (Exception $e) {

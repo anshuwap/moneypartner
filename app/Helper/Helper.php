@@ -81,7 +81,7 @@ if (!function_exists('employeeImage')) {
 }
 
 if (!function_exists('transferHistory')) {
-    function transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $transaction_type, $fees, $type, $remark = '',$bank_details='',$transaction_id='')
+    function transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $transaction_type, $fees, $type, $remark = '',$bank_details='',$transaction_id='',$source='')
     {
 
         $closing_amount = 0;
@@ -106,6 +106,8 @@ if (!function_exists('transferHistory')) {
         $transferHistory->transaction_id = $transaction_id;
         if(!empty($bank_details))
         $transferHistory->bank_details  = $bank_details;
+
+        $transferHistory->source = $source;
         $transferHistory->save();
     }
 }

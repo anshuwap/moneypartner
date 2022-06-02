@@ -92,8 +92,8 @@ class DebitController extends Controller
                 $transaction_fees = 0;
                 $type          = $payment_mode;
                 $retailer_id   = $retailer_id;
-
-                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit', $remark);
+                $source           = 'Debited By Manual Debit';
+                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit', $remark, '', '', $source);
                 /*end passbook debit functionality*/
 
                 return response(['status' => 'success', 'msg' => mSign($amount) . ' Debited Successfully', 'status_msg' => ucwords($status)]);
@@ -129,7 +129,7 @@ class DebitController extends Controller
 
             $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
 
-             $passbookArray = ['Outlet Name', 'Transaction Id', 'Channel', 'Amount','Created Date','Created By','Modified By','Modified Date'];
+            $passbookArray = ['Outlet Name', 'Transaction Id', 'Channel', 'Amount', 'Created Date', 'Created By', 'Modified By', 'Modified Date'];
             fputcsv($f, $passbookArray, $delimiter); //put heading here
 
             $query = CreditDebit::where('type', 'debit');
@@ -162,11 +162,11 @@ class DebitController extends Controller
                 $passbook_val[] = $credit->transaction_id;
                 $passbook_val[] = $credit->channel;
                 $passbook_val[] = $credit->amount;
-                 $passbook_val[] = date('Y-m-d H:i', $credit->created);
-                $passbook_val[] = !empty($credit->UserName['full_name'])?$credit->UserName['full_name']:'';
+                $passbook_val[] = date('Y-m-d H:i', $credit->created);
+                $passbook_val[] = !empty($credit->UserName['full_name']) ? $credit->UserName['full_name'] : '';
 
-                $passbook_val[] = !empty($credit->ModifiedBy['full_name'])?$credit->ModifiedBy['full_name']:'';
-                $passbook_val[] = !empty($credit->action_date)?date('d M Y H:i',$credit->action_date):'';
+                $passbook_val[] = !empty($credit->ModifiedBy['full_name']) ? $credit->ModifiedBy['full_name'] : '';
+                $passbook_val[] = !empty($credit->action_date) ? date('d M Y H:i', $credit->action_date) : '';
 
                 $passbookArr = $passbook_val;
 

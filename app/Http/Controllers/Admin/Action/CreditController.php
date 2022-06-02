@@ -85,8 +85,9 @@ class CreditController extends Controller
                 $payment_mode     = $payment_mode;
                 $type             = $payment_mode;
                 $transaction_fees = 0;
+                $source           = 'Credited By Manual Credit';
                 //insert data in transfer history collection
-                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'credit', $remark);
+                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'credit', $remark,'','',$source);
 
                 return response(['status' => 'success', 'msg' => mSign($amount) . ' Credited Successfully', 'status_msg' => ucwords($status)]);
             } else {

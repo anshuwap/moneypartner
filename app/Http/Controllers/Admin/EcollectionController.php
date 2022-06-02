@@ -74,8 +74,9 @@ class EcollectionController extends Controller
                 $payment_mode     = $payment_mode;
                 $type             = $payment_mode;
                 $transaction_fees = 0;
+                $source = 'Credited by E-Collection';
                 //insert data in transfer history collection
-                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'credit', $remark);
+                transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'credit', $remark,'','',$source);
 
                 $ecollection->wallet_status = 'approved';
                 $ecollection->remark        = $remark;

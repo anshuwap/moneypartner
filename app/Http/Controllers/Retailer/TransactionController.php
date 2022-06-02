@@ -64,11 +64,11 @@ class TransactionController extends Controller
     }
 
 
-public function refundPending(Request $request)
+    public function refundPending(Request $request)
     {
         try {
 
-            $query = Transaction::query()->where('retailer_id', Auth::user()->_id)->where('status','refund_pending');
+            $query = Transaction::query()->where('retailer_id', Auth::user()->_id)->where('status', 'refund_pending');
 
             if (!empty($request->type))
                 $query->where('type', $request->type);
@@ -102,7 +102,6 @@ public function refundPending(Request $request)
             $data['filter']  = $request->all();
 
             return view('retailer.transaction.refund_pending', $data);
-
         } catch (Exception $e) {
             return redirect('500')->with(['error' => $e->getMessage()]);;
         }
@@ -115,7 +114,7 @@ public function refundPending(Request $request)
             /*start check amount available in wallet or not*/
             $amount  = $request->amount;
             $charges = 0;
-            $outlet  = Outlet::select('bank_charges')->where('_id', Auth::user()->outlet_id)->first();
+            $outlet  = Outlet::select('bank_charges','security_amount')->where('_id', Auth::user()->outlet_id)->first();
             if (!empty($outlet->bank_charges)) {
                 foreach ($outlet->bank_charges as $charge) {
                     if ($charge['type'] == 'inr') { // here all inr charges
@@ -156,7 +155,10 @@ public function refundPending(Request $request)
                 return response(['status' => 'error', 'msg' => 'Pin is not Verified']);
             /*end for verify pin*/
 
-            if ($total_amount >= Auth()->user()->available_amount)
+            $s_amount = !empty($outlet->security_amount) ? $outlet->security_amount : 0;
+            $security_amount = ($total_amount) + ($s_amount);
+
+            if ($security_amount >= Auth()->user()->available_amount)
                 return response(['status' => 'error', 'msg' => 'You have not Sufficient Amount']);
             /*end check amount available in wallet or not*/
 
@@ -325,7 +327,7 @@ public function refundPending(Request $request)
         try {
             /*start check amount available in wallet or not*/
             $amount = $request->amount;
-            $outlet = Outlet::select('bank_charges')->where('_id', Auth::user()->outlet_id)->first();
+            $outlet = Outlet::select('bank_charges', 'security_amount')->where('_id', Auth::user()->outlet_id)->first();
             $charges = 0;
             if (!empty($outlet->bank_charges)) {
                 foreach ($outlet->bank_charges as $charge) {
@@ -348,7 +350,9 @@ public function refundPending(Request $request)
             }
 
             $total_amount = $amount + $charges;
-            if ($total_amount >= Auth()->user()->available_amount)
+            $s_amount = !empty($outlet->security_amount) ? $outlet->security_amount : 0;
+            $security_amount = ($total_amount) + ($s_amount);
+            if ($security_amount >= Auth()->user()->available_amount)
                 return response(['status' => 'error', 'msg' => 'You have not Sufficient Amount.']);
             /*end check amount available in wallet or not*/
 
@@ -668,7 +672,7 @@ public function refundPending(Request $request)
 
         /*start check amount available in wallet or not*/
         $amount = $importData['amount'];
-        $outlet = Outlet::select('bank_charges')->where('_id', Auth::user()->outlet_id)->first();
+        $outlet = Outlet::select('bank_charges','security_amount')->where('_id', Auth::user()->outlet_id)->first();
         $charges = 0;
         if (!empty($outlet)) {
 
@@ -689,9 +693,11 @@ public function refundPending(Request $request)
             }
         }
         $total_amount = $amount + $charges;
+        $s_amount = !empty($outlet->security_amount) ? $outlet->security_amount : 0;
+        $security_amount = ($total_amount) + ($s_amount);
         /*end check amount available in wallet or not*/
 
-        if ($total_amount >= Auth()->user()->available_amount) {
+        if ($security_amount >= Auth()->user()->available_amount) {
             $comment = '<span class="text-danger">You have not Sufficient Amount.</span>';
             $status = '<span class="tag-small-danger">Failed</span>';
         } else {
@@ -914,7 +920,7 @@ public function refundPending(Request $request)
     }
 
 
-  public function refundPendingExport(Request $request)
+    public function refundPendingExport(Request $request)
     {
         try {
             $file_name = 'refund-pending-transaction';
@@ -933,7 +939,7 @@ public function refundPending(Request $request)
 
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
-            $query = Transaction::query()->where('status','refund_pending');
+            $query = Transaction::query()->where('status', 'refund_pending');
 
             if (!empty($request->type))
                 $query->where('type', $request->type);
