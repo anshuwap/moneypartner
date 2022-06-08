@@ -116,6 +116,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::get('outlet-edit-bank-charges/{id}', [AdminOutlet::class, 'outletEditBankCharges']);
   Route::post('outlet-update-bank-charges',   [AdminOutlet::class, 'outletUpdateBankCharges']);
   Route::get('outlet-charges-status/{id}/{key}/{status}', [AdminOutlet::class, 'bankChargesStatus']);
+  Route::get('employee-list',                 [AdminOutlet::class, 'EmployeeList']);
 
   Route::resource('bank-account',         AdminBankAccount::class);
   Route::get('bank-account-ajax',         [AdminBankAccount::class, 'ajaxList']);
@@ -187,6 +188,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::resource('e-collection', AdminECollection::class);
 
   Route::resource('employee',    AdminEmployee::class);
+  Route::get('employee-commission/{id}',      [AdminEmployee::class, 'commission']);
+  // Route::get('outlet-bank-charges-list',      [AdminEmployee::class, 'outletBankChargesList']);
+  Route::post('employee-add-commission',      [AdminEmployee::class, 'employeeAddCommission']);
+  Route::get('employee-edit-commission/{id}', [AdminEmployee::class, 'employeeEditCommission']);
+  Route::post('employee-update-commission',   [AdminEmployee::class, 'employeeUpdateCommission']);
+  Route::get('employee-commission-status/{id}/{key}/{status}', [AdminEmployee::class, 'employeeCommissionStatus']);
   Route::post('employee-status', [AdminEmployee::class, 'employeeStatus']);
 
   Route::get('passbook',         [AdminPassbook::class, 'index']);

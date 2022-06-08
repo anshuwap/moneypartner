@@ -5,7 +5,7 @@
     }
 </style>
 <div class="modal fade" id="slitPopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 1100px !important" role="document">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 1400px !important" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="heading_bank_dashboard">Split Amount</h5>
@@ -33,7 +33,7 @@
                                         <input type="text" value="" required name="response[0][amount]" class="form-control form-control-sm" placeholder="Enter Amount">
                                     </div>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-1">
                                         <span>Charges</span>
                                         <input type="text" value="" required name="response[0][charges]" class="form-control form-control-sm" placeholder="Enter charges">
                                     </div>
@@ -70,6 +70,14 @@
                                             <option value="">Select</option>
                                         </select>
                                         <span id="comment_msg" class="custom-text-danger"></span>
+                                    </div>
+
+
+                                    <div class="form-group col-md-1">
+                                        <span>Action Date</span>
+                                        <input type="datetime-local" placeholder="Date" value="<?php echo date('Y-m-d') . 'T' . date('H:i'); ?>" attr="0" required id="date-0" name="response[0][date]" class="form-control form-control-sm">
+                                        <span id="date_msg" class="custom-text-danger"></span>
+
                                     </div>
 
                                     <div class="col-md-1 mt-18">
@@ -148,7 +156,7 @@
                                         <span>Amount</span>
                                         <input type="text" value="" required name="response[${x}][amount]" class="form-control form-control-sm" placeholder="Enter Amount">
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-1">
                                         <span>Charges</span>
                                         <input type="text" value="" required name="response[${x}][charges]" class="form-control form-control-sm" placeholder="Enter charges">
                                     </div>
@@ -183,6 +191,13 @@
                                         <select name="response[${x}][msg]" class="form-control form-control-sm" id="split-comment-${x}">
                                         </select>
                                         <span id="comment_msg" class="custom-text-danger"></span>
+                                    </div>
+
+<div class="form-group col-md-1">
+                                        <span>Action Date</span>
+                                        <input type="datetime-local" placeholder="Date" value="<?php echo date('Y-m-d') . 'T' . date('H:i'); ?>" attr="0" required id="date-0" name="response[${x}][date]" class="form-control form-control-sm">
+                                        <span id="date_msg" class="custom-text-danger"></span>
+
                                     </div>
 
                                     <div class="col-md-1 mt-18">

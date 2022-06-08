@@ -69,6 +69,7 @@
                                 <th>Transaction Id</th>
                                 <th>Channel</th>
                                 <th>Amount</th>
+                                <th>UTR No</th>
                                 <th>Paid Status</th>
                                 <th>Rquested Date</th>
                                 <th>Created By</th>
@@ -83,6 +84,7 @@
                                 <td>{{ $credit->transaction_id }}</td>
                                 <td>{{ $credit->channel}}</td>
                                 <td>{!!mSign($credit->amount)!!}</td>
+                                <td>{{$credit->utr_no}}</td>
                                 <!-- <td>{{ $credit->status }}</td> -->
                                 <td>
                                     {{ ($credit->paid_status=='approved')?'Approved':'Due' }}

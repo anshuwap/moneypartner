@@ -65,6 +65,7 @@ class CreditController extends Controller
             $creditDebit->user_id     = Auth::user()->_id;
             $creditDebit->transaction_id = uniqCode(3) . rand(111111, 999999);
             $creditDebit->amount      = $amount;
+            $creditDebit->utr_no        = $request->utr_no;
             $creditDebit->payment_date = $payment_date;
             $creditDebit->status      = $status;
             $creditDebit->payment_mode = $payment_mode;
@@ -118,6 +119,7 @@ class CreditController extends Controller
             $remark       = $request->remark;
             $creditDebit = CreditDebit::find($id);
             $creditDebit->remark      = $remark;
+            $creditDebit->utr_no        = $request->utr_no;
             $creditDebit->channel     = $request->payment_channel;
             $creditDebit->action_by   = Auth::user()->_id;
             $creditDebit->action      = 'Updated';
@@ -174,7 +176,7 @@ class CreditController extends Controller
 
             $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
 
-            $passbookArray = ['Outlet Name', 'Transaction Id', 'Channel', 'Amount', 'Paid Status', 'Created Date', 'Created By', 'Modified By', 'Modified Date'];
+            $passbookArray = ['Outlet Name', 'Transaction Id', 'Channel', 'Amount','UTR No','Paid Status', 'Created Date', 'Created By', 'Modified By', 'Modified Date'];
             fputcsv($f, $passbookArray, $delimiter); //put heading here
 
             $query = CreditDebit::where('type', 'credit');
@@ -208,6 +210,7 @@ class CreditController extends Controller
                 $passbook_val[] = $credit->transaction_id;
                 $passbook_val[] = $credit->channel;
                 $passbook_val[] = $credit->amount;
+                $passbook_val[] = $credit->utr_no;
                 $passbook_val[] = ucwords($credit->paid_status);
                 $passbook_val[] = date('Y-m-d H:i', $credit->created);
                 $passbook_val[] = !empty($credit->UserName['full_name']) ? $credit->UserName['full_name'] : '';

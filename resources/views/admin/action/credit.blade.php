@@ -65,10 +65,12 @@
             <table id="table" class="table table-hover text-nowrap table-sm">
                 <thead>
                     <tr>
+                        <th>Sr.No.</th>
                         <th>Outlet</th>
                         <th>Transaction Id</th>
                         <th>Channel</th>
                         <th>Amount</th>
+                      <th>UTR No</th>
                         <th>Paid Status</th>
                         <th>Rquested Date</th>
                         <th>Created By</th>
@@ -78,12 +80,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($credits as $credit)
+                    @foreach($credits as $key=>$credit)
                     <tr>
+                        <td>{{++$key}}</td>
                         <td><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="{{ $credit->remark }}">{{ !empty($credit->RetailerName['outlet_name']) ? $credit->RetailerName['outlet_name'] : '' }}</a></td>
                         <td>{{ $credit->transaction_id }}</td>
                         <td>{{ $credit->channel}}</td>
                         <td>{!!mSign($credit->amount)!!}</td>
+                      <td>{{$credit->utr_no}}</td>
                         <!-- <td>{{ $credit->status }}</td> -->
                         <td>
                             <input type="checkbox" class="btn-xs switch-btn" _id="{{ $credit->_id }}" name="status" id="switch-btn-{{$credit->_id}}" data-toggle="switchbutton" data-onlabel="Approved" data-offlabel="Due" data-onstyle="success" data-offstyle="danger" {{ ($credit->paid_status=='approved')?'checked':'' }}>
@@ -146,6 +150,13 @@
                             </select>
                             <span id="payment_channel_msg" class="custom-text-danger"></span>
                         </div>
+
+                      <div class="form-group">
+                            <label>UTR No</label>
+                            <input type="text" name="utr_no" id="utr_no" class="form-control form-control-sm" placeholder="Enter UTR No" required>
+                            <span id="utr_no_msg" class="custom-text-danger"></span>
+                        </div>
+
 
                         <div class="form-group">
                             <label>Remarks</label>
@@ -213,6 +224,7 @@
                     $('#amount').val(res.data.amount);
                     $('#amount').prop('readonly', true);
                     $('#remark').val(res.data.remark);
+                    $('#utr_no').val(res.data.utr_no);
                     $('#submit').val('Update');
 
                 } else if (res.status == 'error') {

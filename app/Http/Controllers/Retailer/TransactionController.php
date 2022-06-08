@@ -830,6 +830,7 @@ class TransactionController extends Controller
     public function export(Request $request)
     {
         try {
+
             $file_name = 'transaction-report';
 
             $delimiter = ","; //dfine delimiter
@@ -846,7 +847,7 @@ class TransactionController extends Controller
 
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
-            $query = Transaction::query();
+            $query = Transaction::query()->where('retailer_id', Auth::user()->_id);
 
             if (!empty($request->type))
                 $query->where('type', $request->type);
@@ -872,8 +873,9 @@ class TransactionController extends Controller
 
             $transactions = $query->get();
 
+
             if ($transactions->isEmpty())
-                return back()->with('error', 'There is no any record for export!');
+              return back()->with('error', 'There is no any record for export!');
 
             $transactionArr = [];
             foreach ($transactions as $transaction) {
@@ -939,7 +941,7 @@ class TransactionController extends Controller
 
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
-            $query = Transaction::query()->where('status', 'refund_pending');
+            $query = Transaction::query()->where('status', 'refund_pending')->where('retailer_id', Auth::user()->_id);
 
             if (!empty($request->type))
                 $query->where('type', $request->type);

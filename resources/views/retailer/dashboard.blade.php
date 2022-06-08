@@ -16,7 +16,7 @@
   .btn-r {
     position: relative;
     text-align: center;
-    top: 44px;
+    top: 35px;
   }
 
   .cu-icon {
@@ -54,10 +54,18 @@
   <div class="container-fluid">
 
     <div class="row">
-      <div class="col-12 col-sm-6 col-md-5">
-        <div class="pl-3 p-2 card h-height" style="height: 130px;">
 
-          <div class="card-tools btn-r">
+      <div class="col-12 col-sm-6 col-md-5">
+        <div class="pl-3 p-2 card h-height" style="height: 150px;">
+
+          <div class="card-tools">
+
+            <div class="text-center">
+               <a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title="Comming Soon..."><img src="{{asset('attachment/google_pay.png')}}"  class="mr-1" style="width:40px;" /></a>
+            <a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title="Comming Soon..."><img src="{{asset('attachment/paytm.png')}}"  class="mr-1" style="width:40px;" /></a>
+             <a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title="Comming Soon..."><img src="{{asset('attachment/phonePay.jpg')}}" class="mr-1" style="width:40px;" /></a>
+             <a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title="Comming Soon..."><img src="{{asset('attachment/upi.png')}}"  class="mr-1" style="width:40px;" /></a></div>
+            <div class="btn-r">
             @if(!empty(MoneyPartnerOption()->dmt_transfer) && MoneyPartnerOption()->dmt_transfer ==1)
             <a href="javascript:void(0);" class="btn btn-sm btn-success" id="create_customer"><i class="fas fa-plus-circle"></i>&nbsp;Add DMT</a>
             @endif
@@ -67,6 +75,7 @@
             @if(!empty(MoneyPartnerOption()->bulk_payout) && MoneyPartnerOption()->bulk_payout ==1)
             <a href="javascript:void(0);" id="import" class="btn btn-sm btn-success"><i class="fas fa-cloud-upload-alt"></i>&nbsp;Bulk Upload</a>
             @endif
+          </div>
           </div>
         </div>
       </div>
@@ -226,7 +235,7 @@
               </div>
               @endif
 
-            <!-- </div>
+              <!-- </div>
 
 
             <div class="row"> -->

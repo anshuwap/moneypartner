@@ -59,7 +59,7 @@ class CreditController extends Controller
 
             $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
 
-            $passbookArray = ['Transaction Id', 'Channel', 'Amount', 'Paid Status', 'Created Date', 'Created By', 'Modified By', 'Modified Date'];
+            $passbookArray = ['Transaction Id', 'Channel', 'Amount','UTR No','Paid Status', 'Created Date', 'Created By', 'Modified By', 'Modified Date'];
             fputcsv($f, $passbookArray, $delimiter); //put heading here
 
             $query = CreditDebit::where('type', 'credit')->where('retailer_id',Auth::user()->_id);
@@ -90,8 +90,9 @@ class CreditController extends Controller
                 $passbook_val[] = $credit->transaction_id;
                 $passbook_val[] = $credit->channel;
                 $passbook_val[] = $credit->amount;
+                $passbook_val[] = $credit->utr_no;
                 $passbook_val[] = ucwords($credit->paid_status);
-                  $passbook_val[] = date('Y-m-d H:i', $credit->created);
+                $passbook_val[] = date('Y-m-d H:i', $credit->created);
                 $passbook_val[] = !empty($credit->UserName['full_name']) ? $credit->UserName['full_name'] : '';
                 $passbook_val[] = !empty($credit->ModifiedBy['full_name']) ? $credit->ModifiedBy['full_name'] : '';
                 $passbook_val[] = !empty($credit->action_date) ? date('d M Y H:i', $credit->action_date) : '';

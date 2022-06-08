@@ -14,9 +14,9 @@
                   <div>
                       <a href="javascript:void(0);" id="import" class="btn btn-sm btn-success"><i class="fas fa-cloud-upload-alt"></i>&nbsp;Bulk Upload</a>
                       @if(!empty($filter))
-                      <!-- <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a> -->
+                      <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
                       @else
-                      <!-- <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a> -->
+                      <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a>
                       @endif
                   </div>
 
@@ -39,12 +39,12 @@
 
                       <div class="form-group col-md-2">
                           <label>Min Amount</label>
-                          <input type="number" class="form-control form-control-sm" value="<?= !empty($filter['min_amount']) ? $filter['min_amount'] : '' ?>" name="min_amount"  placeholder="Min Amount"/>
+                          <input type="number" class="form-control form-control-sm" min="10" value="<?= !empty($filter['min_amount']) ? $filter['min_amount'] : '' ?>" name="min_amount"  placeholder="Min Amount"/>
                       </div>
 
                       <div class="form-group col-md-2">
                           <label>Max Amount</label>
-                          <input type="number" class="form-control form-control-sm" value="<?= !empty($filter['max_amount']) ? $filter['max_amount'] : '' ?>" name="max_amount" id="end-date" placeholder="Max Amount" />
+                          <input type="number" class="form-control form-control-sm" min="100" value="<?= !empty($filter['max_amount']) ? $filter['max_amount'] : '' ?>" name="max_amount" id="end-date" placeholder="Max Amount" />
                       </div>
 
                       <div class="form-group col-md-2">

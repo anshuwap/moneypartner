@@ -8,8 +8,6 @@ use App\Models\Outlet;
 use App\Models\PaymentChannel;
 use App\Models\Topup;
 use App\Models\Transaction;
-use App\Models\Transaction\CustomerTrans;
-use App\Models\Transaction\RetailerTrans;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Session;
@@ -51,9 +49,11 @@ class DashboardController extends Controller
 
             $min_amount = $request->min_amount;
             $max_amount = $request->max_amount;
+            if (!empty($min_amount) && !empty($max_amount)) {
+                $que->where('amount', '>=', "$min_amount");
+                $que->where('amount', '<=', "$max_amount");
+            }
 
-            if (!empty($min_amount) && !empty($max_amount))
-                $que->whereBetween('amount', [(string)$min_amount, (string)$max_amount]);
 
             $data['transaction']  = $que->orderBy('created', 'DESC')->get();
 

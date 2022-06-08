@@ -456,7 +456,8 @@ class OutletController extends Controller
 
         foreach ($data as $val) {
             // $action = '<a href="javascript:void(0);" class="text-orange banckModal"  data-toggle="tooltip" data-placement="bottom" title="Bank Charges" outlet_id="' . $val->_id . '"><i class="fas fa-piggy-bank"></i></a>&nbsp;&nbsp;';
-            $action = '<a href="' . url('admin/outlet-bank-charges/' . $val->_id) . '" class="text-orange"  data-toggle="tooltip" data-placement="bottom" title="Bank Charges"><i class="fas fa-piggy-bank"></i></a>&nbsp;&nbsp;';
+            $action = '<a href="javascript:void(0);" outlet_id ="' . $val->_id . '" class="badge badge-info assign-outlet" data-toggle="tooltip" data-placement="bottom" title="Assign Outlet">Assign</a>&nbsp;&nbsp;';
+            $action .= '<a href="' . url('admin/outlet-bank-charges/' . $val->_id) . '" class="text-orange"  data-toggle="tooltip" data-placement="bottom" title="Bank Charges"><i class="fas fa-piggy-bank"></i></a>&nbsp;&nbsp;';
             $action .= '<a href="' . url('admin/outlets/' . $val->_id . '/edit') . '" class="text-info" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="far fa-edit"></i></a>';
 
             if ($val->account_status == 1) {
@@ -523,6 +524,22 @@ class OutletController extends Controller
             header('Content-Type: text/csv');
             header('Content-Disposition: attachment; filename="' . $file_name . '.csv";');
             readfile('sampleCsv/' . $file_name . '.csv');
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
+        }
+    }
+
+
+    public function EmployeeList()
+    {
+        try {
+            $employees = User::where('role', 'employee')->get();
+            $table = '<table class="table table-sm"><tr><th>Employee Name</th><th>Assign</th></tr>';
+            foreach ($employees as $employee) {
+                $table .='<tr><th>'.$employee->full_name.'</th><td><input type="checkbox" class="" name="outlets[]"></td></tr>';
+            }
+            $table .='</table>';
+            return response(['status' => 'success', 'data' =>$table]);
         } catch (Exception $e) {
             return response(['status' => 'error', 'msg' => $e->getMessage()]);
         }

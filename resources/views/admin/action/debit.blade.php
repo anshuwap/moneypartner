@@ -61,6 +61,7 @@
             <table id="table" class="table table-hover text-nowrap table-sm">
                 <thead>
                     <tr>
+                        <th>Sr.No.</th>
                         <th>Outlet</th>
                         <th>Transaction Id</th>
                         <th>Channel</th>
@@ -73,8 +74,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($credits as $credit)
+                    @foreach($credits as $key=>$credit)
                     <tr>
+                        <td>{{++$key}}</td>
                         <td><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="{{ $credit->remark }}">{{ !empty($credit->RetailerName['outlet_name']) ? $credit->RetailerName['outlet_name'] : '' }}</a></td>
                         <td>{{ $credit->transaction_id }}</td>
                         <td>{{ $credit->channel}}</td>

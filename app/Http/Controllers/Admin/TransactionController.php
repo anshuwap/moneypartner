@@ -1065,7 +1065,7 @@ class TransactionController extends Controller
                 $transactionN->pancard_no        = $transaction->pancard_no;
 
                 $response['action_by']     = Auth::user()->_id;
-                $response['action_date']   = time();
+                $response['action_date']   = !empty($responseData[$key]['date']) ? strtotime($responseData[$key]['date']) : '';
                 $response['parent_txn_id'] = $transaction->_id;
                 $response['action']        = 'manual update Payment Status (Split Transaction) - Parent Txn no. ' . $transaction->transaction_id;
                 $response['payment_mode']  = !empty($responseData[$key]['payment_mode']) ? $responseData[$key]['payment_mode'] : '';

@@ -9,7 +9,7 @@
       <div class="card-header">
         <h3 class="card-title">Outlet List</h3>
         <div class="card-tools">
-        <!-- <a href="javascript:void(0);" class="btn btn-sm btn-warning mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a> -->
+          <!-- <a href="javascript:void(0);" class="btn btn-sm btn-warning mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a> -->
           <!-- <a href="javascript:void(0);" id="import" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-upload-alt"></i>&nbsp;Import</a> -->
           <a href="{{ url('admin/outlets/create') }}" class="btn btn-sm btn-success mr-2"><i class="fas fa-plus-circle"></i>&nbsp;Add</a>
         </div>
@@ -28,7 +28,6 @@
               <th>Type</th>
               <th>State/City</th>
               <th>Available Balance</th>
-
               <th>Created Date</th>
               <th>Status</th>
               <th>Action</th>
@@ -36,7 +35,6 @@
           </thead>
           <tbody>
           </tbody>
-
         </table>
       </div>
       <!-- /.card-body -->
@@ -87,6 +85,21 @@
 </div>
 
 <script>
+  $(document).on('click', '.assign-outlet', function() {
+var outlet_id = $(this).attr('outlet_id');
+    $.ajax({
+      url: '{{ url("admin/employee-list") }}/',
+      type: "GET",
+      data: {},
+      dataType: "JSON",
+      success: function(res) {
+        $('#assign-outlet').html(res.data);
+        $('#outlet_id').val(outlet_id);
+        $('#assignModal').modal('show');
+      }
+    })
+  });
+
   $('#import').click(function(e) {
     e.preventDefault();
     $('form#import_form')[0].reset();
@@ -194,7 +207,6 @@
         {
           data: "available_blance"
         },
-
         {
           data: "created_date"
         },
@@ -253,50 +265,25 @@
 @push('modal')
 
 <!-- Modal -->
-<div class="modal fade" id="banckModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Bank Charges/Commission</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle">Assign Outlet</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form id="bankModal" action="{{ url('admin/outlet-bank') }}" method="post">
+        <form id="bankModal" action="{{ url('admin/assign-outlet') }}" method="post">
           @csrf
-          <input type="hidden" name="id" id="outlet_id">
+          <input type="hidden" name="outlet_id" id="outlet_id">
           <div class="row">
             <div class="col-md-12">
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label>From Amount</label>
-                  <input type="number" name="from_amount" id="from_amount" required class="form-control form-control-sm" placeholder="Enter Amount">
-                  <span id="from_amount_msg" class="custom-text-danger"></span>
-                </div>
-                <div class="form-group col-md-6">
-                  <label>To Amount</label>
-                  <input type="number" name="to_amount" id="to_amount" required class="form-control form-control-sm" placeholder="Enter Amount">
-                  <span id="to_amount_msg" class="custom-text-danger"></span>
-                </div>
-              </div>
 
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label>Type</label>
-                  <select class="form-control form-control-sm" id="type" name="type">
-                    <option value="persantage">Persantage(%)</option>
-                    <option value="inr">INR</option>
-                  </select>
-                  <span id="type_msg" class="custom-text-danger"></span>
-                </div>
-                <div class="form-group col-md-6">
-                  <label>Charges</label>
-                  <input type="number" required name="charges" id="charges" class="form-control form-control-sm" placeholder="Enter Charges">
-                  <span id="charges_msg" class="custom-text-danger"></span>
-                </div>
-              </div>
+              <div id="assign-outlet">
 
+              </div>
               <div class="form-group text-center">
                 <input type="submit" class="btn btn-success btn-sm" value="Submit" t>
               </div>
