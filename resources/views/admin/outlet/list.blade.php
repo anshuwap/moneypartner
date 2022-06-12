@@ -86,7 +86,7 @@
 
 <script>
   $(document).on('click', '.assign-outlet', function() {
-var outlet_id = $(this).attr('outlet_id');
+    var outlet_id = $(this).attr('outlet_id');
     $.ajax({
       url: '{{ url("admin/employee-list") }}/',
       type: "GET",
@@ -275,7 +275,7 @@ var outlet_id = $(this).attr('outlet_id');
         </button>
       </div>
       <div class="modal-body">
-        <form id="bankModal" action="{{ url('admin/assign-outlet') }}" method="post">
+        <form id="assignOutlet" action="{{ url('admin/assign-outlet') }}" method="post">
           @csrf
           <input type="hidden" name="outlet_id" id="outlet_id">
           <div class="row">
@@ -285,7 +285,7 @@ var outlet_id = $(this).attr('outlet_id');
 
               </div>
               <div class="form-group text-center">
-                <input type="submit" class="btn btn-success btn-sm" value="Submit" t>
+                <input type="submit" class="btn btn-success btn-sm" value="Submit">
               </div>
             </div>
           </div>
@@ -296,28 +296,8 @@ var outlet_id = $(this).attr('outlet_id');
 </div>
 
 <script>
-  $(document).on('click', '.banckModal', function() {
-    var id = $(this).attr('outlet_id');
-    $.ajax({
-      url: '{{ url("admin/outlet-bank-get") }}/' + id,
-      type: "GET",
-      data: {},
-      dataType: "JSON",
-      success: function(res) {
-        $('#outlet_id').val(id);
-        $('#sl').val(res.data.sl);
-        $('#to_amount').val(res.data.to_amount);
-        $('#from_amount').val(res.data.from_amount);
-        $('#type').val(res.data.type);
-        $('#charges').val(res.data.charges);
-        $('#banckModal').modal('show');
-      }
-    })
-
-  })
-
   /*start form submit functionality*/
-  $("form#bankModal").submit(function(e) {
+  $("form#assignOutlet").submit(function(e) {
     e.preventDefault();
     formData = new FormData(this);
     var url = $(this).attr('action');
@@ -355,7 +335,10 @@ var outlet_id = $(this).attr('outlet_id');
 
         //for reset all field
         if (res.status == 'success') {
-          $('form#add-outlet')[0].reset();
+          $('form#assignOutlet')[0].reset();
+          setTimeout(function() {
+            location.reload();
+          }, 1000)
         }
       }
     });

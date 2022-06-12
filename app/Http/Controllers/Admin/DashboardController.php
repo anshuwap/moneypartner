@@ -256,6 +256,23 @@ class DashboardController extends Controller
                             $transaction->status       = 'success';
                             $transaction->response     =  $response;
                             $transaction->save();
+
+                            if ($transaction->status == 'success') {
+                                /*start save employee Commission functionality*/
+                                $empCmsg = getEmpCommision($transaction->outlet_id, $transaction->amount);
+                                if (!empty($empCmsg)) {
+                                    $employeeCms = [
+                                        'employee_id'    => $empCmsg['employee_id'],
+                                        'amount'         => $empCmsg['amount'],
+                                        'transaction_id' => $transaction->_id,
+                                        'outlet_id'      => $transaction->outlet_id,
+                                        'retailer_id'    => $transaction->retailer_id,
+                                        'action_by'      => Auth::user()->_id
+                                    ];
+                                    employeeCms($employeeCms);
+                                }
+                                /*end save employee Commission functionality*/
+                            }
                         }
                     }
                     $ctr++;

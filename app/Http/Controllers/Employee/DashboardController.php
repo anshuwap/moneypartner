@@ -12,6 +12,7 @@ use App\Models\Transaction\CustomerTrans;
 use App\Models\Transaction\RetailerTrans;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -20,75 +21,18 @@ class DashboardController extends Controller
 
         try {
 
-            $topups = Topup::where('status', 'pending')->get();
-            $data['topup_request'] = $topups;
+            $outlet_ids = [];
+            if (!empty(Auth::user()->outlets))
+                $outlet_ids = Auth::user()->outlets;
+            $outlets = Outlet::select('amount', 'outlet_name', '_id')->whereIn('_id', $outlet_ids)->get();
 
-            $data['total_outlet']  = Outlet::count();
-
-            //for topup amount
-            $topups = Topup::select('amount')->where('status', 'success')->get();
-            $total_topup_amount = 0;
-            foreach ($topups as $am) {
-                $total_topup_amount += $am->amount;
-            }
-            $data['total_topup_amount'] = $total_topup_amount;
-
-
-
-            //amout for current month
-            $dmts = CustomerTrans::select('total_amount')->get();
-            $current_month_dmt_amount = 0;
-            foreach ($dmts as $am) {
-                $current_month_dmt_amount += $am->total_amount;
-            }
-            $data['current_month_dmt_amount']   = $current_month_dmt_amount;
-
-            //for bulk amount
-            $bulks = RetailerTrans::select('total_amount')->get();
-            $current_month_bulk_amount = 0;
-            foreach ($bulks as $am) {
-                $current_month_bulk_amount += $am->total_amount;
-            }
-            $data['current_month_bulk_amount']  = $current_month_bulk_amount;
-
-
-            //for dmt amount
-            $dmts = CustomerTrans::select('total_amount')->get();
-            $total_dmt_amount = 0;
-            foreach ($dmts as $am) {
-                $total_dmt_amount += $am->total_amount;
-            }
-            $data['total_dmt_amount']   = $total_dmt_amount;
-
-            //for bulk amount
-            $bulks = RetailerTrans::select('total_amount')->get();
-            $total_bulk_amount = 0;
-            foreach ($bulks as $am) {
-                $total_bulk_amount += $am->total_amount;
-            }
-            $data['total_bulk_amount']  = $total_bulk_amount;
-
-
-            //             $dmt_date = CustomerTrans::select('updated')->get();
-
-            // $month = ['Jan','Feb'];
-
-            // foreach($dmt_date as $date){
-            // echo date('M',$date->updated);
-            // echo "<br/>";
-            //  }
-            // die;
-
-            //    $data['customer_trans'] = CustomerTrans::select('trans_details','customer_name','mobile_number')->get();
-            //    $data['retailerTrans']  = RetailerTrans::where('status','pending')->get();
-            //    $data['offlinePayouts'] = OfflinePayoutApi::where('status','pending')->get();
-
-            $que = Transaction::where('status', 'pending');
+            $que = Transaction::where('status', 'pending')->whereIn('outlet_id', $outlet_ids);
             if (!empty($request->mode))
                 $que->where('payment_mode', $request->mode);
 
             $data['transaction']  = $que->orderBy('created', 'DESC')->get();
             $data['mode'] = $request->mode;
+            $data['outlets'] = $outlets;
             //for payment channel
             $data['payment_channel'] = PaymentChannel::select('_id', 'name')->get();
             return view('employee.dashboard', $data);
@@ -181,6 +125,24 @@ class DashboardController extends Controller
                             $transaction->status       = 'success';
                             $transaction->response     =  $response;
                             $transaction->save();
+
+                            if ($transaction->status == 'success') {
+                                /*start save employee Commission functionality*/
+                                $empCmsg = getEmpCommision($transaction->outlet_id, $transaction->amount);
+
+                                if (!empty($empCmsg)) {
+                                    $employeeCms = [
+                                        'employee_id'    => $empCmsg['employee_id'],
+                                        'amount'         => $empCmsg['amount'],
+                                        'transaction_id' => $transaction->_id,
+                                        'outlet_id'      => $transaction->outlet_id,
+                                        'retailer_id'    => $transaction->retailer_id,
+                                        'action_by'      => Auth::user()->_id
+                                    ];
+                                    employeeCms($employeeCms);
+                                }
+                                /*end save employee Commission functionality*/
+                            }
                         }
                     }
                     $ctr++;

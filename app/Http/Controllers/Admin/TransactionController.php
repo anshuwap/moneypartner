@@ -164,18 +164,19 @@ class TransactionController extends Controller
                 webhook($transaction);
 
             if ($transaction->status == 'success') {
-                // $amount        = $transaction->amount;
-                // $receiver_name = $transaction->receiver_name;
-                // $payment_date  = $transaction->created;
-                // $status        = $transaction->status;
-                // $payment_mode  = $transaction->payment_mode;
-                // $type          = $transaction->type;
-                // $transaction_fees = $transaction->transaction_fees;
+                $empCmsg = getEmpCommision($transaction->outlet_id, $transaction->amount);
 
-                // $retailer_id   = $transaction->retailer_id;
-
-                // //insert data in transfer history collection
-                // transferHistory($retailer_id, $amount, $receiver_name, $payment_date,$type, $status, $payment_mode, $transaction_fees, 'debit');
+                if (!empty($empCmsg)) {
+                    $employeeCms = [
+                        'employee_id'    => $empCmsg['employee_id'],
+                        'amount'         => $empCmsg['amount'],
+                        'transaction_id' => $transaction->_id,
+                        'outlet_id'      => $transaction->outlet_id,
+                        'retailer_id'    => $transaction->retailer_id,
+                        'action_by'      => Auth::user()->_id
+                    ];
+                    employeeCms($employeeCms);
+                }
             } else if ($transaction->status == 'rejected') {
                 //add toupup amount here
                 $transaction_id   = $transaction->_id;
@@ -191,7 +192,7 @@ class TransactionController extends Controller
                 $source           = 'Credited By Reject Transaction';
                 addTopupAmount($retailer_id, $amount, $transaction_fees, 1);
                 //insert data in transfer history collection
-                transferHistory($retailer_id, $amount + $transaction_fees, $receiver_name, $payment_date, $status, $payment_mode, $type, 0, 'credit', 0, $bank_details, $transaction_id,$source);
+                transferHistory($retailer_id, $amount + $transaction_fees, $receiver_name, $payment_date, $status, $payment_mode, $type, 0, 'credit', 0, $bank_details, $transaction_id, $source);
             }
             return response(['status' => 'success', 'msg' => 'Transaction ' . ucwords($transaction->status) . ' Successfully!']);
         } catch (Exception $e) {
@@ -295,7 +296,7 @@ class TransactionController extends Controller
             }
             session()->put('transaction_ids', $ids);
 
-            return response(['flag' => $flag, 'total_amount' => $total_amount, 'tl_amount'=>mSign($total_amount), 'no_of_record' => $no]);
+            return response(['flag' => $flag, 'total_amount' => $total_amount, 'tl_amount' => mSign($total_amount), 'no_of_record' => $no]);
         } catch (Exception $e) {
             return response(['status' => 'error', 'msg' => $e->getMessage()]);
         }
@@ -311,7 +312,7 @@ class TransactionController extends Controller
         $transaction_ids = session('transaction_ids');
 
         if (empty($transaction_ids[$index])) {
-            return response(['status' => 'preview', 'all_row' => count($transaction_ids)+1, 'index' => $index + 1, 'data' => '']);
+            return response(['status' => 'preview', 'all_row' => count($transaction_ids) + 1, 'index' => $index + 1, 'data' => '']);
         }
         $tran_id = $transaction_ids[$index];
 
@@ -371,6 +372,21 @@ class TransactionController extends Controller
             if ($api_status == 'success') {
                 $class = 'text-success';
                 $class1 = 'tag-small';
+                /*start save employee Commission functionality*/
+                $empCmsg = getEmpCommision($transaction->outlet_id, $transaction->amount);
+
+                if (!empty($empCmsg)) {
+                    $employeeCms = [
+                        'employee_id'    => $empCmsg['employee_id'],
+                        'amount'         => $empCmsg['amount'],
+                        'transaction_id' => $transaction->_id,
+                        'outlet_id'      => $transaction->outlet_id,
+                        'retailer_id'    => $transaction->retailer_id,
+                        'action_by'      => Auth::user()->_id
+                    ];
+                    employeeCms($employeeCms);
+                }
+                /*end save employee Commission functionality*/
             } else if ($api_status == 'pending') {
                 $class = 'text-warning';
                 $class1 = 'tag-small-warning';
@@ -418,17 +434,6 @@ class TransactionController extends Controller
 
     private function previewData1($previewData)
     {
-
-        // $table_data = '<tr>
-        //     <td>' . $previewData['receiver_name'] . '</td>
-        //     <td>' . $previewData['payment_channel']['bank_name'] . '</td>
-        //     <td>' . $previewData['payment_channel']['account_number'] . '</td>
-        //     <td>' . $previewData['payment_channel']['ifsc_code'] . '</td>
-        //     <td>' . mSign($previewData['amount']) . '</td>
-        //     <td>' . $previewData['status'] . '</td>
-        //     <td>' . $previewData['comment'] . '</td>
-        //     </tr>';
-
         $table_data = '<tr class="preview-table">
             <td>' . $previewData['sr_no'] . '</td>
             <td>' . $previewData['outlet'] . '</td>
@@ -505,18 +510,21 @@ class TransactionController extends Controller
             webhook($transaction);
 
         if ($transaction->status == 'success') {
-            // $amount        = $transaction->amount;
-            // $receiver_name = $transaction->receiver_name;
-            // $payment_date  = $transaction->created;
-            // $status        = $transaction->status;
-            // $payment_mode  = $transaction->payment_mode;
-            // $transaction_fees = $transaction->transaction_fees;
-            // $type           = $transaction->type;
+            /*start save employee Commission functionality*/
+            $empCmsg = getEmpCommision($transaction->outlet_id, $transaction->amount);
 
-            // $retailer_id   = $transaction->retailer_id;
-
-            // //insert data in transfer history collection
-            // transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode,$type, $transaction_fees, 'debit');
+            if (!empty($empCmsg)) {
+                $employeeCms = [
+                    'employee_id'    => $empCmsg['employee_id'],
+                    'amount'         => $empCmsg['amount'],
+                    'transaction_id' => $transaction->_id,
+                    'outlet_id'      => $transaction->outlet_id,
+                    'retailer_id'    => $transaction->retailer_id,
+                    'action_by'      => Auth::user()->_id
+                ];
+                employeeCms($employeeCms);
+            }
+            /*end save employee Commission functionality*/
         } else if ($transaction->status == 'rejected') {
             //add toupup amount here
             $transaction_id   = $transaction->_id;
@@ -529,10 +537,10 @@ class TransactionController extends Controller
             $transaction_fees = $transaction->transaction_fees;
             $amount           = $transaction->amount;
             $bank_details     = $transaction->payment_channel;
-               $source           = 'Credited By Reject Transaction';
+            $source           = 'Credited By Reject Transaction';
             addTopupAmount($retailer_id, $amount, $transaction_fees, 1);
             //insert data in transfer history collection
-            transferHistory($retailer_id, $amount + $transaction_fees, $receiver_name, $payment_date, $status, $payment_mode, $type, 0, 'credit', '',$bank_details, $transaction_id,$source);
+            transferHistory($retailer_id, $amount + $transaction_fees, $receiver_name, $payment_date, $status, $payment_mode, $type, 0, 'credit', '', $bank_details, $transaction_id, $source);
         }
         return response(['status' => 'success', 'msg' => 'Transaction Made Successfully!']);
     }
@@ -795,8 +803,27 @@ class TransactionController extends Controller
 
                 $transaction->response = $response;
                 $transaction->status   = $api_status;
-                if ($transaction->save())
-                    return response(['status' => 'success']);
+                if ($transaction->save()) {
+
+                    if ($transaction->status == 'success') {
+                        /*start save employee Commission functionality*/
+                        $empCmsg = getEmpCommision($transaction->outlet_id, $transaction->amount);
+
+                        if (!empty($empCmsg)) {
+                            $employeeCms = [
+                                'employee_id'    => $empCmsg['employee_id'],
+                                'amount'         => $empCmsg['amount'],
+                                'transaction_id' => $transaction->_id,
+                                'outlet_id'      => $transaction->outlet_id,
+                                'retailer_id'    => $transaction->retailer_id,
+                                'action_by'      => Auth::user()->_id
+                            ];
+                            employeeCms($employeeCms);
+                        }
+                        /*end save employee Commission functionality*/
+                        return response(['status' => 'success']);
+                    }
+                }
             }
             return response(['status' => 'error', 'msg' => 'Transaction Id not Found!']);
         } catch (Exception $e) {

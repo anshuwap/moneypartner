@@ -82,6 +82,15 @@
             </p>
           </a>
         </li>
+
+        <li class="nav-item">
+          <a href="{{ url('retailer/transaction-report') }}" class="nav-link {{ (url()->full() == url('retailer/transaction-report'))? 'active':''}}">
+            <i class="fas fa-solid fa-file-circle-check nav-icon"></i>
+            <p>
+             Report
+            </p>
+          </a>
+        </li>
       </ul>
     </li>
 

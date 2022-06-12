@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\PassbookController as AdminPassbook;
 use App\Http\Controllers\Admin\Action\CreditController as AdminCredit;
 use App\Http\Controllers\Admin\Action\DebitController as AdminDebit;
 use App\Http\Controllers\Admin\ProfileController as AdminProfile;
+use App\Http\Controllers\Admin\EarnHistoryController as AdminEarnHistory;
 use App\Http\Controllers\Controller;
 //for retailer panel
 use App\Http\Controllers\Retailer\WebhookApiController as WebhookApi;
@@ -41,6 +42,7 @@ use App\Http\Controllers\Employee\ProfileController as EmployeeProfile;
 use App\Http\Controllers\Employee\DashboardController as EmployeeDashboard;
 use App\Http\Controllers\Employee\TopupRequestController as EmployeeTopupRequest;
 use App\Http\Controllers\Employee\TransactionController as EmployeeTransaction;
+use App\Http\Controllers\Employee\EarnHistoryController as EarnHistory;
 
 //for Distributor panel
 use App\Http\Controllers\Distributor\LoginController as DistributorLogin;
@@ -117,6 +119,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::post('outlet-update-bank-charges',   [AdminOutlet::class, 'outletUpdateBankCharges']);
   Route::get('outlet-charges-status/{id}/{key}/{status}', [AdminOutlet::class, 'bankChargesStatus']);
   Route::get('employee-list',                 [AdminOutlet::class, 'EmployeeList']);
+  Route::post('assign-outlet',                 [AdminOutlet::class, 'assignOutlet']);
 
   Route::resource('bank-account',         AdminBankAccount::class);
   Route::get('bank-account-ajax',         [AdminBankAccount::class, 'ajaxList']);
@@ -199,6 +202,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::get('passbook',         [AdminPassbook::class, 'index']);
   Route::get('passbook-export',  [AdminPassbook::class, 'export']);
 
+  Route::resource('earn-history',  AdminEarnHistory::class);
+
   Route::post('logout',  [AdminLogin::class, 'logout']);
 });
 
@@ -250,9 +255,10 @@ Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
   Route::get('fee-details',         [RetailerTransaction::class, 'feeDetails']);
   Route::get('transaction-export',  [RetailerTransaction::class, 'export']);
   Route::get('transaction/receipt/{id}',  [RetailerTransaction::class, 'receipt']);
-  Route::post('payout-clame',         [RetailerTransaction::class, 'payoutClame']);
-  Route::get('refund-pending',         [RetailerTransaction::class, 'refundPending']);
-  Route::get('refund-pending-export',  [RetailerTransaction::class, 'refundPendingExport']);
+  Route::post('payout-clame',       [RetailerTransaction::class, 'payoutClame']);
+  Route::get('refund-pending',      [RetailerTransaction::class, 'refundPending']);
+  Route::get('refund-pending-export', [RetailerTransaction::class, 'refundPendingExport']);
+  Route::get('transaction-report',   [RetailerTransaction::class, 'report']);
 
   Route::resource('retailer-trans', RetailerRetailerTrans::class);
   Route::get('retailer-trans-ajax', [RetailerRetailerTrans::class, 'ajaxList']);
@@ -302,6 +308,9 @@ Route::group(['prefix' => 'employee', 'middleware' => 'employee'], function () {
   Route::post('split-transaction',  [EmployeeTransaction::class, 'splitTransaction']);
   Route::get('refund-pending',         [EmployeeTransaction::class, 'refundPending']);
   Route::get('refund-pending-export',  [EmployeeTransaction::class, 'refundPendingExport']);
+
+
+  Route::resource('earn-history',  EarnHistory::class);
 
   Route::post('logout',  [EmployeeLogin::class, 'logout']);
 });

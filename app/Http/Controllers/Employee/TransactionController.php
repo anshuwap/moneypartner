@@ -20,9 +20,13 @@ class TransactionController extends Controller
     {
         try {
 
-            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->orderBy('created', 'DESC')->get();
+            $outlet_ids = [];
+            if (!empty(Auth::user()->outlets))
+                $outlet_ids = Auth::user()->outlets;
 
-            $query = Transaction::query();
+            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->where('_id', $outlet_ids)->orderBy('created', 'DESC')->get();
+
+            $query = Transaction::query()->whereIn('outlet_id', $outlet_ids);
 
             if ($request->outlet_id)
                 $query->where('outlet_id', $request->outlet_id);
@@ -88,9 +92,13 @@ class TransactionController extends Controller
     {
         try {
 
-            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->orderBy('created', 'DESC')->get();
+            $outlet_ids = [];
+            if (!empty(Auth::user()->outlets))
+                $outlet_ids = Auth::user()->outlets;
 
-            $query = Transaction::query()->where('status', 'refund_pending');
+            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->whereIn('_id', $outlet_ids)->orderBy('created', 'DESC')->get();
+
+            $query = Transaction::query()->where('status', 'refund_pending')->whereIn('outlet_id', $outlet_ids);
 
             if ($request->outlet_id)
                 $query->where('outlet_id', $request->outlet_id);
@@ -161,18 +169,21 @@ class TransactionController extends Controller
             webhook($transaction);
 
         if ($transaction->status == 'success') {
-            // $amount        = $transaction->amount;
-            // $receiver_name = $transaction->receiver_name;
-            // $payment_date  = $transaction->created;
-            // $status        = $transaction->status;
-            // $payment_mode  = $transaction->payment_mode;
-            // $type          = $transaction->type;
-            // $transaction_fees = $transaction->transaction_fees;
+            /*start save employee Commission functionality*/
+            $empCmsg = getEmpCommision($transaction->outlet_id, $transaction->amount);
 
-            // $retailer_id   = $transaction->retailer_id;
-
-            // //insert data in transfer history collection
-            // transferHistory($retailer_id, $amount, $receiver_name, $payment_date,$type, $status, $payment_mode, $transaction_fees, 'debit');
+            if (!empty($empCmsg)) {
+                $employeeCms = [
+                    'employee_id'    => $empCmsg['employee_id'],
+                    'amount'         => $empCmsg['amount'],
+                    'transaction_id' => $transaction->_id,
+                    'outlet_id'      => $transaction->outlet_id,
+                    'retailer_id'    => $transaction->retailer_id,
+                    'action_by'      => Auth::user()->_id
+                ];
+                employeeCms($employeeCms);
+            }
+            /*end save employee Commission functionality*/
         } else if ($transaction->status == 'rejected') {
             //add toupup amount here
             $transaction_id   = $transaction->_id;
@@ -246,8 +257,24 @@ class TransactionController extends Controller
             $transaction->status       = $api_status;
             $transaction->response     = $response;
 
-            if (!$transaction->save())
+            if (!$transaction->save()) {
+                /*start save employee Commission functionality*/
+                $empCmsg = getEmpCommision($transaction->outlet_id, $transaction->amount);
+
+                if (!empty($empCmsg)) {
+                    $employeeCms = [
+                        'employee_id'    => $empCmsg['employee_id'],
+                        'amount'         => $empCmsg['amount'],
+                        'transaction_id' => $transaction->_id,
+                        'outlet_id'      => $transaction->outlet_id,
+                        'retailer_id'    => $transaction->retailer_id,
+                        'action_by'      => Auth::user()->_id
+                    ];
+                    employeeCms($employeeCms);
+                }
+                /*end save employee Commission functionality*/
                 return response(['status' => 'error', 'msg' => 'Transaction not Made!']);
+            }
 
             if ($transaction->type == 'payout_api')
                 webhook($transaction);
@@ -316,18 +343,20 @@ class TransactionController extends Controller
             webhook($transaction);
 
         if ($transaction->status == 'success') {
-            // $amount        = $transaction->amount;
-            // $receiver_name = $transaction->receiver_name;
-            // $payment_date  = $transaction->created;
-            // $status        = $transaction->status;
-            // $payment_mode  = $transaction->payment_mode;
-            // $transaction_fees = $transaction->transaction_fees;
-            // $type           = $transaction->type;
-
-            // $retailer_id   = $transaction->retailer_id;
-
-            // //insert data in transfer history collection
-            // transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode,$type, $transaction_fees, 'debit');
+            /*start save employee Commission functionality*/
+            $empCmsg = getEmpCommision($transaction->outlet_id, $transaction->amount);
+            if (!empty($empCmsg)) {
+                $employeeCms = [
+                    'employee_id'    => $empCmsg['employee_id'],
+                    'amount'         => $empCmsg['amount'],
+                    'transaction_id' => $transaction->_id,
+                    'outlet_id'      => $transaction->outlet_id,
+                    'retailer_id'    => $transaction->retailer_id,
+                    'action_by'      => Auth::user()->_id
+                ];
+                employeeCms($employeeCms);
+            }
+            /*end save employee Commission functionality*/
         } else if ($transaction->status == 'rejected') {
             //add toupup amount here
             $transaction_id   = $transaction->_id;
@@ -607,8 +636,23 @@ class TransactionController extends Controller
                 $response['action']        = 'update pednding API amount';
                 $transaction->response = $response;
                 $transaction->status   = $api_status;
-                if ($transaction->save())
+                if ($transaction->save()) {
+                    /*start save employee Commission functionality*/
+                    $empCmsg = getEmpCommision($transaction->outlet_id, $transaction->amount);
+                    if (!empty($empCmsg)) {
+                        $employeeCms = [
+                            'employee_id'    => $empCmsg['employee_id'],
+                            'amount'         => $empCmsg['amount'],
+                            'transaction_id' => $transaction->_id,
+                            'outlet_id'      => $transaction->outlet_id,
+                            'retailer_id'    => $transaction->retailer_id,
+                            'action_by'      => Auth::user()->_id
+                        ];
+                        employeeCms($employeeCms);
+                    }
+                    /*end save employee Commission functionality*/
                     return response(['status' => 'success']);
+                }
             }
             return response(['status' => 'error', 'msg' => 'Transaction Id not Found!']);
         } catch (Exception $e) {
@@ -640,7 +684,10 @@ class TransactionController extends Controller
             ];
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
-            $query = Transaction::query();
+            $outlet_ids = [];
+            if (!empty(Auth::user()->outlets))
+                $outlet_ids = Auth::user()->outlets;
+            $query = Transaction::query()->whereIn('outlet_id', $outlet_ids);
 
             if ($request->outlet_id)
                 $query->where('outlet_id', $request->outlet_id);
@@ -736,7 +783,10 @@ class TransactionController extends Controller
             ];
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
-            $query = Transaction::query()->where('status', 'refund_pending');
+            $outlet_ids = [];
+            if (!empty(Auth::user()->outlets))
+                $outlet_ids = Auth::user()->outlets;
+            $query = Transaction::query()->where('status', 'refund_pending')->whereIn('outlet_id', $outlet_ids);
 
             if ($request->outlet_id)
                 $query->where('outlet_id', $request->outlet_id);

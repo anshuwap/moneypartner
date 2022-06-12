@@ -12,18 +12,9 @@
       </a>
     </li>
 
-
-    <!-- <li class="nav-item">
-      <a href="{{ url('employee/topup-list') }}" class="nav-link {{ (url()->full() == url('employee/topup-list'))? 'active':''}}">
-        <i class="fas fa-wallet nav-icon"></i>
-        <p class="text">Topup Request</p>
-      </a>
-    </li> -->
-
-
     <li class="nav-item {{ (url()->full() == url('employee/topup-list') || url()->full() == url('employee/pending-topup'))?'menu-is-opening menu-open':''}}">
       <a href="javascript:void(0);" class="nav-link">
-       <i class="fas fa-wallet nav-icon"></i>
+        <i class="fas fa-wallet nav-icon"></i>
         <p>Topup Request
           <i class="right fas fa-angle-left"></i>
         </p>
@@ -46,6 +37,7 @@
       </ul>
     </li>
 
+
     <!-- <li class="nav-item">
       <a href="{{ url('employee/a-transaction') }}" class="nav-link {{ (url()->full() == url('employee/a-transaction'))? 'active':''}}">
 
@@ -55,7 +47,7 @@
     </li> -->
 
 
-<li class="nav-item {{ (url()->full() == url('employee/a-transaction') || url()->full() == url('employee/refund-pending'))?'menu-is-opening menu-open':''}}">
+    <li class="nav-item {{ (url()->full() == url('employee/a-transaction') || url()->full() == url('employee/refund-pending'))?'menu-is-opening menu-open':''}}">
       <a href="javascript:void(0);" class="nav-link">
         <i class="fas fa-wallet nav-icon"></i>
         <p>Transaction
@@ -78,6 +70,13 @@
           </a>
         </li>
       </ul>
+    </li>
+
+    <li class="nav-item">
+      <a href="{{ url('employee/earn-history') }}" class="nav-link {{ (url()->full() == url('employee/earn-history'))? 'active':''}}">
+        <i class="fas fa-solid fa-filter-circle-dollar nav-icon"></i>
+        <p class="text">Earned History</p>
+      </a>
     </li>
 
 

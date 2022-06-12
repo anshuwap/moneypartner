@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\EmployeeCommission;
 use App\Models\Outlet;
 use App\Models\TransferHistory;
 use App\Models\User;
@@ -81,7 +82,7 @@ if (!function_exists('employeeImage')) {
 }
 
 if (!function_exists('transferHistory')) {
-    function transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $transaction_type, $fees, $type, $remark = '',$bank_details='',$transaction_id='',$source='')
+    function transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $transaction_type, $fees, $type, $remark = '', $bank_details = '', $transaction_id = '', $source = '')
     {
 
         $closing_amount = 0;
@@ -102,10 +103,10 @@ if (!function_exists('transferHistory')) {
         $transferHistory->transaction_type = $transaction_type;
         $transferHistory->closing_amount = $closing_amount;
         $transferHistory->remark        = $remark;
-        if(!empty($transaction_id))
-        $transferHistory->transaction_id = $transaction_id;
-        if(!empty($bank_details))
-        $transferHistory->bank_details  = $bank_details;
+        if (!empty($transaction_id))
+            $transferHistory->transaction_id = $transaction_id;
+        if (!empty($bank_details))
+            $transferHistory->bank_details  = $bank_details;
 
         $transferHistory->source = $source;
         $transferHistory->save();
@@ -120,9 +121,9 @@ if (!function_exists('mSign')) {
     {
 
         // $val = ($val) ? number_format($val, 2, '.', '') : 0;
-         $val = ($val) ? number_format($val, 2) : 0;
+        $val = ($val) ? number_format($val, 2) : 0;
 
-        return '<i class="fas fa-rupee-sign" style="font-size: 13px;
+        return '<i class="fas fa-rupee-sign" style="font-size: 12px;
     color: #696b74;"></i>&nbsp;' . $val;
     }
 }
@@ -220,4 +221,82 @@ function verify_url($base_url)
         return false;
 
     return true;
+}
+
+
+function getEmpCommision($outlet_id = false, $amount = false)
+{
+    if (!$amount || !$outlet_id)
+        return false;
+
+    $query = User::select('_id', 'commission')->where('role', 'employee');
+    $query->where(function ($q) use ($outlet_id) {
+        $q->where('outlets', 'all', [$outlet_id]);
+    });
+    $employee = $query->first();
+    $commissions = $employee->commission;
+    $charges = false;
+    if (!empty($commissions)) {
+        foreach ($commissions as $comm) {
+            if ($comm['type'] == 'inr') { // here all inr comms
+
+                if ($comm['from_amount'] <= $amount && $comm['to_amount'] >= $amount) {
+                    $charges = $comm['charges'];
+                    break;
+                }
+            } else if ($comm['type'] == 'persantage') { //calculate persantage here
+
+                if ($comm['from_amount'] <= $amount && $comm['to_amount'] >= $amount) {
+                    $charges = ($comm['charges'] / 100) * $amount;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!employeeWallet($employee->_id, $amount))
+        return false;
+
+    return array('employee_id' => $employee->_id, 'amount' => $charges);
+}
+
+if (!function_exists('employeeWallet')) {
+    function employeeWallet($user_id = false, $amount = false)
+    {
+        try {
+
+            if (!$user_id && !$amount)
+                return false;
+
+            $user = User::find($user_id);
+            $wallet_amount = ($user->wallet_amount) + ($amount);
+            $user->wallet_amount = $wallet_amount;
+            if ($user->save())
+                return true;
+
+            return false;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+}
+
+
+function employeeCms($request = array())
+{
+    if (empty($request))
+        return false;
+
+    $request = (object)$request;
+
+    $empCms = new EmployeeCommission();
+    $empCms->employee_id = $request->employee_id;
+    $empCms->amount      = $request->amount;
+    $empCms->transaction_id = $request->transaction_id;
+    $empCms->outlet_id   = $request->outlet_id;
+    $empCms->retailer_id = $request->retailer_id;
+    $empCms->action_by   = $request->action_by;
+    if ($empCms->save())
+        return true;
+    return false;
 }

@@ -226,6 +226,13 @@
       </ul>
     </li>
 
+<li class="nav-item">
+      <a href="{{ url('admin/earn-history') }}" class="nav-link {{ (url()->full() == url('admin/earn-history'))? 'active':''}}">
+        <i class="fas fa-solid fa-filter-circle-dollar nav-icon"></i>
+        <p class="text">Employee Earned</p>
+      </a>
+    </li>
+
     <!-- <li class="nav-header">MULTI LEVEL EXAMPLE</li>
     <li class="nav-item">
       <a href="#" class="nav-link">

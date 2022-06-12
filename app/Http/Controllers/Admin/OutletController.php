@@ -536,10 +536,43 @@ class OutletController extends Controller
             $employees = User::where('role', 'employee')->get();
             $table = '<table class="table table-sm"><tr><th>Employee Name</th><th>Assign</th></tr>';
             foreach ($employees as $employee) {
-                $table .='<tr><th>'.$employee->full_name.'</th><td><input type="checkbox" class="" name="outlets[]"></td></tr>';
+                $table .= '<tr><th>' . $employee->full_name . '</th><td><input type="checkbox"  value="' . $employee->_id . '" class="" name="employees[]"></td></tr>';
             }
-            $table .='</table>';
-            return response(['status' => 'success', 'data' =>$table]);
+            $table .= '</table>';
+            return response(['status' => 'success', 'data' => $table]);
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
+        }
+    }
+
+
+    public function assignOutlet(Request $request)
+    {
+        try {
+
+            $outlet = Outlet::find($request->outlet_id);
+            $outlet->employees = $request->employees;
+
+            if ($outlet->save()) {
+
+                if (!empty($request->employees)) {
+                    $outlets = [];
+                    foreach ($request->employees as $employee_id) {
+                        $employee = User::where('_id', $employee_id)->first();
+                        if (!empty($employee->outlets))
+                            $outlets = $employee->outlets;
+
+                        $outlets[] = $request->outlet_id;
+
+                        $employee->outlets = $outlets;
+                        $employee->save();
+                    }
+                }
+
+                return response(['status' => 'success', 'msg' => 'Outlet Assigned successfully!']);
+            }
+
+            return response(['status' => 'error', 'msg' => 'Outlet not Assigned!']);
         } catch (Exception $e) {
             return response(['status' => 'error', 'msg' => $e->getMessage()]);
         }

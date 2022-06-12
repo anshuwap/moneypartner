@@ -93,12 +93,12 @@
               <div class="form-row">
                 <div class="form-group col-md-6">
                   <label>From Amount</label>
-                  <input type="number" name="from_amount" id="from_amount" required value="{{ (!empty($bank['to_amount']))?$bank['to_amount'] + 1:'0' }}" class="form-control form-control-sm" placeholder="Enter Amount" readonly >
+                  <input type="number" name="from_amount" id="from_amount" required value="{{ (!empty($comm['to_amount']))?$comm['to_amount'] + 1:'0' }}" class="form-control form-control-sm" placeholder="Enter Amount" readonly >
                   <span id="from_amount_msg" class="custom-text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
                   <label>To Amount</label>
-                  <input type="number" name="to_amount" id="to_amount" min="{{ (!empty($bank['to_amount']))?$bank['to_amount'] + 1:'0' }}" required class="form-control form-control-sm" placeholder="Enter Amount">
+                  <input type="number" name="to_amount" id="to_amount" min="{{ (!empty($comm['to_amount']))?$comm['to_amount'] + 1:'0' }}" required class="form-control form-control-sm" placeholder="Enter Amount">
                   <span id="to_amount_msg" class="custom-text-danger"></span>
                 </div>
               </div>

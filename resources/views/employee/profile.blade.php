@@ -36,17 +36,17 @@
 
             <p class="text-muted text-center">{{ ucwords($user->user_type) }}</p>
 
-            <!-- <ul class="list-group list-group-unbordered mb-3">
+            <ul class="list-group list-group-unbordered mb-3">
               <li class="list-group-item">
-                <b>Total Topup Money</b> <a class="float-right">{!! mSign(Auth::user()->total_amount) !!}</a>
+                <b>Total Earned Amount</b> <a class="float-right">{!! mSign(Auth::user()->wallet_amount) !!}</a>
               </li>
-              <li class="list-group-item">
+              <!-- <li class="list-group-item">
                 <b>Spent Topup Money</b> <a class="float-right">{!! mSign(Auth::user()->spent_amount) !!}</a>
               </li>
               <li class="list-group-item">
                 <b>Available Money</b> <a class="float-right">{!! mSign(Auth::user()->available_amount) !!}</a>
-              </li>
-            </ul> -->
+              </li> -->
+            </ul>
           </div>
           <!-- /.card-body -->
         </div>
