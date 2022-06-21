@@ -38,6 +38,13 @@
     </li>
 
 
+    <li class="nav-item">
+      <a href="{{ url('employee/passbook') }}" class="nav-link {{ (url()->full() == url('employee/passbook'))? 'active':''}}">
+        <i class="fas fa-solid fa-book nav-icon"></i>
+        <p>Passbook</p>
+      </a>
+    </li>
+
     <!-- <li class="nav-item">
       <a href="{{ url('employee/a-transaction') }}" class="nav-link {{ (url()->full() == url('employee/a-transaction'))? 'active':''}}">
 
@@ -69,6 +76,86 @@
             </p>
           </a>
         </li>
+        <li class="nav-item">
+          <a href="{{ url('employee/transaction-report') }}" class="nav-link {{ (url()->full() == url('employee/transaction-report'))? 'active':''}}">
+            <i class="fas fa-solid fa-file-circle-check nav-icon"></i>
+            <p>
+              Report
+            </p>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <li class="nav-item">
+      <a href="{{ url('employee/payment-channel') }}" class="nav-link {{ (url()->full() == url('employee/payment-channel'))? 'active':''}}">
+        <i class="fas fa-regular fa-dice nav-icon"></i>
+        <p>Payment Channel</p>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a href="{{ url('employee/comment') }}" class="nav-link {{ (url()->full() == url('employee/comment'))? 'active':''}}">
+        <i class="fas fa-regular nav-icon fa-comment-medical" style="color: white;"></i>
+        <p>Comment List</p>
+      </a>
+    </li>
+
+
+    <li class="nav-item {{ (url()->full() == url('employee/bank-account') || url()->full() == url('employee/upi') || url()->full() == url('employee/qr-code'))?'menu-is-opening menu-open':''}}">
+      <a href="javascript:void(0);" class="nav-link">
+        <i class="nav-icon fas fa-money-bill-wave"></i>
+        <p>Payment Mode
+          <i class="right fas fa-angle-left"></i>
+        </p>
+      </a>
+      <ul class="nav nav-treeview">
+        <li class="nav-item {{ (url()->full() == url('employee/bank-account') || url()->full() == url('employee/upi') || url()->full() == url('employee/qr-code'))?'d-block':''}}">
+          <a href="{{ url('employee/bank-account') }}" class="nav-link {{ (url()->full() == url('employee/bank-account'))?'active':''}}">
+            <i class="nav-icon fas fa-university"></i>
+            <p>Bank Account</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url('employee/upi') }}" class="nav-link {{ (url()->full() == url('employee/upi'))? 'active':''}}">
+            <i class="nav-icon fas fa-rupee-sign"></i>
+            <p>
+              UPI
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url('employee/qr-code') }}" class="nav-link {{ (url()->full() == url('employee/qr-code'))? 'active':''}}">
+            <i class="nav-icon fas fa-qrcode"></i>
+            <p>QR Code</p>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+
+    <li class="nav-item {{ (url()->full() == url('employee/credit') || url()->full() == url('employee/debit'))?'menu-is-opening menu-open':''}}">
+      <a href="javascript:void(0);" class="nav-link">
+        <i class="fas fa-list nav-icon"></i>
+        <p>Action
+          <i class="right fas fa-angle-left"></i>
+        </p>
+      </a>
+      <ul class="nav nav-treeview">
+        <li class="nav-item {{ (url()->full() == url('employee/credit') || url()->full() == url('employee/debit'))?'d-block':''}}">
+          <a href="{{ url('employee/credit') }}" class="nav-link {{ (url()->full() == url('employee/credit'))?'active':''}}">
+            <i class="fas fa-money-bill nav-icon"></i>
+            <p>Manual Credit</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url('employee/debit') }}" class="nav-link {{ (url()->full() == url('employee/debit'))? 'active':''}}">
+            <i class="fas fa-money-bill nav-icon"></i>
+            <p>
+              Manual Debit
+            </p>
+          </a>
+        </li>
       </ul>
     </li>
 
@@ -79,65 +166,11 @@
       </a>
     </li>
 
-
-    <!-- <li class="nav-header">MULTI LEVEL EXAMPLE</li>
-    <li class="nav-item">
-      <a href="#" class="nav-link">
-        <i class="fas fa-circle nav-icon"></i>
-        <p>Level 1</p>
+    <!-- <li class="nav-item">
+      <a href="{{ url('employee/withdrawal') }}" class="nav-link {{ (url()->full() == url('employee/withdrawal'))? 'active':''}}">
+        <i class="fas fa-regular nav-icon fa-comment-medical" style="color: white;"></i>
+        <p>Withdrawal</p>
       </a>
-    </li>
-    <li class="nav-item">
-      <a href="#" class="nav-link">
-        <i class="nav-icon fas fa-circle"></i>
-        <p>
-          Level 1
-          <i class="right fas fa-angle-left"></i>
-        </p>
-      </a>
-      <ul class="nav nav-treeview">
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="far fa-circle nav-icon"></i>
-            <p>Level 2</p>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="far fa-circle nav-icon"></i>
-            <p>
-              Level 2
-              <i class="right fas fa-angle-left"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-dot-circle nav-icon"></i>
-                <p>Level 3</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-dot-circle nav-icon"></i>
-                <p>Level 3</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-dot-circle nav-icon"></i>
-                <p>Level 3</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="far fa-circle nav-icon"></i>
-            <p>Level 2</p>
-          </a>
-        </li>
-      </ul>
     </li> -->
 
   </ul>

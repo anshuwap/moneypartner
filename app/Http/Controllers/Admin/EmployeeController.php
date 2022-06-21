@@ -21,7 +21,7 @@ class EmployeeController extends Controller
         try {
 
             $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
-            $data['employees'] = User::whereIn('role', ['employee', 'admin'])->where('user_id', Auth::user()->_id)->orderBy('created_at', 'DESC')->paginate($perPage);
+            $data['employees'] = User::whereIn('role', ['employee', 'admin'])->orderBy('created_at', 'DESC')->paginate($perPage);
 
             return view('admin.employee.list', $data);
         } catch (Exception $e) {

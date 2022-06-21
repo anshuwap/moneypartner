@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Api\OfflinePayoutApi;
 use App\Models\EmployeeCommission;
+use App\Models\User;
 use App\Models\Outlet;
 use App\Models\PaymentChannel;
 use App\Models\Transaction;
@@ -19,12 +20,18 @@ class EarnHistoryController extends Controller
         try {
             $data['outlets'] = Outlet::select('amount', 'outlet_name', '_id')->get();
 
+          $data['employees'] = User::where('role', 'employee')->get();
+
             $query =  EmployeeCommission::query();
             if (!empty($request->transaction_id))
                 $query->where('transaction_id', $request->transaction_id);
 
             if (!empty($request->outlet_id))
                 $query->where('outlet_id', $request->outlet_id);
+         
+            if (!empty($request->employee_id))
+                $query->where('employee_id', $request->employee_id);
+            
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;

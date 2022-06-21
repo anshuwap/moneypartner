@@ -1,4 +1,4 @@
-@extends('retailer.layouts.app')
+@extends('employee.layouts.app')
 
 @section('content')
 @section('page_heading', 'Retailer List')
@@ -23,7 +23,7 @@
 
                 <div class="row pl-2 pr-2" id="filter" <?= (empty($filter)) ? "style='display:none'" : "" ?>>
                     <div class="col-md-12 ml-auto">
-                        <form action="{{ url('retailer/transaction-report') }}">
+                        <form action="{{ url('employee/transaction-report') }}">
                             <div class="form-row">
                                 <div class="form-group col-md-2">
                                     <label>Start Data</label>
@@ -35,9 +35,21 @@
                                     <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['end_date']) ? $filter['end_date'] : '' ?>" name="end_date" id="end-date" />
                                 </div>
 
+                                <div class="form-group col-md-2">
+                                    <label>Outlet Name</label>
+                                    <select class="form-control-sm form-control" name="outlet_id">
+                                        <option value="">All</option>
+                                        @foreach($outlets as $outlet)
+                                        <option value="{{$outlet->_id}}" {{ (!empty($filter['outlet_id']) && $filter['outlet_id'] == $outlet->_id)?"selected":""}}>{{ ucwords($outlet->outlet_name)}}</option>
+                                        @endforeach
+
+                                    </select>
+                                </div>
+
+
                                 <div class="form-group mt-4">
                                     <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i>&nbsp;Search</button>
-                                    <a href="{{ url('retailer/transaction-report') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
+                                    <a href="{{ url('employee/transaction-report') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
                                 </div>
                             </div>
                         </form>
@@ -99,7 +111,7 @@
                                         <th>UTR No.</th>
                                         <th>Status</th>
                                         <th>Request Date</th>
-                                        <th>Action By</th>
+                                        <!--<th>Action By</th>-->
                                         <th>Action Date</th>
                                     </tr>
 
@@ -146,7 +158,7 @@
                                         <td> <?= (!empty($val->response['utr_number'])) ? $val->response['utr_number'] : '-' ?></td>
                                         <td>{!! $status !!}</td>
                                         <td>{{ $val->created }}</td>
-                                        <td>{{ !empty($val->UserName['full_name']) ?$val->UserName['full_name'] : '';}}</td>
+
                                         <td><?php $actionM = !(empty($val->response['action'])) ? $val->response['action'] : '';
                                             echo !empty($val->response['action_date']) ? '<span data-toggle="tooltip" data-placement="bottom" title="' . $actionM . '">' . date('d,M y H:i', $val->response['action_date']) . '</span>' : '' ?></td>
 

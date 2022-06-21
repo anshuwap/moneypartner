@@ -46,8 +46,14 @@
                             <td>{{ $employee->address}}</td>
                             <td>{{ date('d,M Y',strtotime($employee->created_at))}}</td>
                             <td>{!! $status !!}</td>
-                            <td><a href="{{ url('admin/employee-commission/'.$employee->_id) }}" class="text-success">Commision</a>
-                                <a href="{{ url('admin/employee/' . $employee->_id . '/edit')}}" class="text-info" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="far fa-edit"></i></a></td>
+                            <td>
+                                @if($employee->role =='employee')
+                                <a href="{{ url('admin/employee-commission/'.$employee->_id) }}" class="text-success" data-toggle="tooltip" data-placement="bottom" title="Add Commission Slab"><i class="fas fa-solid fa-money-bill-trend-up"></i></a>
+                                @else
+                                -
+                                @endif
+                                <a href="{{ url('admin/employee/' . $employee->_id . '/edit')}}" class="text-info" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="far fa-edit"></i></a>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>

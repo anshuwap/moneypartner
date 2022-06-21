@@ -1,60 +1,71 @@
 <?php
 
 use App\Http\Controllers\MailController;
-use App\Http\Controllers\Admin\LoginController as AdminLogin;
+use App\Http\Controllers\Admin\LoginController     as AdminLogin;
 use App\Http\Controllers\Admin\RegisterController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
-use App\Http\Controllers\Admin\OutletController as AdminOutlet;
+use App\Http\Controllers\Admin\OutletController    as AdminOutlet;
 use App\Http\Controllers\Admin\PaymentMode\BankAccountController as AdminBankAccount;
-use App\Http\Controllers\Admin\PaymentMode\QrCodeController as AdminQrCode;
-use App\Http\Controllers\Admin\PaymentMode\UpiController as AdminUpi;
-use App\Http\Controllers\Admin\TopupRequestController as AdminTopupRequest;
-use App\Http\Controllers\Admin\ApiListController as AdminApiList;
-use App\Http\Controllers\Admin\PaymentChannelController as AdminPaymentChannel;
+use App\Http\Controllers\Admin\PaymentMode\QrCodeController      as AdminQrCode;
+use App\Http\Controllers\Admin\PaymentMode\UpiController    as AdminUpi;
+use App\Http\Controllers\Admin\TopupRequestController       as AdminTopupRequest;
+use App\Http\Controllers\Admin\ApiListController            as AdminApiList;
+use App\Http\Controllers\Admin\PaymentChannelController     as AdminPaymentChannel;
 use App\Http\Controllers\Admin\TransactionCommentController as AdminComment;
-use App\Http\Controllers\Admin\TransactionController as AdminTransaction;
-use App\Http\Controllers\Admin\EmployeeController as AdminEmployee;
-use App\Http\Controllers\Admin\EcollectionController as AdminECollection;
+use App\Http\Controllers\Admin\TransactionController   as AdminTransaction;
+use App\Http\Controllers\Admin\EmployeeController      as AdminEmployee;
+use App\Http\Controllers\Admin\EcollectionController   as AdminECollection;
 use App\Http\Controllers\Api\EcollectionController;
-use App\Http\Controllers\Admin\PassbookController as AdminPassbook;
+use App\Http\Controllers\Admin\PassbookController      as AdminPassbook;
 use App\Http\Controllers\Admin\Action\CreditController as AdminCredit;
-use App\Http\Controllers\Admin\Action\DebitController as AdminDebit;
-use App\Http\Controllers\Admin\ProfileController as AdminProfile;
-use App\Http\Controllers\Admin\EarnHistoryController as AdminEarnHistory;
+use App\Http\Controllers\Admin\Action\DebitController  as AdminDebit;
+use App\Http\Controllers\Admin\ProfileController       as AdminProfile;
+use App\Http\Controllers\Admin\EarnHistoryController   as AdminEarnHistory;
 use App\Http\Controllers\Controller;
+
 //for retailer panel
 use App\Http\Controllers\Retailer\WebhookApiController as WebhookApi;
-use App\Http\Controllers\Retailer\ProfileController as RetailerProfile;
-use App\Http\Controllers\Retailer\DashboardController as RetailerDashboard;
-use App\Http\Controllers\Retailer\PassbookController as RetailerPassbook;
-use App\Http\Controllers\Retailer\TopupController as RetailerTopup;
+use App\Http\Controllers\Retailer\ProfileController    as RetailerProfile;
+use App\Http\Controllers\Retailer\DashboardController  as RetailerDashboard;
+use App\Http\Controllers\Retailer\PassbookController   as RetailerPassbook;
+use App\Http\Controllers\Retailer\TopupController      as RetailerTopup;
 use App\Http\Controllers\Retailer\Transaction\OfflinePayoutApiController as OfflinePayout;
-use App\Http\Controllers\Retailer\Transaction\RetailerTransController as RetailerRetailerTrans;
-use App\Http\Controllers\Retailer\TransactionController as RetailerTransaction;
-use App\Http\Controllers\Retailer\EcollectionController as RetailerECollection;
+use App\Http\Controllers\Retailer\Transaction\RetailerTransController    as RetailerRetailerTrans;
+use App\Http\Controllers\Retailer\TransactionController      as RetailerTransaction;
+use App\Http\Controllers\Retailer\EcollectionController      as RetailerECollection;
 use App\Http\Controllers\Retailer\BankAutoCompleteController as BankAuto;
-use App\Http\Controllers\Retailer\Action\CreditController as RetailerCredit;
-use App\Http\Controllers\Retailer\Action\DebitController as RetailerDebit;
+use App\Http\Controllers\Retailer\Action\CreditController    as RetailerCredit;
+use App\Http\Controllers\Retailer\Action\DebitController     as RetailerDebit;
 
 //for employee panel
-use App\Http\Controllers\Employee\LoginController as EmployeeLogin;
-use App\Http\Controllers\Employee\ProfileController as EmployeeProfile;
-use App\Http\Controllers\Employee\DashboardController as EmployeeDashboard;
-use App\Http\Controllers\Employee\TopupRequestController as EmployeeTopupRequest;
-use App\Http\Controllers\Employee\TransactionController as EmployeeTransaction;
-use App\Http\Controllers\Employee\EarnHistoryController as EarnHistory;
+use App\Http\Controllers\Employee\LoginController           as EmployeeLogin;
+use App\Http\Controllers\Employee\ProfileController         as EmployeeProfile;
+use App\Http\Controllers\Employee\DashboardController       as EmployeeDashboard;
+use App\Http\Controllers\Employee\TopupRequestController    as EmployeeTopupRequest;
+use App\Http\Controllers\Employee\TransactionController     as EmployeeTransaction;
+use App\Http\Controllers\Employee\EarnHistoryController     as EarnHistory;
+use App\Http\Controllers\Employee\PassbookController        as EmployeePassbook;
+use App\Http\Controllers\Employee\PaymentChannelController  as EmployeePaymentChannel;
+use App\Http\Controllers\Employee\TransactionCommentController      as EmployeeComment;
+use App\Http\Controllers\Employee\PaymentMode\BankAccountController as EmployeeBankAccount;
+use App\Http\Controllers\Employee\PaymentMode\QrCodeController      as EmployeeQrCode;
+use App\Http\Controllers\Employee\PaymentMode\UpiController as EmployeeUpi;
+use App\Http\Controllers\Employee\Action\CreditController   as EmployeeCredit;
+use App\Http\Controllers\Employee\Action\DebitController    as EmployeeDebit;
+use App\Http\Controllers\Employee\WithdrawalController      as EmployeeWithdrawal;
+
 
 //for Distributor panel
-use App\Http\Controllers\Distributor\LoginController as DistributorLogin;
-use App\Http\Controllers\Distributor\ProfileController as DistributorProfile;
-use App\Http\Controllers\Distributor\DashboardController as DistributorDashboard;
-use App\Http\Controllers\Distributor\TopupRequestController as DistributorTopupRequest;
-use App\Http\Controllers\Distributor\TransactionController as DistributorTransaction;
-use App\Http\Controllers\Distributor\OutletController as DistributorOutlet;
-use App\Http\Controllers\Distributor\PassbookController as DistributorPassbook;
+use App\Http\Controllers\Distributor\LoginController           as DistributorLogin;
+use App\Http\Controllers\Distributor\ProfileController         as DistributorProfile;
+use App\Http\Controllers\Distributor\DashboardController       as DistributorDashboard;
+use App\Http\Controllers\Distributor\TopupRequestController    as DistributorTopupRequest;
+use App\Http\Controllers\Distributor\TransactionController     as DistributorTransaction;
+use App\Http\Controllers\Distributor\OutletController          as DistributorOutlet;
+use App\Http\Controllers\Distributor\PassbookController        as DistributorPassbook;
 use App\Http\Controllers\Distributor\MakeTransactionController as MakeTransaction;
-use App\Http\Controllers\Distributor\MakeTopupController as MakeTopup;
-use App\Http\Controllers\Distributor\WebhookApiController as DWebhookApi;
+use App\Http\Controllers\Distributor\MakeTopupController       as MakeTopup;
+use App\Http\Controllers\Distributor\WebhookApiController      as DWebhookApi;
 
 use App\Http\Controllers\PHPMailerController;
 use App\Mail\SendMail;
@@ -119,7 +130,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::post('outlet-update-bank-charges',   [AdminOutlet::class, 'outletUpdateBankCharges']);
   Route::get('outlet-charges-status/{id}/{key}/{status}', [AdminOutlet::class, 'bankChargesStatus']);
   Route::get('employee-list',                 [AdminOutlet::class, 'EmployeeList']);
-  Route::post('assign-outlet',                 [AdminOutlet::class, 'assignOutlet']);
+  Route::post('assign-outlet',                [AdminOutlet::class, 'assignOutlet']);
 
   Route::resource('bank-account',         AdminBankAccount::class);
   Route::get('bank-account-ajax',         [AdminBankAccount::class, 'ajaxList']);
@@ -169,10 +180,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::get('check-bulk-status',   [AdminTransaction::class, 'checkBulkStatus']);
   Route::get('update-utr',          [AdminTransaction::class, 'updateUtrNo']);
   Route::post('split-transaction',  [AdminTransaction::class, 'splitTransaction']);
-  Route::get('refund-pending',         [AdminTransaction::class, 'refundPending']);
-  Route::get('refund-pending-export',  [AdminTransaction::class, 'refundPendingExport']);
-  Route::get('removeIndex/{key}',  [AdminTransaction::class, 'removeIndex']);
-
+  Route::get('refund-pending',      [AdminTransaction::class, 'refundPending']);
+  Route::get('refund-pending-export', [AdminTransaction::class, 'refundPendingExport']);
+  Route::get('removeIndex/{key}',   [AdminTransaction::class, 'removeIndex']);
+  Route::get('transaction-report',  [AdminTransaction::class, 'report']);
 
 
   Route::resource('credit',           AdminCredit::class);
@@ -287,6 +298,14 @@ Route::group(['prefix' => 'employee', 'middleware' => 'employee'], function () {
   Route::get('export',     [EmployeeDashboard::class, 'export']);
   Route::post('import',    [EmployeeDashboard::class, 'import']);
 
+  Route::resource('payment-channel',    EmployeePaymentChannel::class);
+  Route::get('payment-channel-ajax',    [EmployeePaymentChannel::class, 'ajaxList']);
+  Route::post('payment-channel-status', [EmployeePaymentChannel::class, 'paymentChannelStatus']);
+
+  Route::resource('comment',    EmployeeComment::class);
+  Route::get('comment-ajax',    [EmployeeComment::class, 'ajaxList']);
+  Route::post('comment-status', [EmployeeComment::class, 'commentStatus']);
+
   Route::get('topup-list',                 [EmployeeTopupRequest::class, 'index']);
   Route::get('topup-list-export',          [EmployeeTopupRequest::class, 'export']);
   Route::post('topup-request',             [EmployeeTopupRequest::class, 'topupRequest']);
@@ -306,11 +325,42 @@ Route::group(['prefix' => 'employee', 'middleware' => 'employee'], function () {
   Route::get('check-bulk-status',   [EmployeeTransaction::class, 'checkBulkStatus']);
   Route::get('update-utr',          [EmployeeTransaction::class, 'updateUtrNo']);
   Route::post('split-transaction',  [EmployeeTransaction::class, 'splitTransaction']);
-  Route::get('refund-pending',         [EmployeeTransaction::class, 'refundPending']);
-  Route::get('refund-pending-export',  [EmployeeTransaction::class, 'refundPendingExport']);
-
+  Route::get('refund-pending',      [EmployeeTransaction::class, 'refundPending']);
+  Route::get('refund-pending-export', [EmployeeTransaction::class, 'refundPendingExport']);
+  Route::get('transaction-report',  [EmployeeTransaction::class, 'report']);
 
   Route::resource('earn-history',  EarnHistory::class);
+
+  Route::get('passbook',         [EmployeePassbook::class, 'index']);
+  Route::get('passbook-export',  [EmployeePassbook::class, 'export']);
+
+  Route::resource('bank-account',         EmployeeBankAccount::class);
+  Route::get('bank-account-ajax',         [EmployeeBankAccount::class, 'ajaxList']);
+  Route::post('bank-account-status',      [EmployeeBankAccount::class, 'bankAccountStatus']);
+  Route::get('b-allocate-retailer',       [EmployeeBankAccount::class, 'allocateRetailer']);
+  Route::post('b-save-allocate-retailer', [EmployeeBankAccount::class, 'saveAllocateRetailer']);
+
+  Route::resource('credit',           EmployeeCredit::class);
+  Route::get('credit-export',         [EmployeeCredit::class, 'export']);
+  Route::get('credit-show/{id}',      [EmployeeCredit::class, 'showBlance']);
+  Route::resource('debit',            EmployeeDebit::class);
+  Route::get('debit-show/{id}',       [EmployeeDebit::class, 'showBlance']);
+  Route::get('debit-export',          [EmployeeDebit::class, 'export']);
+  Route::post('credit-paid-status',   [EmployeeDebit::class, 'creditPaidStatus']);
+
+  Route::resource('qr-code',              EmployeeQrCode::class);
+  Route::get('qr-code-ajax',              [EmployeeQrCode::class, 'ajaxList']);
+  Route::post('qr-code-status',           [EmployeeQrCode::class, 'qrCodeStatus']);
+  Route::get('q-allocate-retailer',       [EmployeeQrCode::class, 'allocateRetailer']);
+  Route::post('q-save-allocate-retailer', [EmployeeQrCode::class, 'saveAllocateRetailer']);
+
+  Route::resource('upi',                  EmployeeUpi::class);
+  Route::get('upi-ajax',                  [EmployeeUpi::class, 'ajaxList']);
+  Route::post('upi-status',               [EmployeeUpi::class, 'upiStatus']);
+  Route::get('u-allocate-retailer',       [EmployeeUpi::class, 'allocateRetailer']);
+  Route::post('u-save-allocate-retailer', [EmployeeUpi::class, 'saveAllocateRetailer']);
+
+  Route::resource('withdrawal',  EmployeeWithdrawal::class);
 
   Route::post('logout',  [EmployeeLogin::class, 'logout']);
 });

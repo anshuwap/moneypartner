@@ -507,7 +507,7 @@ class TopupRequestController extends Controller
             if (file_exists($path))
                 unlink($path);
         } catch (Exception $e) {
-            return redirect('500');
+           return redirect('500');
         }
     }
 

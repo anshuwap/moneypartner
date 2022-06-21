@@ -88,9 +88,9 @@
   $(document).on('click', '.assign-outlet', function() {
     var outlet_id = $(this).attr('outlet_id');
     $.ajax({
-      url: '{{ url("admin/employee-list") }}/',
+      url: '{{ url("admin/employee-list") }}',
       type: "GET",
-      data: {},
+      data: {'outlet_id':outlet_id},
       dataType: "JSON",
       success: function(res) {
         $('#assign-outlet').html(res.data);

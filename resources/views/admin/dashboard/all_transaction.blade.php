@@ -39,7 +39,7 @@
 
                       <div class="form-group col-md-2">
                           <label>Min Amount</label>
-                          <input type="number" class="form-control form-control-sm" min="10" value="<?= !empty($filter['min_amount']) ? $filter['min_amount'] : '' ?>" name="min_amount"  placeholder="Min Amount"/>
+                          <input type="number" class="form-control form-control-sm" min="10" value="<?= !empty($filter['min_amount']) ? $filter['min_amount'] : '' ?>" name="min_amount" placeholder="Min Amount" />
                       </div>
 
                       <div class="form-group col-md-2">
@@ -79,6 +79,7 @@
                       <!-- <th style="width: 115px;"> Transaction Id</th> -->
                       <th style="width:100px;">Mode</th>
                       <th>Amount</th>
+                      <th>Fees</th>
                       <th>Beneficiary </th>
                       <th>IFSC</th>
                       <th>Account No.</th>
@@ -125,6 +126,7 @@
                       <!-- <td><span data-toggle="tooltip" data-placement="bottom" title="{{ ucwords($trans->sender_name)}},{{$trans->mobile_number}}">{{ $trans->transaction_id }}</span></td> -->
                       <td><span class="tag-small">{{ ucwords(str_replace('_',' ',$trans->type)) }}</span></td>
                       <td style="width: 90px;">{!! mSign($trans->amount) !!}</td>
+                      <td>{{ $trans->transaction_fees }}</td>
                       <td>{{ ucwords($trans->receiver_name)}}</td>
                       <td><span data-toggle="tooltip" data-placement="bottom" title="<?= (!empty($payment->bank_name)) ? $payment->bank_name : '' ?>">{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</span></td>
                       <td><?= (!empty($payment->account_number)) ? $payment->account_number : '' ?>
@@ -308,6 +310,7 @@
                <option value="payunie_rashid_ali">Payunie -Rashid Ali</option>
                <option value="pay2all">Pay2ALL - PRAVEEN</option>
                <option value="odnimo">Odnimo</option>
+               <option value="clickncash">ClicknCash</option>
                </select>
                </div>`);
           }
@@ -519,6 +522,7 @@
                                       <option value="payunie_rashid_ali">Payunie -Rashid Ali</option>
                                       <option value="pay2all">Pay2ALL - PRAVEEN</option>
                                       <option value="odnimo">Odnimo</option>
+                                      <option value="clickncash">ClicknCash</option>
                                   </select>
                               </div>
                           </div>

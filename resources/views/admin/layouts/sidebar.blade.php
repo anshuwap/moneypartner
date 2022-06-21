@@ -98,6 +98,15 @@
             </p>
           </a>
         </li>
+        <li class="nav-item">
+          <a href="{{ url('admin/transaction-report') }}" class="nav-link {{ (url()->full() == url('admin/transaction-report'))? 'active':''}}">
+            <i class="fas fa-solid fa-file-circle-check nav-icon"></i>
+            <p>
+              Report
+            </p>
+          </a>
+        </li>
+
       </ul>
     </li>
 
@@ -226,7 +235,7 @@
       </ul>
     </li>
 
-<li class="nav-item">
+    <li class="nav-item">
       <a href="{{ url('admin/earn-history') }}" class="nav-link {{ (url()->full() == url('admin/earn-history'))? 'active':''}}">
         <i class="fas fa-solid fa-filter-circle-dollar nav-icon"></i>
         <p class="text">Employee Earned</p>

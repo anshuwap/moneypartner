@@ -7,6 +7,7 @@ use App\Models\Outlet;
 use App\Models\PaymentChannel;
 use App\Models\Transaction;
 use App\Models\TransactionComment;
+use App\Support\ClicknCash;
 use App\Support\OdnimoPaymentApi;
 use App\Support\PaymentApi;
 use Exception;
@@ -333,6 +334,7 @@ class TransactionController extends Controller
             'receiver_name' => $transaction->receiver_name,
             'bank_name'     => $payment->bank_name,
         ];
+
         $payment_api = new PaymentApi();
 
         $api_status = 'pending';
@@ -350,11 +352,14 @@ class TransactionController extends Controller
             $OdnimoPaymentApi = new OdnimoPaymentApi();
             $res = $OdnimoPaymentApi->AddBeneficiary($payment_para);
         }
+        if ($request->api == 'clickncash') {
+            $clicknCash = new ClicknCash();
+            $res = $clicknCash->payout($payment_para);
+        }
 
         // if (!empty($res) && $res['status'] == 'error')
         // return response(['status' => 'error', 'msg' => $res['msg']]);
 
-        // print_r($res);die;
         $response = [];
         if (!empty($res)) {
             $response = $res['response'];
@@ -484,6 +489,11 @@ class TransactionController extends Controller
             if ($request->api == 'odnimo') {
                 $OdnimoPaymentApi = new OdnimoPaymentApi();
                 $res = $OdnimoPaymentApi->AddBeneficiary($payment_para);
+            }
+
+            if ($request->api == 'clickncash') {
+                $clicknCash = new ClicknCash();
+                $res = $clicknCash->payout($payment_para);
             }
 
             if (!empty($res) && ($res['status'] == 'error' || $res['status'] == 'process'))
@@ -894,6 +904,7 @@ class TransactionController extends Controller
             foreach ($transactions as $transaction) {
 
                 $payment = (object)$transaction->payment_channel;
+                $upi_id = (!empty($payment->upi_id)) ? $payment->upi_id : '';
 
                 $transaction_val[] = $transaction->transaction_id;
                 $transaction_val[] = ucwords($transaction->sender_name);
@@ -904,7 +915,7 @@ class TransactionController extends Controller
                 $transaction_val[] = (!empty($transaction->transaction_fees)) ? $transaction->transaction_fees : '';
                 $transaction_val[] = ucwords($transaction->receiver_name);
                 $transaction_val[] = (!empty($payment->ifsc_code)) ? $payment->ifsc_code : '';
-                $transaction_val[] = (!empty($payment->account_number)) ? $payment->account_number : $payment->upi_id;
+                $transaction_val[] = (!empty($payment->account_number)) ? $payment->account_number : $upi_id;
                 $transaction_val[] = (!empty($payment->bank_name)) ? $payment->bank_name : '';
                 $transaction_val[] = (!empty($transaction->response['utr_number'])) ? $transaction->response['utr_number'] : '';
                 $transaction_val[] = strtoupper(str_replace('_', ' ', $transaction->status));
@@ -990,6 +1001,7 @@ class TransactionController extends Controller
             foreach ($transactions as $transaction) {
 
                 $payment = (object)$transaction->payment_channel;
+                $upi_id = (!empty($payment->upi_id)) ? $payment->upi_id : '';
 
                 $transaction_val[] = $transaction->transaction_id;
                 $transaction_val[] = ucwords($transaction->sender_name);
@@ -1000,7 +1012,7 @@ class TransactionController extends Controller
                 $transaction_val[] = (!empty($transaction->transaction_fees)) ? $transaction->transaction_fees : '';
                 $transaction_val[] = ucwords($transaction->receiver_name);
                 $transaction_val[] = (!empty($payment->ifsc_code)) ? $payment->ifsc_code : '';
-                $transaction_val[] = (!empty($payment->account_number)) ? $payment->account_number : $payment->upi_id;
+                $transaction_val[] = (!empty($payment->account_number)) ? $payment->account_number : $upi_id;
                 $transaction_val[] = (!empty($payment->bank_name)) ? $payment->bank_name : '';
                 $transaction_val[] = (!empty($transaction->response['utr_number'])) ? $transaction->response['utr_number'] : '';
                 $transaction_val[] = strtoupper(str_replace('_', ' ', $transaction->status));
@@ -1092,7 +1104,7 @@ class TransactionController extends Controller
                 $transactionN->pancard_no        = $transaction->pancard_no;
 
                 $response['action_by']     = Auth::user()->_id;
-                $response['action_date']   = !empty($responseData[$key]['date']) ? strtotime($responseData[$key]['date']) : '';
+                $response['action_date']   = !empty($responseData[$key]['date']) ? strtotime($responseData[$key]['date']) : time();
                 $response['parent_txn_id'] = $transaction->_id;
                 $response['action']        = 'manual update Payment Status (Split Transaction) - Parent Txn no. ' . $transaction->transaction_id;
                 $response['payment_mode']  = !empty($responseData[$key]['payment_mode']) ? $responseData[$key]['payment_mode'] : '';
@@ -1109,6 +1121,144 @@ class TransactionController extends Controller
                 return response(['status' => 'success', 'msg' => 'Transaction Success!']);
 
             return response(['status' => 'error', 'msg' => 'Transaction Failed!']);
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
+        }
+    }
+
+
+
+    public function report(Request $request)
+    {
+        try {
+            $data['outlets'] = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->orderBy('created', 'DESC')->get();
+            $query = Transaction::query();
+
+            if (!empty($request->outlet_id))
+                $query->where('outlet_id', $request->outlet_id);
+
+            $start_date = $request->start_date;
+            $end_date   = $request->end_date;
+
+            if (!empty($start_date) && !empty($end_date)) {
+                $start_date = strtotime(trim($start_date) . " 00:00:00");
+                $end_date   = strtotime(trim($end_date) . " 23:59:59");
+            } else {
+                $crrMonth = (date('Y-m-d'));
+                $start_date = strtotime(trim(date("d-m-Y", strtotime('-15 days', strtotime($crrMonth)))) . " 00:00:00");
+                $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
+            }
+            $query->whereBetween('created', [$start_date, $end_date]);
+
+            $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
+            $transactions = $query->orderBy('created', 'DESC')->get();
+
+            $transData = [];
+            foreach ($transactions as $transaction) {
+
+                $transData[date('d M,Y', $transaction->created)][] = [
+                    'id'               => $transaction->_id,
+                    'transaction_id'   => $transaction->transaction_id,
+                    'sender_name'      => $transaction->sender_name,
+                    'mobile_number'    => $transaction->mobile_number,
+                    'receiver_name'    => $transaction->receiver_name,
+                    'amount'           => $transaction->amount,
+                    'transaction_fees' => $transaction->transaction_fees,
+                    'status'           => $transaction->status,
+                    'payment_channel'  => $transaction->payment_channel,
+                    'created'          => date('d M,Y', $transaction->created),
+                    'response'         => $transaction->response
+
+                ];
+            }
+
+            $report = [];
+            foreach ($transData as $key => $value) {
+
+                $transactionsIteration = [];
+                $count = 0;
+                $success_count = 0;
+                $pending_count = 0;
+                $rejeced_count = 0;
+                $failed_count  = 0;
+                $refund_count  = 0;
+                $total_amount  = 0;
+                $failed_a      = 0;
+                $success_a     = 0;
+                $pending_a     = 0;
+                $rejected_a    = 0;
+                $refund_a      = 0;
+                foreach ($value as $val) {
+                    if ($key == $val['created']) {
+                        $transactionsIteration[] = [
+                            'id'               => $val['id'],
+                            'transaction_id'   => $val['transaction_id'],
+                            'sender_name'      => $val['sender_name'],
+                            'receiver_name'    => $val['receiver_name'],
+                            'mobile_number'    => $val['mobile_number'],
+                            'amount'           => $val['amount'],
+                            'transaction_fees' => $val['transaction_fees'],
+                            'status'           => $val['status'],
+                            'payment_channel'  => $val['payment_channel'],
+                            'created'          => $val['created'],
+                            'response'         => $val['response'],
+                            'username'         => '-' //!empty($val['response']->UserName['full_name']) ?$val['response']->UserName['full_name'] : '';
+                        ];
+                    }
+                    $total_amount += $val['amount'];
+                    if (!empty($val['status']) && $val['status'] == 'success') {
+                        $success_a += $val['amount'];
+                        $success_count++;
+                    }
+
+                    if (!empty($val['status']) && ($val['status'] == 'pending' || $val['status'] == 'process')) {
+                        $pending_a += $val['amount'];
+                        $pending_count++;
+                    }
+
+                    if (!empty($val['status']) && ($val['status'] == 'failed')) {
+                        $failed_a += $val['amount'];
+                        $failed_count++;
+                    }
+
+
+                    if (!empty($val['status']) && ($val['status'] == 'refund_pending')) {
+                        $refund_a += $val['amount'];
+                        $refund_count++;
+                    }
+
+
+                    if (!empty($val['status']) && $val['status'] == 'rejected') {
+                        $rejected_a += $val['amount'];
+                        $rejeced_count++;
+                    }
+
+                    $count++;
+                }
+                $report[] = [
+                    'date'            => $key,
+                    'total_count'     => $count,
+                    'total_amount'    => $total_amount,
+                    'success_amount'  => $success_a,
+                    'success_count'   => $success_count,
+                    'pending_amount'  => $pending_a,
+                    'pending_count'   => $pending_count,
+                    'failed_amount'   => $failed_a,
+                    'failed_count'    => $failed_count,
+                    'refund_amount'   => $refund_a,
+                    'refund_count'    => $refund_count,
+                    'rejected_amount' => $rejected_a,
+                    'rejected_count'  => $rejeced_count,
+                    'transactions'    => $transactionsIteration
+                ];
+            }
+
+            $request->request->remove('page');
+            $request->request->remove('perPage');
+            $data['filter']  = $request->all();
+            $data['trnasReport'] = $report;
+            $data['transactions'] = $transactions;
+            return view('admin.transaction.report', $data);
         } catch (Exception $e) {
             return response(['status' => 'error', 'msg' => $e->getMessage()]);
         }

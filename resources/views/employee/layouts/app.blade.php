@@ -34,6 +34,8 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
 
   <link rel="stylesheet" href="{{ asset('assets') }}/custom/custom.css">
+  <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap-switch-button@1.1.0/css/bootstrap-switch-button.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap-switch-button@1.1.0/dist/bootstrap-switch-button.min.js"></script>
   <style>
     .card-primary.card-outline-tabs>.card-header a.active {
       border-top: 3px solid #2fc296;
@@ -255,7 +257,7 @@
             <img src="{{employeeImage()}}" class="img-circle elevation-2" alt="User Image">
           </div>
           <div class="info">
-            <a href="{{ url('employee/profile') }}" class="d-block">{{ ucwords(Auth::user()->full_name) }}</a>
+            <a href="{{ url('employee/e-profile') }}" class="d-block">{{ ucwords(Auth::user()->full_name) }}</a>
           </div>
         </div>
 

@@ -49,6 +49,7 @@ class Topup extends BaseModel
                 break;
             case 'qr_code':
                 $value = QrCode::select('name')->find($id);
+            $name = '-';
                 if (!empty($value))
                     $name = $value->name;
                 break;
@@ -77,6 +78,7 @@ class Topup extends BaseModel
                 break;
             case 'qr_code':
                 $value = QrCode::select('name')->find($id);
+           $name = '-';
                 if (!empty($value))
                     $name = $value->name;
                 break;

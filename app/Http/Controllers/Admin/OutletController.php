@@ -530,13 +530,23 @@ class OutletController extends Controller
     }
 
 
-    public function EmployeeList()
+    public function EmployeeList(Request $request)
     {
         try {
+            $outlet_id  = $request->outlet_id;
+
             $employees = User::where('role', 'employee')->get();
             $table = '<table class="table table-sm"><tr><th>Employee Name</th><th>Assign</th></tr>';
-            foreach ($employees as $employee) {
-                $table .= '<tr><th>' . $employee->full_name . '</th><td><input type="checkbox"  value="' . $employee->_id . '" class="" name="employees[]"></td></tr>';
+            foreach ($employees as $key => $employee) {
+                $k = ++$key;
+                $checked = (!empty($employee->outlets) && is_array($employee->outlets) && in_array($outlet_id, $employee->outlets)) ? "checked" : '';
+                $table .= '<tr><td>' . $employee->full_name . '</td><td>
+                <div class="icheck-success d-inline">
+                <input type="radio" ' . $checked . ' value="' . $employee->_id . '" id="radioSuccess' . $k . '" class="" name="employees[]">
+                <label for="radioSuccess' . $k . '">
+                </label>
+                </div>
+                </td></tr>';
             }
             $table .= '</table>';
             return response(['status' => 'success', 'data' => $table]);

@@ -25,7 +25,7 @@
 <section class="content">
   <div class="container-fluid">
 
-    @include('admin.dashboard.all_transaction')
+    @include('employee.dashboard.all_transaction')
   </div>
 </section>
 <!-- /.content -->

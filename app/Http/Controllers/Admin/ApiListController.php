@@ -17,9 +17,9 @@ class ApiListController extends Controller
     {
         try {
             // $api = new ApiList();
-            // $api->api = 'https://payout.merchantpe.in/Api/v2/Client/en/remittance/transaction';
-            // $api->name = 'odinmo';
-            // $api->sort = "1";
+            // $api->api = 'https://api.clickncash.in/app/api/v7/money_transfer';
+            // $api->name = 'CLICKnCASH';
+            // $api->sort = "3";
             // $api->status = 1;
             // $api->save();
 

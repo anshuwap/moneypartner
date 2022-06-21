@@ -234,9 +234,9 @@ function getEmpCommision($outlet_id = false, $amount = false)
         $q->where('outlets', 'all', [$outlet_id]);
     });
     $employee = $query->first();
-    $commissions = $employee->commission;
     $charges = false;
-    if (!empty($commissions)) {
+    if (!empty($employee)) {
+       $commissions = $employee->commission;
         foreach ($commissions as $comm) {
             if ($comm['type'] == 'inr') { // here all inr comms
 
@@ -252,10 +252,12 @@ function getEmpCommision($outlet_id = false, $amount = false)
                 }
             }
         }
-    }
 
-    if (!employeeWallet($employee->_id, $amount))
+       if (!employeeWallet($employee->_id, $charges))
         return false;
+    }else{
+      return false;
+    }
 
     return array('employee_id' => $employee->_id, 'amount' => $charges);
 }
@@ -281,6 +283,46 @@ if (!function_exists('employeeWallet')) {
     }
 }
 
+if (!function_exists('debitEmpWallet')) {
+    function debitEmpWallet($user_id, $amount)
+    {
+        try {
+            $user = User::find($user_id);
+            $wallet_amount = ($user->wallet_amount) - ($amount);
+
+            $user->wallet_amount = $wallet_amount;
+
+            if ($user->save())
+                return true;
+
+            return false;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+}
+
+// if (!function_exists('spentTopupAmount')) {
+//     function spentTopupAmount($user_id, $amount)
+//     {
+//         try {
+//             $user = User::find($user_id);
+//             $avaliable_amount = ($user->available_amount) - ($amount);
+
+//             $spent_amount = ($user->spent_amount) + ($amount);
+
+//             $user->available_amount = $avaliable_amount;
+//             $user->spent_amount = $spent_amount;
+
+//             if ($user->save())
+//                 return true;
+
+//             return false;
+//         } catch (Exception $e) {
+//             return false;
+//         }
+//     }
+// }
 
 function employeeCms($request = array())
 {

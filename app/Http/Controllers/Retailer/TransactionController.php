@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ApiList;
 use App\Models\Outlet;
 use App\Models\Transaction;
+use App\Support\ClicknCash;
 use App\Support\OdnimoPaymentApi;
 use App\Support\PaymentApi;
 use Exception;
@@ -418,6 +419,11 @@ class TransactionController extends Controller
                                 $OdnimoPaymentApi = new OdnimoPaymentApi();
                                 $res = $OdnimoPaymentApi->AddBeneficiary($payment_para);
                             }
+                        }
+
+                        if ($api->status == 1 && $api->name =='CLICKnCASH') {
+                            $clicknCash = new ClicknCash();
+                            $res = $clicknCash->payout($payment_para);
                         }
                     }
                 }
@@ -1064,9 +1070,6 @@ class TransactionController extends Controller
             if (!empty($request->banficiary))
                 $query->where('receiver_name', $request->banficiary);
 
-            if (!empty($request->account_no))
-                $query->where('payment_channel.account_number', $request->account_no);
-
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
 
@@ -1074,10 +1077,11 @@ class TransactionController extends Controller
                 $start_date = strtotime(trim($start_date) . " 00:00:00");
                 $end_date   = strtotime(trim($end_date) . " 23:59:59");
             } else {
-                $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
+                $crrMonth = (date('Y-m-d'));
+                $start_date = strtotime(trim(date("d-m-Y", strtotime('-15 days', strtotime($crrMonth)))) . " 00:00:00");
                 $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
             }
-            // $query->whereBetween('created', [$start_date, $end_date]);
+            $query->whereBetween('created', [$start_date, $end_date]);
 
             $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
             $transactions = $query->orderBy('created', 'DESC')->get();

@@ -259,7 +259,8 @@
                <option value="payunie_preet_kumar">Payunie - PREET KUMAR</option>
                <option value="payunie_rashid_ali">Payunie -Rashid Ali</option>
                <option value="pay2all">Pay2ALL - PRAVEEN</option>
-                <option value="odnimo">Odnimo</option>
+               <option value="odnimo">Odnimo</option>
+               <option value="clickncash">ClicknCash</option>
                </select>
                </div>`);
           }
@@ -469,6 +470,7 @@
                                       <option value="payunie_rashid_ali">Payunie -Rashid Ali</option>
                                       <option value="pay2all">Pay2ALL - PRAVEEN</option>
                                       <option value="odnimo">Odnimo</option>
+                                      <option value="clickncash">ClicknCash</option>
                                   </select>
                               </div>
                           </div>

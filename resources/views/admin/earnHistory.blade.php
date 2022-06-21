@@ -41,7 +41,7 @@
 
                             <!-- <div class="form-group col-md-2">
                                 <label>Transaction ID</label>
-                                <input type="text"  placeholder="Transaction ID" class="form-control form-control-sm" value="<?= !empty($filter['transaction_id']) ? $filter['transaction_id'] : '' ?>" name="transaction_id" id="transaction_id" />
+                                <input type="text"  placeholder="Transaction ID" class="form-control form-control-sm" value="<?= !empty($filter['transaction_id']) ? $filter['transaction_id'] : '' ?>"                                     name="transaction_id" id="transaction_id" />
                             </div> -->
 
                             <div class="form-group col-md-2">
@@ -53,6 +53,17 @@
                                     @endforeach
                                 </select>
                             </div>
+                          
+                          <div class="form-group col-md-2">
+                                <label>Employee</label>
+                                <select class="form-control-sm form-control" name="employee_id">
+                                    <option value="" {{ (!empty($filter['employee_id']) && $filter['employee_id'] == 'all')?"selected":""}}>All</option>
+                                    @foreach($employees as $employee)
+                                    <option value="{{$employee->_id}}" {{ (!empty($filter['employee_id']) && $filter['employee_id'] == $employee->_id)?"selected":""}}>{{ ucwords($employee->full_name)}}                                       </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                          
                             <div class="form-group mt-4">
                                 <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i>&nbsp;Search</button>
                                 <a href="{{ url('admin/earn-history') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>

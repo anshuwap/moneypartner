@@ -32,35 +32,36 @@ class OdnimoPaymentApi
             ];
         }
 
-       $validate_sender =  $this->validateSender($input->mobile_number);
+        $validate_sender =  $this->validateSender($input->mobile_number);
 
-       $res = json_decode($validate_sender);
+        $res = json_decode($validate_sender);
 
         if (!empty($res->status) && $res->status == 'SUCCESS' && $res->code == 'S00') {
             $senderMobileNumber = $res->mobileNumber;
-        }else{
-         $new_sender = $this->addSender($input);
-          $res = json_decode($new_sender);
-          if (!empty($res->status) && $res->status == 'SUCCESS' && $res->code == 'S00'){
-            $senderMobileNumber = $res->mobileNumber;
-          }else if(!empty($res->status) && $res->code == 'F00') {
-            return $result = [
-                'response' => [
-                    'msg'            => $res->message,
-                    'status'         => "failed",
-                    'payment_mode'   => 'Odnimo - api'
-                ],
-                'status' => 'failed'
-            ];
-        }}
+        } else {
+            $new_sender = $this->addSender($input);
+            $res = json_decode($new_sender);
+            if (!empty($res->status) && $res->status == 'SUCCESS' && $res->code == 'S00') {
+                $senderMobileNumber = $res->mobileNumber;
+            } else if (!empty($res->status) && $res->code == 'F00') {
+                return $result = [
+                    'response' => [
+                        'msg'            => $res->message,
+                        'status'         => "failed",
+                        'payment_mode'   => 'Odnimo - api'
+                    ],
+                    'status' => 'failed'
+                ];
+            }
+        }
 
         $curl1 = curl_init();
 
         $para1   = array(
-            'beneId'            => !empty($benefaciry_id)?$benefaciry_id:'',
+            'beneId'            => !empty($benefaciry_id) ? $benefaciry_id : '',
             'amount'            => $input->amount,
             'transferId'        => uniqid(6) . rand(111111, 999999),
-            'senderMobileNumber'=> $senderMobileNumber,
+            'senderMobileNumber' => $senderMobileNumber,
             'transactionType'   => "IMPS"
         );
 
@@ -91,11 +92,11 @@ class OdnimoPaymentApi
 
             return $result = [
                 'response' => [
-                    'utr_number'       => !empty($resp->details->utr)?$resp->details->utr:'',
-                    'reference_no'     => !empty($resp->details->referenceNo)?$resp->details->referenceNo:"",
-                    'beneficiaryName'  => !empty($resp->details->beneficiaryName)?$resp->details->beneficiaryName:'',
-                    'bankResponseCode' => !empty($resp->details->bankResponseCode)?$resp->details->bankResponseCode:'',
-                    'msg'              => !empty($resp->message)?$resp->message:'',
+                    'utr_number'       => !empty($resp->details->utr) ? $resp->details->utr : '',
+                    'reference_no'     => !empty($resp->details->referenceNo) ? $resp->details->referenceNo : "",
+                    'beneficiaryName'  => !empty($resp->details->beneficiaryName) ? $resp->details->beneficiaryName : '',
+                    'bankResponseCode' => !empty($resp->details->bankResponseCode) ? $resp->details->bankResponseCode : '',
+                    'msg'              => !empty($resp->message) ? $resp->message : '',
                     'status'           => "success",
                     'payment_mode'     => 'Odnimo - api'
                 ],
@@ -115,7 +116,7 @@ class OdnimoPaymentApi
             ];
         }
 
- if (!empty($resp->status) && $resp->code == 'P00') {
+        if (!empty($resp->status) && $resp->code == 'P00') {
             return $result = [
                 'response' => [
                     'msg'            => $resp->message,
@@ -130,7 +131,7 @@ class OdnimoPaymentApi
     }
 
 
-     function getBeneficiaryId($input)
+    function getBeneficiaryId($input)
     {
 
         //  $input = (object)$input;
@@ -220,12 +221,12 @@ class OdnimoPaymentApi
     }
 
 
-     function addSender($input)
+    function addSender($input)
     {
 
-          $post_data   = array(
+        $post_data   = array(
             'name'              => $input->receiver_name,
-            'senderMobileNumber'=> $input->mobile_number,
+            'senderMobileNumber' => $input->mobile_number,
             'address1'          => "New Delhi",
             'city'              => 'delhi',
             'state'             => "delhi",
@@ -243,7 +244,7 @@ class OdnimoPaymentApi
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS =>$data,
+            CURLOPT_POSTFIELDS => $data,
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
                 'Authorization: Basic MTE0RjAyMjk2N0U3NDY2NzFEQzZGMDFENUVDQ0ZFMzgwQjExODdDMDpNVFkwT0RJd016YzFNamN6TWpJMg=='
@@ -254,26 +255,25 @@ class OdnimoPaymentApi
         curl_close($curl);
 
         $res = json_decode($response);
-            if (!empty($res->status) && $res->code == 'S00') {
-                $mobileNumber = (!empty($res->details->mobileNumber)) ? $res->details->mobileNumber : '';
-               $result = [
-                    'status'        => 'SUCCESS',
-                    'code'          => 'S00',
-                    'mobileNumber'   => $mobileNumber,
+        if (!empty($res->status) && $res->code == 'S00') {
+            $mobileNumber = (!empty($res->details->mobileNumber)) ? $res->details->mobileNumber : '';
+            $result = [
+                'status'        => 'SUCCESS',
+                'code'          => 'S00',
+                'mobileNumber'   => $mobileNumber,
             ];
             return json_encode($result);
-            }
+        }
 
-            if (!empty($res->status) && $res->code == 'F00') {
-             return json_encode( $res);
+        if (!empty($res->status) && $res->code == 'F00') {
+            return json_encode($res);
         }
 
         return array();
-
     }
 
 
-     function validateSender($mobile_number)
+    function validateSender($mobile_number)
     {
         $curl = curl_init();
 
@@ -299,23 +299,21 @@ class OdnimoPaymentApi
 
         curl_close($curl);
 
-           $res = json_decode($response);
-            if (!empty($res->status) && $res->code == 'S00') {
-                $mobileNumber = (!empty($res->details->mobileNumber)) ? $res->details->mobileNumber : '';
-                 $result = [
-                    'status'        => 'SUCCESS',
-                    'code'          => 'S00',
-                    'mobileNumber'   => $mobileNumber,
+        $res = json_decode($response);
+        if (!empty($res->status) && $res->code == 'S00') {
+            $mobileNumber = (!empty($res->details->mobileNumber)) ? $res->details->mobileNumber : '';
+            $result = [
+                'status'        => 'SUCCESS',
+                'code'          => 'S00',
+                'mobileNumber'   => $mobileNumber,
             ];
             return json_encode($result);
-            }
+        }
 
-            if (!empty($res->status) && $res->code == 'F00') {
-              return json_encode($res);
+        if (!empty($res->status) && $res->code == 'F00') {
+            return json_encode($res);
         }
 
         return array();
-
     }
-
 }
