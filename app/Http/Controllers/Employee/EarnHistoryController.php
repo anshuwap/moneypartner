@@ -18,10 +18,7 @@ class EarnHistoryController extends Controller
     {
         try {
 
-            $outlet_ids = [];
-            if (!empty(Auth::user()->outlets))
-                $outlet_ids = Auth::user()->outlets;
-            $data['outlets'] = Outlet::select('amount', 'outlet_name', '_id')->whereIn('_id', $outlet_ids)->get();
+            $data['outlets'] = Outlet::select('amount', 'outlet_name', '_id')->get();
 
             $query =  EmployeeCommission::query();
             if (!empty($request->transaction_id))

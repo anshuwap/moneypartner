@@ -20,15 +20,13 @@ class TopupRequestController extends Controller
         try {
 
             //  $topups = Topup::get();
-            $outlet_ids = [];
-            if (!empty(Auth::user()->outlets))
-                $outlet_ids = Auth::user()->outlets;
-            $outlets = Outlet::select('_id', 'outlet_name',)->where('account_status', 1)->whereIn('_id', $outlet_ids)->orderBy('created', 'DESC')->get();
+            $outlets = Outlet::select('_id', 'outlet_name',)->where('account_status', 1)->orderBy('created', 'DESC')->get();
+
             $data['bank_accounts'] = BankAccount::select('_id', 'bank_name', 'account_holder_name')->where('status', 1)->get();
             $data['upis'] = Upi::select('_id', 'name', 'upi_id')->where('status', 1)->get();
             $data['qrcodes'] = QrCode::select('_id', 'name')->where('status', 1)->get();
 
-            $query = Topup::query()->whereIn('outlet_id', $outlet_ids);
+            $query = Topup::query();
 
             if (!empty($request->outlet_id))
                 $query->where('outlet_id', $request->outlet_id);
@@ -81,15 +79,13 @@ class TopupRequestController extends Controller
     {
         try {
 
-            $outlet_ids = [];
-            if (!empty(Auth::user()->outlets))
-                $outlet_ids = Auth::user()->outlets;
-            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->whereIn('_id', $outlet_ids)->orderBy('created', 'DESC')->get();
+            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->orderBy('created', 'DESC')->get();
+
             $data['bank_accounts'] = BankAccount::select('_id', 'bank_name', 'account_holder_name')->where('status', 1)->get();
             $data['upis'] = Upi::select('_id', 'name', 'upi_id')->where('status', 1)->get();
             $data['qrcodes'] = QrCode::select('_id', 'name')->where('status', 1)->get();
 
-            $query = Topup::query()->whereIn('outlet_id', $outlet_ids);
+            $query = Topup::query();
 
             if (!empty($request->outlet_id))
                 $query->where('outlet_id', $request->outlet_id);
@@ -422,10 +418,7 @@ class TopupRequestController extends Controller
             ];
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
-            $outlet_ids = [];
-            if (!empty(Auth::user()->outlets))
-                $outlet_ids = Auth::user()->outlets;
-            $query = Topup::query()->whereIn('outlet_id', $outlet_ids);
+            $query = Topup::query();
 
             if (!empty($request->outlet_id))
                 $query->where('outlet_id', $request->outlet_id);
@@ -519,10 +512,7 @@ class TopupRequestController extends Controller
             ];
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
-            $outlet_ids = [];
-            if (!empty(Auth::user()->outlets))
-                $outlet_ids = Auth::user()->outlets;
-            $query = Topup::query()->where('status', 'pending')->whereIn('outlet_id',$outlet_ids);
+            $query = Topup::query()->where('status', 'pending');
 
             if (!empty($request->transaction_id))
                 $query->where('payment_id', $request->transaction_id);

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
 use App\Http\Validation\BankChargesValidation;
@@ -21,7 +21,7 @@ class OutletController extends Controller
     {
         try {
 
-            return view('admin.outlet.list');
+            return view('employee.outlet.list');
         } catch (Exception $e) {
             return redirect('500');
         }
@@ -30,7 +30,7 @@ class OutletController extends Controller
     public function create()
     {
         try {
-            return view('admin.outlet.create');
+            return view('employee.outlet.create');
         } catch (Exception $e) {
             return redirect('500');
         }
@@ -172,7 +172,7 @@ class OutletController extends Controller
     {
 
         try {
-            return view('admin.outlet.edit', compact('outlet'));
+            return view('employee.outlet.edit', compact('outlet'));
         } catch (Exception $e) {
             return redirect('500');
         }
@@ -456,9 +456,9 @@ class OutletController extends Controller
 
         foreach ($data as $val) {
             // $action = '<a href="javascript:void(0);" class="text-orange banckModal"  data-toggle="tooltip" data-placement="bottom" title="Bank Charges" outlet_id="' . $val->_id . '"><i class="fas fa-piggy-bank"></i></a>&nbsp;&nbsp;';
-            $action = '<a href="javascript:void(0);" outlet_id ="' . $val->_id . '" class="badge badge-info assign-outlet" data-toggle="tooltip" data-placement="bottom" title="Assign Outlet">Assign</a>&nbsp;&nbsp;';
-            $action .= '<a href="' . url('admin/outlet-bank-charges/' . $val->_id) . '" class="text-orange"  data-toggle="tooltip" data-placement="bottom" title="Bank Charges"><i class="fas fa-piggy-bank"></i></a>&nbsp;&nbsp;';
-            $action .= '<a href="' . url('admin/outlets/' . $val->_id . '/edit') . '" class="text-info" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="far fa-edit"></i></a>';
+           // $action = '<a href="javascript:void(0);" outlet_id ="' . $val->_id . '" class="badge badge-info assign-outlet" data-toggle="tooltip" data-placement="bottom" title="Assign Outlet">Assign</a>&nbsp;&nbsp;';
+            $action = '<a href="' . url('employee/outlet-bank-charges/' . $val->_id) . '" class="text-orange"  data-toggle="tooltip" data-placement="bottom" title="Bank Charges"><i class="fas fa-piggy-bank"></i></a>&nbsp;&nbsp;';
+            $action .= '<a href="' . url('employee/outlets/' . $val->_id . '/edit') . '" class="text-info" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="far fa-edit"></i></a>';
 
             if ($val->account_status == 1) {
                 $status = ' <a href="javascript:void(0);"><span class="badge badge-success activeVer" id="active_' . $val->_id . '" _id="' . $val->_id . '" val="0">Active</span></a>';
@@ -529,49 +529,4 @@ class OutletController extends Controller
         }
     }
 
-
-    public function EmployeeList(Request $request)
-    {
-        try {
-            $outlet_id  = $request->outlet_id;
-
-            $employees = User::where('role', 'employee')->get();
-            $table = '<table class="table table-sm"><tr><th>Employee Name</th><th>Assign</th></tr>';
-            foreach ($employees as $key => $employee) {
-                $k = ++$key;
-                $checked = (!empty($employee->outlet) && $employee->outlet == $outlet_id) ? "checked" : '';
-                $table .= '<tr><td>' . $employee->full_name . '</td><td>
-                <div class="icheck-success d-inline">
-                <input type="radio" ' . $checked . ' value="' . $employee->_id . '" id="radioSuccess' . $k . '" class="" name="employee_id">
-                <label for="radioSuccess' . $k . '">
-                </label>
-                </div>
-                </td></tr>';
-            }
-            $table .= '</table>';
-            return response(['status' => 'success', 'data' => $table]);
-        } catch (Exception $e) {
-            return response(['status' => 'error', 'msg' => $e->getMessage()]);
-        }
-    }
-
-
-    public function assignOutlet(Request $request)
-    {
-        try {
-
-            $outlet = Outlet::find($request->outlet_id);
-            $outlet->employee_id = $request->employee_id;
-            if ($outlet->save()) {
-                $employee = User::where('_id', $request->employee_id)->first();
-                $employee->outlet = $request->outlet_id;;
-                $employee->save();
-                return response(['status' => 'success', 'msg' => 'Outlet Assigned successfully!']);
-            }
-
-            return response(['status' => 'error', 'msg' => 'Outlet not Assigned!']);
-        } catch (Exception $e) {
-            return response(['status' => 'error', 'msg' => $e->getMessage()]);
-        }
-    }
 }

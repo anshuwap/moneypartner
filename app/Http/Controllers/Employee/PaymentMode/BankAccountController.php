@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Employee\PaymentMode;
 
 use App\Http\Controllers\Controller;

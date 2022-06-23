@@ -467,7 +467,7 @@ class TransactionController extends Controller
 
             $payment_para = [
                 'mobile_number' => $transaction->mobile_number,
-                'account_number' => $payment->account_number,
+                'account_number'=> $payment->account_number,
                 'ifsc_code'     => $payment->ifsc_code,
                 'amount'        => $transaction->amount,
                 'receiver_name' => $transaction->receiver_name,
@@ -722,10 +722,10 @@ class TransactionController extends Controller
             if (!empty($transaction->response))
                 $response = $transaction->response;
             $response['utr_number']  = $utr;
-            $response['action_by']     = Auth::user()->_id;
-            $response['action_date']   = time();
-            $response['action']        = 'update UTR No';
-            $transaction->response = $response;
+            $response['action_by']   = Auth::user()->_id;
+            $response['action_date'] = time();
+            $response['action']      = 'update UTR No';
+            $transaction->response   = $response;
 
             if ($transaction->save())
                 return response(['status' => 'success', 'msg' => 'UTR No updated successfully!']);

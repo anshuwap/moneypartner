@@ -229,14 +229,13 @@ function getEmpCommision($outlet_id = false, $amount = false)
     if (!$amount || !$outlet_id)
         return false;
 
-    $query = User::select('_id', 'commission')->where('role', 'employee');
-    $query->where(function ($q) use ($outlet_id) {
-        $q->where('outlets', 'all', [$outlet_id]);
-    });
-    $employee = $query->first();
+    $employee = User::select('_id', 'commission')->where('role', 'employee')->where('outlet', $outlet_id)->first();
     $charges = false;
     if (!empty($employee)) {
-       $commissions = $employee->commission;
+        $commissions = $employee->commission;
+        if (empty($commissions) && !is_array($commissions))
+            return false;
+
         foreach ($commissions as $comm) {
             if ($comm['type'] == 'inr') { // here all inr comms
 
@@ -253,10 +252,10 @@ function getEmpCommision($outlet_id = false, $amount = false)
             }
         }
 
-       if (!employeeWallet($employee->_id, $charges))
+        if (!employeeWallet($employee->_id, $charges))
+            return false;
+    } else {
         return false;
-    }else{
-      return false;
     }
 
     return array('employee_id' => $employee->_id, 'amount' => $charges);
@@ -302,42 +301,26 @@ if (!function_exists('debitEmpWallet')) {
     }
 }
 
-// if (!function_exists('spentTopupAmount')) {
-//     function spentTopupAmount($user_id, $amount)
-//     {
-//         try {
-//             $user = User::find($user_id);
-//             $avaliable_amount = ($user->available_amount) - ($amount);
-
-//             $spent_amount = ($user->spent_amount) + ($amount);
-
-//             $user->available_amount = $avaliable_amount;
-//             $user->spent_amount = $spent_amount;
-
-//             if ($user->save())
-//                 return true;
-
-//             return false;
-//         } catch (Exception $e) {
-//             return false;
-//         }
-//     }
-// }
-
 function employeeCms($request = array())
 {
     if (empty($request))
         return false;
 
     $request = (object)$request;
+    $closing_amount = 0;
+    $A_amount = User::select('wallet_amount', 'outlet_id')->find($request->employee_id);
+    if (!empty($A_amount))
+        $closing_amount = $A_amount->wallet_amount;
 
     $empCms = new EmployeeCommission();
     $empCms->employee_id = $request->employee_id;
     $empCms->amount      = $request->amount;
+    $empCms->closing_amount = $closing_amount;
     $empCms->transaction_id = $request->transaction_id;
     $empCms->outlet_id   = $request->outlet_id;
     $empCms->retailer_id = $request->retailer_id;
     $empCms->action_by   = $request->action_by;
+    $empCms->type = 'credit';
     if ($empCms->save())
         return true;
     return false;

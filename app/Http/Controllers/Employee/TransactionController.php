@@ -14,6 +14,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+
 class TransactionController extends Controller
 {
 
@@ -21,13 +22,9 @@ class TransactionController extends Controller
     {
         try {
 
-            $outlet_ids = [];
-            if (!empty(Auth::user()->outlets))
-                $outlet_ids = Auth::user()->outlets;
+            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->orderBy('created', 'DESC')->get();
 
-            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->where('_id', $outlet_ids)->orderBy('created', 'DESC')->get();
-
-            $query = Transaction::query()->whereIn('outlet_id', $outlet_ids);
+            $query = Transaction::query();
 
             if ($request->outlet_id)
                 $query->where('outlet_id', $request->outlet_id);
@@ -82,6 +79,7 @@ class TransactionController extends Controller
             //for payment channel
             $data['payment_channel'] = PaymentChannel::select('_id', 'name')->get();
 
+
             return view('employee.transaction.display', $data);
         } catch (Exception $e) {
             return redirect('500')->with(['error' => $e->getMessage()]);;
@@ -93,13 +91,9 @@ class TransactionController extends Controller
     {
         try {
 
-            $outlet_ids = [];
-            if (!empty(Auth::user()->outlets))
-                $outlet_ids = Auth::user()->outlets;
+            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->orderBy('created', 'DESC')->get();
 
-            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->whereIn('_id', $outlet_ids)->orderBy('created', 'DESC')->get();
-
-            $query = Transaction::query()->where('status', 'refund_pending')->whereIn('outlet_id', $outlet_ids);
+            $query = Transaction::query()->where('status', 'refund_pending');
 
             if ($request->outlet_id)
                 $query->where('outlet_id', $request->outlet_id);
@@ -150,7 +144,6 @@ class TransactionController extends Controller
 
     public function store(Request $request)
     {
-
         $transaction = Transaction::find($request->trans_id);
 
         if ($transaction->status == 'rejected')
@@ -296,7 +289,7 @@ class TransactionController extends Controller
 
             $payment_para = [
                 'mobile_number' => $transaction->mobile_number,
-                'account_number' => $payment->account_number,
+                'account_number'=> $payment->account_number,
                 'ifsc_code'     => $payment->ifsc_code,
                 'amount'        => $transaction->amount,
                 'receiver_name' => $transaction->receiver_name,
@@ -604,7 +597,6 @@ class TransactionController extends Controller
     }
 
 
-
     public function paymentStatus(Request $request)
     {
         try {
@@ -690,10 +682,7 @@ class TransactionController extends Controller
             ];
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
-            $outlet_ids = [];
-            if (!empty(Auth::user()->outlets))
-                $outlet_ids = Auth::user()->outlets;
-            $query = Transaction::query()->whereIn('outlet_id', $outlet_ids);
+            $query = Transaction::query();
 
             if ($request->outlet_id)
                 $query->where('outlet_id', $request->outlet_id);
@@ -789,10 +778,7 @@ class TransactionController extends Controller
             ];
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
-            $outlet_ids = [];
-            if (!empty(Auth::user()->outlets))
-                $outlet_ids = Auth::user()->outlets;
-            $query = Transaction::query()->where('status', 'refund_pending')->whereIn('outlet_id', $outlet_ids);
+            $query = Transaction::query()->where('status', 'refund_pending');
 
             if ($request->outlet_id)
                 $query->where('outlet_id', $request->outlet_id);

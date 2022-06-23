@@ -18,15 +18,11 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-
         try {
 
-            $outlet_ids = [];
-            if (!empty(Auth::user()->outlets))
-                $outlet_ids = Auth::user()->outlets;
-            $outlets = Outlet::select('amount', 'outlet_name', '_id')->whereIn('_id', $outlet_ids)->get();
+            $outlets = Outlet::select('amount', 'outlet_name', '_id')->get();
 
-            $que = Transaction::where('status', 'pending')->whereIn('outlet_id', $outlet_ids);
+            $que = Transaction::where('status', 'pending');
             if (!empty($request->mode))
                 $que->where('payment_mode', $request->mode);
 

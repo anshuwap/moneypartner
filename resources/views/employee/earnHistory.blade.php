@@ -68,22 +68,26 @@
                     <thead>
                         <tr>
                             <th>Sr No.</th>
-                            <th>Transaction Time</th>
-                            <th>Amount</th>
-                            <th>Transaction No</th>
                             <th>Outlet Name</th>
+                            <th>Transaction Time</th>
+                            <th>Transaction No</th>
                             <th>Action By</th>
+                            <th>Amount</th>
+                            <th>Type</th>
+                            <th>Closing Amount</th>
                         </tr>
                     </thead>
 
                     @foreach($earnHistory as $key=>$earn)
                     <tr>
                         <td>{{ ++$key }}</td>
-                        <td>{{ date('Y-m-d H:i:s',$earn->created)}}</td>
-                        <td>{!!mSign($earn->amount)!!}</td>
-                        <td>{{ !empty($earn->Transaction['transaction_id'])?$earn->Transaction['transaction_id']:'-'}}</td>
                         <td>{{ !empty($earn->OutletName['outlet_name'])?$earn->OutletName['outlet_name']:'-'}}</td>
+                        <td>{{ date('Y-m-d H:i:s',$earn->created)}}</td>
+                        <td>{{ !empty($earn->Transaction['transaction_id'])?$earn->Transaction['transaction_id']:'-'}}</td>
                         <td>{{ !empty($earn->ActionBy['full_name'])?$earn->ActionBy['full_name']:'-'}}</td>
+                        <td>{!!mSign($earn->amount)!!}</td>
+                        <td><span class="text-success">{{ !empty($earn->type)?strtoupper($earn->type):'-' }}</span></td>
+                        <td>{!! mSign($earn->closing_amount) !!}</td>
                     </tr>
                     @endforeach
 

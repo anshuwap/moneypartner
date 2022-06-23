@@ -12,6 +12,13 @@
       </a>
     </li>
 
+    <li class="nav-item">
+      <a href="{{ url('employee/outlets') }}" class="nav-link {{ (url()->full() == url('employee/outlets'))? 'active':''}}">
+        <i class=" nav-icon fas fa-store"></i>
+        <p>Outlets</p>
+      </a>
+    </li>
+
     <li class="nav-item {{ (url()->full() == url('employee/topup-list') || url()->full() == url('employee/pending-topup'))?'menu-is-opening menu-open':''}}">
       <a href="javascript:void(0);" class="nav-link">
         <i class="fas fa-wallet nav-icon"></i>
@@ -36,7 +43,6 @@
         </li>
       </ul>
     </li>
-
 
     <li class="nav-item">
       <a href="{{ url('employee/passbook') }}" class="nav-link {{ (url()->full() == url('employee/passbook'))? 'active':''}}">

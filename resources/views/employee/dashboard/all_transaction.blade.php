@@ -39,6 +39,7 @@
                   <!-- <th style="width: 115px;"> Transaction Id</th> -->
                   <th style="width:100px;">Mode</th>
                   <th>Amount</th>
+                  <th>Fees</th>
                   <th>Beneficiary </th>
                   <th>IFSC</th>
                   <th>Account No.</th>
@@ -67,6 +68,7 @@
 
                     $status = '<span class="tag-small-warning"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                     $action = '<a href="javascript:void(0);" payment_mode="' . $trans->payment_mode . '" class="btn btn-danger btn-xs retailer_trans" _id="' . $trans->_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>';
+                    if ($trans->amount >= 5000)
                     $action .= '<a href="javascript:void(0);" class="ml-2 btn btn-success btn-sm split" _id="' . $trans->_id . '"><i class="fas fa-solid fa-splotch"></i>&nbsp;Split</a>';
                 } ?>
               <tr>
@@ -80,6 +82,7 @@
                   <!-- <td><span data-toggle="tooltip" data-placement="bottom" title="{{ ucwords($trans->sender_name)}},{{$trans->mobile_number}}">{{ $trans->transaction_id }}</span></td> -->
                   <td><span class="tag-small">{{ ucwords(str_replace('_',' ',$trans->type)) }}</span></td>
                   <td style="width: 90px;">{!! mSign($trans->amount) !!}</td>
+                  <td>{!! mSign($trans->transaction_fees)!!}</td>
                   <td>{{ ucwords($trans->receiver_name)}}</td>
                   <td><span data-toggle="tooltip" data-placement="bottom" title="<?= (!empty($payment->bank_name)) ? $payment->bank_name : '' ?>">{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</span></td>
                   <td><?= (!empty($payment->account_number)) ? $payment->account_number : '' ?>

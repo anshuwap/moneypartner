@@ -53,6 +53,7 @@ use App\Http\Controllers\Employee\PaymentMode\UpiController as EmployeeUpi;
 use App\Http\Controllers\Employee\Action\CreditController   as EmployeeCredit;
 use App\Http\Controllers\Employee\Action\DebitController    as EmployeeDebit;
 use App\Http\Controllers\Employee\WithdrawalController      as EmployeeWithdrawal;
+use App\Http\Controllers\Employee\OutletController          as EmployeeOutlet;
 
 
 //for Distributor panel
@@ -297,6 +298,16 @@ Route::group(['prefix' => 'employee', 'middleware' => 'employee'], function () {
   Route::get('dashboard',  [EmployeeDashboard::class, 'index']);
   Route::get('export',     [EmployeeDashboard::class, 'export']);
   Route::post('import',    [EmployeeDashboard::class, 'import']);
+
+  Route::resource('outlets',     EmployeeOutlet::class);
+  Route::post('outlets-status', [EmployeeOutlet::class, 'outletStatus']);
+  Route::get('outlets-ajax',                  [EmployeeOutlet::class, 'ajaxList']);
+  Route::get('outlet-bank-charges/{id}',      [EmployeeOutlet::class, 'outletBankCharges']);
+  Route::get('outlet-bank-charges-list',      [EmployeeOutlet::class, 'outletBankChargesList']);
+  Route::post('outlet-add-bank-charges',      [EmployeeOutlet::class, 'outletAddBankCharges']);
+  Route::get('outlet-edit-bank-charges/{id}', [EmployeeOutlet::class, 'outletEditBankCharges']);
+  Route::post('outlet-update-bank-charges',   [EmployeeOutlet::class, 'outletUpdateBankCharges']);
+  Route::get('outlet-charges-status/{id}/{key}/{status}', [EmployeeOutlet::class, 'bankChargesStatus']);
 
   Route::resource('payment-channel',    EmployeePaymentChannel::class);
   Route::get('payment-channel-ajax',    [EmployeePaymentChannel::class, 'ajaxList']);
