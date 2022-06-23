@@ -538,8 +538,9 @@ class OutletController extends Controller
             $employees = User::where('role', 'employee')->get();
             $table = '<table class="table table-sm"><tr><th>Employee Name</th><th>Assign</th></tr>';
             foreach ($employees as $key => $employee) {
+
                 $k = ++$key;
-                $checked = (!empty($employee->outlet) && $employee->outlet == $outlet_id) ? "checked" : '';
+                $checked = (!empty($employee->outlet_ids) && is_array($employee->outlet_ids) && in_array($outlet_id,$employee->outlet_ids)) ? "checked" : '';
                 $table .= '<tr><td>' . $employee->full_name . '</td><td>
                 <div class="icheck-success d-inline">
                 <input type="radio" ' . $checked . ' value="' . $employee->_id . '" id="radioSuccess' . $k . '" class="" name="employee_id">
@@ -562,9 +563,14 @@ class OutletController extends Controller
 
             $outlet = Outlet::find($request->outlet_id);
             $outlet->employee_id = $request->employee_id;
+            $outlets = [];
             if ($outlet->save()) {
                 $employee = User::where('_id', $request->employee_id)->first();
-                $employee->outlet = $request->outlet_id;;
+                $outlets = $employee->outlet_ids;
+                $outlets[] = $request->outlet_id;
+
+                // $employee->outlets = $request->outlet_id;;
+                $employee->outlet_ids = $outlets;
                 $employee->save();
                 return response(['status' => 'success', 'msg' => 'Outlet Assigned successfully!']);
             }
