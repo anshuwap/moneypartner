@@ -231,7 +231,7 @@ function getEmpCommision($outlet_id = false, $amount = false)
 
     $query = User::select('_id', 'commission')->where('role', 'employee');
     $query->where(function ($q) use ($outlet_id) {
-        $q->where('outlets', 'all', [$outlet_id]);
+        $q->where('outlet_ids', 'all', [$outlet_id]);
     });
     $employee = $query->first();
     $charges = false;
