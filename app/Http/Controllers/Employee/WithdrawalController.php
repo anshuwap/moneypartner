@@ -15,17 +15,15 @@ class WithdrawalController extends Controller
     {
         try {
 
-            // $outlet_ids = [];
-            // if (!empty(Auth::user()->outlets))
-            // $outlet_ids = Auth::user()->outlets;
-            // $data['outlets'] = Outlet::select('amount', 'outlet_name', '_id')->whereIn('_id', $outlet_ids)->get();
-
             $query =  Withdrawal::query();
             if (!empty($request->transaction_id))
                 $query->where('transaction_id', $request->transaction_id);
 
-            if (!empty($request->outlet_id))
-                $query->where('outlet_id', $request->outlet_id);
+            if (!empty($request->utr_no))
+                $query->where('utr_no', $request->utr_no);
+
+            if (!empty($request->status))
+                $query->where('status', $request->status);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;

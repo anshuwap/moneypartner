@@ -229,7 +229,12 @@ function getEmpCommision($outlet_id = false, $amount = false)
     if (!$amount || !$outlet_id)
         return false;
 
-    $employee = User::select('_id', 'commission')->where('role', 'employee')->where('outlet', $outlet_id)->first();
+    $query = User::select('_id', 'commission')->where('role', 'employee');
+    $query->where(function ($q) use ($outlet_id) {
+        $q->where('outlet_ids', 'all', [$outlet_id]);
+    });
+    $employee = $query->first();
+
     $charges = false;
     if (!empty($employee)) {
         $commissions = $employee->commission;
@@ -282,6 +287,7 @@ if (!function_exists('employeeWallet')) {
     }
 }
 
+
 if (!function_exists('debitEmpWallet')) {
     function debitEmpWallet($user_id, $amount)
     {
@@ -301,6 +307,7 @@ if (!function_exists('debitEmpWallet')) {
     }
 }
 
+
 function employeeCms($request = array())
 {
     if (empty($request))
@@ -313,14 +320,39 @@ function employeeCms($request = array())
         $closing_amount = $A_amount->wallet_amount;
 
     $empCms = new EmployeeCommission();
-    $empCms->employee_id = $request->employee_id;
-    $empCms->amount      = $request->amount;
+    $empCms->employee_id    = $request->employee_id;
+    $empCms->amount         = $request->amount;
     $empCms->closing_amount = $closing_amount;
     $empCms->transaction_id = $request->transaction_id;
-    $empCms->outlet_id   = $request->outlet_id;
-    $empCms->retailer_id = $request->retailer_id;
-    $empCms->action_by   = $request->action_by;
-    $empCms->type = 'credit';
+    $empCms->outlet_id      = $request->outlet_id;
+    $empCms->retailer_id    = $request->retailer_id;
+    $empCms->action_by      = $request->action_by;
+    $empCms->type           = 'credit';
+    if ($empCms->save())
+        return true;
+    return false;
+}
+
+function debitEmployeeCms($request = array())
+{
+    if (empty($request))
+        return false;
+
+    $request = (object)$request;
+    $closing_amount = 0;
+    $A_amount = User::select('wallet_amount', 'outlet_id')->find($request->employee_id);
+    if (!empty($A_amount))
+        $closing_amount = $A_amount->wallet_amount;
+
+    $empCms = new EmployeeCommission();
+    $empCms->employee_id    = $request->employee_id;
+    $empCms->amount         = $request->amount;
+    $empCms->closing_amount = $closing_amount;
+    $empCms->transaction_id = $request->transaction_id;
+    $empCms->outlet_id      = $request->outlet_id;
+    $empCms->retailer_id    = $request->retailer_id;
+    $empCms->action_by      = $request->action_by;
+    $empCms->type           = 'debit';
     if ($empCms->save())
         return true;
     return false;

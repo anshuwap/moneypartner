@@ -19,14 +19,12 @@ class TopupRequestController extends Controller
     {
         try {
 
-            // print_r($request->all());die;
-            //  $topups = Topup::get();
             $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->orderBy('created', 'DESC')->get();
             $data['bank_accounts'] = BankAccount::select('_id', 'bank_name', 'account_holder_name')->where('status', 1)->get();
             $data['upis'] = Upi::select('_id', 'name', 'upi_id')->where('status', 1)->get();
             $data['qrcodes'] = QrCode::select('_id', 'name')->where('status', 1)->get();
 
-            $query = Topup::query();
+            $query = Topup::query()->with(['RetailerName','UserName','ChannelName']);
 
             if (!empty($request->outlet_id))
                 $query->where('outlet_id', $request->outlet_id);
@@ -85,7 +83,7 @@ class TopupRequestController extends Controller
             $data['upis'] = Upi::select('_id', 'name', 'upi_id')->where('status', 1)->get();
             $data['qrcodes'] = QrCode::select('_id', 'name')->where('status', 1)->get();
 
-            $query = Topup::query();
+            $query = Topup::query()->with(['RetailerName','UserName','ChannelName']);
 
             if (!empty($request->outlet_id))
                 $query->where('outlet_id', $request->outlet_id);
@@ -437,7 +435,7 @@ class TopupRequestController extends Controller
             ];
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
-            $query = Topup::query();
+            $query = Topup::query()->with(['RetailerName','UserName','ChannelName']);
 
             if (!empty($request->outlet_id))
                 $query->where('outlet_id', $request->outlet_id);
@@ -532,7 +530,7 @@ class TopupRequestController extends Controller
             ];
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
-            $query = Topup::query()->where('status', 'pending');
+            $query = Topup::query()->where('status', 'pending')->with(['RetailerName','UserName','ChannelName']);
 
             if (!empty($request->transaction_id))
                 $query->where('payment_id', $request->transaction_id);

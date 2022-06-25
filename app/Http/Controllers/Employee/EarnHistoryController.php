@@ -20,7 +20,7 @@ class EarnHistoryController extends Controller
 
             $data['outlets'] = Outlet::select('amount', 'outlet_name', '_id')->get();
 
-            $query =  EmployeeCommission::query();
+            $query =  EmployeeCommission::query()->with(['Transaction','OutletName','ActionBy']);
             if (!empty($request->transaction_id))
                 $query->where('transaction_id', $request->transaction_id);
 

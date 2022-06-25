@@ -26,7 +26,7 @@ class DashboardController extends Controller
             if (!empty($request->mode))
                 $que->where('payment_mode', $request->mode);
 
-            $data['transaction']  = $que->orderBy('created', 'DESC')->get();
+            $data['transaction']  = $que->orderBy('created', 'DESC')->with(['OutletName','UserName'])->get();
             $data['mode'] = $request->mode;
             $data['outlets'] = $outlets;
             //for payment channel
@@ -59,7 +59,7 @@ class DashboardController extends Controller
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
             $query = Transaction::where('status', 'pending');
-            $transactions = $query->orderBy('created', 'DESC')->get();
+            $transactions = $query->orderBy('created', 'DESC')->with(['OutletName','UserName'])->get();
 
             $transactionArr = [];
             foreach ($transactions as $transaction) {

@@ -22,7 +22,7 @@ class TransactionController extends Controller
     {
         try {
 
-            $query = Transaction::query()->where('retailer_id', Auth::user()->_id);
+            $query = Transaction::query()->with(['UserName'])->where('retailer_id', Auth::user()->_id);
 
             if (!empty($request->type))
                 $query->where('type', $request->type);
@@ -69,7 +69,7 @@ class TransactionController extends Controller
     {
         try {
 
-            $query = Transaction::query()->where('retailer_id', Auth::user()->_id)->where('status', 'refund_pending');
+            $query = Transaction::query()->with(['UserName'])->where('retailer_id', Auth::user()->_id)->where('status', 'refund_pending');
 
             if (!empty($request->type))
                 $query->where('type', $request->type);
@@ -674,8 +674,6 @@ class TransactionController extends Controller
 
         $payment_channel = ['bank_name' => $importData['payment_channel']['bank_name'], 'account_number' => $importData['payment_channel']['account_number'], 'ifsc_code' => $importData['payment_channel']['ifsc_code']];
 
-
-
         /*start check amount available in wallet or not*/
         $amount = $importData['amount'];
         $outlet = Outlet::select('bank_charges', 'security_amount')->where('_id', Auth::user()->outlet_id)->first();
@@ -853,7 +851,7 @@ class TransactionController extends Controller
 
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
-            $query = Transaction::query()->where('retailer_id', Auth::user()->_id);
+            $query = Transaction::query()->with(['UserName'])->where('retailer_id', Auth::user()->_id);
 
             if (!empty($request->type))
                 $query->where('type', $request->type);
@@ -947,7 +945,7 @@ class TransactionController extends Controller
 
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
-            $query = Transaction::query()->where('status', 'refund_pending')->where('retailer_id', Auth::user()->_id);
+            $query = Transaction::query()->with(['UserName'])->where('status', 'refund_pending')->where('retailer_id', Auth::user()->_id);
 
             if (!empty($request->type))
                 $query->where('type', $request->type);

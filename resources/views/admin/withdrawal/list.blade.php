@@ -1,4 +1,4 @@
-@extends('employee.layouts.app')
+@extends('admin.layouts.app')
 @section('content')
 @section('page_heading', 'Spent Amount Topup List')
 
@@ -20,14 +20,14 @@
                     @else
                     <a href="javascript:void(0);" class="btn btn-sm btn-success mr-1" id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a>
                     @endif
-                    <!-- <a href="{{ url('employee/passbook-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a> -->
+                    <!-- <a href="{{ url('admin/passbook-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a> -->
                 </div>
             </div>
 
 
             <div class="row pl-2 pr-2" id="filter" <?= (empty($filter)) ? "style='display:none'" : "" ?>>
                 <div class="col-md-12 ml-auto">
-                    <form action="{{ url('employee/withdrawal') }}">
+                    <form action="{{ url('admin/withdrawal') }}">
                         <div class="form-row">
 
                             <div class="form-group col-md-2">
@@ -38,6 +38,16 @@
                             <div class="form-group col-md-2">
                                 <label>End Data</label>
                                 <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['end_date']) ? $filter['end_date'] : '' ?>" name="end_date" id="end-date" />
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label>Employee</label>
+                                <select class="form-control-sm form-control" name="employee_id">
+                                    <option value="" {{ (!empty($filter['employee_id']) && $filter['employee_id'] == 'all')?"selected":""}}>All</option>
+                                    @foreach($employees as $employee)
+                                    <option value="{{$employee->_id}}" {{ (!empty($filter['employee_id']) && $filter['employee_id'] == $employee->_id)?"selected":""}}>{{ ucwords($employee->full_name)}} </option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <div class="form-group col-md-2">
@@ -62,7 +72,7 @@
 
                             <div class="form-group mt-4">
                                 <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i>&nbsp;Search</button>
-                                <a href="{{ url('employee/withdrawal') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
+                                <a href="{{ url('admin/withdrawal') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
                             </div>
                         </div>
                     </form>
@@ -76,6 +86,7 @@
                     <thead>
                         <tr>
                             <th>Sr No.</th>
+                            <th>Employee Name</th>
                             <th>Transaction Id</th>
                             <th>Amount</th>
                             <th>Acc. Holder</th>
@@ -83,10 +94,10 @@
                             <th>IFSC Code</th>
                             <th>Status</th>
                             <th>Request Date</th>
-                            <th>Action By</th>
                             <th>UTR No</th>
-
+                            <th>Action By</th>
                             <th>Action Date</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     @foreach($withdrawals as $key=>$wt)
@@ -103,6 +114,7 @@
                     ?>
                     <tr>
                         <td>{{ ++$key}}</td>
+                        <td>{{ !empty($wt->EmployeeName['full_name'])?$wt->EmployeeName['full_name']:'-'}}</td>
                         <td>{{ $wt->transaction_id }}</td>
                         <td>{!! mSign($wt->amount) !!}</td>
                         <td>{{ $wt->account_holder }}</td>
@@ -110,10 +122,17 @@
                         <td>{{ $wt->ifsc_code }}</td>
                         <td>{!! $status !!}</td>
                         <td>{{ date('d M Y H:i',$wt->created)}}</td>
-                        <td>{{ !empty($wt->UserName['full_name'])?$wt->UserName['full_name']:'-'}}</td>
                         <td>{{ $wt->utr_no }}</td>
-
+                        <td>{{ !empty($wt->UserName['full_name'])?$wt->UserName['full_name']:'-'}}</td>
                         <td><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="{{ $wt->admin_comment}}">{{ !empty($wt->action_date)?date('d M Y H:i',$wt->action_date):'-'}}</a></td>
+                        <td>
+                            @if($wt->status=='pending')
+                            <a href="javascript:void(0);" id_val="{{ $wt->_id}}" class="btn btn-success approve btn-xs"><i class="fas fa-hand-holding-usd nav-icon"></i>&nbsp;Approve</a>
+                            @else
+                            -
+                            @endif
+                        </td>
+
                     </tr>
                     @endforeach
                 </table>
@@ -129,11 +148,11 @@
 @push('modal')
 <!-- Modal -->
 
-<div class="modal fade" id="withdrawal_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="approve_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="heading_totup">Request For Withdrawal</h5>
+                <h5 class="modal-title" id="heading_approve">Request For Withdrawal</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -144,36 +163,29 @@
             </div>
 
             <div class="modal-body">
-                <form id="withdrawal" action="{{ url('employee/withdrawal') }}" method="post">
+                <form id="approve" action="{{ url('admin/withdrawalW') }}" method="post">
                     @csrf
                     <div id="put"></div>
                     <div class="row">
-                        <div class="border-bottom"><b>Total Earned Amount :-&nbsp;&nbsp;</b><span class="float-right">{!! mSign(Auth::user()->wallet_amount) !!}</span></div>
+                        <input type="hidden" id="_id" name="id" value="0">
                         <div class="col-md-12">
 
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label>Amount</label>
                                 <input type="number" placeholder="Enter Amount" id="amount" required name="amount" class="form-control form-control-sm">
                                 <span id="amount_msg" class="custom-text-danger"></span>
-                            </div>
+                            </div> -->
 
                             <div class="form-group">
-                                <label>Acc. Holder Name</label>
-                                <input type="text" placeholder="Enter Acc. Holder Name" id="account_holder" required name="account_holder" class="form-control form-control-sm">
-                                <span id="account_holder_msg" class="custom-text-danger"></span>
+                                <label>Status</label>
+                                <select class="form-control form-control-sm" name="status" id="status">
+                                    <option value="">Select</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
                             </div>
 
-                            <div class="form-group">
-                                <label>Acc. Number</label>
-                                <input type="number" placeholder="Enter Acc. Number" id="account_no" required name="account_number" class="form-control form-control-sm">
-                                <span id="account_no_msg" class="custom-text-danger"></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label>IFSC Code</label>
-                                <input type="text" placeholder="Enter IFSC Code" id="ifsc_code" required name="ifsc_code" class="form-control form-control-sm">
-                                <span id="ifsc_code_msg" class="custom-text-danger"></span>
-                            </div>
+                            <div id="utr"></div>
 
                             <div class="form-group">
                                 <label>Comment (Optional)</label>
@@ -182,7 +194,7 @@
                             </div>
 
                             <div class="form-group text-center">
-                                <input type="submit" class="btn btn-success btn-sm" id="submit_withdrawal" value="Submit">
+                                <input type="submit" class="btn btn-success btn-sm" id="submit_modal" value="Submit">
                             </div>
                         </div>
                     </div>
@@ -194,21 +206,34 @@
 
 
 <script>
-    $('#withdrawal').click(function(e) {
+    $('.approve').click(function(e) {
         e.preventDefault();
-
-        $('form#withdrawal')[0].reset();
-        let url = '{{ url("employee/withdrawal") }}';
-        $('#heading_topup').html('Request For Topup');
+        $('#_id').val($(this).attr('id_val'));
+        $('form#approve')[0].reset();
+        let url = '{{ url("admin/withdrawal") }}';
+        $('#heading_topup').html('Approve Withdrawal');
         $('#put').html('');
-        $('form#withdrawal').attr('action', url);
-        $('#submit_withdrawal').val('Submit');
-        $('#withdrawal_modal').modal('show');
+        $('form#approve').attr('action', url);
+        $('#submit_approve').val('Submit');
+        $('#approve_modal').modal('show');
 
     })
 
+    $('#status').change(function() {
+        let status = $(this).val();
+        if (status == 'approved') {
+            $('#utr').html(`<div class="form-group">
+                                <label>UTR No</label>
+                                <input type="number" placeholder="Enter UTR No" id="amount" required name="utr_no" class="form-control form-control-sm">
+                                <span id="amount_msg" class="custom-text-danger"></span>
+                            </div>`);
+        } else if (status == 'rejected') {
+            $('#utr').html('');
+        }
+    })
+
     /*start form submit functionality*/
-    $("form#withdrawal").submit(function(e) {
+    $("form#approve").submit(function(e) {
         e.preventDefault();
         formData = new FormData(this);
         var url = $(this).attr('action');

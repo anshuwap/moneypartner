@@ -86,7 +86,7 @@
                         <td>{{ !empty($earn->Transaction['transaction_id'])?$earn->Transaction['transaction_id']:'-'}}</td>
                         <td>{{ !empty($earn->ActionBy['full_name'])?$earn->ActionBy['full_name']:'-'}}</td>
                         <td>{!!mSign($earn->amount)!!}</td>
-                        <td><span class="text-success">{{ !empty($earn->type)?strtoupper($earn->type):'-' }}</span></td>
+                        <td><span class="{{ ($earn->type=='credit')?'text-success':'text-danger'}}">{{ !empty($earn->type)?strtoupper($earn->type):'-' }}</span></td>
                         <td>{!! mSign($earn->closing_amount) !!}</td>
                     </tr>
                     @endforeach

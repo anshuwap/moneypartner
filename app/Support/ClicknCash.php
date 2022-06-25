@@ -41,9 +41,9 @@ class ClicknCash
 
         $response = curl_exec($curl);
         curl_close($curl);
-print_r(curl_error($curl));
+
         $res = json_decode($response);
-pr($res);
+
         if (!empty($res->status) && $res->status == 'false') {
             $msg = '';
             if (!empty($res->error) && is_array($res->error)) {
@@ -66,21 +66,21 @@ pr($res);
         if (!empty($res->status) && $res->status == 'true' && !empty($res->data)) {
             $data = $res->data;
 
-            if ($data->status = 'FAILED') {
+            if ($data->status == 'FAILED') {
                 return $result = [
                     'response' => [
                         'msg'        => $res->msg,
                         'txn_id'     => $data->txn_id,
                         'status'     => $data->status,
                         'mobile'     => $data->mobile,
-                        'message'    => $data->message,
+                        'message'    => !empty($data->message)?$data->message:'',
                         'payment_mode' => 'ClicknCash-api'
                     ],
                     'status' => 'failed'
                 ];
             }
 
-            if ($data->status = 'SUCCESS') {
+            if ($data->status == 'SUCCESS') {
                 return $result = [
                     'response' => [
                         'msg'        => $res->msg,

@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\Action\CreditController as AdminCredit;
 use App\Http\Controllers\Admin\Action\DebitController  as AdminDebit;
 use App\Http\Controllers\Admin\ProfileController       as AdminProfile;
 use App\Http\Controllers\Admin\EarnHistoryController   as AdminEarnHistory;
+use App\Http\Controllers\Admin\WithdrawalController    as AdminWithdrawal;
 use App\Http\Controllers\Controller;
 
 //for retailer panel
@@ -215,6 +216,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::get('passbook-export',  [AdminPassbook::class, 'export']);
 
   Route::resource('earn-history',  AdminEarnHistory::class);
+  Route::resource('withdrawal',    AdminWithdrawal::class);
 
   Route::post('logout',  [AdminLogin::class, 'logout']);
 });

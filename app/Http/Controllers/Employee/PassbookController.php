@@ -17,7 +17,7 @@ class PassbookController extends Controller
         try {
             $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->orderBy('created', 'DESC')->get();
 
-            $query = TransferHistory::query();
+            $query = TransferHistory::query()->with(['RetailerName', 'OutletName', 'InitiateDate']);
             if (!empty($request->outlet_id))
                 $query->where('outlet_id', $request->outlet_id);
 
@@ -79,7 +79,7 @@ class PassbookController extends Controller
                 $end_date   = $date[1];
             }
 
-            $query = TransferHistory::query();
+            $query = TransferHistory::query()->with(['RetailerName', 'OutletName', 'InitiateDate']);
             if (!empty($request->outlet_id))
                 $query->where('outlet_id', $request->outlet_id);
 

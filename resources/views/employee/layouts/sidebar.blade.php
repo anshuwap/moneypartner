@@ -172,12 +172,13 @@
       </a>
     </li>
 
-    <!-- <li class="nav-item">
+    <li class="nav-item">
       <a href="{{ url('employee/withdrawal') }}" class="nav-link {{ (url()->full() == url('employee/withdrawal'))? 'active':''}}">
-        <i class="fas fa-regular nav-icon fa-comment-medical" style="color: white;"></i>
+
+        <i class="fas fa-solid fa-money-bill-transfer nav-icon" style="color: white;"></i>
         <p>Withdrawal</p>
       </a>
-    </li> -->
+    </li>
 
   </ul>
 </nav>

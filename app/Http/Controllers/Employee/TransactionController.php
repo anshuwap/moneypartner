@@ -69,7 +69,7 @@ class TransactionController extends Controller
             // }
 
             $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
-            $data['transaction'] = $query->where('status', '!=', 'pending')->orderBy('created', 'DESC')->paginate($perPage);
+            $data['transaction'] = $query->where('status', '!=', 'pending')->orderBy('created', 'DESC')->with(['OutletName','UserName'])->paginate($perPage);
             $data['outlets']   = $outlets;
 
             $request->request->remove('page');
@@ -126,7 +126,7 @@ class TransactionController extends Controller
             $query->whereBetween('created', [$start_date, $end_date]);
 
             $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
-            $data['transaction'] = $query->where('status', '!=', 'pending')->orderBy('created', 'DESC')->paginate($perPage);
+            $data['transaction'] = $query->where('status', '!=', 'pending')->orderBy('created', 'DESC')->with(['OutletName','UserName'])->paginate($perPage);
             $data['outlets']   = $outlets;
 
             $request->request->remove('page');
@@ -682,7 +682,7 @@ class TransactionController extends Controller
             ];
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
-            $query = Transaction::query();
+            $query = Transaction::query()->with(['OutletName','UserName']);
 
             if ($request->outlet_id)
                 $query->where('outlet_id', $request->outlet_id);
@@ -778,7 +778,7 @@ class TransactionController extends Controller
             ];
             fputcsv($f, $transactionArray, $delimiter); //put heading here
 
-            $query = Transaction::query()->where('status', 'refund_pending');
+            $query = Transaction::query()->where('status', 'refund_pending')->with(['OutletName','UserName']);
 
             if ($request->outlet_id)
                 $query->where('outlet_id', $request->outlet_id);

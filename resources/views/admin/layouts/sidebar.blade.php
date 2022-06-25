@@ -242,6 +242,13 @@
       </a>
     </li>
 
+    <li class="nav-item">
+      <a href="{{ url('admin/withdrawal') }}" class="nav-link {{ (url()->full() == url('admin/withdrawal'))? 'active':''}}">
+       <i class="fas fa-solid fa-money-bill-transfer nav-icon" style="color: white;"></i>
+        <p>Withdrawal</p>
+      </a>
+    </li>
+
     <!-- <li class="nav-header">MULTI LEVEL EXAMPLE</li>
     <li class="nav-item">
       <a href="#" class="nav-link">

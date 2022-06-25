@@ -37,6 +37,7 @@ class LoginController extends Controller
 
                     $user = User::where('_id', Auth::user()->_id)->where('mobile_number', Auth::user()->mobile_number)->first();
                     $user->otp = $otp;
+                    $user->verify_otp = 0;
                     if ($user->save()) {
                         $email = $user->email;
                         $source = $this->sendOtp($otp, $email, $user->mobile_number, $user->full_name);
@@ -53,8 +54,9 @@ class LoginController extends Controller
                         ->withSuccess('Signed in');
                 } else if (Auth::user()->role == 'admin') {
 
-                   $user = User::where('_id', Auth::user()->_id)->where('mobile_number', Auth::user()->mobile_number)->first();
+                    $user = User::where('_id', Auth::user()->_id)->where('mobile_number', Auth::user()->mobile_number)->first();
                     $user->otp = $otp;
+                    $user->verify_otp = 0;
                     if ($user->save()) {
                         $email = $user->email;
                         $source = $this->sendOtp($otp, $email, $user->mobile_number, $user->full_name);
@@ -169,8 +171,8 @@ class LoginController extends Controller
                 if ($user->verify_otp == 1)
                     setcookie('logged_in', 'logged', time() + 36000, "/");
 
-              if($user->role=='admin')
-     return redirect()->intended('admin/dashboard');
+                if ($user->role == 'admin')
+                    return redirect()->intended('admin/dashboard');
 
                 return redirect()->intended('retailer/dashboard');
             }
@@ -265,7 +267,7 @@ class LoginController extends Controller
     public function logout()
     {
         $user = User::find(Auth::user()->_id);
-        if ($user->role == 'retailer') {
+        if ($user->role == 'retailer' || $user->role =='admin') {
             $user->verify_otp = 0;
             $user->save();
         }
@@ -273,12 +275,13 @@ class LoginController extends Controller
         return redirect('/');
     }
 
-  public function dashboardRedirect(){
+    public function dashboardRedirect()
+    {
 
-     if(Auth::user()->role=='admin'){
-       return redirect()->intended('admin/dashboard');
-      }else if(Auth::user()->role =='retailer'){
-        return redirect()->intended('retailer/dashboard');
-      }
-  }
+        if (Auth::user()->role == 'admin') {
+            return redirect()->intended('admin/dashboard');
+        } else if (Auth::user()->role == 'retailer') {
+            return redirect()->intended('retailer/dashboard');
+        }
+    }
 }

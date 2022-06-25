@@ -70,7 +70,7 @@ class TransactionController extends Controller
             // }
 
             $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
-            $data['transaction'] = $query->where('status', '!=', 'pending')->orderBy('created', 'DESC')->paginate($perPage);
+            $data['transaction'] = $query->where('status', '!=', 'pending')->orderBy('created', 'DESC')->with(['OutletName','UserName'])->paginate($perPage);
             $data['outlets']   = $outlets;
 
             $request->request->remove('page');
@@ -126,7 +126,7 @@ class TransactionController extends Controller
             $query->whereBetween('created', [$start_date, $end_date]);
 
             $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
-            $data['transaction'] = $query->where('status', '!=', 'pending')->orderBy('created', 'DESC')->paginate($perPage);
+            $data['transaction'] = $query->where('status', '!=', 'pending')->orderBy('created', 'DESC')->with(['OutletName','UserName'])->paginate($perPage);
             $data['outlets']   = $outlets;
 
             $request->request->remove('page');
@@ -894,7 +894,7 @@ class TransactionController extends Controller
             }
             $query->whereBetween('created', [$start_date, $end_date]);
 
-            $transactions = $query->orderBy('created', 'DESC')->get();
+            $transactions = $query->orderBy('created', 'DESC')->with(['OutletName','UserName'])->get();
 
 
             if ($transactions->isEmpty())
@@ -991,7 +991,7 @@ class TransactionController extends Controller
             }
             $query->whereBetween('created', [$start_date, $end_date]);
 
-            $transactions = $query->orderBy('created', 'DESC')->get();
+            $transactions = $query->orderBy('created', 'DESC')->with(['OutletName','UserName'])->get();
 
 
             if ($transactions->isEmpty())

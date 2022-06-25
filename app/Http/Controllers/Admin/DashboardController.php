@@ -55,7 +55,7 @@ class DashboardController extends Controller
             }
 
 
-            $data['transaction']  = $que->orderBy('created', 'DESC')->get();
+            $data['transaction']  = $que->orderBy('created', 'DESC')->with(['OutletName','UserName'])->get();
 
             $data['mode'] = $request->mode;
             //for payment channel

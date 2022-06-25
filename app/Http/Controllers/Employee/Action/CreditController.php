@@ -18,7 +18,7 @@ class CreditController extends Controller
         try {
             $data['outlets'] = User::select('_id', 'outlet_name')->whereIn('role', ['retailer', 'distributor'])->get();
 
-            $query = CreditDebit::where('type', 'credit');
+            $query = CreditDebit::with(['RetailerName','OutletName','UserName','ModifiedBy'])->where('type', 'credit');
             if (!empty($request->outlet_id))
                 $query->where('retailer_id', $request->outlet_id);
 
@@ -179,7 +179,7 @@ class CreditController extends Controller
             $passbookArray = ['Outlet Name', 'Transaction Id', 'Channel', 'Amount','UTR No','Paid Status', 'Created Date', 'Created By', 'Modified By', 'Modified Date'];
             fputcsv($f, $passbookArray, $delimiter); //put heading here
 
-            $query = CreditDebit::where('type', 'credit');
+            $query = CreditDebit::with(['RetailerName','OutletName','UserName','ModifiedBy'])->where('type', 'credit');
             if (!empty($request->outlet_id))
                 $query->where('retailer_id', $request->outlet_id);
 

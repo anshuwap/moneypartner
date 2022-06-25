@@ -119,7 +119,7 @@
                             <td>{{ ++$i }}</td>
                             <td><?= $payment_has_code; ?></td>
                             <td><?= !empty($topup->utr_no) ? $topup->utr_no : '-' ?></td>
-                            <!-- <td>{{ (!empty($topup->payment_channel))?ucwords($topup->payment_channel):'-' }}</td> -->
+
                             <td>{!! $topup->paymentModeName($topup->payment_mode,$topup->payment_reference_id) !!}</td>
 
                             <td>{!! mSign($topup->amount) !!}</td>

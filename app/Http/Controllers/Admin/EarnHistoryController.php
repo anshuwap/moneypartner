@@ -20,18 +20,18 @@ class EarnHistoryController extends Controller
         try {
             $data['outlets'] = Outlet::select('amount', 'outlet_name', '_id')->get();
 
-          $data['employees'] = User::where('role', 'employee')->get();
+            $data['employees'] = User::where('role', 'employee')->get();
 
-            $query =  EmployeeCommission::query();
+            $query =  EmployeeCommission::with(['Transaction','OutletName','ActionBy','EmpName'])->query();
             if (!empty($request->transaction_id))
                 $query->where('transaction_id', $request->transaction_id);
 
             if (!empty($request->outlet_id))
                 $query->where('outlet_id', $request->outlet_id);
-         
+
             if (!empty($request->employee_id))
                 $query->where('employee_id', $request->employee_id);
-            
+
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
@@ -42,7 +42,7 @@ class EarnHistoryController extends Controller
                 $query->whereBetween('created', [$start_date, $end_date]);
             }
             $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
-            $data['earnHistory'] = $query->orderBy('created','desc')->paginate($perPage);
+            $data['earnHistory'] = $query->orderBy('created', 'desc')->paginate($perPage);
             $request->request->remove('page');
             $request->request->remove('perPage');
             $data['filter']  = $request->all();

@@ -121,7 +121,7 @@
                         $payment = (object)$trans->payment_channel;
                         $comment = !empty($trans->response['msg']) ? $trans->response['msg'] : '';
 
-$clame = '';
+                        $clame = '';
                         if ($trans->status == 'success') {
                             $status = '<span class="tag-small"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                             $action = '-';
@@ -147,7 +147,7 @@ $clame = '';
                             $status = '<span class="tag-small-meganta"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords(str_replace('_', ' ', $trans->status)) . '</a></span>';
                             // $receipt = '<a href="'. url('retailer/transaction/receipt/'.$trans->_id).'" target="_blank" class="text-success"><i class="fas fa-2x fa-solid fa-file-invoice " data-toggle="tooltip" data-placement="bottom" title="Receipt"></i></a>';
                             $receipt = '-';
-                             $clame = '<a href="javascript:void(0)" trans_id = "' . $trans->_id . '" trans_no="' . $trans->transaction_id . '" amount="' . $trans->amount . '" class="clame ml-2 btn btn-xs btn-danger">Claim</a>';
+                            $clame = '<a href="javascript:void(0)" trans_id = "' . $trans->_id . '" trans_no="' . $trans->transaction_id . '" amount="' . $trans->amount . '" class="clame ml-2 btn btn-xs btn-danger">Claim</a>';
                         } else if (!empty($trans->response)) {
                             $status = '<span class="tag-small-warning"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">Pending</a></span>';
                             $receipt = '-';
@@ -159,23 +159,15 @@ $clame = '';
                         ?>
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <!-- <td>
-                                <div style="display: grid;"><span>{{ ucwords($trans->sender_name)}}</span><span style="font-size: 13px;">{{ $trans->mobile_number }}</span></div>
-                            </td> -->
-                            <td style="width: 100px;">
-                                {{ $trans->transaction_id }}
-                            </td>
-                            <!-- <td><span class="tag-small">{{ ucwords(str_replace('_',' ',$trans->type)) }}</span></td> -->
+                            <td style="width: 100px;"> {{ $trans->transaction_id }} </td>
                             <td><?= (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '-' ?></td>
                             <td>{!! mSign($trans->amount) !!}</td>
                             <td>{{ ucwords($trans->receiver_name)}}</td>
-                            <!-- <td>{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</td> -->
                             <td><span data-toggle="tooltip" data-placement="bottom" title="<?= (!empty($payment->bank_name)) ? $payment->bank_name : '' ?>">{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</span></td>
                             <td><?= (!empty($payment->account_number)) ? $payment->account_number : '' ?>
                                 <?= (!empty($payment->upi_id)) ? $payment->upi_id : '' ?>
                             </td>
-                            <!-- <td><?= (!empty($payment->bank_name)) ? $payment->bank_name : '-' ?></td> -->
-                            <td> <?= (!empty($trans->response['utr_number'])) ? $trans->response['utr_number'] : '-' ?></td>
+                            <td><?= (!empty($trans->response['utr_number'])) ? $trans->response['utr_number'] : '-' ?></td>
                             <td>{!! $status !!}</td>
                             <td>{{ date('d M y H:i',$trans->created) }}</td>
                             <td>{{ !empty($trans->UserName['full_name']) ?$trans->UserName['full_name'] : '';}}</td>
