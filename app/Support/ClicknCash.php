@@ -32,7 +32,7 @@ class ClicknCash
                 'agent_id' => uniqCode(6),
                 'user_id' => 'RPAY3cc6902ca2',
                 'token' => 'b71de66bec7f1ee9ef2661cff78011bb',
-                'mode' => 'NEFT'
+                'mode' => 'IMPS'
             ),
             CURLOPT_HTTPHEADER => array(
                 'Cookie: ci_session=8a530848b499ae5638eaa7e6a3bd7d3a7324d5a7'
@@ -80,6 +80,19 @@ class ClicknCash
                 ];
             }
 
+            if ($data->status == 'PROCESSING') {
+                return $result = [
+                    'response' => [
+                        'msg'        => $res->msg,
+                        'txn_id'     => $data->txn_id,
+                        'status'     => $data->status,
+                        'mobile'     => $data->mobile,
+                        'payment_mode' => 'ClicknCash-api'
+                    ],
+                   'status' => 'process'
+                ];
+            }
+
             if ($data->status == 'SUCCESS') {
                 return $result = [
                     'response' => [
@@ -95,6 +108,8 @@ class ClicknCash
                     'status' => 'success'
                 ];
             }
+
+
         }
 
         return false;

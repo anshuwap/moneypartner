@@ -245,7 +245,7 @@
     <li class="nav-item">
       <a href="{{ url('admin/withdrawal') }}" class="nav-link {{ (url()->full() == url('admin/withdrawal'))? 'active':''}}">
        <i class="fas fa-solid fa-money-bill-transfer nav-icon" style="color: white;"></i>
-        <p>Withdrawal</p>
+        <p>Employee Pay</p>
       </a>
     </li>
 

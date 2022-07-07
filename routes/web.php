@@ -215,8 +215,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::get('passbook',         [AdminPassbook::class, 'index']);
   Route::get('passbook-export',  [AdminPassbook::class, 'export']);
 
-  Route::resource('earn-history',  AdminEarnHistory::class);
-  Route::resource('withdrawal',    AdminWithdrawal::class);
+  Route::resource('earn-history',   AdminEarnHistory::class);
+  Route::get('earn-history-export', [AdminEarnHistory::class, 'export']);
+
+  Route::resource('withdrawal',     AdminWithdrawal::class);
 
   Route::post('logout',  [AdminLogin::class, 'logout']);
 });
@@ -343,6 +345,7 @@ Route::group(['prefix' => 'employee', 'middleware' => 'employee'], function () {
   Route::get('transaction-report',  [EmployeeTransaction::class, 'report']);
 
   Route::resource('earn-history',  EarnHistory::class);
+  Route::get('earn-history-export', [EarnHistory::class, 'export']);
 
   Route::get('passbook',         [EmployeePassbook::class, 'index']);
   Route::get('passbook-export',  [EmployeePassbook::class, 'export']);

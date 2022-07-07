@@ -112,7 +112,7 @@
 
                         $status = '<span class="tag-small-warning"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                         $action = '<a href="javascript:void(0);" payment_mode="' . $trans->payment_mode . '" class="btn btn-danger btn-xs retailer_trans" _id="' . $trans->_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>';
-                        if ($trans->amount >= 5000)
+                        // if ($trans->amount >= 5000)
                             $action .= '<a href="javascript:void(0);" class="ml-2 btn btn-success btn-sm split" _id="' . $trans->_id . '"><i class="fas fa-solid fa-splotch"></i>&nbsp;Split</a>';
                     } ?>
                   <tr>

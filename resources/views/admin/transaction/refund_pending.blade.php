@@ -146,7 +146,7 @@
                             <!-- <td><?= (!empty($payment->bank_name)) ? $payment->bank_name : '-' ?></td> -->
                             <td> <?= (!empty($trans->response['utr_number'])) ? $trans->response['utr_number'] : '-' ?></td>
                             <td>{!! $status !!}</td>
-                            <td>{{ date('d,M y H:i',$trans->created) }}</td>
+                            <td>{{ !empty($trans->split_created)?date('d,M y H:i',$trans->split_created):date('d,M y H:i',$trans->created) }}</td>
                             <td>{{ !empty($trans->UserName['full_name']) ?$trans->UserName['full_name'] : '';}}</td>
                             <td><?php $actionM = !(empty($trans->response['action'])) ? $trans->response['action'] : '';
                                 echo !empty($trans->response['action_date']) ? '<span data-toggle="tooltip" data-placement="bottom" title="' . $actionM . '">' . date('d,M y H:i', $trans->response['action_date']) . '</span>' : '' ?></td>

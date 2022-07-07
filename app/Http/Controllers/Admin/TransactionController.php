@@ -62,7 +62,12 @@ class TransactionController extends Controller
                 $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
                 $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
             }
-            $query->whereBetween('created', [$start_date, $end_date]);
+            if ($request->filter_by == 'created_date')
+                $query->whereBetween('created', [$start_date, $end_date]);
+            else if ($request->filter_by == 'action_date')
+                $query->whereBetween('response.action_date', [$start_date, $end_date]);
+            else
+                $query->whereBetween('created', [$start_date, $end_date]);
             // else {
             //     $crrMonth = (date('Y-m-d'));
             //     $start_date = strtotime(trim(date("d-m-Y", strtotime('-30 days', strtotime($crrMonth)))) . " 00:00:00");
@@ -70,7 +75,7 @@ class TransactionController extends Controller
             // }
 
             $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
-            $data['transaction'] = $query->where('status', '!=', 'pending')->orderBy('created', 'DESC')->with(['OutletName','UserName'])->paginate($perPage);
+            $data['transaction'] = $query->where('status', '!=', 'pending')->orderBy('created', 'DESC')->with(['OutletName', 'UserName'])->paginate($perPage);
             $data['outlets']   = $outlets;
 
             $request->request->remove('page');
@@ -126,7 +131,7 @@ class TransactionController extends Controller
             $query->whereBetween('created', [$start_date, $end_date]);
 
             $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
-            $data['transaction'] = $query->where('status', '!=', 'pending')->orderBy('created', 'DESC')->with(['OutletName','UserName'])->paginate($perPage);
+            $data['transaction'] = $query->where('status', '!=', 'pending')->orderBy('created', 'DESC')->with(['OutletName', 'UserName'])->paginate($perPage);
             $data['outlets']   = $outlets;
 
             $request->request->remove('page');
@@ -146,6 +151,8 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
         try {
+
+            $request->name;
             $transaction = Transaction::find($request->trans_id);
 
             if ($transaction->status == 'rejected')
@@ -467,7 +474,7 @@ class TransactionController extends Controller
 
             $payment_para = [
                 'mobile_number' => $transaction->mobile_number,
-                'account_number'=> $payment->account_number,
+                'account_number' => $payment->account_number,
                 'ifsc_code'     => $payment->ifsc_code,
                 'amount'        => $transaction->amount,
                 'receiver_name' => $transaction->receiver_name,
@@ -892,9 +899,15 @@ class TransactionController extends Controller
                 $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
                 $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
             }
-            $query->whereBetween('created', [$start_date, $end_date]);
 
-            $transactions = $query->orderBy('created', 'DESC')->with(['OutletName','UserName'])->get();
+            if ($request->filter_by == 'created_date')
+                $query->whereBetween('created', [$start_date, $end_date]);
+            else if ($request->filter_by == 'action_date')
+                $query->whereBetween('response.action_date', [$start_date, $end_date]);
+            else
+                $query->whereBetween('created', [$start_date, $end_date]);
+
+            $transactions = $query->orderBy('created', 'DESC')->with(['OutletName', 'UserName'])->get();
 
 
             if ($transactions->isEmpty())
@@ -989,9 +1002,15 @@ class TransactionController extends Controller
                 $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
                 $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
             }
-            $query->whereBetween('created', [$start_date, $end_date]);
 
-            $transactions = $query->orderBy('created', 'DESC')->with(['OutletName','UserName'])->get();
+            if ($request->filter_by == 'created_date')
+                $query->whereBetween('created', [$start_date, $end_date]);
+            else if ($request->filter_by == 'action_date')
+                $query->whereBetween('response.action_date', [$start_date, $end_date]);
+            else
+                $query->whereBetween('created', [$start_date, $end_date]);
+
+            $transactions = $query->orderBy('created', 'DESC')->with(['OutletName', 'UserName'])->get();
 
 
             if ($transactions->isEmpty())
@@ -1111,9 +1130,12 @@ class TransactionController extends Controller
                 $response['utr_number']    = !empty($responseData[$key]['utr_number']) ? $responseData[$key]['utr_number'] : '';
                 $response['msg']           = !empty($responseData[$key]['msg']) ? $responseData[$key]['msg'] : '';
 
+                $transactionN->timestamps = false;
+
                 $transactionN->response     = $response;
                 $transactionN->referance_trans = $id;
-                $transactionN->trans_type   = 'split';
+                $transactionN->trans_type    = 'split';
+                $transactionN->split_created =  $transaction->created;
                 $result = $transactionN->save();
             }
 

@@ -36,6 +36,14 @@
                         <div class="form-row">
 
                             <div class="form-group col-md-2">
+                                <label>Date Filter By</label>
+                                <select class="form-control form-control-sm" name="filter_by">
+                                    <option value="created_date" <?= (!empty($filter['filter_by']) && $filter['filter_by'] =='created_date') ? 'selected' : '' ?>>Created Date</option>
+                                    <option value="action_date" <?= (!empty($filter['filter_by']) && $filter['filter_by'] =='action_date') ? 'selected' : '' ?>>Action Date</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-2">
                                 <label>Start Data</label>
                                 <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['start_date']) ? $filter['start_date'] : '' ?>" name="start_date" />
                                 <!-- <input type="text" class="form-control form-control-sm" value="<?= !empty($filter['date_range']) ? $filter['date_range'] : '' ?>" name="date_range" id="daterange-btn" /> -->
@@ -199,7 +207,7 @@
                             <!-- <td><?= (!empty($payment->bank_name)) ? $payment->bank_name : '-' ?></td> -->
                             <td> <?= (!empty($trans->response['utr_number'])) ? $trans->response['utr_number'] : '-' ?></td>
                             <td>{!! $status !!}</td>
-                            <td>{{ date('d,M y H:i',$trans->created) }}</td>
+                            <td>{{ !empty($trans->split_created)?date('d,M y H:i',$trans->split_created):date('d,M y H:i',$trans->created) }}</td>
                             <td>{{ !empty($trans->UserName['full_name']) ?$trans->UserName['full_name'] : '';}}</td>
                             <td><?php $actionM = !(empty($trans->response['action'])) ? $trans->response['action'] : '';
                                 echo !empty($trans->response['action_date']) ? '<span data-toggle="tooltip" data-placement="bottom" title="' . $actionM . '">' . date('d,M y H:i', $trans->response['action_date']) . '</span>' : '' ?></td>

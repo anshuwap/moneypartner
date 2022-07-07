@@ -19,7 +19,7 @@
                     @else
                     <a href="javascript:void(0);" class="btn btn-sm btn-success" id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a>
                     @endif
-
+                    <a href="{{ url('admin/earn-history-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
                 </div>
             </div>
 
@@ -53,17 +53,17 @@
                                     @endforeach
                                 </select>
                             </div>
-                          
-                          <div class="form-group col-md-2">
+
+                            <div class="form-group col-md-2">
                                 <label>Employee</label>
                                 <select class="form-control-sm form-control" name="employee_id">
                                     <option value="" {{ (!empty($filter['employee_id']) && $filter['employee_id'] == 'all')?"selected":""}}>All</option>
                                     @foreach($employees as $employee)
-                                    <option value="{{$employee->_id}}" {{ (!empty($filter['employee_id']) && $filter['employee_id'] == $employee->_id)?"selected":""}}>{{ ucwords($employee->full_name)}}                                       </option>
+                                    <option value="{{$employee->_id}}" {{ (!empty($filter['employee_id']) && $filter['employee_id'] == $employee->_id)?"selected":""}}>{{ ucwords($employee->full_name)}} </option>
                                     @endforeach
                                 </select>
                             </div>
-                          
+
                             <div class="form-group mt-4">
                                 <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i>&nbsp;Search</button>
                                 <a href="{{ url('admin/earn-history') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
@@ -81,11 +81,13 @@
                         <tr>
                             <th>Sr No.</th>
                             <th>Employee Name</th>
-                            <th>Transaction Time</th>
-                            <th>Amount</th>
-                            <th>Transaction No</th>
                             <th>Outlet Name</th>
+                            <th>Transaction Time</th>
+                            <th>Transaction No</th>
                             <th>Action By</th>
+                            <th>Amount</th>
+                            <th>Type</th>
+                            <th>Closing Amount</th>
                         </tr>
                     </thead>
 
@@ -93,11 +95,13 @@
                     <tr>
                         <td>{{ ++$key }}</td>
                         <td>{{ !empty($earn->EmpName['full_name'])?$earn->EmpName['full_name']:'-'}}</td>
-                        <td>{{ date('Y-m-d H:i:s',$earn->created)}}</td>
-                        <td>{!!mSign($earn->amount)!!}</td>
-                        <td>{{ !empty($earn->Transaction['transaction_id'])?$earn->Transaction['transaction_id']:'-'}}</td>
                         <td>{{ !empty($earn->OutletName['outlet_name'])?$earn->OutletName['outlet_name']:'-'}}</td>
+                        <td>{{ date('Y-m-d H:i:s',$earn->created)}}</td>
+                        <td>{{ !empty($earn->Transaction['transaction_id'])?$earn->Transaction['transaction_id']:'-'}}</td>
                         <td>{{ !empty($earn->ActionBy['full_name'])?$earn->ActionBy['full_name']:'-'}}</td>
+                        <td>{!!mSign($earn->amount)!!}</td>
+                        <td><span class="{{ ($earn->type=='credit')?'text-success':'text-danger'}}">{{ !empty($earn->type)?strtoupper($earn->type):'-' }}</span></td>
+                        <td>{!!mSign($earn->closing_amount)!!}</td>
                     </tr>
                     @endforeach
 

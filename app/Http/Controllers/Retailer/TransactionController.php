@@ -140,7 +140,7 @@ class TransactionController extends Controller
             //for preview page functionality
             if (!empty($request->preview) && $request->preview == 'preview') {
                 $previewData = $request->all();
-                $previewData['fees'] = $charges;
+                $previewData['fees'] = number_format($charges, 2, ".", "");
                 return  response(['status' => 'preview', 'response' => $previewData]);
             }
 
@@ -230,7 +230,7 @@ class TransactionController extends Controller
             $transaction->transaction_id = uniqCode(3) . rand(111111, 999999);
             $transaction->sender_name    = trim($request->sender_name);
             $transaction->amount         = $request->amount;
-            $transaction->transaction_fees = $charges;
+            $transaction->transaction_fees = number_format($charges,2, ".", "");
             $transaction->receiver_name  = $request->receiver_name;
             $transaction->payment_mode   = 'bank_account'; //$request->payment_mode;
             $transaction->payment_channel = $request->payment_channel;
@@ -442,7 +442,7 @@ class TransactionController extends Controller
             $Transaction->mobile_number   = Auth::user()->mobile_number;
             $Transaction->sender_name     = Auth::user()->full_name;
             $Transaction->amount          = $request->amount;
-            $Transaction->transaction_fees = $charges;
+            $Transaction->transaction_fees= number_format($charges,2, ".", "");
             $Transaction->receiver_name   = $request->receiver_name;
             $Transaction->payment_mode    = 'bank_account'; //$request->payment_mode;
             $Transaction->payment_channel = $request->payment_channel;
@@ -766,7 +766,7 @@ class TransactionController extends Controller
             $transaction->mobile_number    = $importData['mobile_number'];
             $transaction->sender_name      = $importData['sender_name'];
             $transaction->amount           = $importData['amount'];
-            $transaction->transaction_fees = $charges;
+            $transaction->transaction_fees = number_format($charges,2, ".", "");
             $transaction->receiver_name    = $importData['receiver_name'];
             $transaction->payment_channel  = $payment_channel;
             $transaction->status           = $api_status;

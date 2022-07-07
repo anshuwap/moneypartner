@@ -114,7 +114,7 @@
                             <th>Outlet</th>
                             <!-- <th>Transaction Id</th> -->
                             <!-- <th>Mode</th> -->
-                            <th>Channel</th>
+                            <!-- <th>Channel</th> -->
                             <th>Amount</th>
                             <th>Fees</th>
                             <th>Beneficiary</th>
@@ -175,7 +175,7 @@
                             </td>
                             <!-- <td><span data-toggle="tooltip" data-placement="bottom" title="{{ ucwords($trans->sender_name)}},{{$trans->mobile_number}}">{{ $trans->transaction_id }}</span></td> -->
                             <!-- <td><span class="tag-small">{{ ucwords(str_replace('_',' ',$trans->type)) }}</span></td> -->
-                            <td><?= (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '-' ?></td>
+                            <!-- <td>{{ (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '-' }}</td> -->
 
                             <td>{!! mSign($trans->amount) !!}</td>
                             <td>{!! mSign($trans->transaction_fees) !!}</td>
@@ -188,7 +188,7 @@
                             <!-- <td><?= (!empty($payment->bank_name)) ? $payment->bank_name : '-' ?></td> -->
                             <td> <?= (!empty($trans->response['utr_number'])) ? $trans->response['utr_number'] : '-' ?></td>
                             <td>{!! $status !!}</td>
-                            <td>{{ date('d,M y H:i',$trans->created) }}</td>
+                            <td>{{ !empty($trans->split_created)?date('d,M y H:i',$trans->split_created):date('d,M y H:i',$trans->created) }}</td>
                             <td>{{ !empty($trans->UserName['full_name']) ?$trans->UserName['full_name'] : '';}}</td>
                             <td><?php $actionM = !(empty($trans->response['action'])) ? $trans->response['action'] : '';
                                 echo !empty($trans->response['action_date']) ? '<span data-toggle="tooltip" data-placement="bottom" title="' . $actionM . '">' . date('d,M y H:i', $trans->response['action_date']) . '</span>' : '' ?></td>
