@@ -46,7 +46,12 @@ class TransactionController extends Controller
                 $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
                 $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
             }
-            $query->whereBetween('created', [$start_date, $end_date]);
+            if ($request->filter_by == 'created_date')
+                $query->whereBetween('created', [$start_date, $end_date]);
+            else if ($request->filter_by == 'action_date')
+                $query->whereBetween('response.action_date', [$start_date, $end_date]);
+            else
+                $query->whereBetween('created', [$start_date, $end_date]);
 
             $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
             $data['transactions']    = $query->orderBy('created', 'DESC')->paginate($perPage);
@@ -93,7 +98,12 @@ class TransactionController extends Controller
                 $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
                 $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
             }
-            $query->whereBetween('created', [$start_date, $end_date]);
+            if ($request->filter_by == 'created_date')
+                $query->whereBetween('created', [$start_date, $end_date]);
+            else if ($request->filter_by == 'action_date')
+                $query->whereBetween('response.action_date', [$start_date, $end_date]);
+            else
+                $query->whereBetween('created', [$start_date, $end_date]);
 
             $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
             $data['transactions']    = $query->orderBy('created', 'DESC')->paginate($perPage);
@@ -230,7 +240,7 @@ class TransactionController extends Controller
             $transaction->transaction_id = uniqCode(3) . rand(111111, 999999);
             $transaction->sender_name    = trim($request->sender_name);
             $transaction->amount         = $request->amount;
-            $transaction->transaction_fees = number_format($charges,2, ".", "");
+            $transaction->transaction_fees = number_format($charges, 2, ".", "");
             $transaction->receiver_name  = $request->receiver_name;
             $transaction->payment_mode   = 'bank_account'; //$request->payment_mode;
             $transaction->payment_channel = $request->payment_channel;
@@ -361,7 +371,7 @@ class TransactionController extends Controller
             //for preview page functionality
             if (!empty($request->preview) && $request->preview == 'preview') {
                 $previewData = $request->all();
-                $previewData['fees'] = $charges;
+                $previewData['fees'] = number_format($charges, 2, ".", "");
                 return  response(['status' => 'preview', 'response' => $previewData]);
             }
 
@@ -421,7 +431,7 @@ class TransactionController extends Controller
                             }
                         }
 
-                        if ($api->status == 1 && $api->name =='CLICKnCASH') {
+                        if ($api->status == 1 && $api->name == 'CLICKnCASH') {
                             $clicknCash = new ClicknCash();
                             $res = $clicknCash->payout($payment_para);
                         }
@@ -442,7 +452,7 @@ class TransactionController extends Controller
             $Transaction->mobile_number   = Auth::user()->mobile_number;
             $Transaction->sender_name     = Auth::user()->full_name;
             $Transaction->amount          = $request->amount;
-            $Transaction->transaction_fees= number_format($charges,2, ".", "");
+            $Transaction->transaction_fees = number_format($charges, 2, ".", "");
             $Transaction->receiver_name   = $request->receiver_name;
             $Transaction->payment_mode    = 'bank_account'; //$request->payment_mode;
             $Transaction->payment_channel = $request->payment_channel;
@@ -766,7 +776,7 @@ class TransactionController extends Controller
             $transaction->mobile_number    = $importData['mobile_number'];
             $transaction->sender_name      = $importData['sender_name'];
             $transaction->amount           = $importData['amount'];
-            $transaction->transaction_fees = number_format($charges,2, ".", "");
+            $transaction->transaction_fees = number_format($charges, 2, ".", "");
             $transaction->receiver_name    = $importData['receiver_name'];
             $transaction->payment_channel  = $payment_channel;
             $transaction->status           = $api_status;
@@ -845,7 +855,7 @@ class TransactionController extends Controller
             $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
 
             $transactionArray = [
-                'Transaction ID', 'Customer Name', 'Customer Phone', 'Mode', 'Channel', 'Amount', 'Fees', 'Beneficiary', 'IFSC', 'Account No.', 'Bank Name',
+                'Transaction ID', 'Customer Name', 'Customer Phone', 'Mode', 'Amount', 'Fees', 'Beneficiary', 'IFSC', 'Account No.', 'Bank Name',
                 'UTR Number', 'Status', 'Request Date', 'Action By', 'Action Date'
             ];
 
@@ -862,6 +872,8 @@ class TransactionController extends Controller
             if (!empty($request->banficiary))
                 $query->where('receiver_name', $request->banficiary);
 
+            if (!empty($request->account_no))
+                $query->where('payment_channel.account_number', $request->account_no);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
@@ -890,18 +902,18 @@ class TransactionController extends Controller
                 $transaction_val[] = ucwords($transaction->sender_name);
                 $transaction_val[] = $transaction->mobile_number;
                 $transaction_val[] = ucwords(str_replace('_', ' ', $transaction->type));
-                $transaction_val[] = (!empty($transaction->response['payment_mode'])) ? $transaction->response['payment_mode'] : '';
+
                 $transaction_val[] = $transaction->amount;
                 $transaction_val[] = (!empty($transaction->transaction_fees)) ? $transaction->transaction_fees : '';
                 $transaction_val[] = ucwords($transaction->receiver_name);
                 $transaction_val[] = (!empty($payment->ifsc_code)) ? $payment->ifsc_code : '';
                 $transaction_val[] = (!empty($payment->account_number)) ? $payment->account_number : $payment->upi_id;
                 $transaction_val[] = (!empty($payment->bank_name)) ? $payment->bank_name : '';
-                $transaction_val[] = (!empty($transaction->response['utr_number'])) ? $transaction->response['utr_number'] : '';
+                $transaction_val[] = !empty($transaction->response['utr_number']) ? $transaction->response['utr_number'] : '-';
                 $transaction_val[] = strtoupper(str_replace('_', ' ', $transaction->status));
-                $transaction_val[] = date('Y-m-d H:i', $transaction->created);
+                $transaction_val[] = !empty($transaction->created) ? date('Y-m-d H:i', $transaction->created) : '';
                 $transaction_val[] = !empty($transaction->UserName['full_name']) ? $transaction->UserName['full_name'] : '';
-                $transaction_val[] = !empty($transaction->response['action_date']) ? date('d,M y H:i', $transaction->response['action_date']) : '';
+                $transaction_val[] = !empty($transaction->response['action_date']) ? date('Y-m-d H:i', $transaction->response['action_date']) : '';
 
                 $transactionArr = $transaction_val;
 
@@ -939,7 +951,7 @@ class TransactionController extends Controller
             $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
 
             $transactionArray = [
-                'Transaction ID', 'Customer Name', 'Customer Phone', 'Mode', 'Channel', 'Amount', 'Fees', 'Beneficiary', 'IFSC', 'Account No.', 'Bank Name',
+                'Transaction ID', 'Customer Name', 'Customer Phone', 'Mode', 'Amount', 'Fees', 'Beneficiary', 'IFSC', 'Account No.', 'Bank Name',
                 'UTR Number', 'Status', 'Request Date', 'Action By', 'Action Date'
             ];
 
@@ -956,6 +968,8 @@ class TransactionController extends Controller
             if (!empty($request->banficiary))
                 $query->where('receiver_name', $request->banficiary);
 
+            if (!empty($request->account_no))
+                $query->where('payment_channel.account_number', $request->account_no);
 
             $start_date = $request->start_date;
             $end_date   = $request->end_date;
@@ -983,18 +997,18 @@ class TransactionController extends Controller
                 $transaction_val[] = ucwords($transaction->sender_name);
                 $transaction_val[] = $transaction->mobile_number;
                 $transaction_val[] = ucwords(str_replace('_', ' ', $transaction->type));
-                $transaction_val[] = (!empty($transaction->response['payment_mode'])) ? $transaction->response['payment_mode'] : '';
+
                 $transaction_val[] = $transaction->amount;
                 $transaction_val[] = (!empty($transaction->transaction_fees)) ? $transaction->transaction_fees : '';
                 $transaction_val[] = ucwords($transaction->receiver_name);
                 $transaction_val[] = (!empty($payment->ifsc_code)) ? $payment->ifsc_code : '';
                 $transaction_val[] = (!empty($payment->account_number)) ? $payment->account_number : $payment->upi_id;
                 $transaction_val[] = (!empty($payment->bank_name)) ? $payment->bank_name : '';
-                $transaction_val[] = (!empty($transaction->response['utr_number'])) ? $transaction->response['utr_number'] : '';
+                $transaction_val[] = !empty($transaction->utrs) ? $transaction->utrs : (!empty($transaction->response['utr_number']) ? $transaction->response['utr_number'] : '-');
                 $transaction_val[] = strtoupper(str_replace('_', ' ', $transaction->status));
-                $transaction_val[] = date('Y-m-d H:i', $transaction->created);
+                $transaction_val[] = !empty($transaction->created) ? date('Y-m-d H:i', $transaction->created) : '';
                 $transaction_val[] = !empty($transaction->UserName['full_name']) ? $transaction->UserName['full_name'] : '';
-                $transaction_val[] = !empty($transaction->response['action_date']) ? date('d,M y H:i', $transaction->response['action_date']) : '';
+                $transaction_val[] = !empty($transaction->response['action_date']) ? date('Y-m-d H:i', $transaction->response['action_date']) : '';
 
                 $transactionArr = $transaction_val;
 

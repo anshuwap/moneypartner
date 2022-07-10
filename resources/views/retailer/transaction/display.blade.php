@@ -35,6 +35,7 @@
                 <div class="col-md-12 ml-auto">
                     <form action="{{ url('retailer/transaction') }}">
                         <div class="form-row">
+
                             <div class="form-group col-md-2">
                                 <label>Start Data</label>
                                 <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['start_date']) ? $filter['start_date'] : '' ?>" name="start_date" />
@@ -100,7 +101,7 @@
                             <!-- <th>Customer</th> -->
                             <th>Transaction Id</th>
                             <!-- <th>Mode</th> -->
-                            <th>Channel</th>
+                            <!-- <th>Channel</th> -->
                             <th>Amount</th>
                             <th>Beneficiary</th>
                             <th>IFSC</th>
@@ -160,16 +161,16 @@
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td style="width: 100px;"> {{ $trans->transaction_id }} </td>
-                            <td><?= (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '-' ?></td>
+                       <!--     <td><?= (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '-' ?></td> -->
                             <td>{!! mSign($trans->amount) !!}</td>
                             <td>{{ ucwords($trans->receiver_name)}}</td>
                             <td><span data-toggle="tooltip" data-placement="bottom" title="<?= (!empty($payment->bank_name)) ? $payment->bank_name : '' ?>">{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</span></td>
                             <td><?= (!empty($payment->account_number)) ? $payment->account_number : '' ?>
                                 <?= (!empty($payment->upi_id)) ? $payment->upi_id : '' ?>
                             </td>
-                            <td><?= (!empty($trans->response['utr_number'])) ? $trans->response['utr_number'] : '-' ?></td>
+                            <td> <?= !empty($trans->utrs)?$trans->utrs:(!empty($trans->response['utr_number']) ? $trans->response['utr_number'] : '-') ?></td>
                             <td>{!! $status !!}</td>
-                           <td>{{ !empty($trans->split_created)?date('d,M y H:i',$trans->split_created):date('d,M y H:i',$trans->created) }}</td>
+                            <td>{{ !empty($trans->split_created)?date('d,M y H:i',$trans->split_created):date('d,M y H:i',$trans->created) }}</td>
                             <td>{{ !empty($trans->UserName['full_name']) ?$trans->UserName['full_name'] : '';}}</td>
                             <td><?php $actionM = !(empty($trans->response['action'])) ? $trans->response['action'] : '';
                                 echo !empty($trans->response['action_date']) ? '<span data-toggle="tooltip" data-placement="bottom" title="' . $actionM . '">' . date('d,M y H:i', $trans->response['action_date']) . '</span>' : '' ?></td>

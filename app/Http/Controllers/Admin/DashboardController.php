@@ -287,7 +287,6 @@ class DashboardController extends Controller
 
     public function serverError()
     {
-
         return view('admin.500');
     }
 }

@@ -64,7 +64,7 @@
                             <td>{{!empty($transaction->payment_channel['account_number'])?$transaction->payment_channel['account_number']:''}}</td>
                             <td>{{!empty($transaction->payment_channel['bank_name'])?$transaction->payment_channel['bank_name']:''}}</td>
                             <td>{{ strtoupper($transaction->status)}}</td>
-                            <td>{{ !empty($transaction->response['utr_number'])?$transaction->response['utr_number']:'-' }}</td>
+                            <td>{{ !empty($transaction->utrs) ? "$transaction->utrs" : (!empty($transaction->response['utr_number']) ? $transaction->response['utr_number'] : '-') }}</td>
                             <td>{!! !empty($transaction->amount)?mSign($transaction->amount):0 !!}</td>
                           <td>{{!empty($transaction->created)?date('d-m-Y H:i',$transaction->created):''}}</td>
                         </tr>

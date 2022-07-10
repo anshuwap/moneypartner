@@ -61,10 +61,15 @@
           <div class="card-tools">
 
             <div class="text-center">
-               <a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title="Comming Soon..."><img src="{{asset('attachment/google_pay.png')}}"  class="mr-1" style="width:40px;" /></a>
-            <a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title="Comming Soon..."><img src="{{asset('attachment/paytm.png')}}"  class="mr-1" style="width:40px;" /></a>
-             <a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title="Comming Soon..."><img src="{{asset('attachment/phonePay.jpg')}}" class="mr-1" style="width:40px;" /></a>
-             <a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title="Comming Soon..."><img src="{{asset('attachment/upi.png')}}"  class="mr-1" style="width:40px;" /></a></div>
+               <a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title="Comming Soon..."><img src="{{asset('attachment/google_pay.PNG')}}"  class="mr-1" style="width:90px;" /></a>
+            <a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title="Comming Soon..."><img src="{{asset('attachment/paytm.PNG')}}"  class="mr-1" style="width:90px;" /></a>
+             <a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title="Comming Soon..."><img src="{{asset('attachment/phonePay.PNG')}}" class="mr-1" style="width:90px;" /></a>
+             <a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title="Comming Soon..."><img src="{{asset('attachment/upi.PNG')}}"  class="mr-1" style="width:90px;" /></a></div>
+            <div class="text-center">
+            <a>
+               <marquee>प्रिय रिटेलर्स बहुत ही जल्दी हम आपको सिंगल UPI पेआउट की सर्विस उपलदभ करवने जा रहे है</marquee>
+              </a>
+            </div>
             <div class="btn-r">
             @if(!empty(MoneyPartnerOption()->dmt_transfer) && MoneyPartnerOption()->dmt_transfer ==1)
             <a href="javascript:void(0);" class="btn btn-sm btn-success" id="create_customer"><i class="fas fa-plus-circle"></i>&nbsp;Add DMT</a>

@@ -3,19 +3,40 @@
 namespace App\Http\Controllers;
 
 use App\Http\Email;
+use App\Models\Setting;
 use App\Support\Email as SupportEmail;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Auth;
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
 
-    public function test()
+    public function __construct()
     {
+
+        $this->middleware(function ($request, $next) {
+
+            if ((!empty(Auth::user()->role) && Auth::user()->role == 'retailer') ||
+                (!empty($_COOKIE['role']) && $_COOKIE['role'] == 'retailers' && empty(Auth::user()->role))
+            ) {
+                $setting = Setting::first();
+                if ($setting->status && !empty(Auth::user()->role)) {
+                    setcookie('role', 'retailers', time() + 72000, "/");
+                    Auth::logout();
+                    return redirect('maintenance');
+                } else if ($setting->status) {
+                    return redirect('maintenance');
+                } else {
+                    return $next($request);
+                }
+            }
+            return $next($request);
+        });
     }
 
     public function show()

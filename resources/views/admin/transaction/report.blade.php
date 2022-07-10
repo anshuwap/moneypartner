@@ -158,7 +158,7 @@
                                         <td> <?= (!empty($val->response['utr_number'])) ? $val->response['utr_number'] : '-' ?></td>
                                         <td>{!! $status !!}</td>
                                         <td>{{ $val->created }}</td>
-
+                                        
                                         <td><?php $actionM = !(empty($val->response['action'])) ? $val->response['action'] : '';
                                             echo !empty($val->response['action_date']) ? '<span data-toggle="tooltip" data-placement="bottom" title="' . $actionM . '">' . date('d,M y H:i', $val->response['action_date']) . '</span>' : '' ?></td>
 

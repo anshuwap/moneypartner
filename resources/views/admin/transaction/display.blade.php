@@ -1,7 +1,10 @@
 @extends('admin.layouts.app')
 @section('content')
 <style>
-
+    .div-s {
+        font-size: 10px;
+        background-color: #f3f3f3;
+    }
 </style>
 <div class="row">
     <div class="col-12 mt-2">
@@ -9,10 +12,10 @@
 
             <div class="card-header">
                 <div class="row">
-                    <div class="col-md-9">
+                    <div class="col-md-8">
                         <h3 class="card-title">Transaction List</h3>
                     </div>
-                    <div class="col-md-3 d-flex">
+                    <div class="col-md-4 d-flex">
                         <div id="bluckAssignBlock" class="mr-1" style="pointer-events:none !important;">
                             <button class="btn btn-sm btn-success" aria-haspopup="true" id="bluckAssignBtn" disabled>
                                 <i class="fas fa-radiation-alt"></i>&nbsp;Action
@@ -24,7 +27,8 @@
                             @else
                             <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a>
                             @endif
-                            <a href="{{ url('admin/a-transaction-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
+                            <a href="{{ url('admin/a-transaction-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
+                            <a href="{{ url('admin/a-transaction-export-split') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export Split</a>
                         </div>
                     </div>
                 </div>
@@ -34,14 +38,6 @@
                 <div class="col-md-12 ml-auto">
                     <form action="{{ url('admin/a-transaction') }}">
                         <div class="form-row">
-
-                            <div class="form-group col-md-2">
-                                <label>Date Filter By</label>
-                                <select class="form-control form-control-sm" name="filter_by">
-                                    <option value="created_date" <?= (!empty($filter['filter_by']) && $filter['filter_by'] =='created_date') ? 'selected' : '' ?>>Created Date</option>
-                                    <option value="action_date" <?= (!empty($filter['filter_by']) && $filter['filter_by'] =='action_date') ? 'selected' : '' ?>>Action Date</option>
-                                </select>
-                            </div>
 
                             <div class="form-group col-md-2">
                                 <label>Start Data</label>
@@ -155,6 +151,7 @@
                         $payment = (object)$trans->payment_channel;
                         $comment = !empty($trans->response['msg']) ? $trans->response['msg'] : '';
                         $type = (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '';
+
                         if ($trans->status == 'success') {
                             $status = '<span class="tag-small"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                             $action = '';
@@ -184,36 +181,60 @@
                             $action = '<a href="javascript:void(0);" payment_mode="' . $trans->payment_mode . '" class="btn btn-danger btn-xs retailer_trans" _id="' . $trans->_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>';
                             $checkbox = ' <input type="checkbox" class="select_me checkbox" value="' . $trans->_id . '" />';
                         } ?>
-                        <tr>
-                            <td>
-                                {!! $checkbox !!}
-                            </td>
-                            <td> <span data-toggle="tooltip" data-placement="bottom" title="{{$UserName}}">{{++$key}}</span></td>
-                            <td>
-                                <span data-toggle="tooltip" data-placement="bottom" title="{{ $trans->transaction_id }}"> {{ (!empty($trans->OutletName['outlet_name']))?$trans->OutletName['outlet_name']:'-';}}</span>
-                            </td>
-                            <!-- <td><span data-toggle="tooltip" data-placement="bottom" title="{{ ucwords($trans->sender_name)}},{{$trans->mobile_number}}">{{ $trans->transaction_id }}</span></td> -->
-                            <!-- <td><span class="tag-small">{{ ucwords(str_replace('_',' ',$trans->type)) }}</span></td> -->
-                            <td><?= (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '-' ?></td>
 
+                        <tr data-widget="expandable-table" aria-expanded="false" style="{{!empty($trans->splits)?'background:#d7d5d3':''}}">
+                            <td>{!! $checkbox !!}</td>
+                            <td> <span data-toggle="tooltip" data-placement="bottom" title="{{$UserName}}">{{++$key}}</span></td>
+                            <td><span data-toggle="tooltip" data-placement="bottom" title="{{ $trans->transaction_id }}"> {{ (!empty($trans->OutletName['outlet_name']))?$trans->OutletName['outlet_name']:'-';}}</span></td>
+                            <td><?= (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '-' ?></td>
                             <td>{!! mSign($trans->amount) !!}</td>
                             <td>{!! mSign($trans->transaction_fees) !!}</td>
                             <td>{{ ucwords($trans->receiver_name)}}</td>
-                            <!-- <td>{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</td> -->
                             <td><span data-toggle="tooltip" data-placement="bottom" title="<?= (!empty($payment->bank_name)) ? $payment->bank_name : '' ?>">{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</span></td>
-                            <td><?= (!empty($payment->account_number)) ? $payment->account_number : '' ?>
-                                <?= (!empty($payment->upi_id)) ? $payment->upi_id : '' ?>
-                            </td>
-                            <!-- <td><?= (!empty($payment->bank_name)) ? $payment->bank_name : '-' ?></td> -->
+                            <td><?= (!empty($payment->account_number)) ? $payment->account_number : '' ?><?= (!empty($payment->upi_id)) ? $payment->upi_id : '' ?></td>
                             <td> <?= (!empty($trans->response['utr_number'])) ? $trans->response['utr_number'] : '-' ?></td>
                             <td>{!! $status !!}</td>
                             <td>{{ !empty($trans->split_created)?date('d,M y H:i',$trans->split_created):date('d,M y H:i',$trans->created) }}</td>
                             <td>{{ !empty($trans->UserName['full_name']) ?$trans->UserName['full_name'] : '';}}</td>
                             <td><?php $actionM = !(empty($trans->response['action'])) ? $trans->response['action'] : '';
                                 echo !empty($trans->response['action_date']) ? '<span data-toggle="tooltip" data-placement="bottom" title="' . $actionM . '">' . date('d,M y H:i', $trans->response['action_date']) . '</span>' : '' ?></td>
-                            <td> <a href="javascript:void(0);" class="btn btn-info btn-xs view_dashboard" _id="{{ $trans->_id }}"><i class="fas fa-eye"></i>&nbsp;view</a>
-                                {!! $action !!}</td>
+                            <td><a href="javascript:void(0);" class="btn btn-info btn-xs view_dashboard" _id="{{ $trans->_id }}"><i class="fas fa-eye"></i>&nbsp;view</a>{!! $action !!}</td>
                         </tr>
+
+                        @if(!empty($trans->splits))
+                        <tr class="expandable-body d-none">
+                            <td colspan="15">
+                                <div style="display: none;" class="p-0 div-s">
+                                    <table class="w-100">
+                                        <tr>
+                                            <th>Amount</th>
+                                            <th>Fees</th>
+                                            <th>UTR No.</th>
+                                            <th>Payment Mode</th>
+                                            <th>Status</th>
+                                            <th>Action Date</th>
+                                        </tr>
+
+                                        @foreach($trans->splits as $split)
+                                        @php
+                                        $split = (object)$split;
+                                        $sResp = (object)$split->response; @endphp
+                                        <tr>
+                                            <td>{!! mSign($split->amount)!!}</td>
+                                            <td>{!! mSign($split->transaction_fees)!!}</td>
+                                            <td>{{$sResp->utr_number}}</td>
+                                            <td>{{$sResp->payment_mode}}</td>
+                                            <td>{{ strtoupper($split->status) }}</td>
+                                            <td><?php $actionM = !(empty($sResp->msg)) ? $sResp->msg : '';
+                                                echo !empty($sResp->action_date) ? '<span data-toggle="tooltip" data-placement="bottom" title="' . $actionM . '">' . date('d,M y H:i', $sResp->action_date) . '</span>' : '' ?></td>
+                                        </tr>
+                                        @endforeach
+
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                        @endif
                         @endforeach
 
                     </tbody>

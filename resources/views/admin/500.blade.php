@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+
+use App\Models\Setting;
+?>
 
 <head>
     <meta charset="utf-8">
@@ -28,17 +32,26 @@
                 <div class="error-content">
                     <h3><i class="fas fa-exclamation-triangle text-danger"></i> Oops! Something went wrong.</h3>
 
+                    @if(!empty(Session::get('error')))
                     <p>
-                        @if ($message = Session::get('error'))
-                        {{ $message }}
-                        @else
-                        <script type="text/javascript">
-                           window.history.back();
-                        </script>
+                        <?php
+                        if ($message = Session::get('error')) {
+                            echo $message;
+                        } else if (!empty(Auth::user()->_id)) { ?>
+                            <script type="text/javascript">
+                                window.history.back();
+                            </script>
 
-                        @endif
+                        <?php } ?>
                     </p>
                     <button type="button" class="btn btn-success btn-sm" onclick="javascript:history.go(-1)">Back</button>
+                    @else
+                    <?php $setting = Setting::first(); ?>
+                    <p>{{ $setting->comment}}</p>
+                    @if(!$setting->status)
+                    <a href="{{ url('/')}}" class="btn btn-success btn-sm">Login</a>
+                    @endif
+                    @endif
 
                 </div>
             </div>

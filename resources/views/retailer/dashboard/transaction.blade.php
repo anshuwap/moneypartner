@@ -81,7 +81,7 @@
                                  <!-- <th>Customer</th> -->
                                  <th>Transaction Id</th>
                                  <!-- <th>Mode</th> -->
-                                 <th>Channel</th>
+                                 <!-- <th>Channel</th> -->
                                  <th>Amount</th>
                                  <th>Beneficiary</th>
                                  <th>IFSC</th>
@@ -123,7 +123,7 @@
                                  </td> -->
                                  <td>{{ $trans->transaction_id }}</td>
                                  <!-- <td><span class="tag-small">{{ ucwords(str_replace('_',' ',$trans->type)) }}</span></td> -->
-                                 <td><?= (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '-' ?></td>
+                                 <!-- <td><?= (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '-' ?></td> -->
 
                                  <td>{!! mSign($trans->amount) !!}</td>
                                  <td>{{ ucwords($trans->receiver_name)}}</td>

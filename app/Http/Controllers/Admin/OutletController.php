@@ -213,7 +213,7 @@ class OutletController extends Controller
         $outlet->address_proff        = $request->address_proff;
         $outlet->pancard              = $request->pancard;
         $outlet->outlet_gst_number    = $request->outlet_gst_number;
-        $outlet->money_transfer_option= $request->money_transfer_option;
+        $outlet->money_transfer_option = $request->money_transfer_option;
         $outlet->status               = $request->status;
         $outlet->account_status       = (int)$request->account_status;
         $outlet->security_amount      = $request->security_amount;

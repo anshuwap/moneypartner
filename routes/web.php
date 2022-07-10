@@ -22,7 +22,9 @@ use App\Http\Controllers\Admin\Action\DebitController  as AdminDebit;
 use App\Http\Controllers\Admin\ProfileController       as AdminProfile;
 use App\Http\Controllers\Admin\EarnHistoryController   as AdminEarnHistory;
 use App\Http\Controllers\Admin\WithdrawalController    as AdminWithdrawal;
+use App\Http\Controllers\Admin\SettingController       as AdminSetting;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\MaintainanceController;
 
 //for retailer panel
 use App\Http\Controllers\Retailer\WebhookApiController as WebhookApi;
@@ -81,6 +83,7 @@ Route::get("get-blance1", [Controller::class, "getBlance1"]);
 Route::get("get-blance2", [Controller::class, "getBlance2"]);
 
 Route::get('500', [AdminDashboard::class, 'serverError']);
+Route::get('maintenance', [MaintainanceController::class, 'maintanance']);
 // Route::get('404', [AdminDashboard::class, 'notFound']);
 
 Route::group(['middleware' => 'adminRedirect'], function () {
@@ -186,6 +189,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::get('refund-pending-export', [AdminTransaction::class, 'refundPendingExport']);
   Route::get('removeIndex/{key}',   [AdminTransaction::class, 'removeIndex']);
   Route::get('transaction-report',  [AdminTransaction::class, 'report']);
+  Route::get('a-transaction-export-split', [AdminTransaction::class, 'exportSplit']);
+  Route::get('a-refund-export-split', [AdminTransaction::class, 'refundPendingExportSplit']);
 
 
   Route::resource('credit',           AdminCredit::class);
@@ -219,6 +224,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::get('earn-history-export', [AdminEarnHistory::class, 'export']);
 
   Route::resource('withdrawal',     AdminWithdrawal::class);
+
+  Route::resource('setting',   AdminSetting::class);
 
   Route::post('logout',  [AdminLogin::class, 'logout']);
 });
@@ -343,6 +350,7 @@ Route::group(['prefix' => 'employee', 'middleware' => 'employee'], function () {
   Route::get('refund-pending',      [EmployeeTransaction::class, 'refundPending']);
   Route::get('refund-pending-export', [EmployeeTransaction::class, 'refundPendingExport']);
   Route::get('transaction-report',  [EmployeeTransaction::class, 'report']);
+  Route::get('a-transaction-export-split', [EmployeeTransaction::class, 'exportSplit']);
 
   Route::resource('earn-history',  EarnHistory::class);
   Route::get('earn-history-export', [EarnHistory::class, 'export']);

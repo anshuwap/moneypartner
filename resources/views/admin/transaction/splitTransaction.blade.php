@@ -33,7 +33,7 @@
                                         <input type="text" value="" required name="response[0][amount]" class="form-control form-control-sm" placeholder="Enter Amount">
                                     </div>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-1">
                                         <span>Charges</span>
                                         <input type="text" value="" required name="response[0][charges]" class="form-control form-control-sm" placeholder="Enter charges">
                                     </div>
@@ -72,6 +72,12 @@
                                             <option value="">Select</option>
                                         </select>
                                         <span id="comment_msg" class="custom-text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group col-md-1">
+                                        <span>Action Date</span>
+                                        <input type="datetime-local" placeholder="Date" value="<?php echo date('Y-m-d') . 'T' . date('H:i'); ?>" attr="0" required id="date-0" name="response[0][date]" class="form-control form-control-sm">
+                                        <span id="date_msg" class="custom-text-danger"></span>
                                     </div>
 
                                     <div class="col-md-1 mt-18">
@@ -150,7 +156,7 @@
                                         <input type="text" value="" required name="response[${x}][amount]" class="form-control form-control-sm" placeholder="Enter Amount">
                                     </div>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-1">
                                         <span>Charges</span>
                                         <input type="text" value="" required name="response[${x}][charges]" class="form-control form-control-sm" placeholder="Enter charges">
                                     </div>
@@ -186,8 +192,15 @@
                                     <div class="form-group col-md-2">
                                         <span>Comment</span>
                                         <select name="response[${x}][msg]" class="form-control form-control-sm" id="split-comment-${x}">
+                                        <option value="">Select</option>
                                         </select>
                                         <span id="comment_msg" class="custom-text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group col-md-1">
+                                        <span>Action Date</span>
+                                        <input type="datetime-local" placeholder="Date" value="<?php echo date('Y-m-d') . 'T' . date('H:i'); ?>" attr="0" required id="date-0" name="response[0][date]" class="form-control form-control-sm">
+                                        <span id="date_msg" class="custom-text-danger"></span>
                                     </div>
 
                                     <div class="col-md-1 mt-18">

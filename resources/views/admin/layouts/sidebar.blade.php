@@ -244,8 +244,16 @@
 
     <li class="nav-item">
       <a href="{{ url('admin/withdrawal') }}" class="nav-link {{ (url()->full() == url('admin/withdrawal'))? 'active':''}}">
-       <i class="fas fa-solid fa-money-bill-transfer nav-icon" style="color: white;"></i>
+        <i class="fas fa-solid fa-money-bill-transfer nav-icon" style="color: white;"></i>
         <p>Employee Pay</p>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a href="{{ url('admin/setting') }}" class="nav-link {{ (url()->full() == url('admin/setting'))? 'active':''}}">
+        <i class="fas fa-cogs nav-icon"></i>
+        <p>Setting
+        </p>
       </a>
     </li>
 

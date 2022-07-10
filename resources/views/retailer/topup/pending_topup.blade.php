@@ -86,6 +86,7 @@
                             <th>Sr No.</th>
                             <th>Transaction Id</th>
                             <th>UTR No.</th>
+                            <th>Channel</th>
                             <th>Amount</th>
                             <th>Payment Mode</th>
                             <!-- <th>Payment In</th> -->

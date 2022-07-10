@@ -100,7 +100,7 @@
                         <tr>
                             <th>Sr. No.</th>
                             <th>Outlet</th>
-                            <th>Channel</th>
+                          <!--<th>Channel</th>-->
                             <th>Amount</th>
                             <th>Fees</th>
                             <th>Beneficiary</th>
@@ -133,7 +133,7 @@
                             <td>
                                 <span data-toggle="tooltip" data-placement="bottom" title="{{ $trans->transaction_id }}"> {{ (!empty($trans->OutletName['outlet_name']))?$trans->OutletName['outlet_name']:'-';}}</span>
                             </td>
-                            <td><?= (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '-' ?></td>
+                            <!--<td>{{ (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '-' }}</td>-->
 
                             <td>{!! mSign($trans->amount) !!}</td>
                             <td>{!! mSign($trans->transaction_fees) !!}</td>

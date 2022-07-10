@@ -62,6 +62,7 @@ class TransactionController extends Controller
                 $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
             }
             $query->whereBetween('created', [$start_date, $end_date]);
+
             // else {
             //     $crrMonth = (date('Y-m-d'));
             //     $start_date = strtotime(trim(date("d-m-Y", strtotime('-30 days', strtotime($crrMonth)))) . " 00:00:00");
@@ -732,9 +733,9 @@ class TransactionController extends Controller
                 $transaction_val[] = (!empty($payment->bank_name)) ? $payment->bank_name : '';
                 $transaction_val[] = (!empty($transaction->response['utr_number'])) ? $transaction->response['utr_number'] : '';
                 $transaction_val[] = strtoupper(str_replace('_', ' ', $transaction->status));
-                $transaction_val[] = date('Y-m-d H:i', $transaction->created);
+                $transaction_val[] = !empty(date('Y-m-d H:i', $transaction->created)) ? date('Y-m-d H:i', $transaction->created) : '';
                 $transaction_val[] = !empty($transaction->UserName['full_name']) ? $transaction->UserName['full_name'] : '';
-                $transaction_val[] = !empty($transaction->response['action_date']) ? date('d,M y H:i', $transaction->response['action_date']) : '';
+                $transaction_val[] = !empty($transaction->response['action_date']) ? date('Y-m-d H:i', $transaction->response['action_date']) : '';
 
                 $transactionArr = $transaction_val;
 
@@ -806,7 +807,6 @@ class TransactionController extends Controller
 
             $transactions = $query->orderBy('created', 'DESC')->get();
 
-
             if ($transactions->isEmpty())
                 return back()->with('error', 'There is no any record for export!');
 
@@ -828,9 +828,9 @@ class TransactionController extends Controller
                 $transaction_val[] = (!empty($payment->bank_name)) ? $payment->bank_name : '';
                 $transaction_val[] = (!empty($transaction->response['utr_number'])) ? $transaction->response['utr_number'] : '';
                 $transaction_val[] = strtoupper(str_replace('_', ' ', $transaction->status));
-                $transaction_val[] = date('Y-m-d H:i', $transaction->created);
+                $transaction_val[] = !empty(date('Y-m-d H:i', $transaction->created)) ? date('Y-m-d H:i', $transaction->created) : '';
                 $transaction_val[] = !empty($transaction->UserName['full_name']) ? $transaction->UserName['full_name'] : '';
-                $transaction_val[] = !empty($transaction->response['action_date']) ? date('d,M y H:i', $transaction->response['action_date']) : '';
+                $transaction_val[] = !empty($transaction->response['action_date']) ? date('Y-m-d H:i', $transaction->response['action_date']) : '';
 
                 $transactionArr = $transaction_val;
 
@@ -856,80 +856,279 @@ class TransactionController extends Controller
     }
 
 
+    public function exportSplit(Request $request)
+    {
+        try {
+            $file_name = 'split-trans';
+
+            $delimiter = ","; //dfine delimiter
+
+            if (!file_exists('exportCsv')) //
+                mkdir('exportCsv', 0777, true);
+
+            $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
+
+            $transactionArray = [
+                'Transaction ID', 'Customer Name', 'Customer Phone', 'Mode', 'Channel', 'Amount', 'Fees', 'Beneficiary', 'IFSC', 'Account No.', 'Bank Name',
+                'UTR Number', 'Status', 'Request Date', 'Action By', 'Action Date'
+            ];
+            fputcsv($f, $transactionArray, $delimiter); //put heading here
+
+            $query = Transaction::query()->where('trans_type', 'split');
+
+            if ($request->outlet_id)
+                $query->where('outlet_id', $request->outlet_id);
+
+            if (!empty($request->type))
+                $query->where('type', $request->type);
+
+            if (!empty($request->transaction_id))
+                $query->where('transaction_id', $request->transaction_id);
+
+            if (!empty($request->channel))
+                $query->where('response.payment_mode', $request->channel);
+
+            $start_date1 = $request->start_date;
+            $end_date1   = $request->end_date;
+
+            if (!empty($start_date1) && !empty($end_date1)) {
+                $start_date = strtotime(trim($start_date1) . " 00:00:00");
+                $end_date   = strtotime(trim($end_date1) . " 23:59:59");
+            } else {
+                $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
+                $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
+            }
+            $query->whereBetween('created', [$start_date, $end_date]);
+
+            $transactions = $query->orderBy('created', 'DESC')->with(['OutletName', 'UserName'])->get();
+
+
+            if ($transactions->isEmpty())
+                return back()->with('error', 'There is no any record for export!');
+
+            $transactionArr = [];
+            foreach ($transactions as $transaction) {
+
+                $splits = (object)$transaction->splits;
+
+                if (!empty($splits)) {
+                    foreach ($splits as $split) {
+                        $split = (object)$split;
+                        $sResp = (object)$split->response;
+
+                        $payment = (object)$transaction->payment_channel;
+                        $upi_id = (!empty($payment->upi_id)) ? $payment->upi_id : '';
+
+                        $transaction_val[] = $transaction->transaction_id;
+                        $transaction_val[] = ucwords($transaction->sender_name);
+                        $transaction_val[] = $transaction->mobile_number;
+                        $transaction_val[] = ucwords(str_replace('_', ' ', $split->payment_mode));
+                        $transaction_val[] = (!empty($transaction->response['payment_mode'])) ? $transaction->response['payment_mode'] : '';
+                        $transaction_val[] = $split->amount;
+                        $transaction_val[] = (!empty($split->transaction_fees)) ? $split->transaction_fees : '';
+                        $transaction_val[] = ucwords($transaction->receiver_name);
+                        $transaction_val[] = (!empty($payment->ifsc_code)) ? $payment->ifsc_code : '';
+                        $transaction_val[] = (!empty($payment->account_number)) ? $payment->account_number : $upi_id;
+                        $transaction_val[] = (!empty($payment->bank_name)) ? $payment->bank_name : '';
+                        $transaction_val[] = (!empty($sResp->utr_number)) ? $sResp->utr_number : '';
+                        $transaction_val[] = strtoupper(str_replace('_', ' ', $split->status));
+                        $transaction_val[] = !empty(date('Y-m-d H:i', $transaction->created)) ? date('Y-m-d H:i', $transaction->created) : '';
+                        $transaction_val[] = !empty($transaction->UserName['full_name']) ? $transaction->UserName['full_name'] : '';
+                        $transaction_val[] = !empty($sResp->action_date) ? date('Y-m-d H:i', $sResp->action_date) : '';
+
+                        $transactionArr = $transaction_val;
+
+                        fputcsv($f, $transactionArr, $delimiter); //put heading here
+                        $transaction_val = [];
+                    }
+                }
+            }
+
+            // Move back to beginning of file
+            fseek($f, 0);
+
+            // headers to download file
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="' . $file_name . '.csv"');
+            readfile('exportCsv/' . $file_name . '.csv');
+
+            //remove file form server
+            $path = 'exportCsv/' . $file_name . '.csv';
+            if (file_exists($path))
+                unlink($path);
+        } catch (Exception $e) {
+            return redirect('500');
+        }
+    }
+
+
+    public function refundPendingExportSplit(Request $request)
+    {
+        try {
+            $file_name = 'refund-pending-split-trans';
+
+            $delimiter = ","; //dfine delimiter
+
+            if (!file_exists('exportCsv')) //
+                mkdir('exportCsv', 0777, true);
+
+            $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
+
+            $transactionArray = [
+                'Transaction ID', 'Customer Name', 'Customer Phone', 'Mode', 'Channel', 'Amount', 'Fees', 'Beneficiary', 'IFSC', 'Account No.', 'Bank Name',
+                'UTR Number', 'Status', 'Request Date', 'Action By', 'Action Date'
+            ];
+            fputcsv($f, $transactionArray, $delimiter); //put heading here
+
+            $query = Transaction::query()->where('trans_type', 'split')->where('status', 'refund_pending');
+
+            if ($request->outlet_id)
+                $query->where('outlet_id', $request->outlet_id);
+
+            if (!empty($request->type))
+                $query->where('type', $request->type);
+
+            if (!empty($request->transaction_id))
+                $query->where('transaction_id', $request->transaction_id);
+
+            if (!empty($request->channel))
+                $query->where('response.payment_mode', $request->channel);
+
+            $start_date1 = $request->start_date;
+            $end_date1   = $request->end_date;
+
+            if (!empty($start_date1) && !empty($end_date1)) {
+                $start_date = strtotime(trim($start_date1) . " 00:00:00");
+                $end_date   = strtotime(trim($end_date1) . " 23:59:59");
+            } else {
+                $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
+                $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
+            }
+            $query->whereBetween('created', [$start_date, $end_date]);
+
+            $transactions = $query->orderBy('created', 'DESC')->with(['OutletName', 'UserName'])->get();
+
+
+            if ($transactions->isEmpty())
+                return back()->with('error', 'There is no any record for export!');
+
+            $transactionArr = [];
+            foreach ($transactions as $transaction) {
+
+                $splits = (object)$transaction->splits;
+
+                if (!empty($splits)) {
+                    foreach ($splits as $split) {
+                        $split = (object)$split;
+                        $sResp = (object)$split->response;
+
+                        $payment = (object)$transaction->payment_channel;
+                        $upi_id = (!empty($payment->upi_id)) ? $payment->upi_id : '';
+
+                        $transaction_val[] = $transaction->transaction_id;
+                        $transaction_val[] = ucwords($transaction->sender_name);
+                        $transaction_val[] = $transaction->mobile_number;
+                        $transaction_val[] = ucwords(str_replace('_', ' ', $split->payment_mode));
+                        $transaction_val[] = (!empty($transaction->response['payment_mode'])) ? $transaction->response['payment_mode'] : '';
+                        $transaction_val[] = $split->amount;
+                        $transaction_val[] = (!empty($split->transaction_fees)) ? $split->transaction_fees : '';
+                        $transaction_val[] = ucwords($transaction->receiver_name);
+                        $transaction_val[] = (!empty($payment->ifsc_code)) ? $payment->ifsc_code : '';
+                        $transaction_val[] = (!empty($payment->account_number)) ? $payment->account_number : $upi_id;
+                        $transaction_val[] = (!empty($payment->bank_name)) ? $payment->bank_name : '';
+                        $transaction_val[] = (!empty($sResp->utr_number)) ? $sResp->utr_number : '';
+                        $transaction_val[] = strtoupper(str_replace('_', ' ', $split->status));
+                        $transaction_val[] = !empty(date('Y-m-d H:i', $transaction->created)) ? date('Y-m-d H:i', $transaction->created) : '';
+                        $transaction_val[] = !empty($transaction->UserName['full_name']) ? $transaction->UserName['full_name'] : '';
+                        $transaction_val[] = !empty($sResp->action_date) ? date('Y-m-d H:i', $sResp->action_date) : '';
+
+                        $transactionArr = $transaction_val;
+
+                        fputcsv($f, $transactionArr, $delimiter); //put heading here
+                        $transaction_val = [];
+                    }
+                }
+            }
+
+            // Move back to beginning of file
+            fseek($f, 0);
+
+            // headers to download file
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="' . $file_name . '.csv"');
+            readfile('exportCsv/' . $file_name . '.csv');
+
+            //remove file form server
+            $path = 'exportCsv/' . $file_name . '.csv';
+            if (file_exists($path))
+                unlink($path);
+        } catch (Exception $e) {
+            return redirect('500');
+        }
+    }
+
     public function splitTransaction(Request $request)
     {
         try {
+
             $id = $request->trans_id;
             $transaction = Transaction::find($id);
 
             $amount = $transaction->amount;
-            $changes = $transaction->transaction_fees;
+            $charges = $transaction->transaction_fees;
             $responseData = $request->response;
+
             $total_amount = 0;
-            $total_changes = 0;
+            $total_charges = 0;
             foreach ($responseData as $res) {
-                $total_amount += $res['amount'];
-                $total_changes += $res['charges'];
+                $total_amount += !empty($res['amount']) ? $res['amount'] : 0;
+                $total_charges += $res['charges'];
             }
             // echo '/'.$total_amount;
             if ($amount != $total_amount)
                 return response(['status' => 'error', 'msg' => 'Total Amount must be- ' . $amount]);
 
-            if ($changes != $total_changes)
-                return response(['status' => 'error', 'msg' => 'Total Charges must be- ' . $changes]);
+            if ($charges != $total_charges)
+                return response(['status' => 'error', 'msg' => 'Total Charges must be- ' . $charges]);
+
+            $splitTrans = [];
+            $utrs = [];
+            foreach ($responseData as $key => $res) {
+
+                $resData['action_by']     = Auth::user()->_id;
+                $resData['action_date']   = !empty($responseData[$key]['date']) ? strtotime($responseData[$key]['date']) : time();
+                $resData['payment_mode']  = !empty($responseData[$key]['payment_mode']) ? $responseData[$key]['payment_mode'] : '';
+                $resData['utr_number']    = !empty($responseData[$key]['utr_number']) ? $responseData[$key]['utr_number'] : '';
+                $resData['msg']           = !empty($responseData[$key]['msg']) ? $responseData[$key]['msg'] : '';
+
+                $splitTrans[] = [
+                    'amount'           => !empty($responseData[$key]['amount']) ? $responseData[$key]['amount'] : $amount,
+                    'transaction_fees' => !empty($responseData[$key]['charges']) ? $responseData[$key]['charges'] : '',
+                    'payment_mode'     => 'bank_account',
+                    'status'           => !empty($responseData[$key]['status']) ? $responseData[$key]['status'] : 'pending',
+                    'type'             => 'payout',
+                    'response'         => $resData
+                ];
+
+                $utrs[] = $resData['utr_number'];
+            }
 
             /*start first transaction Update*/
             $response['action_by']     = Auth::user()->_id;
-            $response['action_date']   = time();
-            $response['action']        = 'manual update Payment Status (Split Transaction) - Parent Txn';
+            $response['action_date']   = !empty($responseData[0]['date']) ? strtotime($responseData[0]['date']) : time();
+            $response['action']        = 'manual update Payment Status';
             $response['payment_mode']  = !empty($responseData[0]['payment_mode']) ? $responseData[0]['payment_mode'] : '';
             $response['utr_number']    = !empty($responseData[0]['utr_number']) ? $responseData[0]['utr_number'] : '';
             $response['msg']           = !empty($responseData[0]['msg']) ? $responseData[0]['msg'] : '';
 
-            $transaction->amount       = !empty($responseData[0]['amount']) ? $responseData[0]['amount'] : $amount;
-            $transaction->status       = !empty($responseData[0]['status']) ? $responseData[0]['status'] : 'pending';
-            $transaction->response     = $response;
-            $transaction->trans_type    = 'split';
-            $transaction->save();
+            $transaction->status            = !empty($responseData[0]['status']) ? $responseData[0]['status'] : 'pending';
+            $transaction->response          = $response;
+            $transaction->trans_type        = 'split';
+            $transaction->splits            = $splitTrans;
+            $transaction->utrs              = implode(',', $utrs);
             /*end first transaction update*/
 
-            $result = false;
-            foreach ($responseData as $key => $res) {
-
-                if ($key == 0)
-                    continue;
-
-                $transactionN = new Transaction();
-                $transactionN->transaction_id   = uniqCode(3) . rand(111111, 999999);
-                $transactionN->retailer_id       = $transaction->retailer_id;
-                $transactionN->outlet_id         = $transaction->outlet_id;
-                $transactionN->mobile_number     = $transaction->mobile_number;
-                $transactionN->sender_name       = $transaction->sender_name;
-                $transactionN->amount            = !empty($responseData[$key]['amount']) ? $responseData[$key]['amount'] : $amount;
-                $transactionN->transaction_fees  = !empty($responseData[$key]['charges']) ? $responseData[$key]['charges'] : '';
-                $transactionN->receiver_name     = $transaction->receiver_name;
-                $transactionN->payment_mode      = 'bank_account'; //$request->payment_mode;
-                $transactionN->payment_channel   = $transaction->payment_channel;
-                $transactionN->status            = !empty($responseData[$key]['status']) ? $responseData[$key]['status'] : 'pending';
-                $transactionN->type              = 'payout';
-                $transactionN->pancard_no        = $transaction->pancard_no;
-
-                $responseN['action_by']     = Auth::user()->_id;
-                $responseN['action_date']   = time();
-                $responseN['parent_txn_id'] = $transaction->_id;
-                $responseN['action']        = 'manual update Payment Status (Split Transaction) - Parent Txn no. ' . $transaction->transaction_id;
-                $responseN['payment_mode']  = !empty($responseData[$key]['payment_mode']) ? $responseData[$key]['payment_mode'] : '';
-                $responseN['utr_number']    = !empty($responseData[$key]['utr_number']) ? $responseData[$key]['utr_number'] : '';
-                $responseN['msg']           = !empty($responseData[$key]['msg']) ? $responseData[$key]['msg'] : '';
-
-                $transactionN->response     = $responseN;
-                $transactionN->referance_trans = $id;
-                $transactionN->trans_type   = 'split';
-                $transactionN->split_created = $transaction->created;
-                $result = $transactionN->save();
-            }
-
-            if ($result)
+            if ($transaction->save())
                 return response(['status' => 'success', 'msg' => 'Transaction Success!']);
 
             return response(['status' => 'error', 'msg' => 'Transaction Failed!']);
@@ -937,7 +1136,6 @@ class TransactionController extends Controller
             return response(['status' => 'error', 'msg' => $e->getMessage()]);
         }
     }
-
 
     public function report(Request $request)
     {
