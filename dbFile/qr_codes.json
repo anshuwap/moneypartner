@@ -1,0 +1,61 @@
+[{
+  "_id": {
+    "$oid": "61a66609e93e00005c001df2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "status": "1",
+  "created": 1638295049,
+  "updated": 1644389574,
+  "name": "Phone pay",
+  "qr_code": "20211130182658.png",
+  "retailer_ids": [
+    "61e29043ac37e871dd3ec883"
+  ],
+  "deleted_at": {
+    "$date": {
+      "$numberLong": "1645558315522"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "61a66cdee93e00005c001df3"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "dogma",
+  "status": 1,
+  "qr_code": "20220220053641.png",
+  "created": 1638296798,
+  "updated": 1645335401,
+  "retailer_ids": [
+    "61d0974ea36000009e005163",
+    "61e29043ac37e871dd3ec883"
+  ],
+  "deleted_at": {
+    "$date": {
+      "$numberLong": "1645558311195"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "62153a5040565700905b7232"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "AMANTELECOM",
+  "status": "1",
+  "qr_code": "20220304045037.png",
+  "created": 1645558352,
+  "updated": 1646369437
+},{
+  "_id": {
+    "$oid": "6265dfdb159a6c736c440672"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "OXBIN",
+  "status": 1,
+  "qr_code": "20220425051011.jpeg",
+  "created": 1650843611,
+  "updated": 1654102053,
+  "retailer_ids": [
+    "6265db8ba9547f582076d6f3"
+  ]
+}]

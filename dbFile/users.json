@@ -1,0 +1,852 @@
+[{
+  "_id": {
+    "$oid": "61a3c0fb4a47000015003322"
+  },
+  "full_name": "Admin",
+  "email": "avtarsingh421833@gmail.com",
+  "role": "admin",
+  "password": "$2y$10$0nC2VaRSnb9./YJDjgHhGemm.prYDoHdlO7FYAv4WYcsmrUup9E1G",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1657451218153"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1638121723627"
+    }
+  },
+  "otp_verify": 0,
+  "mobile_number": "999999999999",
+  "otp": 2879,
+  "verify_otp": 1
+},{
+  "_id": {
+    "$oid": "621fea8d5aa63d5ee00a0793"
+  },
+  "full_name": "AMAN COMM",
+  "email": "aman.dot.airtel@gmail.com",
+  "mobile_number": "7988908329",
+  "password": "$2y$10$3S0.6YC1vslXHGENGUKd/uybuEa4.zTv42LpJk2hYc8uBr9QJlsYG",
+  "role": "retailer",
+  "outlet_id": "621fea8d5aa63d5ee00a0792",
+  "outlet_name": "AMAN",
+  "verify_otp": 1,
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1656711457056"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1646258829576"
+    }
+  },
+  "otp": 4758,
+  "available_amount": 1000.3999999999214,
+  "total_amount": 2157332,
+  "spent_amount": 2156331.6000000015,
+  "token": "1862947231c3d1d1862947231c3d1f",
+  "pin": "0000",
+  "retailers": []
+},{
+  "_id": {
+    "$oid": "622c971415d65434eb1e0223"
+  },
+  "full_name": "Gurpreet sing",
+  "email": "rikysachdeva@gmail.com",
+  "mobile_number": "9814250051",
+  "password": "$2y$10$AQEXNOz5NIHk8zYcNn5YJONw2d8IwHTSABim628kLQXF2L7sNTFG.",
+  "role": "retailer",
+  "outlet_id": "622c971315d65434eb1e0222",
+  "outlet_name": "ATALLIA EV LLP",
+  "verify_otp": 1,
+  "pin": 1770,
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1649418105866"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1647089428012"
+    }
+  },
+  "otp": 1825,
+  "token": "1862501f232aa581862501f232aa5c",
+  "available_amount": 485,
+  "total_amount": 1000,
+  "spent_amount": 515
+},{
+  "_id": {
+    "$oid": "622de9050f21a218b93a5ad3"
+  },
+  "full_name": "JASBIR SINGH",
+  "email": "jasbir935@gmail.com",
+  "mobile_number": "6280124722",
+  "password": "$2y$10$ivlJu7NVLdg37smXJ72nN.ikJCC6pKYyJhpwNkR3bMySOS/8OWbi2",
+  "role": "retailer",
+  "outlet_id": "622de9050f21a218b93a5ad2",
+  "outlet_name": "SMART VISION",
+  "verify_otp": 1,
+  "pin": "4455",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1657378684751"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1647175941509"
+    }
+  },
+  "otp": 2527,
+  "available_amount": 19928.127499992595,
+  "total_amount": 14394717,
+  "token": "1862c2af947843d1862c2af947843f",
+  "spent_amount": 14374788.87249997,
+  "retailers": []
+},{
+  "_id": {
+    "$oid": "622efb0964bf4b3e01186753"
+  },
+  "full_name": "Demo",
+  "email": "surendra9835@gmail.com",
+  "mobile_number": "9810592557",
+  "password": "$2y$10$84pxlU020JnRdAgNsEwlnOX9o7Dfbh.2ubzDJD0.moFsWi..1PsxK",
+  "role": "retailer",
+  "outlet_id": "622efb0964bf4b3e01186752",
+  "outlet_name": "Demo",
+  "verify_otp": 0,
+  "pin": "1234",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1657307057699"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1647246089665"
+    }
+  },
+  "otp": 2444,
+  "token": "186294732761c8c186294732761c8d",
+  "available_amount": 871,
+  "total_amount": 1023,
+  "spent_amount": 152,
+  "retailers": []
+},{
+  "_id": {
+    "$oid": "62307f7d7fa987785c585593"
+  },
+  "full_name": "JOLEEN",
+  "email": "jasonshalom551@gmail.com",
+  "mobile_number": "9098893318",
+  "password": "$2y$10$x1w5Z0ExYT6uw7xq8htSTOlJHkzKBA80e/N8i2Bnw7/Nf5fxOiwna",
+  "role": "retailer",
+  "outlet_id": "62307f7d7fa987785c585592",
+  "outlet_name": "JOLEEN",
+  "verify_otp": 0,
+  "pin": "1113",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1648900240359"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1647345533785"
+    }
+  },
+  "otp": 9864,
+  "available_amount": 612.6400000001304,
+  "total_amount": 3412500,
+  "token": "186230beb70d4e4186230beb70d4e6",
+  "spent_amount": 3411887.3600000003
+},{
+  "_id": {
+    "$oid": "6231c0f8ea283360494af8a3"
+  },
+  "full_name": "PARAMJIT SING",
+  "email": "badsha007799@gmail.com",
+  "mobile_number": "8814900117",
+  "password": "$2y$10$/z4x6Ptf/sqwCkJBjzdRlu83uGESF4Hw1UQ0fp7rpi8QazccrpuRi",
+  "role": "retailer",
+  "outlet_id": "6231c0f8ea283360494af8a2",
+  "outlet_name": "Astro play",
+  "verify_otp": 1,
+  "pin": "5852",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1657428500133"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1647427832496"
+    }
+  },
+  "otp": 4054,
+  "available_amount": 103802.68,
+  "total_amount": 2784574,
+  "token": "186272206c0e3cf186272206c0e3d2",
+  "spent_amount": 2680771.32,
+  "retailers": []
+},{
+  "_id": {
+    "$oid": "623c715ce2bb120611003823"
+  },
+  "full_name": "AMAN GILL",
+  "email": "ibellmarket07@gmail.com",
+  "mobile_number": "9289714345",
+  "password": "$2y$10$P9k3kqNipUgb6Y7MLomXbe6zVlASAgn7a3XJ9wPyvEm6wC19UsSK2",
+  "role": "retailer",
+  "outlet_id": "623c715ce2bb120611003822",
+  "outlet_name": "IBELLMARKET",
+  "verify_otp": 1,
+  "pin": "0707",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1657354429630"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1648128348749"
+    }
+  },
+  "otp": 4834,
+  "available_amount": 1105533.8599999999,
+  "total_amount": 4659507,
+  "token": "1862458feb61a341862458feb61a35",
+  "spent_amount": 3553973.14,
+  "retailers": []
+},{
+  "_id": {
+    "$oid": "62419d959c7c8359b13f22a3"
+  },
+  "full_name": "DAVINDER SING",
+  "email": "davinder25singh@gmail.com",
+  "mobile_number": "7303058013",
+  "password": "$2y$10$pl5oscYOvzFwGSLumTb5J.Txgu9QGsrRgv2TtXDY.rZrEFiHMeJ7S",
+  "role": "retailer",
+  "outlet_id": "62419d959c7c8359b13f22a2",
+  "outlet_name": "RD enterprises",
+  "verify_otp": 1,
+  "pin": "0143",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1649933906775"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1648467349908"
+    }
+  },
+  "otp": "",
+  "available_amount": 10,
+  "total_amount": 15450,
+  "spent_amount": 15440,
+  "token": "186256d3040e21c186256d3040e21d"
+},{
+  "_id": {
+    "$oid": "6243fc74e7da180ec93eaea3"
+  },
+  "full_name": "LOKESH",
+  "email": "mirrorfx86@gmail.com",
+  "mobile_number": "8797000033",
+  "password": "$2y$10$I7m7kPKPg6uHheFmacXsv.hnGZV8JLVpXwEDh.Oqq5MENJUsx5l3S",
+  "role": "retailer",
+  "outlet_id": "6243fc74e7da180ec93eaea2",
+  "outlet_name": "BNB CAPITALS",
+  "verify_otp": 1,
+  "pin": "2022",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1654278698938"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1648622708644"
+    }
+  },
+  "available_amount": 17584.95,
+  "total_amount": 349000,
+  "otp": 9884,
+  "token": "18624435b644bd418624435b644bd6",
+  "spent_amount": 331415.05,
+  "retailers": []
+},{
+  "_id": {
+    "$oid": "624eb8f8ee1b7e76c3446873"
+  },
+  "full_name": "HUMESH PARTAP RANA",
+  "email": "humeshpr@gmail.com",
+  "mobile_number": "7404171023",
+  "password": "$2y$10$ed5J6F4RKLcABCpnPiLj6uTpc/GpbUabg30arSNXSJx9x.N2/Mcke",
+  "role": "retailer",
+  "outlet_id": "624eb8f8ee1b7e76c3446872",
+  "outlet_name": "Tray Technologies",
+  "verify_otp": 1,
+  "pin": "1254",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1657085760620"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1649326328884"
+    }
+  },
+  "otp": 6180,
+  "available_amount": 671656.9974999999,
+  "total_amount": 7565147,
+  "spent_amount": 6893490.0025,
+  "token": "18629774fc6d1ce18629774fc6d1cf",
+  "retailers": []
+},{
+  "_id": {
+    "$oid": "62514a7068b8361e704728c3"
+  },
+  "full_name": "ZAHOOR HAIDER",
+  "email": "aerotech110@gmail.com",
+  "mobile_number": "7055789937",
+  "password": "$2y$10$lnLE.6pd0Iy/fmcK1DsBwe7bIpYxdYZBhBFHuK9A.SWBqVU40Xecy",
+  "role": "retailer",
+  "outlet_id": "62514a7068b8361e704728c2",
+  "outlet_name": "KUMAIL BUSINESS",
+  "verify_otp": 1,
+  "pin": 8030,
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1652937521551"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1649494640135"
+    }
+  },
+  "otp": 9554,
+  "token": "1862515e75537311862515e7553733",
+  "available_amount": 125,
+  "total_amount": 125
+},{
+  "_id": {
+    "$oid": "6265c9ad213828128265c713"
+  },
+  "full_name": "BULL CAPITAL TRADING Inc. Ltd",
+  "email": "ry.kacheriy@gmail.com",
+  "mobile_number": "8668620716",
+  "password": "$2y$10$uCv3xQf4sJ5Bfx9aSYj1wuFVhD8xdzconmhreyBjT0SCZDVoXihwS",
+  "role": "retailer",
+  "outlet_id": "6265c9ad213828128265c712",
+  "outlet_name": "BULL CAPITAL TRADING Inc. Ltd.",
+  "verify_otp": 1,
+  "pin": "9999",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1657438340715"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1650837933176"
+    }
+  },
+  "available_amount": 3285413.4564999985,
+  "total_amount": 56683968,
+  "otp": 2854,
+  "token": "18626654fa61a4e18626654fa61a50",
+  "spent_amount": 53398554.543500006,
+  "retailers": []
+},{
+  "_id": {
+    "$oid": "6265cefdf21ba178b369cee3"
+  },
+  "full_name": "LEO PRIME OFFLINE",
+  "email": "sandhyapravin05@gmail.com",
+  "mobile_number": "9442666778",
+  "password": "$2y$10$88DG9QYknf.Ks7YG6HqdK./vlFAFLaSro8SgnprJ4Kd/Ej2BM1h1m",
+  "role": "retailer",
+  "outlet_id": "6265cefdf21ba178b369cee2",
+  "outlet_name": "LEO PRIME OFFLINE",
+  "verify_otp": 1,
+  "pin": "1818",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1657008917846"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1650839293283"
+    }
+  },
+  "available_amount": 6096.399999999805,
+  "total_amount": 8227113,
+  "otp": 1549,
+  "spent_amount": 8221016.600000006,
+  "retailers": []
+},{
+  "_id": {
+    "$oid": "6265d6d227c19e45d709a8d3"
+  },
+  "full_name": "PARDEEP",
+  "email": "info@redbulforex.com",
+  "mobile_number": "7087192222",
+  "password": "$2y$10$8CyQNGepp0XpmYqsUyQZM.p0pS17kuhz1BqRdXgFdgxHI9wD7Tdu2",
+  "role": "retailer",
+  "outlet_id": "6265d6d227c19e45d709a8d2",
+  "outlet_name": "REDBUL FOREX LLC LIMITED",
+  "verify_otp": 1,
+  "pin": 3386,
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1654588996098"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1650841298142"
+    }
+  },
+  "available_amount": 0,
+  "total_amount": 1414032,
+  "token": "186266aa13703f9186266aa13703fb",
+  "otp": 8810,
+  "spent_amount": 1414032
+},{
+  "_id": {
+    "$oid": "6265db8ba9547f582076d6f3"
+  },
+  "full_name": "OXBIN",
+  "email": "deep.beehoney1@gmail.com",
+  "mobile_number": "7496011615",
+  "password": "$2y$10$ydgcJDgumBvYNZO6j2Wtf.otclT6xc9zMX3tjkV0EAwRbrQRDmIii",
+  "role": "retailer",
+  "outlet_id": "6265db8ba9547f582076d6f2",
+  "outlet_name": "OXBIN",
+  "verify_otp": 1,
+  "pin": "1980",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1657465761947"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1650842507700"
+    }
+  },
+  "available_amount": 206600.39119999128,
+  "total_amount": 19940349,
+  "otp": 7473,
+  "token": "1862b988be629c91862b988be629cb",
+  "spent_amount": 19733748.60879999,
+  "retailers": []
+},{
+  "_id": {
+    "$oid": "62682455f42afc390d7fb3f2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "full_name": "PARVEEN",
+  "email": "parveenbinjhol70759@gmail.com",
+  "mobile_number": "8950404832",
+  "gender": "male",
+  "address": "delhi",
+  "password": "$2y$10$prKoj2gSh9EVqTjtwD0RHutDHKZe4PU8ALTFCBjAkJKz5qacGI596",
+  "status": 1,
+  "role": "admin",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1657456373459"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1650992213348"
+    }
+  },
+  "employee_img": "20220427233115.jpg",
+  "token": "18626d20219f4b318626d20219f4b5",
+  "otp": 4684,
+  "verify_otp": 1
+},{
+  "_id": {
+    "$oid": "626824b025e1fc0ef55e0532"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "full_name": "aman gulati",
+  "email": "draman.dot.airtel@gmail.com",
+  "mobile_number": "7988908329",
+  "gender": "male",
+  "address": "delhi",
+  "password": "$2y$10$Tlvh5NTNzLybNumzdfGuJOpiuLe3bb9v/qaz0sfckELsa1X56ozDS",
+  "status": 1,
+  "role": "admin",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1651082682995"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1650992304946"
+    }
+  },
+  "employee_img": "20220427233409.jpg"
+},{
+  "_id": {
+    "$oid": "626824fa736ac5199508b132"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "full_name": "PAWAN KUMAR",
+  "email": "pavanlambardar@gmail.com",
+  "mobile_number": "9582851273",
+  "gender": "male",
+  "address": "delhi",
+  "password": "$2y$10$yCq/3zRh5nu.U5mRKY4i1u508vUsbW40BXxYvVt/wa40ic5Dd8Q02",
+  "status": 1,
+  "role": "employee",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1657442123143"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1650992378000"
+    }
+  },
+  "employee_img": "20220427233030.jpg",
+  "token": "1862ada828667ac1862ada828667ae",
+  "otp": 4220,
+  "verify_otp": 1,
+  "commission": [
+    {
+      "from_amount": "0",
+      "to_amount": "1000",
+      "type": "inr",
+      "charges": "2",
+      "status": 1
+    },
+    {
+      "from_amount": "1001",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "0.15",
+      "status": 1
+    }
+  ],
+  "outlets": [
+    "6268375147fe5a14d84c92b2",
+    "6268375147fe5a14d84c92b2",
+    "6265db8ba9547f582076d6f2",
+    "6265d6d227c19e45d709a8d2",
+    "6265d6d227c19e45d709a8d2",
+    "6265c9ad213828128265c712",
+    "624eb8f8ee1b7e76c3446872",
+    "623c715ce2bb120611003822",
+    "6231c0f8ea283360494af8a2",
+    "62a1cc1b9ef6fa1ac6343f62",
+    "621fea8d5aa63d5ee00a0792",
+    "6265cefdf21ba178b369cee2",
+    "6265d6d227c19e45d709a8d2",
+    "6265d6d227c19e45d709a8d2",
+    "6265db8ba9547f582076d6f2",
+    "6268375147fe5a14d84c92b2",
+    "629da3f4de2f9814ac7b4a62",
+    "624eb8f8ee1b7e76c3446872",
+    "622de9050f21a218b93a5ad2",
+    "6243fc74e7da180ec93eaea2",
+    "62307f7d7fa987785c585592",
+    "62514a7068b8361e704728c2",
+    "62a1cc1b9ef6fa1ac6343f62",
+    "62a1cc1b9ef6fa1ac6343f62",
+    "62a1cc1b9ef6fa1ac6343f62",
+    "62a1cc1b9ef6fa1ac6343f62",
+    "62a1cc1b9ef6fa1ac6343f62",
+    "62a1cc1b9ef6fa1ac6343f62",
+    "62a1cc1b9ef6fa1ac6343f62",
+    "62a1cc1b9ef6fa1ac6343f62",
+    "62a1cc1b9ef6fa1ac6343f62"
+  ],
+  "wallet_amount": 25465.5498,
+  "outlet": "624eb8f8ee1b7e76c3446872",
+  "outlet_ids": [
+    "62ad950bfa1dfa76c72d7812",
+    "62a1cc1b9ef6fa1ac6343f62",
+    "629da3f4de2f9814ac7b4a62",
+    "627d6ff70a0c371ad60852d2",
+    "6268375147fe5a14d84c92b2",
+    "6265d6d227c19e45d709a8d2",
+    "6265c9ad213828128265c712",
+    "62514a7068b8361e704728c2",
+    "6265cefdf21ba178b369cee2",
+    "6265db8ba9547f582076d6f2",
+    "624eb8f8ee1b7e76c3446872",
+    "6243fc74e7da180ec93eaea2",
+    "62419d959c7c8359b13f22a2",
+    "623c715ce2bb120611003822",
+    "6231c0f8ea283360494af8a2",
+    "6231c0f8ea283360494af8a2",
+    "62307f7d7fa987785c585592",
+    "622efb0964bf4b3e01186752",
+    "622de9050f21a218b93a5ad2",
+    "622c971315d65434eb1e0222",
+    "621fea8d5aa63d5ee00a0792"
+  ]
+},{
+  "_id": {
+    "$oid": "6268375147fe5a14d84c92b3"
+  },
+  "full_name": "kamal jaura",
+  "email": "kamaljaura@gmail.com",
+  "mobile_number": "9034057067",
+  "password": "$2y$10$NXZ4nvwUMCpOo62gpwjhk.d4s4ZtbTjOEZ/SJ9Bqez9n8KpU91T5m",
+  "role": "retailer",
+  "outlet_id": "6268375147fe5a14d84c92b2",
+  "outlet_name": "SK TRADERS",
+  "verify_otp": 0,
+  "pin": "1977",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1655359237709"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1650997073838"
+    }
+  },
+  "token": "1862691c6c88f671862691c6c88f6a",
+  "otp": 6179,
+  "available_amount": 33557.5,
+  "total_amount": 2546500,
+  "spent_amount": 2512942.5,
+  "retailers": []
+},{
+  "_id": {
+    "$oid": "6278c20be42b962f21072a52"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "full_name": "Pinky Rawat",
+  "email": "rawatpinky2377@gmail.com",
+  "mobile_number": "9311573396",
+  "gender": "female",
+  "address": "Delhi",
+  "password": "$2y$10$VTGi9cjyYJlQyDW.lIPqkeqDfxOa3iy9dA3ML15veBliCX6Q5pPNq",
+  "status": 1,
+  "role": "admin",
+  "employee_img": "20220509125603.jpg",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1657435077543"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1652081163606"
+    }
+  },
+  "token": "18628743d05c78b18628743d05c78d",
+  "otp": 1494,
+  "verify_otp": 1
+},{
+  "_id": {
+    "$oid": "627d6ff70a0c371ad60852d3"
+  },
+  "full_name": "LEO PRIME ONLINE",
+  "email": "justmailtosan@gmail.com",
+  "mobile_number": "7010040279",
+  "password": "$2y$10$Kpc80azBsBtT4P4xtbo80evZsQMVb3qakWIiMboQXu83NqeOkNagi",
+  "role": "retailer",
+  "outlet_id": "627d6ff70a0c371ad60852d2",
+  "outlet_name": "LEO PRIME ONLINE",
+  "verify_otp": 1,
+  "pin": 8907,
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1652432765882"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1652387831570"
+    }
+  },
+  "token": "18627e01d14944b18627e01d14944d",
+  "otp": 6398
+},{
+  "_id": {
+    "$oid": "6287465f36d3625fa721d0b2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "full_name": "surendra",
+  "email": "websiteduniya2019@gmail.com",
+  "mobile_number": "9874563210",
+  "gender": "male",
+  "address": "Delhi",
+  "password": "$2y$10$894RlcdAUb26/3zu0ggoEeLgFgY/eFflDlu9zLaS20kDK.rqoamIC",
+  "status": 1,
+  "role": "admin",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1657463431957"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1653032543970"
+    }
+  },
+  "token": "18629470a35bebb18629470a35bebd",
+  "otp": 9644,
+  "verify_otp": 0
+},{
+  "_id": {
+    "$oid": "628d20bd9ce4ef55cf53d772"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "full_name": "Test",
+  "email": "testtest@gmail.com",
+  "mobile_number": "8890976551",
+  "gender": "male",
+  "address": "New Delhi",
+  "password": "$2y$10$1WEQPdhQpK9KdwJ9l9GRGuV3.qrkTYqc0DRnMOxQDX22htH8FLQOG",
+  "status": 1,
+  "role": "employee",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1655951812403"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1653416125427"
+    }
+  },
+  "otp": 8943,
+  "verify_otp": 1,
+  "token": "1862ad9eef292621862ad9eef29263",
+  "outlets": [
+    "62a1cc1b9ef6fa1ac6343f62",
+    "62a1cc1b9ef6fa1ac6343f62",
+    "62a1cc1b9ef6fa1ac6343f62",
+    "62a1cc1b9ef6fa1ac6343f62",
+    "62a1cc1b9ef6fa1ac6343f62"
+  ],
+  "outlet": "62ad950bfa1dfa76c72d7812"
+},{
+  "_id": {
+    "$oid": "629da3f4de2f9814ac7b4a63"
+  },
+  "full_name": "jeetu verma",
+  "email": "r4167158@gmail.com",
+  "mobile_number": "9119619313",
+  "password": "$2y$10$2aGmS6Qdcr7EkCm8iVISw.jaDc3bqnX51nWgqEkMcdH1Wq9ouDzya",
+  "role": "retailer",
+  "outlet_id": "629da3f4de2f9814ac7b4a62",
+  "outlet_name": "Triguna traders",
+  "verify_otp": 1,
+  "pin": "5794",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1655541818964"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1654498292848"
+    }
+  },
+  "retailers": [],
+  "otp": 7103,
+  "available_amount": 10,
+  "total_amount": 1000,
+  "spent_amount": 990
+},{
+  "_id": {
+    "$oid": "62a1cc1b9ef6fa1ac6343f63"
+  },
+  "full_name": "RAHUL MALIK",
+  "email": "growmore0206@gmail.com",
+  "mobile_number": "9311622526",
+  "password": "$2y$10$gu7cF4/2haiDh.yAvtsGQ.TWIT9iIU1G/ac9KtIfq/9enrDXeSCaO",
+  "role": "retailer",
+  "outlet_id": "62a1cc1b9ef6fa1ac6343f62",
+  "outlet_name": "RAHUL MALIK",
+  "verify_otp": 1,
+  "pin": "7824",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1657374027466"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1654770715961"
+    }
+  },
+  "retailers": [],
+  "otp": 6952,
+  "token": "1862add7479d0e41862add7479d0e5",
+  "available_amount": 10653.212499999921,
+  "total_amount": 1462200,
+  "spent_amount": 1451546.7875000006
+},{
+  "_id": {
+    "$oid": "62a7faa29f812e7d2a4b4422"
+  },
+  "user_id": "6287465f36d3625fa721d0b2",
+  "full_name": "demoo",
+  "email": "demoo@gmail.com",
+  "mobile_number": "9876543210",
+  "gender": "male",
+  "address": "demoo",
+  "password": "$2y$10$7fwBDL2kPpLBa9DD.FDNLO9t3vNNyTjQu/TX0d6tj3ZVc/4YHYiwK",
+  "status": 1,
+  "role": "employee",
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1655951850406"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1655175842476"
+    }
+  },
+  "outlets": [
+    "62a1cc1b9ef6fa1ac6343f62",
+    "62a1cc1b9ef6fa1ac6343f62"
+  ],
+  "outlet": "629da3f4de2f9814ac7b4a62"
+},{
+  "_id": {
+    "$oid": "62ad950bfa1dfa76c72d7813"
+  },
+  "full_name": "FARUKH",
+  "email": "farukh.khan02@gmail.com",
+  "mobile_number": "9582851273",
+  "password": "$2y$10$hrSUN3bddPmGXNda0Pf0cui77t2l416Apg.G2Yn14Ki0XrVGR0FvG",
+  "role": "retailer",
+  "outlet_id": "62ad950bfa1dfa76c72d7812",
+  "outlet_name": "FARUKH",
+  "verify_otp": 0,
+  "pin": 6829,
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1655543051523"
+    }
+  },
+  "created_at": {
+    "$date": {
+      "$numberLong": "1655543051523"
+    }
+  }
+}]

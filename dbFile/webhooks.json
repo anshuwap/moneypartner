@@ -1,0 +1,37 @@
+[{
+  "_id": {
+    "$oid": "6231bf5a68f61032434a51c2"
+  },
+  "retailer_id": "622efb0964bf4b3e01186753",
+  "base_url": "https://demo.in/",
+  "type": "base_url",
+  "created": 1647427418,
+  "updated": 1653156565
+},{
+  "_id": {
+    "$oid": "623b0f891b0641576f5e94c2"
+  },
+  "retailer_id": "622c971415d65434eb1e0223",
+  "base_url": "https://user.atallia.in",
+  "type": "base_url",
+  "created": 1648037769,
+  "updated": 1648038846
+},{
+  "_id": {
+    "$oid": "62736ca04377a655360f8142"
+  },
+  "retailer_id": "624eb8f8ee1b7e76c3446873",
+  "base_url": "https://fxtray.com",
+  "type": "base_url",
+  "created": 1651731616,
+  "updated": 1651731743
+},{
+  "_id": {
+    "$oid": "627e08be39e026269c1c7ae2"
+  },
+  "retailer_id": "627d6ff70a0c371ad60852d3",
+  "base_url": "https://cc.leoprime.com/",
+  "type": "base_url",
+  "created": 1652426942,
+  "updated": 1652442057
+}]

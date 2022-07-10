@@ -1,0 +1,53 @@
+[{
+  "_id": {
+    "$oid": "621ba363bedab99072954f29"
+  },
+  "api": "https://payunie.com/api/v1/payout",
+  "name": "Payunie - Preet Kumar",
+  "sort": "1",
+  "updated": 1649883229,
+  "retailer_ids": null,
+  "status": 1
+},{
+  "_id": {
+    "$oid": "621ba868bedab99072954f2a"
+  },
+  "api": "https://payunie.com/api/v1/payout",
+  "name": "Payunie -Rashid Ali",
+  "sort": "2",
+  "updated": 1653470218,
+  "retailer_ids": null,
+  "status": 1
+},{
+  "_id": {
+    "$oid": "6223226e735e75e0c914b13d"
+  },
+  "api": "https://payunie.com/api/v1/payout",
+  "name": "Pay2All- Parveen",
+  "sort": "3",
+  "updated": 1651043535,
+  "retailer_ids": null,
+  "status": 1
+},{
+  "_id": {
+    "$oid": "62403c56cc01705a8e38f122"
+  },
+  "api": "https://payout.merchantpe.in/Api/v2/Client/en/remittance/transaction",
+  "name": "odinmo",
+  "sort": "4",
+  "status": 1,
+  "created": 1648376918,
+  "updated": 1650596830,
+  "retailer_ids": null
+},{
+  "_id": {
+    "$oid": "62b0afc2fb4dd36ecd311fc2"
+  },
+  "api": "https://api.clickncash.in/app/api/v7/money_transfer",
+  "name": "CLICKnCASH",
+  "sort": "5",
+  "status": 1,
+  "created": 1655746498,
+  "updated": 1655746544,
+  "retailer_ids": null
+}]

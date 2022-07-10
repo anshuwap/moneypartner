@@ -1,0 +1,377 @@
+[{
+  "_id": {
+    "$oid": "61d097eea36000009e005164"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "HDFC",
+  "account_number": "89989839489394",
+  "ifsc_code": "HDFC003",
+  "account_holder_name": "Bablu Agrahari",
+  "status": 1,
+  "created": 1641060334,
+  "updated": 1645252208,
+  "retailer_ids": [
+    "61d0974ea36000009e005163",
+    "61e29043ac37e871dd3ec883",
+    "620fe0cd6e3b000018005e93",
+    "62107b4e761500000c006f64",
+    "62108e25761500000c006f72"
+  ],
+  "deleted_at": {
+    "$date": {
+      "$numberLong": "1645558505348"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "62153844c4612c1a891eae42"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "AXIS BANK LTD",
+  "account_number": "9012328377474",
+  "ifsc_code": "UTIB0000121",
+  "account_holder_name": "PAYIZA TECH PVT LTD",
+  "status": 1,
+  "created": 1645557828,
+  "updated": 1648382463,
+  "retailer_ids": [
+    "621fea8d5aa63d5ee00a0793",
+    "62307f7d7fa987785c585593"
+  ]
+},{
+  "_id": {
+    "$oid": "621538610580d1649d7fff02"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "HDFC BANK",
+  "account_number": "837364647746",
+  "ifsc_code": "HDFC000313",
+  "account_holder_name": "PAYIZA TECH PVT LTD",
+  "status": 1,
+  "created": 1645557857,
+  "updated": 1648382471,
+  "retailer_ids": [
+    "621fea8d5aa63d5ee00a0793",
+    "62307f7d7fa987785c585593"
+  ]
+},{
+  "_id": {
+    "$oid": "621538cfccad9a0f8d2ad3a2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "YES BANK",
+  "account_number": "070163400001032",
+  "ifsc_code": "YESB0000701",
+  "account_holder_name": "SUNSHINE TELECOM",
+  "status": 1,
+  "created": 1645557967,
+  "updated": 1650870515,
+  "retailer_ids": [
+    "622de9050f21a218b93a5ad3",
+    "6265cefdf21ba178b369cee3"
+  ]
+},{
+  "_id": {
+    "$oid": "622deb17301242358a39d532"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "RBL",
+  "account_number": "2223330075769119",
+  "ifsc_code": "RATN0VAAPIS",
+  "account_holder_name": "SMART VISION",
+  "status": 1,
+  "created": 1647176471,
+  "updated": 1647855406,
+  "retailer_ids": [
+    "622de9050f21a218b93a5ad3"
+  ]
+},{
+  "_id": {
+    "$oid": "62384751bf05822e6f4c1832"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "RBL",
+  "account_number": "2223330075769119",
+  "ifsc_code": "RATN0VAAPIS",
+  "account_holder_name": "ASTRO PLAY",
+  "status": 1,
+  "created": 1647855441,
+  "updated": 1647855449,
+  "retailer_ids": [
+    "6231c0f8ea283360494af8a3"
+  ]
+},{
+  "_id": {
+    "$oid": "6243fe6fd38bac1c335a8602"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "ICICI BANK LTD",
+  "account_number": "97976655440043",
+  "ifsc_code": "ICIC0000106 (PU STARTING)",
+  "account_holder_name": "BNB CAPITALS",
+  "status": 1,
+  "created": 1648623215,
+  "updated": 1648623226,
+  "retailer_ids": [
+    "6243fc74e7da180ec93eaea3"
+  ]
+},{
+  "_id": {
+    "$oid": "6243feb69a302b2e1e2941a2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "RBL",
+  "account_number": "2223330058588052",
+  "ifsc_code": "RATN0VAAPIS",
+  "account_holder_name": "BNB CAPITALS",
+  "status": 1,
+  "created": 1648623286,
+  "updated": 1648623300,
+  "retailer_ids": [
+    "6243fc74e7da180ec93eaea3"
+  ]
+},{
+  "_id": {
+    "$oid": "624ec0d22b150a73055e8a42"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "RBL LTD",
+  "account_number": "2223330058588052",
+  "ifsc_code": "RATN0VAAPIS",
+  "account_holder_name": "Tray technologies",
+  "status": 1,
+  "created": 1649328338,
+  "updated": 1649328383,
+  "retailer_ids": [
+    "624eb8f8ee1b7e76c3446873"
+  ]
+},{
+  "_id": {
+    "$oid": "624ec1bd19d0583c0f7e2122"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "PNB BANK",
+  "account_number": "6059009300000327",
+  "ifsc_code": "PUNB0605900",
+  "account_holder_name": "Tray technologies",
+  "status": 1,
+  "created": 1649328573,
+  "updated": 1649328706,
+  "retailer_ids": [
+    "624eb8f8ee1b7e76c3446873"
+  ]
+},{
+  "_id": {
+    "$oid": "62514b2b8487c15eed270e22"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "YES BANK",
+  "account_number": "708090732787",
+  "ifsc_code": "YESB0CMSNOC",
+  "account_holder_name": "KUMAIL BUSINESS",
+  "status": 1,
+  "created": 1649494827,
+  "updated": 1654516608,
+  "retailer_ids": [
+    "62514a7068b8361e704728c3"
+  ]
+},{
+  "_id": {
+    "$oid": "62514b69691f5802303b0602"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "RBL",
+  "account_number": "0007080732787",
+  "ifsc_code": "RATN0000320",
+  "account_holder_name": "KUMAIL BUSINESS",
+  "status": 1,
+  "created": 1649494889,
+  "updated": 1649494898,
+  "retailer_ids": [
+    "62514a7068b8361e704728c3"
+  ]
+},{
+  "_id": {
+    "$oid": "6265ca6d1ad4200a7f5fbe52"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "MAI TARA",
+  "account_number": "6059009300000327",
+  "ifsc_code": "PUNB0605900",
+  "account_holder_name": "BOT4X",
+  "status": 1,
+  "created": 1650838125,
+  "updated": 1650873341,
+  "retailer_ids": [
+    "6265c9ad213828128265c713"
+  ]
+},{
+  "_id": {
+    "$oid": "6265df084e17e13fb4621872"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "RBL",
+  "account_number": "2223330037232208",
+  "ifsc_code": "RATN0VAAPIS",
+  "account_holder_name": "OXBIN",
+  "status": 1,
+  "created": 1650843400,
+  "updated": 1650843417,
+  "retailer_ids": [
+    "6265db8ba9547f582076d6f3"
+  ]
+},{
+  "_id": {
+    "$oid": "6265e0739a76da161445d0d2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "INDUSIND BANK",
+  "account_number": "257503862317",
+  "ifsc_code": "INDB0000865",
+  "account_holder_name": "RED BULL",
+  "status": 1,
+  "created": 1650843763,
+  "updated": 1650843777,
+  "retailer_ids": [
+    "6265d6d227c19e45d709a8d3"
+  ]
+},{
+  "_id": {
+    "$oid": "6265e0fa7d338274430aca72"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "STATE BANK OF INDIA",
+  "account_number": "40474905648",
+  "ifsc_code": "SBIN0005936",
+  "account_holder_name": "Payiza Technologies Pvt ltd",
+  "status": 1,
+  "created": 1650843898,
+  "updated": 1650873185,
+  "retailer_ids": [
+    "6265c9ad213828128265c713",
+    "6265cefdf21ba178b369cee3"
+  ]
+},{
+  "_id": {
+    "$oid": "6265e12ffe851c30b6041402"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "AXIS BANK",
+  "account_number": "921020032280665",
+  "ifsc_code": "UTIB0000022",
+  "account_holder_name": "M/S Payiza Technologies Pvt Ltd",
+  "status": 1,
+  "created": 1650843951,
+  "updated": 1653452419,
+  "retailer_ids": [
+    "624eb8f8ee1b7e76c3446873",
+    "6265c9ad213828128265c713",
+    "6265cefdf21ba178b369cee3"
+  ]
+},{
+  "_id": {
+    "$oid": "6265e169b6c62b785d380fc2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "PNB BANK",
+  "account_number": "6713002100002130",
+  "ifsc_code": "PUNB0671300",
+  "account_holder_name": "Payiza Technologies Pvt ltd",
+  "status": 1,
+  "created": 1650844009,
+  "updated": 1650873203,
+  "retailer_ids": [
+    "6265c9ad213828128265c713",
+    "6265cefdf21ba178b369cee3"
+  ]
+},{
+  "_id": {
+    "$oid": "62665496598231109e6b4cd2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "PYTM CARD SWAP",
+  "account_number": "3737737",
+  "ifsc_code": "IDI38373737",
+  "account_holder_name": "PYTM CARD SWAP",
+  "status": 1,
+  "created": 1650873494,
+  "updated": 1651927807,
+  "retailer_ids": [
+    "6265c9ad213828128265c713"
+  ]
+},{
+  "_id": {
+    "$oid": "629debfff2dd2157da122432"
+  },
+  "user_id": "626824fa736ac5199508b132",
+  "bank_name": "YES BANK",
+  "account_number": "708090733335",
+  "ifsc_code": "YESB0CMSNOC",
+  "account_holder_name": "Triguna traders",
+  "status": 1,
+  "created": 1654516735,
+  "updated": 1654516781,
+  "retailer_ids": [
+    "629da3f4de2f9814ac7b4a63"
+  ]
+},{
+  "_id": {
+    "$oid": "62a1f5e7ec797e0556458f12"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "YES BANK",
+  "account_number": "708090733335",
+  "ifsc_code": "YESB0CMSNOC",
+  "account_holder_name": "Infinity Grow",
+  "status": 1,
+  "created": 1654781415,
+  "updated": 1654781431,
+  "retailer_ids": [
+    "62a1cc1b9ef6fa1ac6343f63"
+  ]
+},{
+  "_id": {
+    "$oid": "62a1f6983251c70f9203d3f2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "PUNJAB NATIONAL BANK",
+  "account_number": "9180002100065725",
+  "ifsc_code": "PUNB0657700",
+  "account_holder_name": "Infinity Grow More",
+  "status": 1,
+  "created": 1654781592,
+  "updated": 1654785106,
+  "retailer_ids": [
+    "62a1cc1b9ef6fa1ac6343f63"
+  ]
+},{
+  "_id": {
+    "$oid": "62a34f117319a101097d60d2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "bank_name": "STATE BANK OF INDIA",
+  "account_number": "40110886685",
+  "ifsc_code": "SBIN0006343",
+  "account_holder_name": "Triguna traders",
+  "status": 1,
+  "created": 1654869777,
+  "updated": 1654869790,
+  "retailer_ids": [
+    "629da3f4de2f9814ac7b4a63"
+  ]
+},{
+  "_id": {
+    "$oid": "62c55eb1a8645a12c96ab4a2"
+  },
+  "user_id": "62682455f42afc390d7fb3f2",
+  "bank_name": "STATE BANK OF INDIA",
+  "account_number": "40110886685",
+  "ifsc_code": "SBIN0016532",
+  "account_holder_name": "BOT4X",
+  "status": 1,
+  "created": 1657102001,
+  "updated": 1657102019,
+  "retailer_ids": [
+    "6265c9ad213828128265c713"
+  ]
+}]

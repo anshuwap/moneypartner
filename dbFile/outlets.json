@@ -1,0 +1,1177 @@
+[{
+  "_id": {
+    "$oid": "621fea8d5aa63d5ee00a0792"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "outlet_no": 6060,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "7988908329",
+  "alternate_number": "9518263556",
+  "retailer_name": "AMAN COMM",
+  "email": "aman.dot.airtel@gmail.com",
+  "gender": "male",
+  "permanent_address": "ASHOK NAGAR DELHI",
+  "outlet_name": "AMAN",
+  "outlet_address": "ASHOK NAGAR",
+  "state": "Delhi",
+  "city": "DELHI",
+  "pincode": "110003",
+  "incorporation_date": "2022-03-03",
+  "date_of_birth": "2022-03-03",
+  "id_proff": "addhar_card",
+  "address_proff": "pan_card",
+  "pancard": "APKPA0103M",
+  "outlet_gst_number": "ADFDF34343434",
+  "money_transfer_option": {
+    "dmt_transfer": "1",
+    "payout": "1",
+    "bulk_payout": "1",
+    "payout_api": "1",
+    "online_payout_api": "1",
+    "e_collection": "1"
+  },
+  "status": null,
+  "account_status": 1,
+  "pin": "1234",
+  "office_photo": "20220302220709.jpg",
+  "office_address_proff": "20220302220709.jpg",
+  "profile_image": "20220427214251.jpg",
+  "created": 1646258829,
+  "updated": 1655959553,
+  "company_pancard": null,
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "500",
+      "type": "inr",
+      "charges": "10",
+      "status": 1
+    },
+    {
+      "from_amount": "501",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "2",
+      "status": 1
+    }
+  ],
+  "security_amount": null,
+  "employees": [
+    "626824fa736ac5199508b132"
+  ],
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "622c971315d65434eb1e0222"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "outlet_no": 8794,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "9814250051",
+  "alternate_number": null,
+  "retailer_name": "Gurpreet sing",
+  "email": "rikysachdeva@gmail.com",
+  "gender": "male",
+  "permanent_address": "HOUSE NO-344,Sector 37A, Chandigarh",
+  "outlet_name": "ATALLIA EV LLP",
+  "outlet_address": "HOUSE NO-344,Sector 37A, Chandigarh",
+  "state": "Chandigarh",
+  "city": "Chandigarh",
+  "pincode": "160036",
+  "incorporation_date": "1986-02-25",
+  "date_of_birth": "1986-02-25",
+  "id_proff": "addhar_card",
+  "address_proff": "addhar_card",
+  "pancard": "577657487315",
+  "outlet_gst_number": null,
+  "money_transfer_option": {
+    "payout": "1",
+    "payout_api": "1",
+    "e_collection": "1"
+  },
+  "status": null,
+  "account_status": 1,
+  "pin": 1770,
+  "office_photo": "20220312125027.jpg",
+  "office_address_proff": "20220312125027.jpg",
+  "profile_image": "20220312125027.jpg",
+  "created": 1647089427,
+  "updated": 1655959545,
+  "company_pancard": null,
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "500",
+      "type": "inr",
+      "charges": "15",
+      "status": 1
+    },
+    {
+      "from_amount": "501",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "3",
+      "status": 1
+    }
+  ],
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "622de9050f21a218b93a5ad2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "outlet_no": 5210,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "6280124722",
+  "alternate_number": "6280124722",
+  "retailer_name": "JASBIR SINGH",
+  "email": "jasbir935@gmail.com",
+  "gender": "male",
+  "permanent_address": "Puran chand village shimla mullana panipat",
+  "outlet_name": "SMART VISION",
+  "outlet_address": "Puran chand village shimla mullana panipat",
+  "state": "Haryana",
+  "city": "panipat",
+  "pincode": "132103",
+  "incorporation_date": "2022-03-13",
+  "date_of_birth": "1984-01-07",
+  "id_proff": "pan_card",
+  "address_proff": "addhar_card",
+  "pancard": "BSXPS4810C",
+  "outlet_gst_number": null,
+  "money_transfer_option": {
+    "payout": "1",
+    "bulk_payout": "1",
+    "payout_api": "1",
+    "online_payout_api": "1",
+    "e_collection": "1"
+  },
+  "status": null,
+  "account_status": 1,
+  "pin": 4919,
+  "office_photo": "20220313125221.jpg",
+  "office_address_proff": "20220313125221.jpg",
+  "profile_image": "20220313125221.jpg",
+  "created": 1647175941,
+  "updated": 1657281317,
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "500",
+      "type": "inr",
+      "charges": "15",
+      "status": 1
+    },
+    {
+      "from_amount": "501",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "2",
+      "status": 1
+    }
+  ],
+  "company_pancard": null,
+  "security_amount": "15000",
+  "employees": [
+    "626824fa736ac5199508b132"
+  ],
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "622efb0964bf4b3e01186752"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "outlet_no": 7698,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "9810592557",
+  "alternate_number": "9874563210",
+  "retailer_name": "Demo",
+  "email": "surendra9835@gmail.com",
+  "gender": "male",
+  "permanent_address": "Delhi",
+  "outlet_name": "Demo",
+  "outlet_address": "Demo",
+  "state": "Delhi",
+  "city": "Delhi",
+  "pincode": "110001",
+  "incorporation_date": "2022-02-27",
+  "date_of_birth": "2022-02-27",
+  "id_proff": "addhar_card",
+  "address_proff": "addhar_card",
+  "pancard": "DEMOB2514N",
+  "outlet_gst_number": null,
+  "money_transfer_option": {
+    "dmt_transfer": "1",
+    "payout": "1",
+    "bulk_payout": "1",
+    "payout_api": "1",
+    "e_collection": "1"
+  },
+  "status": null,
+  "account_status": 1,
+  "pin": 4796,
+  "created": 1647246089,
+  "updated": 1655959530,
+  "company_pancard": null,
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "500",
+      "type": "inr",
+      "charges": "5",
+      "status": 1
+    }
+  ],
+  "profile_image": "20220417235611.png",
+  "security_amount": "700",
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "62307f7d7fa987785c585592"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "outlet_no": 9314,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "9098893318",
+  "alternate_number": "8505806806",
+  "retailer_name": "JOLEEN",
+  "email": "jasonshalom551@gmail.com",
+  "gender": "male",
+  "permanent_address": "BUNEISS PACIFIC PARK GHAZIBAD",
+  "outlet_name": "JOLEEN",
+  "outlet_address": "BUNEISS PACIFIC PARK GHAZIBAD",
+  "state": "Uttar Pradesh",
+  "city": "GHAZIBAD",
+  "pincode": "110093",
+  "incorporation_date": "2022-03-15",
+  "date_of_birth": "1987-07-09",
+  "id_proff": "addhar_card",
+  "address_proff": "pan_card",
+  "pancard": "BBUPS4851D",
+  "outlet_gst_number": null,
+  "money_transfer_option": {
+    "dmt_transfer": "1",
+    "payout": "1",
+    "bulk_payout": "1",
+    "payout_api": "1",
+    "online_payout_api": "1",
+    "e_collection": "1"
+  },
+  "status": null,
+  "account_status": 1,
+  "pin": 3290,
+  "office_photo": "20220315115853.jpg",
+  "profile_image": "20220315115853.jpg",
+  "created": 1647345533,
+  "updated": 1655959520,
+  "company_pancard": null,
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "500",
+      "type": "inr",
+      "charges": "15",
+      "status": 1
+    },
+    {
+      "from_amount": "501",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "3",
+      "status": 1
+    }
+  ],
+  "employees": [
+    "626824fa736ac5199508b132"
+  ],
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "6231c0f8ea283360494af8a2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "outlet_no": 4699,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "8814900117",
+  "alternate_number": null,
+  "retailer_name": "PARAMJIT SING",
+  "email": "badsha007799@gmail.com",
+  "gender": "male",
+  "permanent_address": "H NO -607-608,GOLDEN AVENUE,PHASE -2,JALANDHAR-11",
+  "outlet_name": "Astro play",
+  "outlet_address": "H NO -607-608,GOLDEN AVENUE,PHASE -2,JALANDHAR-11",
+  "state": "Punjab",
+  "city": "JALANDHAR",
+  "pincode": "144022",
+  "incorporation_date": "1973-08-07",
+  "date_of_birth": "1973-08-07",
+  "id_proff": "addhar_card",
+  "address_proff": "addhar_card",
+  "pancard": "GAGPS9015B",
+  "outlet_gst_number": null,
+  "money_transfer_option": {
+    "dmt_transfer": "1",
+    "payout": "1",
+    "bulk_payout": "1",
+    "payout_api": "1",
+    "online_payout_api": "1",
+    "e_collection": "1"
+  },
+  "status": null,
+  "account_status": 1,
+  "pin": 7152,
+  "office_photo": "20220316105032.jpg",
+  "office_address_proff": "20220316105032.jpg",
+  "profile_image": "20220316105032.jpg",
+  "created": 1647427832,
+  "updated": 1656857285,
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "500",
+      "type": "inr",
+      "charges": "15",
+      "status": 1
+    },
+    {
+      "from_amount": "501",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "3",
+      "status": 1
+    }
+  ],
+  "company_pancard": null,
+  "security_amount": "25000",
+  "employees": [
+    "626824fa736ac5199508b132"
+  ],
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "623c715ce2bb120611003822"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "outlet_no": 8856,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "9289714345",
+  "alternate_number": "8400940082",
+  "retailer_name": "AMAN GILL",
+  "email": "ibellmarket07@gmail.com",
+  "gender": "male",
+  "permanent_address": "delhi nehru place",
+  "outlet_name": "IBELLMARKET",
+  "outlet_address": "NEHRU PLACE DELHI",
+  "state": "Delhi",
+  "city": "DELHI",
+  "pincode": "110003",
+  "incorporation_date": "2022-03-24",
+  "date_of_birth": "1992-07-24",
+  "id_proff": "pan_card",
+  "address_proff": "addhar_card",
+  "pancard": "BUTPS2327C",
+  "outlet_gst_number": null,
+  "money_transfer_option": {
+    "payout": "1",
+    "bulk_payout": "1",
+    "payout_api": "1",
+    "online_payout_api": "1",
+    "e_collection": "1"
+  },
+  "status": null,
+  "account_status": 1,
+  "pin": 6702,
+  "office_photo": "20220324185548.png",
+  "office_address_proff": "20220324185548.png",
+  "profile_image": "20220324185548.png",
+  "created": 1648128348,
+  "updated": 1655959496,
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "500",
+      "type": "inr",
+      "charges": "15",
+      "status": 1
+    },
+    {
+      "from_amount": "501",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "3",
+      "status": 1
+    }
+  ],
+  "company_pancard": null,
+  "security_amount": "75000",
+  "employees": [
+    "626824fa736ac5199508b132"
+  ],
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "62419d959c7c8359b13f22a2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "outlet_no": 1442,
+  "outlet_type": "distributor",
+  "user_type": null,
+  "mobile_no": "7303058013",
+  "alternate_number": null,
+  "retailer_name": "DAVINDER SING",
+  "email": "davinder25singh@gmail.com",
+  "gender": "male",
+  "permanent_address": "309,SANT NAGAR MEHLAN ROAD,WARD NO 14, SANGRUR",
+  "outlet_name": "RD enterprises",
+  "outlet_address": "309,SANT NAGAR MEHLAN ROAD,WARD NO 14, SANGRUR",
+  "state": "Punjab",
+  "city": "SANGRUR",
+  "pincode": "148001",
+  "incorporation_date": "1984-11-18",
+  "date_of_birth": "1984-11-18",
+  "id_proff": "addhar_card",
+  "address_proff": "addhar_card",
+  "pancard": "BPPPS9541P",
+  "outlet_gst_number": "674805107012",
+  "money_transfer_option": {
+    "dmt_transfer": "1",
+    "payout": "1",
+    "bulk_payout": "1",
+    "e_collection": "1"
+  },
+  "status": null,
+  "account_status": 1,
+  "pin": 2584,
+  "office_photo": "20220328170549.jpeg",
+  "office_address_proff": "20220328170549.jpeg",
+  "profile_image": "20220328170549.jpeg",
+  "created": 1648467349,
+  "updated": 1655959486,
+  "company_pancard": null,
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "500",
+      "type": "inr",
+      "charges": "15",
+      "status": 1
+    },
+    {
+      "from_amount": "501",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "2.5",
+      "status": 1
+    }
+  ],
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "6243fc74e7da180ec93eaea2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "outlet_no": 9584,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "8797000033",
+  "alternate_number": "8400940082",
+  "retailer_name": "LOKESH",
+  "email": "mirrorfx86@gmail.com",
+  "gender": "male",
+  "permanent_address": "Ghaziabad",
+  "outlet_name": "BNB CAPITALS",
+  "outlet_address": "Ghaziabad",
+  "state": "Uttar Pradesh",
+  "city": "Ghaziabad",
+  "pincode": "110093",
+  "incorporation_date": "2022-03-30",
+  "date_of_birth": "1992-06-24",
+  "id_proff": "addhar_card",
+  "address_proff": "pan_card",
+  "pancard": "BUTPS2327C",
+  "outlet_gst_number": null,
+  "money_transfer_option": {
+    "payout": "1",
+    "bulk_payout": "1",
+    "payout_api": "1",
+    "online_payout_api": "1"
+  },
+  "status": null,
+  "account_status": 0,
+  "pin": 1716,
+  "office_photo": "20220330121508.jpg",
+  "office_address_proff": "20220330121508.jpg",
+  "profile_image": "20220330121508.jpg",
+  "created": 1648622708,
+  "updated": 1657453969,
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "500",
+      "type": "inr",
+      "charges": "12",
+      "status": 1
+    },
+    {
+      "from_amount": "501",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "2.5",
+      "status": 1
+    }
+  ],
+  "company_pancard": null,
+  "security_amount": "10000",
+  "employees": [
+    "626824fa736ac5199508b132"
+  ],
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "624eb8f8ee1b7e76c3446872"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "outlet_no": 5660,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "7404171023",
+  "alternate_number": null,
+  "retailer_name": "HUMESH PARTAP RANA",
+  "email": "humeshpr@gmail.com",
+  "gender": "male",
+  "permanent_address": "H NO.7/106,BALDEV NAGAR,AMBALA CITY",
+  "outlet_name": "Tray Technologies",
+  "outlet_address": "H NO.7/106,BALDEV NAGAR,AMBALA CITY",
+  "state": "Haryana",
+  "city": "AMBALA",
+  "pincode": "134003",
+  "incorporation_date": "1987-03-11",
+  "date_of_birth": "1987-03-11",
+  "id_proff": "addhar_card",
+  "address_proff": "addhar_card",
+  "pancard": "AXSPR4307A",
+  "outlet_gst_number": "328430848866",
+  "money_transfer_option": {
+    "dmt_transfer": "1",
+    "payout": "1",
+    "bulk_payout": "1",
+    "payout_api": "1",
+    "online_payout_api": "1",
+    "e_collection": "1"
+  },
+  "status": null,
+  "account_status": 1,
+  "pin": 2231,
+  "office_photo": "20220407154208.jpeg",
+  "office_address_proff": "20220407154208.jpeg",
+  "profile_image": "20220407154208.jpeg",
+  "created": 1649326328,
+  "updated": 1655959463,
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "500",
+      "type": "inr",
+      "charges": "15",
+      "status": 1
+    },
+    {
+      "from_amount": "501",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "2.25",
+      "status": 1
+    }
+  ],
+  "company_pancard": null,
+  "security_amount": "25000",
+  "employees": [
+    "626824fa736ac5199508b132"
+  ],
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "62514a7068b8361e704728c2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "outlet_no": 1709,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "7055789937",
+  "alternate_number": null,
+  "retailer_name": "ZAHOOR HAIDER",
+  "email": "aerotech110@gmail.com",
+  "gender": "male",
+  "permanent_address": "A-1,303,SSC,HEIGHT,RIVER HEIGHT,RAJNAGAR EXTATION,GHAZIABAD",
+  "outlet_name": "KUMAIL BUSINESS",
+  "outlet_address": "A-1,303,SSC,HEIGHT,RIVER HEIGHT,RAJNAGAR EXTATION,GHAZIABAD",
+  "state": "Uttar Pradesh",
+  "city": "GHAZIABAD",
+  "pincode": "201001",
+  "incorporation_date": "1991-04-20",
+  "date_of_birth": "1991-04-20",
+  "id_proff": "addhar_card",
+  "address_proff": "addhar_card",
+  "pancard": "AUNPH9492E",
+  "outlet_gst_number": "850070737965",
+  "money_transfer_option": {
+    "payout": "1",
+    "bulk_payout": "1"
+  },
+  "status": null,
+  "account_status": 0,
+  "pin": 8030,
+  "office_photo": "20220409142720.jpeg",
+  "office_address_proff": "20220409142720.jpeg",
+  "profile_image": "20220409142720.jpeg",
+  "created": 1649494640,
+  "updated": 1655959392,
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "500",
+      "type": "inr",
+      "charges": "15",
+      "status": 1
+    },
+    {
+      "from_amount": "501",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "2.75",
+      "status": 1
+    }
+  ],
+  "employees": [
+    "626824fa736ac5199508b132"
+  ],
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "6265c9ad213828128265c712"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "outlet_no": 8109,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "8668620716",
+  "alternate_number": null,
+  "retailer_name": "BULL CAPITAL TRADING Inc. Ltd",
+  "email": "ry.kacheriy@gmail.com",
+  "gender": "male",
+  "permanent_address": "GANRAJ-3 NEW RAJVIHAR RO HOUSE OMKAR NAGAR PETH ROAD,NASHIK, MERI COLONY ,MHARASHTRA,422004",
+  "outlet_name": "BULL CAPITAL TRADING Inc. Ltd.",
+  "outlet_address": "GANRAJ-3 NEW RAJVIHAR RO HOUSE OMKAR NAGAR PETH ROAD,NASHIK, MERI COLONY ,MHARASHTRA,422004",
+  "state": "Maharashtra",
+  "city": "NASHIK",
+  "pincode": "422004",
+  "incorporation_date": "1988-08-02",
+  "date_of_birth": "1988-08-02",
+  "id_proff": "addhar_card",
+  "address_proff": "addhar_card",
+  "pancard": "BJJPK3041E",
+  "outlet_gst_number": "123456",
+  "money_transfer_option": {
+    "dmt_transfer": "1",
+    "payout": "1",
+    "bulk_payout": "1",
+    "payout_api": "1",
+    "online_payout_api": "1",
+    "e_collection": "1"
+  },
+  "status": null,
+  "account_status": 1,
+  "pin": 7647,
+  "office_photo": "20220425033533.jpg",
+  "office_address_proff": "20220425033533.jpg",
+  "profile_image": "20220425033533.jpeg",
+  "created": 1650837933,
+  "updated": 1655959385,
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "500",
+      "type": "inr",
+      "charges": "15",
+      "status": 1
+    },
+    {
+      "from_amount": "501",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "2.45",
+      "status": 1
+    }
+  ],
+  "company_pancard": null,
+  "security_amount": "200000",
+  "employees": [
+    "626824fa736ac5199508b132"
+  ],
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "6265cefdf21ba178b369cee2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "outlet_no": 7245,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "9442666778",
+  "alternate_number": null,
+  "retailer_name": "LEO PRIME OFFLINE",
+  "email": "sandhyapravin05@gmail.com",
+  "gender": "male",
+  "permanent_address": "DELHI",
+  "outlet_name": "LEO PRIME OFFLINE",
+  "outlet_address": "DELHI",
+  "state": "Delhi",
+  "city": "DELHI",
+  "pincode": "110010",
+  "incorporation_date": "1980-06-13",
+  "date_of_birth": "1980-06-13",
+  "id_proff": "addhar_card",
+  "address_proff": "pan_card",
+  "pancard": "AXSPS5880F",
+  "outlet_gst_number": "123456",
+  "status": null,
+  "account_status": 1,
+  "pin": 2740,
+  "office_address_proff": "20220425035813.jpg",
+  "profile_image": "20220425035813.jpeg",
+  "created": 1650839293,
+  "updated": 1655959403,
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "500",
+      "type": "inr",
+      "charges": "15",
+      "status": 1
+    },
+    {
+      "from_amount": "501",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "2.5",
+      "status": 1
+    }
+  ],
+  "company_pancard": null,
+  "employees": [
+    "626824fa736ac5199508b132"
+  ],
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "6265d6d227c19e45d709a8d2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "outlet_no": 2712,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "7087192222",
+  "alternate_number": null,
+  "retailer_name": "PARDEEP",
+  "email": "info@redbulforex.com",
+  "gender": "male",
+  "permanent_address": "H NO. 822,Sector 19 Panchkula,sector 15 Panchkula,Haryana",
+  "outlet_name": "REDBUL FOREX LLC LIMITED",
+  "outlet_address": "H NO. 822,Sector 19 Panchkula,sector 15 Panchkula,Haryana",
+  "state": "Haryana",
+  "city": "Panchkula",
+  "pincode": "134113",
+  "incorporation_date": "1981-09-01",
+  "date_of_birth": "1981-09-01",
+  "id_proff": "addhar_card",
+  "address_proff": "addhar_card",
+  "pancard": "AFZPA4998M",
+  "outlet_gst_number": "123456",
+  "money_transfer_option": {
+    "payout": "1",
+    "bulk_payout": "1",
+    "payout_api": "1",
+    "online_payout_api": "1",
+    "e_collection": "1"
+  },
+  "status": null,
+  "account_status": 1,
+  "pin": 3386,
+  "office_photo": "20220425043138.jpeg",
+  "office_address_proff": "20220425043138.jpeg",
+  "profile_image": "20220425043138.jpeg",
+  "created": 1650841298,
+  "updated": 1655959378,
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "500",
+      "type": "inr",
+      "charges": "15",
+      "status": 1
+    },
+    {
+      "from_amount": "501",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "3",
+      "status": 1
+    }
+  ],
+  "company_pancard": null,
+  "employees": [
+    "626824fa736ac5199508b132"
+  ],
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "6265db8ba9547f582076d6f2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "outlet_no": 5259,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "7496011615",
+  "alternate_number": null,
+  "retailer_name": "OXBIN",
+  "email": "deep.beehoney1@gmail.com",
+  "gender": "male",
+  "permanent_address": "567,GALI NO 2,BATHINDA ROAD 18 MANDI DABWALI,SIRSA",
+  "outlet_name": "OXBIN",
+  "outlet_address": "567,GALI NO 2,BATHINDA ROAD 18 MANDI DABWALI,SIRSA",
+  "state": "Haryana",
+  "city": "SIRSA",
+  "pincode": "125104",
+  "incorporation_date": "1982-02-19",
+  "date_of_birth": "1982-02-19",
+  "id_proff": "addhar_card",
+  "address_proff": "addhar_card",
+  "pancard": "CXFPS0120K",
+  "outlet_gst_number": "123456",
+  "money_transfer_option": {
+    "payout": "1",
+    "bulk_payout": "1",
+    "payout_api": "1",
+    "online_payout_api": "1",
+    "e_collection": "1"
+  },
+  "status": null,
+  "account_status": 1,
+  "pin": 9028,
+  "office_photo": "20220425045147.jpg",
+  "office_address_proff": "20220425045147.jpg",
+  "profile_image": "20220425045147.jpeg",
+  "created": 1650842507,
+  "updated": 1655959418,
+  "company_pancard": null,
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "500",
+      "type": "inr",
+      "charges": "15",
+      "status": 1
+    },
+    {
+      "from_amount": "501",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "2.75",
+      "status": 1
+    },
+    {
+      "from_amount": "200001",
+      "to_amount": "1000000",
+      "type": "persantage",
+      "charges": "2.75",
+      "status": 1
+    }
+  ],
+  "security_amount": "30000",
+  "employees": [
+    "626824fa736ac5199508b132"
+  ],
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "6268375147fe5a14d84c92b2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "outlet_no": 8586,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "9034057067",
+  "alternate_number": "9034057067",
+  "retailer_name": "kamal jaura",
+  "email": "kamaljaura@gmail.com",
+  "gender": "male",
+  "permanent_address": "house no-186, gali no-13, peer wali gali aazad nagar jagnnnath yamunanagaar",
+  "outlet_name": "SK TRADERS",
+  "outlet_address": "house no-186, gali no-13, peer wali gali aazad nagar jagnnnath yamunanagaar",
+  "state": "Haryana",
+  "city": "yamunanagar",
+  "pincode": "135001",
+  "incorporation_date": "1977-05-21",
+  "date_of_birth": "1977-05-21",
+  "id_proff": "addhar_card",
+  "address_proff": "addhar_card",
+  "pancard": "AGPPJ7144R",
+  "outlet_gst_number": null,
+  "money_transfer_option": {
+    "payout": "1",
+    "bulk_payout": "1",
+    "payout_api": "1",
+    "online_payout_api": "1",
+    "e_collection": "1"
+  },
+  "status": null,
+  "account_status": 1,
+  "pin": 1622,
+  "office_photo": "20220426234753.jpeg",
+  "office_address_proff": "20220426234753.jpeg",
+  "created": 1650997073,
+  "updated": 1655959366,
+  "company_pancard": null,
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "500",
+      "type": "inr",
+      "charges": "15",
+      "status": 1
+    },
+    {
+      "from_amount": "501",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "2.5",
+      "status": 1
+    }
+  ],
+  "security_amount": "25000",
+  "employees": [
+    "626824fa736ac5199508b132"
+  ],
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "627d6ff70a0c371ad60852d2"
+  },
+  "user_id": "62682455f42afc390d7fb3f2",
+  "outlet_no": 3647,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "7010040279",
+  "alternate_number": null,
+  "retailer_name": "LEO PRIME ONLINE",
+  "email": "justmailtosan@gmail.com",
+  "gender": "male",
+  "permanent_address": "DELHI",
+  "outlet_name": "LEO PRIME ONLINE",
+  "outlet_address": "DELHI",
+  "state": "Delhi",
+  "city": "DELHI",
+  "pincode": "110010",
+  "incorporation_date": "1980-06-13",
+  "date_of_birth": "1980-06-13",
+  "id_proff": "addhar_card",
+  "address_proff": "addhar_card",
+  "pancard": "AXSPS5880F",
+  "outlet_gst_number": null,
+  "money_transfer_option": {
+    "payout": "1",
+    "payout_api": "1",
+    "online_payout_api": "1"
+  },
+  "status": null,
+  "account_status": 1,
+  "pin": 8907,
+  "profile_image": "20220513020711.png",
+  "created": 1652387831,
+  "updated": 1655959357,
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "500",
+      "type": "inr",
+      "charges": "15",
+      "status": 1
+    },
+    {
+      "from_amount": "501",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "2.5",
+      "status": 1
+    }
+  ],
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "629da3f4de2f9814ac7b4a62"
+  },
+  "user_id": "626824fa736ac5199508b132",
+  "outlet_no": 3139,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "9119619313",
+  "alternate_number": null,
+  "retailer_name": "jeetu verma",
+  "email": "r4167158@gmail.com",
+  "gender": "male",
+  "permanent_address": "103, First Floor\r\nVikas Tower\r\nDDA Community centre \r\nRani Bagh, Pitam pura\r\nNear Aggarwal Prestige Mall\r\nNew Delhi 110034",
+  "outlet_name": "Triguna traders",
+  "outlet_address": "Office address  105/693 plot no. 5 chamanganj",
+  "state": "Uttar Pradesh",
+  "city": "kanpur",
+  "pincode": "208011",
+  "incorporation_date": "2022-06-06",
+  "date_of_birth": "2001-01-01",
+  "id_proff": "addhar_card",
+  "address_proff": "addhar_card",
+  "pancard": "CGQPV6920C",
+  "outlet_gst_number": null,
+  "money_transfer_option": {
+    "payout": "1",
+    "bulk_payout": "1",
+    "payout_api": "1",
+    "online_payout_api": "1",
+    "e_collection": "1"
+  },
+  "status": null,
+  "account_status": 1,
+  "pin": 4979,
+  "security_amount": null,
+  "created": 1654498292,
+  "updated": 1655959350,
+  "company_pancard": null,
+  "profile_image": "20220606150558.jpg",
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "1000",
+      "type": "inr",
+      "charges": "15",
+      "status": 1
+    },
+    {
+      "from_amount": "1001",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "3",
+      "status": 1
+    }
+  ],
+  "employees": [
+    "626824fa736ac5199508b132"
+  ],
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "62a1cc1b9ef6fa1ac6343f62"
+  },
+  "user_id": "62682455f42afc390d7fb3f2",
+  "outlet_no": 7193,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "9311622526",
+  "alternate_number": null,
+  "retailer_name": "RAHUL MALIK",
+  "email": "growmore0206@gmail.com",
+  "gender": "male",
+  "permanent_address": "B-20/UG-2 DILSHAD COLONY 'EAST DELHI",
+  "outlet_name": "RAHUL MALIK",
+  "outlet_address": "B-20/UG-2 DILSHAD COLONY 'EAST DELHI",
+  "state": "Delhi",
+  "city": "DELHI",
+  "pincode": "110095",
+  "incorporation_date": "1989-08-07",
+  "date_of_birth": "1989-08-07",
+  "id_proff": "addhar_card",
+  "address_proff": "addhar_card",
+  "pancard": "DVJPM4341F",
+  "outlet_gst_number": null,
+  "money_transfer_option": {
+    "payout": "1",
+    "bulk_payout": "1",
+    "payout_api": "1",
+    "online_payout_api": "1",
+    "e_collection": "1"
+  },
+  "status": null,
+  "account_status": 1,
+  "pin": 2652,
+  "security_amount": "9700",
+  "office_photo": "20220609160155.jpeg",
+  "office_address_proff": "20220609160155.jpeg",
+  "profile_image": "20220609160155.jpeg",
+  "created": 1654770715,
+  "updated": 1656076998,
+  "bank_charges": [
+    {
+      "from_amount": "0",
+      "to_amount": "500",
+      "type": "inr",
+      "charges": "15",
+      "status": 1
+    },
+    {
+      "from_amount": "501",
+      "to_amount": "200000",
+      "type": "persantage",
+      "charges": "2.75",
+      "status": 1
+    }
+  ],
+  "company_pancard": null,
+  "employees": [
+    "626824fa736ac5199508b132"
+  ],
+  "employee_id": "626824fa736ac5199508b132"
+},{
+  "_id": {
+    "$oid": "62ad950bfa1dfa76c72d7812"
+  },
+  "user_id": "62682455f42afc390d7fb3f2",
+  "outlet_no": 3711,
+  "outlet_type": "retailer",
+  "user_type": null,
+  "mobile_no": "9582851273",
+  "alternate_number": null,
+  "retailer_name": "FARUKH",
+  "email": "farukh.khan02@gmail.com",
+  "gender": "male",
+  "permanent_address": "GRAM SAHAJPUR POST NAGLI MEGHA ,TEH RAMGHAR ,NAGAL MAGA, ALWAR",
+  "outlet_name": "FARUKH",
+  "outlet_address": "GRAM SAHAJPUR POST NAGLI MEGHA ,TEH RAMGHAR ,NAGAL MAGA, ALWAR",
+  "state": "Rajasthan",
+  "city": "ALWAR",
+  "pincode": "301026",
+  "incorporation_date": "1986-09-01",
+  "date_of_birth": "1986-09-01",
+  "id_proff": "addhar_card",
+  "address_proff": "addhar_card",
+  "pancard": "BDXPK5272R",
+  "outlet_gst_number": "850070737965",
+  "money_transfer_option": {
+    "payout": "1",
+    "bulk_payout": "1"
+  },
+  "status": null,
+  "account_status": 1,
+  "pin": 6829,
+  "security_amount": null,
+  "office_photo": "20220618143410.jpeg",
+  "office_address_proff": "20220618143411.jpeg",
+  "profile_image": "20220618143411.jpeg",
+  "created": 1655543051,
+  "updated": 1655959330,
+  "employee_id": "626824fa736ac5199508b132"
+}]

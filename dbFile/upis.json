@@ -1,0 +1,70 @@
+[{
+  "_id": {
+    "$oid": "61a67102b64c000084007b02"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "RBL UPI ID",
+  "upi_id": "8897443322@ybl",
+  "status": "1",
+  "created": 1638297858,
+  "updated": 1638298088,
+  "deleted_at": {
+    "$date": {
+      "$numberLong": "1638298133597"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "61a6722fb64c000084007b03"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "Patym UPI ID",
+  "upi_id": "8765443211@ybl",
+  "status": 1,
+  "created": 1638298159,
+  "updated": 1648055432,
+  "retailer_ids": [
+    "622efb0964bf4b3e01186753"
+  ]
+},{
+  "_id": {
+    "$oid": "621539f74a72b1565f126dc2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "AMANTELECOM",
+  "upi_id": "rpy.forpayabhi8295376195@icici",
+  "status": 1,
+  "created": 1645558263,
+  "updated": 1646110670,
+  "retailer_ids": [
+    "61d0974ea36000009e005163",
+    "6215371f8a45ec557a685da3"
+  ]
+},{
+  "_id": {
+    "$oid": "62153a109befa720441469a2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "AMANTELECOM",
+  "upi_id": "rpy.forpayabhi9996633305@icici",
+  "status": 1,
+  "created": 1645558288,
+  "updated": 1646110641,
+  "retailer_ids": [
+    "61d0974ea36000009e005163",
+    "6215371f8a45ec557a685da3"
+  ]
+},{
+  "_id": {
+    "$oid": "6265df5de8d84c46f4177932"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "OXBIN",
+  "upi_id": "rpy.forpayabhi7496011615@icici",
+  "status": 1,
+  "created": 1650843485,
+  "updated": 1650843499,
+  "retailer_ids": [
+    "6265db8ba9547f582076d6f3"
+  ]
+}]

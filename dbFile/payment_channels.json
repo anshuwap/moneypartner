@@ -1,0 +1,532 @@
+[{
+  "_id": {
+    "$oid": "621e701fe0410000320045b0"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "PAYIZA",
+  "status": 1,
+  "created": 1646161951,
+  "updated": 1655233718
+},{
+  "_id": {
+    "$oid": "622cc07f9bc5bb2ce40c2ac2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "DOGMAPAWAN",
+  "status": "1",
+  "created": 1647100031,
+  "updated": 1647100031
+},{
+  "_id": {
+    "$oid": "622cc08a6446f95db655c7d2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "PAYABHIKULDEEP",
+  "status": "1",
+  "created": 1647100042,
+  "updated": 1647100042
+},{
+  "_id": {
+    "$oid": "622cc09b380516434e7a3412"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "PAYABHIRAVI",
+  "status": "1",
+  "created": 1647100059,
+  "updated": 1647100059
+},{
+  "_id": {
+    "$oid": "622cc0cf006c6c4a471d2862"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "PAYABHIPARVEEN",
+  "status": "1",
+  "created": 1647100111,
+  "updated": 1647100111
+},{
+  "_id": {
+    "$oid": "622cc0e25c030c44e7053072"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "MTMONEY",
+  "status": "1",
+  "created": 1647100130,
+  "updated": 1647100130
+},{
+  "_id": {
+    "$oid": "622cc1051dbe2d6cf246ba22"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "PAYUNIEPREET",
+  "status": "1",
+  "created": 1647100165,
+  "updated": 1647100182
+},{
+  "_id": {
+    "$oid": "622cc1268d219f0888146f22"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "PAYUNEEAMIT",
+  "status": "1",
+  "created": 1647100198,
+  "updated": 1647100198
+},{
+  "_id": {
+    "$oid": "622cc1351c67b647e36d45e2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "PAYUNEERASHID",
+  "status": 1,
+  "created": 1647100213,
+  "updated": 1649158483
+},{
+  "_id": {
+    "$oid": "622cc14886283c38c3241092"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "HYPTOEASY",
+  "status": "1",
+  "created": 1647100232,
+  "updated": 1647100232
+},{
+  "_id": {
+    "$oid": "622cc1560eb42121480fac62"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "HYPTOFISHFORTUNE",
+  "status": "1",
+  "created": 1647100246,
+  "updated": 1647100246
+},{
+  "_id": {
+    "$oid": "622cc17129184f7e343e0702"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "BLUEHILLS",
+  "status": "1",
+  "created": 1647100273,
+  "updated": 1647100273
+},{
+  "_id": {
+    "$oid": "622cc17cb4e7c10ade7b3ac2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "YESBANKSUNSHINE",
+  "status": "1",
+  "created": 1647100284,
+  "updated": 1647100284
+},{
+  "_id": {
+    "$oid": "62399323f260e21298526be2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "RASHIDPAYUNEE",
+  "status": "1",
+  "created": 1647940387,
+  "updated": 1647940387
+},{
+  "_id": {
+    "$oid": "62430480fb0944469f0e4c12"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "Pay2All-Parveen",
+  "status": "1",
+  "created": 1648559232,
+  "updated": 1652200671
+},{
+  "_id": {
+    "$oid": "62430491cdbc2c72e96cefd2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "Payunie - Preet Kumar",
+  "status": "1",
+  "created": 1648559249,
+  "updated": 1648559249
+},{
+  "_id": {
+    "$oid": "624304bbe715233c034641f2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "Odinmo",
+  "status": "1",
+  "created": 1648559291,
+  "updated": 1648559291
+},{
+  "_id": {
+    "$oid": "6243feff69343709905b33d2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "PAYUNEEAMAN",
+  "status": "1",
+  "created": 1648623359,
+  "updated": 1648623359
+},{
+  "_id": {
+    "$oid": "624ebf88d035191c11597cb2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "Tray Technologies",
+  "status": 0,
+  "created": 1649328008,
+  "updated": 1650005835
+},{
+  "_id": {
+    "$oid": "624ec4237d7bee72586e0e12"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "sahipay parveen",
+  "status": "1",
+  "created": 1649329187,
+  "updated": 1649329187
+},{
+  "_id": {
+    "$oid": "62567f52db09a9235165b4b2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "HYPTOKUMAIL",
+  "status": "1",
+  "created": 1649835858,
+  "updated": 1649835858
+},{
+  "_id": {
+    "$oid": "625d88c46b83f72b9b31fea2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "AMAN CASH HAND OVER",
+  "status": "1",
+  "created": 1650297028,
+  "updated": 1650297028
+},{
+  "_id": {
+    "$oid": "6265ef1120c83a5057115bd2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "PREVIOUS BALANCE",
+  "status": "1",
+  "created": 1650847505,
+  "updated": 1650847505
+},{
+  "_id": {
+    "$oid": "6267ba44e35fd837c6209832"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "credit by aman",
+  "status": "1",
+  "created": 1650965060,
+  "updated": 1650965060
+},{
+  "_id": {
+    "$oid": "6267bae621c57b69d33c9a22"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "double entry in odmin",
+  "status": "1",
+  "created": 1650965222,
+  "updated": 1650965222
+},{
+  "_id": {
+    "$oid": "6267f4f47f3e2c5c58004582"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "leo manully enteries",
+  "status": "1",
+  "created": 1650980084,
+  "updated": 1650980084
+},{
+  "_id": {
+    "$oid": "62680fc5d232e248e4683da2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "charged 1.8% of amount",
+  "status": "1",
+  "created": 1650986949,
+  "updated": 1650986949
+},{
+  "_id": {
+    "$oid": "6268f86a64f4dd56361d2102"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "Refunded",
+  "status": "1",
+  "created": 1651046506,
+  "updated": 1651046506
+},{
+  "_id": {
+    "$oid": "626ba632a0bf5673e4465fe2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "CASH HAND OVER BY HUNNY",
+  "status": "1",
+  "created": 1651222066,
+  "updated": 1651222066
+},{
+  "_id": {
+    "$oid": "626bab066dc11f27b971ab32"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "AMAN E PAYMARK",
+  "status": "1",
+  "created": 1651223302,
+  "updated": 1651223302
+},{
+  "_id": {
+    "$oid": "626c19262777db2dea03f582"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "Surcharge by sandhya trade",
+  "status": "1",
+  "created": 1651251494,
+  "updated": 1651251494
+},{
+  "_id": {
+    "$oid": "626c3ba7e68fd60b761ded92"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "DEMO",
+  "status": "1",
+  "created": 1651260327,
+  "updated": 1651260327
+},{
+  "_id": {
+    "$oid": "626d090b9959903d41021d32"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "Card amul surcharge",
+  "status": "1",
+  "created": 1651312907,
+  "updated": 1651312907
+},{
+  "_id": {
+    "$oid": "626d28bbc839943fd74d1c72"
+  },
+  "user_id": "62682455f42afc390d7fb3f2",
+  "name": "USDT",
+  "status": "1",
+  "created": 1651321019,
+  "updated": 1651321019
+},{
+  "_id": {
+    "$oid": "6270d488ffc68d1fe72d63e2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "cash handover less by jasbir",
+  "status": "1",
+  "created": 1651561608,
+  "updated": 1651561608
+},{
+  "_id": {
+    "$oid": "62718b0138896f0fbc3adec2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "EXTRA AMOUNT TO BENI",
+  "status": "1",
+  "created": 1651608321,
+  "updated": 1651608321
+},{
+  "_id": {
+    "$oid": "627192b331fb0166a10107c2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "CASH HANDOVER TO YOGESH PANIPAT BY NONI",
+  "status": "1",
+  "created": 1651610291,
+  "updated": 1651610291
+},{
+  "_id": {
+    "$oid": "6271930945f3620b9d58c642"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "ENTRY SANTOSH R OTARI INDUSAND BANK",
+  "status": "1",
+  "created": 1651610377,
+  "updated": 1651610377
+},{
+  "_id": {
+    "$oid": "6271932d8fdbdb2d574c0f32"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "USDT FROM SANDEEP JMBAL",
+  "status": "1",
+  "created": 1651610413,
+  "updated": 1651610413
+},{
+  "_id": {
+    "$oid": "62736803a0b263701e5adcf2"
+  },
+  "user_id": "62682455f42afc390d7fb3f2",
+  "name": "Card Amul",
+  "status": "1",
+  "created": 1651730435,
+  "updated": 1651730435
+},{
+  "_id": {
+    "$oid": "6273f2febb20b95b874bc592"
+  },
+  "user_id": "62682455f42afc390d7fb3f2",
+  "name": "Deduction access",
+  "status": "1",
+  "created": 1651766014,
+  "updated": 1651766014
+},{
+  "_id": {
+    "$oid": "627554669663603e2922d282"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "NO SURCHARGE TAKEN FROM 5LAKH ENTRY",
+  "status": "1",
+  "created": 1651856486,
+  "updated": 1651856486
+},{
+  "_id": {
+    "$oid": "6278db44e3d5f1525072cae2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "PYTM CARD SWAP MACHINE",
+  "status": "1",
+  "created": 1652087620,
+  "updated": 1652087620
+},{
+  "_id": {
+    "$oid": "62838a50ff228a3b027ba272"
+  },
+  "user_id": "62682455f42afc390d7fb3f2",
+  "name": "CASH BY NONI",
+  "status": "1",
+  "created": 1652787792,
+  "updated": 1652787792
+},{
+  "_id": {
+    "$oid": "6283a6b684e4cd22e278c872"
+  },
+  "user_id": "62682455f42afc390d7fb3f2",
+  "name": "SANDHYA PENDING SHEET",
+  "status": "1",
+  "created": 1652795062,
+  "updated": 1652795062
+},{
+  "_id": {
+    "$oid": "6283f0abd9316e624e1ac152"
+  },
+  "user_id": "62682455f42afc390d7fb3f2",
+  "name": "MAI TARA PVT LTD",
+  "status": "1",
+  "created": 1652813995,
+  "updated": 1652813995
+},{
+  "_id": {
+    "$oid": "628d409d4e208e786f48f352"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "NOT IDENTIFIY",
+  "status": "1",
+  "created": 1653424285,
+  "updated": 1653424285
+},{
+  "_id": {
+    "$oid": "6292345f34f10d58640c06a2"
+  },
+  "user_id": "62682455f42afc390d7fb3f2",
+  "name": "PAYTEL FINANCIAL TECHNOLOGY",
+  "status": "1",
+  "created": 1653748831,
+  "updated": 1653748831
+},{
+  "_id": {
+    "$oid": "629675a18045e01bf21ab682"
+  },
+  "user_id": "62682455f42afc390d7fb3f2",
+  "name": "CASH HAND OVER BY AMAN I BELL",
+  "status": "1",
+  "created": 1654027681,
+  "updated": 1654027681
+},{
+  "_id": {
+    "$oid": "6297bbba1c8cff4d5e3f5182"
+  },
+  "user_id": "62682455f42afc390d7fb3f2",
+  "name": "CASH HAND OVER PARMOD BY HUNNY",
+  "status": "1",
+  "created": 1654111162,
+  "updated": 1654111162
+},{
+  "_id": {
+    "$oid": "6299de635a51f72dd31735b2"
+  },
+  "user_id": "62682455f42afc390d7fb3f2",
+  "name": "CASH BY PARMOD",
+  "status": "1",
+  "created": 1654251107,
+  "updated": 1654251107
+},{
+  "_id": {
+    "$oid": "62a8dca7acda600bdb3ec002"
+  },
+  "user_id": "62682455f42afc390d7fb3f2",
+  "name": "PAYIZA TECH",
+  "status": "1",
+  "created": 1655233703,
+  "updated": 1655233703
+},{
+  "_id": {
+    "$oid": "62b5f0ba6df76813820406f2"
+  },
+  "user_id": "62682455f42afc390d7fb3f2",
+  "name": "SURCHARGE",
+  "status": "1",
+  "created": 1656090810,
+  "updated": 1656090810
+},{
+  "_id": {
+    "$oid": "62bacb4f23f4115cf0590c12"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "ClicknCash-api",
+  "status": "1",
+  "created": 1656408911,
+  "updated": 1656408911
+},{
+  "_id": {
+    "$oid": "62be85eb790af07ab7055252"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "MPOS MACHINE CHARGE",
+  "status": "1",
+  "created": 1656653291,
+  "updated": 1656653291
+},{
+  "_id": {
+    "$oid": "62c31324a8b78663f5785f72"
+  },
+  "user_id": "62682455f42afc390d7fb3f2",
+  "name": "Rapipay",
+  "status": "1",
+  "created": 1656951588,
+  "updated": 1656951588
+},{
+  "_id": {
+    "$oid": "62c523e241bf125e67031ca2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "AMAN KOTAK 9012654966",
+  "status": "1",
+  "created": 1657086946,
+  "updated": 1657086946
+},{
+  "_id": {
+    "$oid": "62c523f444c945252d707552"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "SHRUTI KOTAK KANWAL",
+  "status": "1",
+  "created": 1657086964,
+  "updated": 1657086964
+},{
+  "_id": {
+    "$oid": "62c81a96e940623c2a2871d2"
+  },
+  "user_id": "61a3c0fb4a47000015003322",
+  "name": "JASBIR PAYABHI PENDING ENTRY",
+  "status": "1",
+  "created": 1657281174,
+  "updated": 1657281174
+}]
