@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+
+use App\Models\Setting;
+?>
 
 <head>
     <meta charset="utf-8">
@@ -17,39 +21,25 @@
     <link rel="stylesheet" href="{{ asset('assets') }}/custom/custom.css">
 </head>
 
-<body class="hold-transition login-page">
-    <div class="login-box">
+<body class="hold-transition login-page" style="background-color:#bce6de !important;">
 
-        <!-- Main content -->
+    <img src="{{asset('attachment/maint.png')}}">
+
+
+    <?php $setting = Setting::first(); ?>
+    <h4><i class="fas fa-exclamation-triangle text-danger"></i> {{ $setting->comment}}</h4>
+
+    @if(!$setting->status)
+    <a href="{{ url('/')}}" class="btn btn-success btn-sm">Login</a>
+    @endif
+
+    <div class="login-box">
         <section class="content">
             <div class="error-page">
-                <h2 class="headline text-danger">500</h2>
-
                 <div class="error-content">
-                    <h3><i class="fas fa-exclamation-triangle text-danger"></i> Oops! Something went wrong.</h3>
-
-                    @if(!empty(Session::get('error')))
-                    <p>
-                        <?php
-                        if ($message = Session::get('error')) {
-                            echo $message;
-                        } else if (!empty(Auth::user()->_id)) { ?>
-                            <script type="text/javascript">
-                                window.history.back();
-                            </script>
-
-                        <?php } ?>
-                    </p>
-                    <button type="button" class="btn btn-success btn-sm" onclick="javascript:history.go(-1)">Back</button>
-                    @endif
-
                 </div>
             </div>
-            <!-- /.error-page -->
-
         </section>
-        <!-- /.content -->
-    </div>
     </div>
 </body>
 

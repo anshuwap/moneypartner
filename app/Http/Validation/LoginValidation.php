@@ -19,17 +19,16 @@ class LoginValidation extends FormRequest
         return [
             'email'     => 'required|email',
             'password'  => 'required|min:6|max:16',
+            'captcha'   => 'required|captcha'
         ];
     }
-    // public function messages()
-    // {
-    //     return [
-    //         'email.required'=> 'Please Enter OTP.',
-    //         'otp.numeric'  => 'OTP must be numeric.',
-    //         'otp.digirs'   => 'OTP contain only 6 digits.',
-    //         'otp.not_in'   => 'Please Enter Valid OTP.',
-    //     ];
-    // }
+    public function messages()
+    {
+        return [
+            'captcha.required'=> 'Captcha field is required.',
+            'captcha.captcha'=> 'Invalid Captcha Code.'
+        ];
+    }
 
     // protected function failedValidation(Validator $validator)
     // {

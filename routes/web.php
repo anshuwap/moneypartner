@@ -84,6 +84,7 @@ Route::get("get-blance2", [Controller::class, "getBlance2"]);
 
 Route::get('500', [AdminDashboard::class, 'serverError']);
 Route::get('maintenance', [MaintainanceController::class, 'maintanance']);
+
 // Route::get('404', [AdminDashboard::class, 'notFound']);
 
 Route::group(['middleware' => 'adminRedirect'], function () {
@@ -96,6 +97,7 @@ Route::group(['middleware' => 'adminRedirect'], function () {
   Route::post('/send-link',           [AdminLogin::class, 'sendLink']);
   Route::get('/forgot-password/{id}', [AdminLogin::class, 'forgotPassword']);
   Route::post('/forgot-password',     [AdminLogin::class, 'forgotPasswordSave']);
+  Route::get('/reload-captcha', [AdminLogin::class, 'reloadCaptcha']);
   // Route::post('verify-mobile', [AdminLogin::class, 'verifyMobile']);
 });
 
@@ -191,7 +193,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::get('transaction-report',  [AdminTransaction::class, 'report']);
   Route::get('a-transaction-export-split', [AdminTransaction::class, 'exportSplit']);
   Route::get('a-refund-export-split', [AdminTransaction::class, 'refundPendingExportSplit']);
-
+  Route::get('new-transaction',     [AdminTransaction::class, 'newTransaction']);
+  Route::get('new-transaction-export', [AdminTransaction::class, 'newTransactionExport']);
+  Route::get('update-new-utr',      [AdminTransaction::class, 'updateNewUtr']);
+  Route::get('change-new-channel',  [AdminTransaction::class, 'updateNewChannel']);
+  Route::post('change-transaction-status', [AdminTransaction::class, 'changeTransactionStatus']);
 
   Route::resource('credit',           AdminCredit::class);
   Route::get('credit-export',         [AdminCredit::class, 'export']);
@@ -351,6 +357,13 @@ Route::group(['prefix' => 'employee', 'middleware' => 'employee'], function () {
   Route::get('refund-pending-export', [EmployeeTransaction::class, 'refundPendingExport']);
   Route::get('transaction-report',  [EmployeeTransaction::class, 'report']);
   Route::get('a-transaction-export-split', [EmployeeTransaction::class, 'exportSplit']);
+
+  Route::get('new-transaction',     [EmployeeTransaction::class, 'newTransaction']);
+  Route::get('new-transaction-export', [EmployeeTransaction::class, 'newTransactionExport']);
+  Route::get('update-new-utr',      [EmployeeTransaction::class, 'updateNewUtr']);
+  Route::get('change-new-channel',  [EmployeeTransaction::class, 'updateNewChannel']);
+  Route::post('change-transaction-status', [EmployeeTransaction::class, 'changeTransactionStatus']);
+
 
   Route::resource('earn-history',  EarnHistory::class);
   Route::get('earn-history-export', [EarnHistory::class, 'export']);

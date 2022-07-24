@@ -223,7 +223,7 @@
                                             <td>{!! mSign($split->amount)!!}</td>
                                             <td>{!! mSign($split->transaction_fees)!!}</td>
                                             <td>{{$sResp->utr_number}}</td>
-                                            <td>{{$sResp->payment_mode}}</td>
+                                            <td>{{!empty($sResp->payment_mode)?$sResp->payment_mode:''}}</td>
                                             <td>{{ strtoupper($split->status) }}</td>
                                             <td><?php $actionM = !(empty($sResp->msg)) ? $sResp->msg : '';
                                                 echo !empty($sResp->action_date) ? '<span data-toggle="tooltip" data-placement="bottom" title="' . $actionM . '">' . date('d,M y H:i', $sResp->action_date) . '</span>' : '' ?></td>
@@ -326,7 +326,7 @@
             <div class="modal-body" id="details1_dashboard">
                 <div id="details_dashboard"></div>
 
-                <div class="row">
+                <div class="row" id="channel_div">
                     <div class="col-md-12">
                         <label>Change Payment Channel</label>
                         <input type="hidden" value="" id="view-id" name="id">
@@ -349,6 +349,69 @@
     </div>
 </div>
 
+
+<!-- Modal -->
+<div class="modal fade" id="approve_modal_action" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="heading_bank_dashboard">Success/Reject Request</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="cover-loader-modal d-none">
+                <div class="loader-modal"></div>
+            </div>
+
+            <div class="modal-body">
+                <form id="approve_trans_action1" action="{{ url('admin/a-transaction') }}" method="post">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="hidden" id="trans_id_action" name="trans_id">
+                            <input type="hidden" id="key_dashboard" name="key">
+
+                            <div class="form-group">
+                                <label>Action</label>
+                                <select name="status" id="status-select-action" class="status-select-action form-control form-control-sm">
+                                    <option value="">Select</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                                <span id="status_msg" class="custom-text-danger"></span>
+                            </div>
+
+                            <div id="action_action">
+                            </div>
+
+                            <div id="success_action"></div>
+
+                            <div class="form-group" id="comment-field_action" style="display: none;">
+                                <label>Comment</label>
+                                <select name=response[msg] class="form-control form-control-sm" id="comment_action">
+
+                                </select>
+                                <span id="comment_msg" class="custom-text-danger"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12 mt-2">
+                            <div class="form-group text-center">
+                                <input type="submit" class="btn btn-success btn-sm" value="Submit">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <script>
     $('#change-channel').click(function() {
         var channel = $('#channel').val();
@@ -369,6 +432,9 @@
                         res.msg,
                         `${res.status}`,
                     )
+                    setTimeout(function() {
+                        location.reload();
+                    });
                 }
                 /*End Status message*/
             }
@@ -522,8 +588,14 @@
             dataType: "json",
             success: function(res) {
 
+                $('#channel_div').show();
+                if (res.type)
+                    $('#channel_div').hide();
+
                 $('#details_dashboard').html(res.table);
                 $('#view-id').val(res.id);
+                $('#channel').val(res.channel);
+
                 $('#view_modal_dashboard').modal('show');
             }
         })
@@ -758,7 +830,7 @@
     })
 
     /*start form submit functionality*/
-    $("form#approve_trans_action").submit(function(e) {
+    $("form#approve_trans_action1").submit(function(e) {
         e.preventDefault();
         formData = new FormData(this);
         var url = $(this).attr('action');
@@ -799,7 +871,7 @@
 
                 //for reset all field
                 if (res.status == 'success') {
-                    $('form#approve_trans_action')[0].reset();
+                    $('form#approve_trans_action1')[0].reset();
                     setTimeout(function() {
                         location.reload();
                     }, 1000)
@@ -810,68 +882,6 @@
 
     /*end form submit functionality*/
 </script>
-
-
-<!-- Modal -->
-<div class="modal fade" id="approve_modal_action" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="heading_bank_dashboard">Success/Reject Request</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <div class="cover-loader-modal d-none">
-                <div class="loader-modal"></div>
-            </div>
-
-            <div class="modal-body">
-                <form id="approve_trans_action" action="{{ url('admin/a-transaction') }}" method="post">
-                    @csrf
-                    <div class="row">
-                        <div class="col-md-12">
-                            <input type="hidden" id="trans_id_action" name="trans_id">
-                            <input type="hidden" id="key_dashboard" name="key">
-
-                            <div class="form-group">
-                                <label>Action</label>
-                                <select name="status" id="status-select-action" class="status-select-action form-control form-control-sm">
-                                    <option value="">Select</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="rejected">Rejected</option>
-                                </select>
-                                <span id="status_msg" class="custom-text-danger"></span>
-                            </div>
-
-                            <div id="action_action">
-                            </div>
-
-                            <div id="success_action"></div>
-
-                            <div class="form-group" id="comment-field_action" style="display: none;">
-                                <label>Comment</label>
-                                <select name=response[msg] class="form-control form-control-sm" id="comment_action">
-
-                                </select>
-                                <span id="comment_msg" class="custom-text-danger"></span>
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-12 mt-2">
-                            <div class="form-group text-center">
-                                <input type="submit" class="btn btn-success btn-sm" value="Submit">
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 <div class="modal fade" id="bluckAssignBtn1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">

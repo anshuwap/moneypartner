@@ -357,3 +357,9 @@ function debitEmployeeCms($request = array())
         return true;
     return false;
 }
+
+
+function ip_address()
+{
+    return !empty($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+}

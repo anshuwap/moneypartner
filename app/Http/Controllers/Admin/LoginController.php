@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Validation\LoginValidation;
 use App\Models\User;
+use App\Models\Outlet;
 use App\Support\Email;
 use Exception;
 use Illuminate\Http\Request;
@@ -32,19 +33,27 @@ class LoginController extends Controller
 
                 if (Auth::user()->role == 'retailer') {
 
+                $outlet = Outlet::find(Auth::user()->outlet_id);
+                if(empty($outlet->account_status) || !$outlet->account_status){
+                    Auth::logout();
+                        return redirect()->back()->with('success', 'Something went wrong, Please contact to Admin!');
+                }
+
                     if (!empty($_COOKIE['logged_in']) && $_COOKIE['logged_in'] == 'logged')
                         return redirect()->intended('retailer/dashboard');
 
                     $user = User::where('_id', Auth::user()->_id)->where('mobile_number', Auth::user()->mobile_number)->first();
-                    $user->otp = $otp;
-                    $user->verify_otp = 0;
+                    //$user->otp = $otp;
+                    $user->verify_otp = 1; // TODO: default value 0
                     if ($user->save()) {
-                        $email = $user->email;
-                        $source = $this->sendOtp($otp, $email, $user->mobile_number, $user->full_name);
+            setcookie('logged_in', 'logged', time() + 36000, "/");
+                        //$email = $user->email;
+                        //$source = $this->sendOtp($otp, $email, $user->mobile_number, $user->full_name);
 
-                        $data  = ['otp' => $otp, 'msg' => '<span class="text-success">Otp Sent Successfully in this ' . $source . ' !</span>'];
+                        //$data  = ['otp' => $otp, 'msg' => '<span class="text-success">Otp Sent Successfully in this ' . $source . ' !</span>'];
 
-                        return redirect()->intended('otp-sent')->with('message', $data);
+                        //return redirect()->intended('otp-sent')->with('message', $data);
+            return redirect()->intended('retailer/dashboard');
                     }
                 } else if (Auth::user()->role == 'employee') {
                     return redirect()->intended('employee/dashboard')
@@ -55,14 +64,20 @@ class LoginController extends Controller
                 } else if (Auth::user()->role == 'admin') {
 
                     $user = User::where('_id', Auth::user()->_id)->where('mobile_number', Auth::user()->mobile_number)->first();
-                    $user->otp = $otp;
-                    $user->verify_otp = 0;
-                    if ($user->save()) {
-                        $email = $user->email;
-                        $source = $this->sendOtp($otp, $email, $user->mobile_number, $user->full_name);
-                        $data  = ['otp' => $otp, 'msg' => '<span class="text-success">Otp Sent Successfully in this ' . $source . ' !</span>'];
-                        return redirect()->intended('otp-sent')->with('message', $data);
-                    }
+                    //$user->otp = $otp;
+                    //$user->verify_otp = 0;
+            setcookie('logged_in', 'logged', time() + 36000, "/");
+            if ($user->role == 'admin')
+            $user->verify_otp = 1;
+            $user->save();
+                        return redirect()->intended('admin/dashboard');
+            // TODO: disabled for testing
+                    //if ($user->save()) {
+                      //  $email = $user->email;
+                        //$source = $this->sendOtp($otp, $email, $user->mobile_number, $user->full_name);
+                        //$data  = ['otp' => $otp, 'msg' => '<span class="text-success">Otp Sent Successfully in this ' . $source . ' !</span>'];
+                        //return redirect()->intended('otp-sent')->with('message', $data);
+                    //}
                     // return redirect()->intended('admin/dashboard')
                     //     ->withSuccess('Signed in');
                 }
@@ -74,6 +89,11 @@ class LoginController extends Controller
     }
 
 
+ public function reloadCaptcha()
+    {
+        return response()->json(['captcha' => captcha_img()]);
+    }
+    
     public function otpSent()
     {
         return view('admin.send_otp');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\NewTransaction;
 use App\Models\Outlet;
 use App\Models\PaymentChannel;
 use App\Models\Transaction;
@@ -168,6 +169,8 @@ class TransactionController extends Controller
             if (!$transaction->save())
                 return response(['status' => 'error', 'msg' => 'Transaction not Made!']);
 
+            $this->updateNewTransaction($transaction->_id, $transaction->status, $transaction->response);
+
             if ($transaction->type == 'payout_api')
                 webhook($transaction);
 
@@ -202,6 +205,7 @@ class TransactionController extends Controller
                 //insert data in transfer history collection
                 transferHistory($retailer_id, $amount + $transaction_fees, $receiver_name, $payment_date, $status, $payment_mode, $type, 0, 'credit', 0, $bank_details, $transaction_id, $source);
             }
+
             return response(['status' => 'success', 'msg' => 'Transaction ' . ucwords($transaction->status) . ' Successfully!']);
         } catch (Exception $e) {
             return response(['status' => 'error', 'msg' => $e->getMessage()]);
@@ -381,6 +385,9 @@ class TransactionController extends Controller
 
         if ($api_status) {
 
+            //for update new transaction status
+            $this->updateNewTransaction($transaction->_id, $transaction->status, $transaction->response);
+
             if ($api_status == 'success') {
                 $class = 'text-success';
                 $class1 = 'tag-small';
@@ -523,6 +530,9 @@ class TransactionController extends Controller
         if (!$transaction->save())
             return response(['status' => 'error', 'msg' => 'Transaction not Made!']);
 
+        //for update new transaction status
+        $this->updateNewTransaction($transaction->_id, $transaction->status, $transaction->response);
+
         if ($transaction->type == 'payout_api')
             webhook($transaction);
 
@@ -566,7 +576,17 @@ class TransactionController extends Controller
     {
 
         try {
-            $details = Transaction::find($request->id);
+            $prev_url = parse_url(url()->previous());
+
+            if (!empty($prev_url['path']) && $prev_url['path'] == '/admin/new-transaction') {
+                $details = NewTransaction::find($request->id);
+                $transaction1_id = $details->_id;
+                $old_id = $details->old_trans_id;
+            } else {
+                $details = Transaction::find($request->id);
+                $transaction1_id = $details->_id;
+                $old_id = $details->_id;
+            }
 
             $table = '<table class="table table-sm">
 
@@ -662,11 +682,11 @@ class TransactionController extends Controller
             if ($details->status == 'failed' || $details->status == 'process' || $details->status == 'pending')
                 $table .= '<td>Action:</td>
                 <td>
-                        <a href="javascript:void(0);" payment_mode="' . $details->payment_mode . '" class="btn btn-danger btn-xs retailer_trans" _id="' . $details->_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>
+                        <a href="javascript:void(0);" payment_mode="' . $details->payment_mode . '" class="btn btn-danger btn-xs retailer_trans" _id="' .$transaction1_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>
                 </td>';
 
             $update_utr = '';
-            if (!empty($details->response['payment_mode'])) {
+            if (!empty($details->response['payment_mode']) && empty($details->splits)) {
                 $update_utr = '<a href="javascript:void(0);" class="btn btn-xs btn-success utrupdate"><i class="fas fa-edit"></i>&nbsp;Edit UTR</a>';
             }
 
@@ -676,13 +696,13 @@ class TransactionController extends Controller
                 && $details->response['payment_mode'] != 'payunie-Rashid Ali' &&  $details->response['payment_mode'] != 'Pay2All-Parveen' &&
                 $details->response['payment_mode'] != 'Odnimo - api' && $details->status == 'success' && $details->amount >= 5000 && $details->trans_type != 'split'
             )
-                $split = '<a href="javascript:void(0);" class=" btn btn-success btn-xs split" _id="' . $details->_id . '"><i class="fas fa-solid fa-splotch"></i>&nbsp;Split</a>';
+                $split = '<a href="javascript:void(0);" class=" btn btn-success btn-xs split" _id="' . $old_id . '"><i class="fas fa-solid fa-splotch"></i>&nbsp;Split</a>';
 
 
             if ($details->status == 'success')
                 $table .= '<td>Action:</td>
                 <td>
-                        <a href="javascript:void(0);" payment_mode="' . $details->payment_mode . '" class="btn btn-danger btn-xs success-action" _id="' . $details->_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>
+                        <a href="javascript:void(0);" payment_mode="' . $details->payment_mode . '" class="btn btn-danger btn-xs success-action" _id="' .  $transaction1_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>
                        ' . $update_utr . '
                        ' . $split . '
                 </td>';
@@ -696,12 +716,14 @@ class TransactionController extends Controller
             // && $details->response['payment_mode'] != 'payunie-Rashid Ali' &&  $details->response['payment_mode'] != 'Pay2All-Parveen' &&
             //$details->response['payment_mode'] != 'Odnimo - api'
             //)
-            if (!empty($details->response['payment_mode'])) {
-
+            $channel = '';
+            if (!empty($details->response['payment_mode']) && empty($details->splits)) {
+                $type = 0;
+                $channel = $details->response['payment_mode'];
                 $table .= '<div class="row" style="display:none;" id="utr">
                     <div class="col-md-12 form-group">
                         <label>Update UTR No.</label>
-                        <input type="hidden" value="' . $details->_id . '" id="trnsaction-id" name="id">
+                        <input type="hidden" value="' . $transaction1_id . '" id="trnsaction-id" name="id">
                         <div class="input-group input-group-sm">
                             <input type="text" value="' . $utr_no . '" name="utr_no" id="utr_no" class="form-control form-control-sm">
                             <span class="input-group-append ">
@@ -710,9 +732,11 @@ class TransactionController extends Controller
                         </div>
                     </div>
                 </div>';
+            } else {
+                $type = 1;
             }
 
-            die(json_encode(['table' => $table, 'id' => $details->_id]));
+            die(json_encode(['table' => $table, 'id' => $details->_id, 'channel' => $channel, 'type' => $type]));
         } catch (Exception $e) {
             return response(['status' => 'error', 'msg' => 'something went wrong']);
         }
@@ -734,8 +758,10 @@ class TransactionController extends Controller
             $response['action']      = 'update UTR No';
             $transaction->response   = $response;
 
-            if ($transaction->save())
+            if ($transaction->save()) {
+                $this->updateUtrNewTransaction($transaction_id, $utr);
                 return response(['status' => 'success', 'msg' => 'UTR No updated successfully!']);
+            }
 
             return response(['status' => 'error', 'msg' => 'UTR No not updated!']);
         } catch (Exception $e) {
@@ -771,8 +797,11 @@ class TransactionController extends Controller
             $exist_response['action_date']   = time();
             $exist_response['action']        = 'update payment channel';
             $transaction->response = $exist_response;
-            if ($transaction->save())
+            if ($transaction->save()) {
+
+                $this->updateChannelNewTransaction($transaction_id, $request->channel);
                 return response(['status' => 'success', 'msg' => 'Channel changed successfully!']);
+            }
 
             return response(['status' => 'error', 'msg' => 'Channel not changed!']);
         } catch (Exception $e) {
@@ -846,11 +875,6 @@ class TransactionController extends Controller
         } catch (Exception $e) {
             return response(['status' => 'error', 'msg' => $e->getMessage()]);
         }
-    }
-
-
-    public function checkBulkStatus()
-    {
     }
 
 
@@ -1322,8 +1346,16 @@ class TransactionController extends Controller
             $transaction->utrs              = implode(',', $utrs);
             /*end first transaction update*/
 
-            if ($transaction->save())
+            if ($transaction->save()) {
+
+                $newData = [
+                    'old_id' => $transaction->_id,
+                    'response' => $request->response
+                ];
+                $this->newTransactionSave($newData);
+
                 return response(['status' => 'success', 'msg' => 'Transaction Success!']);
+            }
 
             return response(['status' => 'error', 'msg' => 'Transaction Failed!']);
         } catch (Exception $e) {
@@ -1466,6 +1498,534 @@ class TransactionController extends Controller
             return view('admin.transaction.report', $data);
         } catch (Exception $e) {
             return response(['status' => 'error', 'msg' => $e->getMessage()]);
+        }
+    }
+
+
+    //for new transaction collection
+
+    //show new Transaction list
+    public function newTransaction(Request $request)
+    {
+        try {
+
+            $outlets = Outlet::select('_id', 'outlet_name')->where('account_status', 1)->orderBy('created', 'DESC')->get();
+
+            $query = NewTransaction::query();
+
+            if ($request->outlet_id)
+                $query->where('outlet_id', $request->outlet_id);
+
+            if (!empty($request->type))
+                $query->where('type', $request->type);
+
+            if (!empty($request->mode))
+                $query->where('payment_mode', $request->mode);
+
+            if (!empty($request->status))
+                $query->where('status', $request->status);
+
+            if (!empty($request->transaction_id))
+                $query->where('transaction_id', $request->transaction_id);
+
+            if (!empty($request->account_no))
+                $query->where('payment_channel.account_number', $request->account_no);
+
+            if (!empty($request->channel))
+                $query->where('response.payment_mode', $request->channel);
+
+            $start_date = $request->start_date;
+            $end_date   = $request->end_date;
+
+            if (!empty($start_date) && !empty($end_date)) {
+                $start_date = strtotime(trim($start_date) . " 00:00:00");
+                $end_date   = strtotime(trim($end_date) . " 23:59:59");
+            } else {
+                $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
+                $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
+            }
+            $query->whereBetween('created', [$start_date, $end_date]);
+
+            $perPage = (!empty($request->perPage)) ? $request->perPage : config('constants.perPage');
+            $data['transaction'] = $query->where('status', '!=', 'pending')->orderBy('created', 'DESC')->with(['OutletName', 'UserName'])->paginate($perPage);
+            $data['outlets']   = $outlets;
+
+            $request->request->remove('page');
+            $request->request->remove('perPage');
+            $data['filter']  = $request->all();
+
+            //for payment channel
+            $data['payment_channel'] = PaymentChannel::select('_id', 'name')->get();
+
+            return view('admin.transaction.new_transaction', $data);
+        } catch (Exception $e) {
+            return redirect('500')->with(['error' => $e->getMessage()]);;
+        }
+    }
+
+    //create new Transaction list by split Transaction
+    private function newTransactionSave($request)
+    {
+        try {
+            $request = (object)$request;
+
+            $id = $request->old_id;
+            $existTrans = NewTransaction::where('old_trans_id', $id)->first();
+
+            $amount = $existTrans->amount;
+            $responseData = $request->response;
+
+            /*start first transaction Update*/
+            $response['action_by']     = Auth::user()->_id;
+            $response['action_date']   = time();
+            $response['action']        = 'manual update Payment Status (Split Transaction) - Parent Txn';
+            $response['payment_mode']  = !empty($responseData[0]['payment_mode']) ? $responseData[0]['payment_mode'] : '';
+            $response['utr_number']    = !empty($responseData[0]['utr_number']) ? $responseData[0]['utr_number'] : '';
+            $response['msg']           = !empty($responseData[0]['msg']) ? $responseData[0]['msg'] : '';
+
+            $existTrans->transaction_fees = !empty($responseData[0]['charges']) ? $responseData[0]['charges'] : '';
+            $existTrans->amount         = !empty($responseData[0]['amount']) ? $responseData[0]['amount'] : $amount;
+            $existTrans->status         = !empty($responseData[0]['status']) ? $responseData[0]['status'] : 'pending';
+            $existTrans->response       = $response;
+            $existTrans->trans_type     = 'split';
+            $existTrans->split_index    = 0;
+            $existTrans->save();
+            /*end first transaction update*/
+
+            $result = false;
+            foreach ($responseData as $key => $res) {
+
+                if ($key == 0)
+                    continue;
+
+                $transactionN = new NewTransaction();
+                $transactionN->old_trans_id      = $existTrans->old_trans_id;
+                $transactionN->transaction_id    = uniqCode(3) . rand(111111, 999999);
+                $transactionN->retailer_id       = $existTrans->retailer_id;
+                $transactionN->outlet_id         = $existTrans->outlet_id;
+                $transactionN->mobile_number     = $existTrans->mobile_number;
+                $transactionN->sender_name       = $existTrans->sender_name;
+                $transactionN->amount            = !empty($responseData[$key]['amount']) ? $responseData[$key]['amount'] : $amount;
+                $transactionN->transaction_fees  = !empty($responseData[$key]['charges']) ? $responseData[$key]['charges'] : '';
+                $transactionN->receiver_name     = $existTrans->receiver_name;
+                $transactionN->payment_mode      = 'bank_account'; //$request->payment_mode;
+                $transactionN->payment_channel   = $existTrans->payment_channel;
+                $transactionN->status            = !empty($responseData[$key]['status']) ? $responseData[$key]['status'] : 'pending';
+                $transactionN->type              = 'payout';
+                $transactionN->pancard_no        = $existTrans->pancard_no;
+
+                $response['action_by']     = Auth::user()->_id;
+                $response['action_date']   = !empty($responseData[$key]['date']) ? strtotime($responseData[$key]['date']) : time();
+                $response['parent_txn_id'] = $existTrans->_id;
+                $response['action']        = 'manual update Payment Status (Split Transaction) - Parent Txn no. ' . $existTrans->transaction_id;
+                $response['payment_mode']  = !empty($responseData[$key]['payment_mode']) ? $responseData[$key]['payment_mode'] : '';
+                $response['utr_number']    = !empty($responseData[$key]['utr_number']) ? $responseData[$key]['utr_number'] : '';
+                $response['msg']           = !empty($responseData[$key]['msg']) ? $responseData[$key]['msg'] : '';
+
+                $transactionN->response     = $response;
+                $transactionN->referance_trans = $id;
+                $transactionN->trans_type   = 'split';
+                $transactionN->split_created = $existTrans->created;
+                $transactionN->split_index   = $key;
+                $result = $transactionN->save();
+            }
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
+        }
+    }
+
+    //for update status for new Transaction
+    private function updateNewTransaction($old_id, $status, $response)
+    {
+        $trans = NewTransaction::where('old_trans_id', $old_id)->get();
+
+        if (empty($trans))
+            return false;
+
+        foreach ($trans as $tran) {
+            $transaction = NewTransaction::find($tran->_id);
+            $transaction->status = $status;
+            $transaction->response = $response;
+            $transaction->save();
+        }
+    }
+
+    //for update old transction status by new tranasction also self
+    public function changeTransactionStatus(Request $request)
+    {
+        try {
+            $NewTransaction = NewTransaction::find($request->trans_id);
+
+            if ($NewTransaction->status == 'rejected')
+                // return response(['status' => 'error', 'msg' => 'This status is already Rejected!']);
+
+                $response1 =  $request->response;
+            $response1['action_by']     = Auth::user()->_id;
+            $response1['action_date']   = time();
+            $response1['action']        = 'manual update Payment Status';
+            $NewTransaction->status       = $request->status;
+            $NewTransaction->response     = $response1;
+
+
+            if (!$NewTransaction->save())
+                return response(['status' => 'error', 'msg' => 'Transaction not Made!']);
+
+            /** start update old transaction status*/
+            $transaction = Transaction::find($NewTransaction->old_trans_id);
+            if (empty($transaction))
+                return false;
+
+            if (!empty($transaction->splits)) {
+                $index = $NewTransaction->split_index;
+                $splits = $transaction->splits;
+
+                if ($request->status == 'rejected') {
+                    $response1['utr_number']    = !empty($splits[$index]['response']['utr_number']) ? $splits[$index]['response']['utr_number'] : '';
+                    $response1['payment_mode']  = !empty($splits[$index]['response']['payment_mode']) ? $splits[$index]['response']['payment_mode'] : '';
+                } else {
+                    $response1['utr_number']    = '';
+                    $response1['payment_mode']  = '';
+                }
+
+                $response1['action_by']     = Auth::user()->_id;
+                $response1['action_date']   = time();
+                $response1['action']        = 'update UTR No';
+                $response1['msg']           = !empty($splits[$index]['response']['msg']) ? $splits[$index]['response']['msg'] : '';
+
+                $splits[$index]['response'] = $response1;
+                $splits[$index]['status']    = $request->status;
+                $transaction->splits = $splits;
+                $transaction->save();
+            } else {
+
+                $response =  $request->response;
+                $response['action_by']     = Auth::user()->_id;
+                $response['action_date']   = time();
+                $response['action']        = 'manual update Payment Status';
+                $transaction->status       = $request->status;
+                $transaction->response     = $response;
+                $transaction->save();
+            }
+            /** end update old transaction status*/
+
+            if ($transaction->type == 'payout_api')
+                webhook($transaction);
+
+            if ($transaction->status == 'success') {
+                $empCmsg = getEmpCommision($transaction->outlet_id, $transaction->amount);
+
+                if (!empty($empCmsg)) {
+                    $employeeCms = [
+                        'employee_id'    => $empCmsg['employee_id'],
+                        'amount'         => $empCmsg['amount'],
+                        'transaction_id' => $transaction->_id,
+                        'outlet_id'      => $transaction->outlet_id,
+                        'retailer_id'    => $transaction->retailer_id,
+                        'action_by'      => Auth::user()->_id
+                    ];
+                    employeeCms($employeeCms);
+                }
+            } else if ($transaction->status == 'rejected') {
+                //add toupup amount here
+                $transaction_id   = $transaction->_id;
+                $receiver_name    = $transaction->receiver_name;
+                $payment_date     = $transaction->created;
+                $status           = 'success';
+                $payment_mode     = $transaction->payment_mode;
+                $type             = 'refund';
+                $retailer_id      = $transaction->retailer_id;
+                $transaction_fees = $transaction->transaction_fees;
+                $amount           = $transaction->amount;
+                $bank_details     = $transaction->payment_channel;
+                $source           = 'Credited By Reject Transaction';
+                addTopupAmount($retailer_id, $amount, $transaction_fees, 1);
+                //insert data in transfer history collection
+                transferHistory($retailer_id, $amount + $transaction_fees, $receiver_name, $payment_date, $status, $payment_mode, $type, 0, 'credit', 0, $bank_details, $transaction_id, $source);
+            }
+
+            return response(['status' => 'success', 'msg' => 'Transaction ' . ucwords($transaction->status) . ' Successfully!']);
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
+        }
+    }
+
+    //for export new collection
+    public function newTransactionExport(Request $request)
+    {
+
+        try {
+            $file_name = 'new-transaction-report';
+
+            $delimiter = ","; //dfine delimiter
+
+            if (!file_exists('exportCsv')) //
+                mkdir('exportCsv', 0777, true);
+
+            $f = fopen('exportCsv/' . $file_name . '.csv', 'w'); //open file
+
+            $transactionArray = [
+                'Transaction ID', 'Customer Name', 'Customer Phone', 'Mode', 'Channel', 'Amount', 'Fees', 'Beneficiary', 'IFSC', 'Account No.', 'Bank Name',
+                'UTR Number', 'Status', 'Request Date', 'Action By', 'Action Date'
+            ];
+            fputcsv($f, $transactionArray, $delimiter); //put heading here
+
+            $query = NewTransaction::query();
+
+            if ($request->outlet_id)
+                $query->where('outlet_id', $request->outlet_id);
+
+            if (!empty($request->type))
+                $query->where('type', $request->type);
+
+            if (!empty($request->status))
+                $query->where('status', $request->status);
+
+            if (!empty($request->transaction_id))
+                $query->where('transaction_id', $request->transaction_id);
+
+            if (!empty($request->channel))
+                $query->where('response.payment_mode', $request->channel);
+
+            $start_date1 = $request->start_date;
+            $end_date1   = $request->end_date;
+
+            if (!empty($start_date1) && !empty($end_date1)) {
+                $start_date = strtotime(trim($start_date1) . " 00:00:00");
+                $end_date   = strtotime(trim($end_date1) . " 23:59:59");
+            } else {
+                $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
+                $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
+            }
+            $query->whereBetween('created', [$start_date, $end_date]);
+
+            $transactions = $query->orderBy('created', 'DESC')->with(['OutletName', 'UserName'])->get();
+
+
+            if ($transactions->isEmpty())
+                return back()->with('error', 'There is no any record for export!');
+
+            $transactionArr = [];
+            foreach ($transactions as $transaction) {
+
+                $payment = (object)$transaction->payment_channel;
+                $upi_id = (!empty($payment->upi_id)) ? $payment->upi_id : '';
+
+                $transaction_val[] = $transaction->transaction_id;
+                $transaction_val[] = ucwords($transaction->sender_name);
+                $transaction_val[] = $transaction->mobile_number;
+                $transaction_val[] = ucwords(str_replace('_', ' ', $transaction->type));
+                $transaction_val[] = (!empty($transaction->response['payment_mode'])) ? $transaction->response['payment_mode'] : '';
+                $transaction_val[] = $transaction->amount;
+                $transaction_val[] = (!empty($transaction->transaction_fees)) ? $transaction->transaction_fees : '';
+                $transaction_val[] = ucwords($transaction->receiver_name);
+                $transaction_val[] = (!empty($payment->ifsc_code)) ? $payment->ifsc_code : '';
+                $transaction_val[] = (!empty($payment->account_number)) ? $payment->account_number : $upi_id;
+                $transaction_val[] = (!empty($payment->bank_name)) ? $payment->bank_name : '';
+                $transaction_val[] = (!empty($transaction->response['utr_number'])) ? $transaction->response['utr_number'] : '';
+                $transaction_val[] = strtoupper(str_replace('_', ' ', $transaction->status));
+                $transaction_val[] = !empty(date('Y-m-d H:i', $transaction->created)) ? date('Y-m-d H:i', $transaction->created) : '';
+                $transaction_val[] = !empty($transaction->UserName['full_name']) ? $transaction->UserName['full_name'] : '';
+                $transaction_val[] = !empty($transaction->response['action_date']) ? date('Y-m-d H:i', $transaction->response['action_date']) : '';
+
+                $transactionArr = $transaction_val;
+
+                fputcsv($f, $transactionArr, $delimiter); //put heading here
+                $transaction_val = [];
+            }
+
+            // Move back to beginning of file
+            fseek($f, 0);
+
+            // headers to download file
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="' . $file_name . '.csv"');
+            readfile('exportCsv/' . $file_name . '.csv');
+
+            //remove file form server
+            $path = 'exportCsv/' . $file_name . '.csv';
+            if (file_exists($path))
+                unlink($path);
+        } catch (Exception $e) {
+            return redirect('500');
+        }
+    }
+
+    //for update new Transaction UTR NO by old transaction.
+    private function updateUtrNewTransaction($old_id = false, $utr = false)
+    {
+        if (!$old_id || !$utr)
+            return false;
+
+        $transaction = NewTransaction::where('old_trans_id', $old_id)->first();
+
+        if (!empty($transaction->response))
+            $response = $transaction->response;
+
+        $response['utr_number']  = $utr;
+        $response['action_by']   = Auth::user()->_id;
+        $response['action_date'] = time();
+        $response['action']      = 'update UTR No';
+        $transaction->response   = $response;
+        $transaction->save();
+    }
+
+    //for update new Transaction UTR NO By New transaction.
+    public function updateNewUtr(Request $request)
+    {
+        try {
+            $transaction_id = $request->id;
+            $utr = $request->utr;
+            $transaction = NewTransaction::find($transaction_id);
+
+            $response = [];
+            if (!empty($transaction->response))
+                $response = $transaction->response;
+
+            $response['utr_number']  = $utr;
+            $response['action_by']   = Auth::user()->_id;
+            $response['action_date'] = time();
+            $response['action']      = 'update UTR No';
+            $transaction->response   = $response;
+
+            if ($transaction->save()) {
+                $this->updateUtrOldTransaction($transaction->old_trans_id, $utr, $transaction->split_index);
+                return response(['status' => 'success', 'msg' => 'UTR No updated successfully!']);
+            }
+
+            return response(['status' => 'error', 'msg' => 'UTR No not updated!']);
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
+        }
+    }
+
+    //for updated old Transaction UTR By New transaction
+    private function updateUtrOldTransaction($id = false, $utr = false, $split_index = false)
+    {
+        if (!$id || !$utr)
+            return false;
+
+        $transaction = Transaction::find($id);
+
+        $response = [];
+        if ($transaction->trans_type != 'split') {
+            if (!empty($transaction->response))
+                $response = $transaction->response;
+
+            $response['utr_number']  = $utr;
+            $response['action_by']   = Auth::user()->_id;
+            $response['action_date'] = time();
+            $response['action']      = 'update UTR No';
+            $transaction->response   = $response;
+            $transaction->save();
+        } else {
+
+            if (!$split_index) {
+                if (!empty($transaction->response))
+                    $response = $transaction->response;
+
+                $response['utr_number']  = $utr;
+                $transaction->response   = $response;
+            }
+            $splits = $transaction->splits;
+
+            $response1['utr_number']  = $utr;
+            $response1['payment_mode'] =   !empty($splits[$split_index]['response']['payment_mode']) ? $splits[$split_index]['response']['payment_mode'] : '';
+            $response1['action_by']   = Auth::user()->_id;
+            $response1['action_date'] = time();
+            $response1['action']      = 'update UTR No';
+            $response1['msg'] =  !empty($splits[$split_index]['response']['msg']) ? $splits[$split_index]['response']['msg'] : '';
+
+            $splits[$split_index]['response'] = $response1;
+            $transaction->splits = $splits;
+            $transaction->save();
+        }
+    }
+
+    //for updated new Transaction Channel by old Transaction
+    private function updateChannelNewTransaction($old_id = false, $channel = false)
+    {
+        if (!$old_id || !$channel)
+            return false;
+
+        $transaction = NewTransaction::where('old_trans_id', $old_id)->first();
+
+        $response = [];
+        if (!empty($transaction->response))
+            $response = $transaction->response;
+
+        $response['payment_mode']  = $channel;
+        $response['action_by']     = Auth::user()->_id;
+        $response['action_date']   = time();
+        $response['action']        = 'update payment channel';
+        $transaction->response = $response;
+        $transaction->save();
+    }
+
+    //for updated new Transaction Channel by New Transaction
+    public function updateNewChannel(Request $request)
+    {
+        try {
+            $transaction_id = $request->id;
+            $transaction = NewTransaction::find($transaction_id);
+
+            $exist_response = $transaction->response;
+            $exist_response['payment_mode']  = $request->channel;
+            $exist_response['action_by']     = Auth::user()->_id;
+            $exist_response['action_date']   = time();
+            $exist_response['action']        = 'update payment channel';
+            $transaction->response = $exist_response;
+            if ($transaction->save()) {
+
+                $this->updateChannelOldTransaction($transaction->old_trans_id, $request->channel, $transaction->split_index);
+                return response(['status' => 'success', 'msg' => 'Channel changed successfully!']);
+            }
+
+            return response(['status' => 'error', 'msg' => 'Channel not changed!']);
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
+        }
+    }
+
+    //for updated old Transaction Channel by new Transaction
+    private function updateChannelOldTransaction($id = false, $channel = false, $split_index = false)
+    {
+        if (!$id || !$channel)
+            return false;
+
+        $transaction = Transaction::find($id);
+
+        $response = [];
+        if ($transaction->trans_type != 'split') {
+            if (!empty($transaction->response))
+                $response = $transaction->response;
+
+            $response['payment_mode']  = $channel;
+            $response['action_by']   = Auth::user()->_id;
+            $response['action_date'] = time();
+            $response['action']      = 'update UTR No';
+            $transaction->response   = $response;
+            $transaction->save();
+        } else {
+
+            if (!$split_index) {
+                if (!empty($transaction->response))
+                    $response = $transaction->response;
+
+                $response['payment_mode']  = $channel;
+                $transaction->response   = $response;
+            }
+            $splits = $transaction->splits;
+
+            $response1['utr_number']   = !empty($splits[$split_index]['response']['utr_number']) ? $splits[$split_index]['response']['utr_number'] : '';
+            $response1['payment_mode'] = $channel;
+            $response1['action_by']    = Auth::user()->_id;
+            $response1['action_date']  = time();
+            $response1['action']       = 'update UTR No';
+            $response1['msg']          =  !empty($splits[$split_index]['response']['msg']) ? $splits[$split_index]['response']['msg'] : '';
+
+            $splits[$split_index]['response'] = $response1;
+            $transaction->splits = $splits;
+            $transaction->save();
         }
     }
 }

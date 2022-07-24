@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('employee.layouts.app')
 @section('content')
 <style>
 
@@ -10,40 +10,26 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-md-9">
-                        <h3 class="card-title">Transaction List</h3>
+                        <h3 class="card-title">New Transaction</h3>
                     </div>
-                    <div class="col-md-3 d-flex">
-                        <div id="bluckAssignBlock" class="mr-1" style="pointer-events:none !important;">
-                            <button class="btn btn-sm btn-success" aria-haspopup="true" id="bluckAssignBtn" disabled>
-                                <i class="fas fa-radiation-alt"></i>&nbsp;Action
-                            </button>
-                        </div>
-                        <div class="text-right">
-                            @if(!empty($filter))
-                            <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
-                            @else
-                            <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a>
-                            @endif
-                            <a href="{{ url('admin/a-transaction-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
-                        </div>
+                    <div class="col-md-3 text-right">
+
+                        @if(!empty($filter))
+                        <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
+                        @else
+                        <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a>
+                        @endif
+                        <a href="{{ url('employee/new-transaction-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
+                        <!-- <a href="{{ url('employee/a-refund-export-split') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success mr-2"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export Split</a> -->
                     </div>
                 </div>
             </div>
 
             <div class="row pl-2 pr-2" id="filter" <?= (empty($filter)) ? "style='display:none'" : "" ?>>
                 <div class="col-md-12 ml-auto">
-                    <form action="{{ url('admin/a-transaction') }}">
+                    <form action="{{ url('employee/new-transaction') }}">
                         <div class="form-row">
 
-                            <div class="form-group col-md-2">
-                                <label>Date Filter By</label>
-                                <select class="form-control form-control-sm" name="filter_by">
-                                    <option value="created_date" <?= (!empty($filter['filter_by']) && $filter['filter_by'] =='created_date') ? 'selected' : '' ?>>Created Date</option>
-                                    <option value="action_date" <?= (!empty($filter['filter_by']) && $filter['filter_by'] =='action_date') ? 'selected' : '' ?>>Action Date</option>
-                                </select>
-                            </div>
-
-                          
                             <div class="form-group col-md-2">
                                 <label>Start Data</label>
                                 <input type="date" class="form-control form-control-sm" value="<?= !empty($filter['start_date']) ? $filter['start_date'] : '' ?>" name="start_date" />
@@ -112,10 +98,9 @@
                                     <option value="process" <?= (!empty($filter['status']) && $filter['status'] == 'process') ? 'selected' : '' ?>>Process</option>
                                 </select>
                             </div>
-
                             <div class="form-group mt-4">
                                 <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i>&nbsp;Search</button>
-                                <a href="{{ url('admin/a-transaction') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
+                                <a href="{{ url('employee/new-transaction') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
                             </div>
                         </div>
                     </form>
@@ -128,18 +113,14 @@
                 <table id="table" class="table table-hover text-nowrap table-sm">
                     <thead>
                         <tr>
-                            <th><input type="checkbox" class="select_all" id="checkAll" /></th>
                             <th>Sr. No.</th>
                             <th>Outlet</th>
-                            <!-- <th>Transaction Id</th> -->
-                            <!-- <th>Mode</th> -->
                             <th>Channel</th>
                             <th>Amount</th>
                             <th>Fees</th>
                             <th>Beneficiary</th>
                             <th>IFSC</th>
                             <th>Account No.</th>
-                            <!-- <th>Bank Name</th> -->
                             <th>UTR No.</th>
                             <th>Status</th>
                             <th>Request Date</th>
@@ -151,11 +132,13 @@
                     <tbody>
                         @foreach($transaction as $key=>$trans)
                         <?php
+
                         $UserName = !empty($trans->UserName['full_name']) ? 'Action By- ' . $trans->UserName['full_name'] : '';
 
                         $payment = (object)$trans->payment_channel;
                         $comment = !empty($trans->response['msg']) ? $trans->response['msg'] : '';
                         $type = (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '';
+
                         if ($trans->status == 'success') {
                             $status = '<span class="tag-small"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                             $action = '';
@@ -185,16 +168,13 @@
                             $action = '<a href="javascript:void(0);" payment_mode="' . $trans->payment_mode . '" class="btn btn-danger btn-xs retailer_trans" _id="' . $trans->_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>';
                             $checkbox = ' <input type="checkbox" class="select_me checkbox" value="' . $trans->_id . '" />';
                         } ?>
+
                         <tr>
-                            <td>
-                                {!! $checkbox !!}
-                            </td>
+
                             <td> <span data-toggle="tooltip" data-placement="bottom" title="{{$UserName}}">{{++$key}}</span></td>
                             <td>
                                 <span data-toggle="tooltip" data-placement="bottom" title="{{ $trans->transaction_id }}"> {{ (!empty($trans->OutletName['outlet_name']))?$trans->OutletName['outlet_name']:'-';}}</span>
                             </td>
-                            <!-- <td><span data-toggle="tooltip" data-placement="bottom" title="{{ ucwords($trans->sender_name)}},{{$trans->mobile_number}}">{{ $trans->transaction_id }}</span></td> -->
-                            <!-- <td><span class="tag-small">{{ ucwords(str_replace('_',' ',$trans->type)) }}</span></td> -->
                             <td><?= (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '-' ?></td>
 
                             <td>{!! mSign($trans->amount) !!}</td>
@@ -248,7 +228,7 @@
             </div>
 
             <div class="modal-body">
-                <form id="approve_trans_dashboard" action="{{ url('admin/a-transaction') }}" method="post">
+                <form id="approve_trans_action" action="{{ url('admin/change-transaction-status') }}" method="post">
                     @csrf
                     <div class="row">
                         <div class="col-md-12">
@@ -329,12 +309,76 @@
     </div>
 </div>
 
+
+
+<!-- Modal -->
+<div class="modal fade" id="approve_modal_action" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="heading_bank_dashboard">Success/Reject Request</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="cover-loader-modal d-none">
+                <div class="loader-modal"></div>
+            </div>
+
+            <div class="modal-body">
+                <form id="approve_trans_action" action="{{ url('employee/a-transaction') }}" method="post">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="hidden" id="trans_id_action" name="trans_id">
+                            <input type="hidden" id="key_dashboard" name="key">
+
+                            <div class="form-group">
+                                <label>Action</label>
+                                <select name="status" id="status-select-action" class="status-select-action form-control form-control-sm">
+                                    <option value="">Select</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                                <span id="status_msg" class="custom-text-danger"></span>
+                            </div>
+
+                            <div id="action_action">
+                            </div>
+
+                            <div id="success_action"></div>
+
+                            <div class="form-group" id="comment-field_action" style="display: none;">
+                                <label>Comment</label>
+                                <select name=response[msg] class="form-control form-control-sm" id="comment_action">
+
+                                </select>
+                                <span id="comment_msg" class="custom-text-danger"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12 mt-2">
+                            <div class="form-group text-center">
+                                <input type="submit" class="btn btn-success btn-sm" value="Submit">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <script>
     $('#change-channel').click(function() {
         var channel = $('#channel').val();
         var id = $('#view-id').val();
         $.ajax({
-            url: "<?= url('admin/change-channel') ?>",
+            url: "<?= url('employee/change-new-channel') ?>",
             data: {
                 'id': id,
                 'channel': channel
@@ -348,7 +392,10 @@
                         `${res.status}!`,
                         res.msg,
                         `${res.status}`,
-                    )
+                    );
+                    setTimeout(function() {
+                        location.reload();
+                    });
                 }
                 /*End Status message*/
             }
@@ -391,7 +438,7 @@
                 'id': id
             },
             type: "GET",
-            url: '{{ url("admin/update-utr") }}',
+            url: '{{ url("employee/update-new-utr") }}',
             dataType: 'json',
             beforeSend: function() {
                 $(select).html('<span class="spinner-grow spinner-grow-sm" style="width: 0.75rem;height: 0.75rem;"></span>&nbsp;Loading..');
@@ -425,7 +472,7 @@
     $('#type').change(() => {
         let status = $('#type').val();
         if (status == 'manual') {
-            $('#approve_trans_dashboard').attr('action', '{{url("admin/a-transaction")}}');
+            $('#approve_trans_dashboard').attr('action', '{{url("employee/a-transaction")}}');
             $('#action').html(` <div class="form-group">
                                    <label>Action</label>
                                    <select name="status" id="status-select-dashboard" required class="status-select-dashboard form-control form-control-sm">
@@ -438,7 +485,7 @@
                                    <span id="status_msg" class="custom-text-danger"></span>
                                </div>`);
         } else if (status == 'api') {
-            $('#approve_trans_dashboard').attr('action', '{{url("admin/a-store-api")}}');
+            $('#approve_trans_dashboard').attr('action', '{{url("employee/a-store-api")}}');
             $('#action').html(`<div class="form-group">
                <select class="form-control form-control-sm" name="api" id="api" required>
                <option value=''>Select</option>
@@ -494,7 +541,7 @@
     $(document).on('click', '.view_dashboard', function() {
         var _id = $(this).attr('_id');
         $.ajax({
-            url: "<?= url('admin/a-trans-detail') ?>",
+            url: "<?= url('employee/a-trans-detail') ?>",
             data: {
                 'id': _id,
             },
@@ -504,6 +551,7 @@
 
                 $('#details_dashboard').html(res.table);
                 $('#view-id').val(res.id);
+                $('#channel').val(res.channel);
                 $('#view_modal_dashboard').modal('show');
             }
         })
@@ -519,7 +567,7 @@
             $('#comment_field_dashboard1').show();
         } else {
             $.ajax({
-                url: "<?= url('admin/a-trans-comment') ?>",
+                url: "<?= url('employee/a-trans-comment') ?>",
                 data: {
                     'type': type
                 },
@@ -611,7 +659,7 @@
                 '_id': id
             },
             type: "GET",
-            url: '{{ url("admin/payment-status") }}',
+            url: '{{ url("employee/payment-status") }}',
             dataType: 'json',
             beforeSend: function() {
                 $(select).html('<span class="spinner-grow spinner-grow-sm" style="width: 0.75rem;height: 0.75rem;"></span>&nbsp;Loading..');
@@ -720,7 +768,7 @@
             $('#comment-field_action').show();
         } else {
             $.ajax({
-                url: "<?= url('admin/a-trans-comment') ?>",
+                url: "<?= url('employee/a-trans-comment') ?>",
                 data: {
                     'type': type
                 },
@@ -792,67 +840,6 @@
 </script>
 
 
-<!-- Modal -->
-<div class="modal fade" id="approve_modal_action" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="heading_bank_dashboard">Success/Reject Request</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <div class="cover-loader-modal d-none">
-                <div class="loader-modal"></div>
-            </div>
-
-            <div class="modal-body">
-                <form id="approve_trans_action" action="{{ url('admin/a-transaction') }}" method="post">
-                    @csrf
-                    <div class="row">
-                        <div class="col-md-12">
-                            <input type="hidden" id="trans_id_action" name="trans_id">
-                            <input type="hidden" id="key_dashboard" name="key">
-
-                            <div class="form-group">
-                                <label>Action</label>
-                                <select name="status" id="status-select-action" class="status-select-action form-control form-control-sm">
-                                    <option value="">Select</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="rejected">Rejected</option>
-                                </select>
-                                <span id="status_msg" class="custom-text-danger"></span>
-                            </div>
-
-                            <div id="action_action">
-                            </div>
-
-                            <div id="success_action"></div>
-
-                            <div class="form-group" id="comment-field_action" style="display: none;">
-                                <label>Comment</label>
-                                <select name=response[msg] class="form-control form-control-sm" id="comment_action">
-
-                                </select>
-                                <span id="comment_msg" class="custom-text-danger"></span>
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-12 mt-2">
-                            <div class="form-group text-center">
-                                <input type="submit" class="btn btn-success btn-sm" value="Submit">
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 <div class="modal fade" id="bluckAssignBtn1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -868,7 +855,7 @@
             </div>
 
             <div class="modal-body">
-                <form id="approve_trans_" action="{{ url('admin/bulk-action') }}" method="post">
+                <form id="approve_trans_" action="{{ url('employee/bulk-action') }}" method="post">
                     @csrf
                     <div class="row">
                         <div class="col-md-12">
@@ -1017,7 +1004,7 @@
 
     function importSequence(index) {
         var api = $('#api_val').val();
-        var url1 = '{{ url("admin/payToApi")}}';
+        var url1 = '{{ url("employee/payToApi")}}';
         $.ajax({
             data: {
                 'api': api,
@@ -1050,4 +1037,4 @@
 <!--end retailer transer module-->
 @endsection
 
-@include('admin.transaction.splitTransaction2')
+@include('employee.transaction.splitTransaction2')

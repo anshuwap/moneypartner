@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ApiList;
 use App\Models\Outlet;
 use App\Models\Transaction;
+use App\Models\NewTransaction;
 use App\Support\ClicknCash;
 use App\Support\OdnimoPaymentApi;
 use App\Support\PaymentApi;
@@ -174,6 +175,7 @@ class TransactionController extends Controller
             /*end check amount available in wallet or not*/
 
             $api_status = 'pending';
+            $response = [];
             /*start api transfer functionality*/
             if ($amount <= 5000) {
 
@@ -248,6 +250,7 @@ class TransactionController extends Controller
             $transaction->type           = 'dmt_transfer';
             $transaction->pancard_no     = $request->pancard_no;
             $transaction->pancard        = $pancard;
+            $transaction->ip_address     = ip_address();
             if (!empty($response))
                 $transaction->response       = $response;
             $transaction->verified       = (session("otp-$request->mobile_number") == $request->otp) ? 1 : 0;
@@ -274,6 +277,30 @@ class TransactionController extends Controller
 
             transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit', $transaction_id);
             /*end passbook debit functionality*/
+
+            $newTransaction = [
+                'old_trans_id' => $transaction->_id,
+                'retailer_id' => $transaction->retailer_id,
+                'outlet_id' => $transaction->outlet_id,
+                'otp'     => $request->otp,
+                'mobile_number' => $request->mobile_number,
+                'customer_name' => $request->customer_name,
+                'transaction_id' => $transaction->transaction_id,
+                'sender_name' => trim($request->sender_name),
+                'amount' => $request->amount,
+                'transaction_fees' => $transaction->transaction_fees,
+                'receiver_name' => $request->receiver_name,
+                'payment_mode' => $transaction->payment_mode,
+                'payment_channel' => $request->payment_channel,
+                'status' => $transaction->status,
+                'type' => $transaction->type,
+                'pancard_no' => $request->pancard_no,
+                'pancard' => $pancard,
+                'response' => $response,
+                'verified' => $transaction->verified
+            ];
+
+            $this->newTransaction($newTransaction);
 
             return response(['status' => 'success', 'msg' => 'Transaction Request Created Successfully!']);
         } catch (Exception $e) {
@@ -389,6 +416,7 @@ class TransactionController extends Controller
 
 
             $api_status = 'pending';
+            $response = [];
             /*start api transfer functionality*/
             if ($amount <= 5000) {
 
@@ -486,6 +514,25 @@ class TransactionController extends Controller
             transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit', $transaction_id);
             /*end passbook debit functionality*/
 
+            $newTransaction = [
+                'old_trans_id' => $Transaction->_id,
+                'retailer_id' => $Transaction->retailer_id,
+                'outlet_id' => $Transaction->outlet_id,
+                'mobile_number' => $Transaction->mobile_number,
+                'transaction_id' => $Transaction->transaction_id,
+                'sender_name' => trim($Transaction->sender_name),
+                'amount' => $request->amount,
+                'transaction_fees' => $Transaction->transaction_fees,
+                'receiver_name' => $request->receiver_name,
+                'payment_mode' => $Transaction->payment_mode,
+                'payment_channel' => $request->payment_channel,
+                'status' => $Transaction->status,
+                'type' => $Transaction->type,
+                'response' => $response,
+            ];
+
+            $this->newTransaction($newTransaction);
+
             return response(['status' => 'success', 'msg' => 'Transaction Request Created Successfully!']);
         } catch (Exception $e) {
             return response(['status' => 'error', 'msg' => $e->getMessage()]);
@@ -575,12 +622,12 @@ class TransactionController extends Controller
                 $file = fopen($_FILES['file']['tmp_name'], "r");
                 $ctr = 1;
                 $importData = [];
-                // $previewData = [];
+                $previewData = [];
                 while (($getData = fgetcsv($file, 10000, ",")) !== FALSE) {
                     if ($ctr != 1) {
 
                         /*start check payment mode here*/
-                        $payment_channel = ['bank_name' => $getData[2], 'account_number' => $getData[3], 'ifsc_code' => $getData[4]];
+                        $payment_channel = ['bank_name' => $getData[2], 'account_number' => sprintf('%.0f', floatval($getData[3])), 'ifsc_code' => $getData[4]];
                         /*end check payment mode here*/
 
                         $importData[] = [
@@ -606,6 +653,7 @@ class TransactionController extends Controller
                     $ctr++;
                 }
 
+
                 $validator = Validator::make($importData, [
                     '*.amount' => 'required|numeric|not_in:0',
                     '*.receiver_name' => 'required',
@@ -624,11 +672,14 @@ class TransactionController extends Controller
                     return response(['status' => 'error', 'msg' => str_replace('.', ' ', $mg)]);
                 }
 
+
                 session()->put('importData', $importData);
                 session()->put('previewData', $previewData);
                 $dataV = '';
                 if (!empty($previewData))
                     $dataV = self::previewData($previewData);
+
+
                 return response(['status' => 'preview', 'data' => $dataV]);
             }
         } catch (Exception $e) {
@@ -803,6 +854,25 @@ class TransactionController extends Controller
 
                 transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit', $transaction_id);
                 /*end passbook debit functionality*/
+
+                $newTransaction = [
+                    'old_trans_id' => $transaction->_id,
+                    'retailer_id' => $transaction->retailer_id,
+                    'outlet_id' => $transaction->outlet_id,
+                    'mobile_number' => $transaction->mobile_number,
+                    'transaction_id' => $transaction->transaction_id,
+                    'sender_name' => trim($transaction->sender_name),
+                    'amount' => $transaction->amount,
+                    'transaction_fees' => $transaction->transaction_fees,
+                    'receiver_name' => $transaction->receiver_name,
+                    'payment_mode' => $transaction->payment_mode,
+                    'payment_channel' => $transaction->payment_channel,
+                    'status' => $transaction->status,
+                    'type' => $transaction->type,
+                    'response' => $response,
+                ];
+
+                $this->newTransaction($newTransaction);
             }
             $comment = '<span class="text-success">Import Successfully!</span>';
             $status  = '<span class="tag-small">Success</span>';
@@ -1206,5 +1276,47 @@ class TransactionController extends Controller
         } catch (Exception $e) {
             return response(['status' => 'error', 'msg' => $e->getMessage()]);
         }
+    }
+
+
+
+
+    private function newTransaction($request)
+    {
+        $request = (object)$request;
+
+        //insert new record
+        $newTrans = new NewTransaction();
+        $newTrans->old_trans_id     = $request->old_trans_id;
+        $newTrans->retailer_id      = $request->retailer_id;
+        $newTrans->outlet_id        = $request->outlet_id;
+        if (!empty($request->otp))
+            $newTrans->otp          = $request->otp;
+        $newTrans->mobile_number    = $request->mobile_number;
+        $newTrans->customer_name    = $request->sender_name;
+
+        $newTrans->transaction_id   = $request->transaction_id;
+        $newTrans->sender_name      = trim($request->sender_name);
+        $newTrans->amount           = $request->amount;
+        $newTrans->transaction_fees = $request->transaction_fees;
+        $newTrans->receiver_name    = $request->receiver_name;
+        $newTrans->payment_mode     = $request->payment_mode;
+        $newTrans->payment_channel  = $request->payment_channel;
+        $newTrans->status           = $request->status;
+        $newTrans->type             = $request->type;
+
+        if (!empty($request->pancard_no))
+            $newTrans->pancard_no     = $request->pancard_no;
+
+        if (!empty($request->pancard))
+            $newTrans->pancard        = $request->pancard;
+
+        if (!empty($request->response))
+            $newTrans->response       = $request->response;
+
+        if (!empty($request->verified))
+            $newTrans->verified       = $request->verified;
+
+        $newTrans->save();
     }
 }

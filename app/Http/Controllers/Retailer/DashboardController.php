@@ -145,7 +145,7 @@ class DashboardController extends Controller
             ++$apc_trans;
         }
         $data['a_trans'] = $aTrans;
-        $data['apc_trans']= $apc_trans;
+        $data['apc_trans'] = $apc_trans;
 
 
         $pendingTrnasaction = Transaction::select('amount')->where('retailer_id', Auth::user()->_id)->whereIn('status', ['pending', 'process'])->whereBetween('created', [$start_date, $end_date])->get();

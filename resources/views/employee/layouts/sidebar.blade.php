@@ -75,6 +75,12 @@
           </a>
         </li>
         <li class="nav-item">
+          <a href="{{ url('employee/new-transaction') }}" class="nav-link {{ (url()->full() == url('employee/new-transaction'))?'active':''}}">
+            <i class="fas fa-hand-holding-usd nav-icon"></i>
+            <p>New Transaction</p>
+          </a>
+        </li>
+        <li class="nav-item">
           <a href="{{ url('employee/refund-pending') }}" class="nav-link {{ (url()->full() == url('employee/refund-pending'))? 'active':''}}">
             <i class="fas fa-hand-holding-water nav-icon"></i>
             <p>

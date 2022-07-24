@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Setting;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Auth;
 
 class MaintainanceController extends BaseController
 {
@@ -13,6 +15,11 @@ class MaintainanceController extends BaseController
 
     public function maintanance()
     {
-        return view('admin.500');
+        $setting = Setting::first();
+
+        if (!$setting->status && Auth::user()->role=='retailer')
+            return redirect('/');
+
+        return view('admin.maintanance');
     }
 }

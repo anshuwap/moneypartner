@@ -91,6 +91,12 @@
           </a>
         </li>
         <li class="nav-item">
+          <a href="{{ url('admin/new-transaction') }}" class="nav-link {{ (url()->full() == url('admin/new-transaction'))?'active':''}}">
+            <i class="fas fa-hand-holding-usd nav-icon"></i>
+            <p>New Transaction</p>
+          </a>
+        </li>
+        <li class="nav-item">
           <a href="{{ url('admin/refund-pending') }}" class="nav-link {{ (url()->full() == url('admin/refund-pending'))? 'active':''}}">
             <i class="fas fa-hand-holding-water nav-icon"></i>
             <p>

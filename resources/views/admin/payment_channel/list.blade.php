@@ -20,6 +20,7 @@
                         <tr>
                             <th>Sl No.</th>
                             <th>Name</th>
+                            <th>Amount</th>
                             <th>Created Date</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -70,6 +71,9 @@
                 },
                 {
                     data: 'name'
+                },
+                {
+                    data: 'amount'
                 },
                 {
                     data: "created_date"

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PaymentChannel;
+use App\Models\Transaction;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -130,9 +131,19 @@ class PaymentChannelController extends Controller
             } else {
                 $status = ' <a href="javascript:void(0)"><span class="badge badge-danger activeVer" id="active_' . $val->_id . '" _id="' . $val->_id . '" val="1">Inactive</span></a>';
             }
+
+            $start_date = strtotime(trim(date('d-m-Y') . " 00:00:00"));
+            $end_date = strtotime(trim(date('Y-m-d') . " 23:59:59"));
+            $transaction = Transaction::select('amount')->where('response.payment_mode', $val->name)->where('status', 'success')->whereBetween('created', [$start_date, $end_date])->get();
+
+            $amount = 0;
+            foreach ($transaction as $t) {
+                $amount += (int)$t->amount;
+            }
             $dataArr[] = [
                 'sl_no'             => $i,
                 'name'              => ucwords($val->name),
+                'amount'            => mSign($amount),
                 'created_date'      => date('Y-m-d', $val->created),
                 'status'            => $status,
                 'action'            => $action
