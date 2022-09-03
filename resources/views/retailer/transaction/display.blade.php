@@ -21,6 +21,8 @@
                     <a href="javascript:void(0);" id="import" class="btn btn-sm btn-success"><i class="fas fa-cloud-upload-alt"></i>&nbsp;Bulk Upload</a>
                     @endif
 
+                    <a href="javascript:void(0);" id="mobileRecharge" class="btn btn-sm btn-success"><i class="fas fa-cloud-upload-alt"></i>&nbsp;Mobile Recharge</a>
+
                     <a href="{{ url('retailer/transaction-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
                     @if(!empty($filter))
                     <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
@@ -161,14 +163,14 @@
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td style="width: 100px;"> {{ $trans->transaction_id }} </td>
-                       <!--     <td><?= (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '-' ?></td> -->
+                            <!--     <td><?= (!empty($trans->response['payment_mode'])) ? $trans->response['payment_mode'] : '-' ?></td> -->
                             <td>{!! mSign($trans->amount) !!}</td>
                             <td>{{ ucwords($trans->receiver_name)}}</td>
                             <td><span data-toggle="tooltip" data-placement="bottom" title="<?= (!empty($payment->bank_name)) ? $payment->bank_name : '' ?>">{{ (!empty($payment->ifsc_code))?$payment->ifsc_code:'-' }}</span></td>
                             <td><?= (!empty($payment->account_number)) ? $payment->account_number : '' ?>
                                 <?= (!empty($payment->upi_id)) ? $payment->upi_id : '' ?>
                             </td>
-                            <td> <?= !empty($trans->utrs)?$trans->utrs:(!empty($trans->response['utr_number']) ? $trans->response['utr_number'] : '-') ?></td>
+                            <td> <?= !empty($trans->utrs) ? $trans->utrs : (!empty($trans->response['utr_number']) ? $trans->response['utr_number'] : '-') ?></td>
                             <td>{!! $status !!}</td>
                             <td>{{ !empty($trans->split_created)?date('d,M y H:i',$trans->split_created):date('d,M y H:i',$trans->created) }}</td>
                             <td>{{ !empty($trans->UserName['full_name']) ?$trans->UserName['full_name'] : '';}}</td>

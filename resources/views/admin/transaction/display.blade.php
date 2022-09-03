@@ -140,6 +140,7 @@
                             <th>Request Date</th>
                             <th>Action By</th>
                             <th>Action Date</th>
+                            <th>IP Address</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -198,7 +199,9 @@
                             <td>{{ !empty($trans->UserName['full_name']) ?$trans->UserName['full_name'] : '';}}</td>
                             <td><?php $actionM = !(empty($trans->response['action'])) ? $trans->response['action'] : '';
                                 echo !empty($trans->response['action_date']) ? '<span data-toggle="tooltip" data-placement="bottom" title="' . $actionM . '">' . date('d,M y H:i', $trans->response['action_date']) . '</span>' : '' ?></td>
+                                <td>{{$trans->ip_address}}</td>
                             <td><a href="javascript:void(0);" class="btn btn-info btn-xs view_dashboard" _id="{{ $trans->_id }}"><i class="fas fa-eye"></i>&nbsp;view</a>{!! $action !!}</td>
+
                         </tr>
 
                         @if(!empty($trans->splits))

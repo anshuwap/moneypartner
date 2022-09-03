@@ -333,6 +333,7 @@
                             <input type="checkbox" name="money_transfer_option[payout_api]" value="1">&nbsp;&nbsp;Payout Api<br>
                             <input type="checkbox" name="money_transfer_option[online_payout_api]" value="1">&nbsp;&nbsp;Online Payout Api<br>
                             <input type="checkbox" name="money_transfer_option[e_collection]" value="1">&nbsp;&nbsp;E-Collection<br>
+                            <input type="checkbox" name="money_transfer_option[recharge]" value="1">&nbsp;&nbsp;Recharge<br>
                             <span id="money_transfer_option_msg" class="custom-text-danger"></span>
                         </div>
 

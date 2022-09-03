@@ -86,6 +86,7 @@
                       <!-- <th>Bank Name</th> -->
                       <th>Status</th>
                       <th>Datetime</th>
+                      <th>IP Address</th>
                       <th>Action</th>
                   </tr>
 
@@ -135,6 +136,7 @@
                       <!-- <td><?= (!empty($payment->bank_name)) ? $payment->bank_name : '-' ?></td> -->
                       <td>{!! $status !!}</td>
                       <td>{{ date('d M y H:i',$trans->created) }}</td>
+                      <td>{{$trans->ip_address}}</td>
                       <td>
                           {!! $action !!}</td>
                   </tr>

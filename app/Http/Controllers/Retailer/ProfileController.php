@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Validation\PasswordValidation;
 use App\Http\Validation\PinValidation;
 use App\Http\Validation\ProfileValidation;
+use App\Http\Validation\VideoValidation;
 use App\Models\Outlet;
 use App\Models\User;
 use App\Support\Email;
@@ -97,7 +98,6 @@ class ProfileController extends Controller
 
     public function update(ProfileValidation $request, $id)
     {
-
         try {
             $outlet = Outlet::find($id);
             $outlet->retailer_name = $request->retailer_name;
@@ -120,6 +120,22 @@ class ProfileController extends Controller
         }
     }
 
+
+    public function video(VideoValidation $request)
+    {
+        try {
+            $outlet = Outlet::find($request->id);
+            if (!empty($request->file('video')))
+                $outlet->video  = singleFile($request->file('video'), 'attachment');
+
+            if (!$outlet->save())
+                return response(['status' => 'error', 'msg' => 'Video not Uploaded!']);
+
+            return response(['status' => 'success', 'msg' => 'Video Uploaded Successfully!']);
+        } catch (Exception $e) {
+            print_r($e->getMessage());
+        }
+    }
 
     // private function updateUser($request)
     // {

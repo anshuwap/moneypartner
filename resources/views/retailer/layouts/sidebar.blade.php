@@ -60,7 +60,7 @@
       </a>
     </li> -->
 
-     <li class="nav-item {{ (url()->full() == url('retailer/transaction') || url()->full() == url('retailer/refund-pending'))?'menu-is-opening menu-open':''}}">
+    <li class="nav-item {{ (url()->full() == url('retailer/transaction') || url()->full() == url('retailer/refund-pending'))?'menu-is-opening menu-open':''}}">
       <a href="javascript:void(0);" class="nav-link">
         <i class="fas fa-wallet nav-icon"></i>
         <p>Transaction
@@ -87,7 +87,7 @@
           <a href="{{ url('retailer/transaction-report') }}" class="nav-link {{ (url()->full() == url('retailer/transaction-report'))? 'active':''}}">
             <i class="fas fa-solid fa-file-circle-check nav-icon"></i>
             <p>
-             Report
+              Report
             </p>
           </a>
         </li>
@@ -132,6 +132,16 @@
       <a href="{{ url('retailer/e-collection') }}" class="nav-link {{ (url()->full() == url('retailer/e-collection'))? 'active':''}}">
         <i class="fas fa-ethernet  nav-icon"></i>
         <p>E-Collection</p>
+      </a>
+    </li>
+    @endif
+
+
+    @if(!empty(MoneyPartnerOption()->recharge) && MoneyPartnerOption()->recharge ==1)
+    <li class="nav-item">
+      <a href="{{ url('retailer/services') }}" class="nav-link {{ (url()->full() == url('retailer/services'))? 'active':''}}">
+        <i class="fa-brands fa-servicestack nav-icon"></i>
+        <p>Services</p>
       </a>
     </li>
     @endif

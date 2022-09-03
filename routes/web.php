@@ -39,6 +39,7 @@ use App\Http\Controllers\Retailer\EcollectionController      as RetailerECollect
 use App\Http\Controllers\Retailer\BankAutoCompleteController as BankAuto;
 use App\Http\Controllers\Retailer\Action\CreditController    as RetailerCredit;
 use App\Http\Controllers\Retailer\Action\DebitController     as RetailerDebit;
+use App\Http\Controllers\Retailer\ServicesController         as Services;
 
 //for employee panel
 use App\Http\Controllers\Employee\LoginController           as EmployeeLogin;
@@ -85,6 +86,7 @@ Route::get("get-blance2", [Controller::class, "getBlance2"]);
 Route::get('500', [AdminDashboard::class, 'serverError']);
 Route::get('maintenance', [MaintainanceController::class, 'maintanance']);
 
+Route::get('video1', [RetailerDashboard::class, 'video']);
 // Route::get('404', [AdminDashboard::class, 'notFound']);
 
 Route::group(['middleware' => 'adminRedirect'], function () {
@@ -138,6 +140,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::get('outlet-charges-status/{id}/{key}/{status}', [AdminOutlet::class, 'bankChargesStatus']);
   Route::get('employee-list',                 [AdminOutlet::class, 'EmployeeList']);
   Route::post('assign-outlet',                [AdminOutlet::class, 'assignOutlet']);
+
+  Route::get('recharge-charges/{id}',         [AdminOutlet::class, 'RechargeCh']);
+  Route::post('add-recharge-charges',         [AdminOutlet::class, 'AddRechargeCh']);
+  Route::get('edit-recharge-charges/{id}', [AdminOutlet::class, 'EditRechargeCh']);
+  Route::post('update-recharge-charges',   [AdminOutlet::class, 'UpdateRechargeCh']);
+  Route::get('recharge-charges-status/{id}/{key}/{status}', [AdminOutlet::class, 'RechargeChStatus']);
 
   Route::resource('bank-account',         AdminBankAccount::class);
   Route::get('bank-account-ajax',         [AdminBankAccount::class, 'ajaxList']);
@@ -242,6 +250,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
 
   Route::resource('profile',     RetailerProfile::class);
+  Route::post('video-uploade',   [RetailerProfile::class, 'video']);
+
   Route::get('pin-password',     [RetailerProfile::class, 'pinPassword']);
   Route::post('change-password', [RetailerProfile::class, 'changePassword']);
   Route::post('change-pin',      [RetailerProfile::class, 'ChangePin']);
@@ -288,6 +298,7 @@ Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
   Route::get('refund-pending',      [RetailerTransaction::class, 'refundPending']);
   Route::get('refund-pending-export', [RetailerTransaction::class, 'refundPendingExport']);
   Route::get('transaction-report',   [RetailerTransaction::class, 'report']);
+  Route::post('MRecharge',          [RetailerTransaction::class, 'MRecharge']);
 
   Route::resource('retailer-trans', RetailerRetailerTrans::class);
   Route::get('retailer-trans-ajax', [RetailerRetailerTrans::class, 'ajaxList']);
@@ -302,6 +313,9 @@ Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
   Route::resource('credit-report',           RetailerCredit::class);
   Route::get('credit-export',              [RetailerCredit::class, 'export']);
   Route::resource('debit-report',            RetailerDebit::class);
+
+  Route::get('services',  [Services::class, 'index']);
+  Route::post('m-recharge',  [Services::class, 'Mrecharge']);
 
   Route::post('logout',  [AdminLogin::class, 'logout']);
 });

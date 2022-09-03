@@ -238,6 +238,10 @@ class OutletController extends Controller
         if (!empty($request->file('upload_address')))
             $outlet->upload_address  = singleFile($request->file('upload_address'), 'attachment');
 
+        if (!empty($request->file('video')))
+            $outlet->video  = singleFile($request->file('video'), 'attachment/video');
+
+
         if ($outlet->save()) {
 
             $this->updateUser($outlet->_id, $request);
@@ -458,6 +462,7 @@ class OutletController extends Controller
             // $action = '<a href="javascript:void(0);" class="text-orange banckModal"  data-toggle="tooltip" data-placement="bottom" title="Bank Charges" outlet_id="' . $val->_id . '"><i class="fas fa-piggy-bank"></i></a>&nbsp;&nbsp;';
             $action = '<a href="javascript:void(0);" outlet_id ="' . $val->_id . '" class="badge badge-info assign-outlet" data-toggle="tooltip" data-placement="bottom" title="Assign Outlet">Assign</a>&nbsp;&nbsp;';
             $action .= '<a href="' . url('admin/outlet-bank-charges/' . $val->_id) . '" class="text-orange"  data-toggle="tooltip" data-placement="bottom" title="Bank Charges"><i class="fas fa-piggy-bank"></i></a>&nbsp;&nbsp;';
+            $action .= '<a href="' . url('admin/recharge-charges/' . $val->_id) . '" class="text-orange"  data-toggle="tooltip" data-placement="bottom" title="Recharge Charges"><i class="fas fa-solid fa-money-check-dollar"></i></a>&nbsp;&nbsp;';
             $action .= '<a href="' . url('admin/outlets/' . $val->_id . '/edit') . '" class="text-info" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="far fa-edit"></i></a>';
 
             if ($val->account_status == 1) {
@@ -540,7 +545,7 @@ class OutletController extends Controller
             foreach ($employees as $key => $employee) {
 
                 $k = ++$key;
-                $checked = (!empty($employee->outlet_ids) && is_array($employee->outlet_ids) && in_array($outlet_id,$employee->outlet_ids)) ? "checked" : '';
+                $checked = (!empty($employee->outlet_ids) && is_array($employee->outlet_ids) && in_array($outlet_id, $employee->outlet_ids)) ? "checked" : '';
                 $table .= '<tr><td>' . $employee->full_name . '</td><td>
                 <div class="icheck-success d-inline">
                 <input type="radio" ' . $checked . ' value="' . $employee->_id . '" id="radioSuccess' . $k . '" class="" name="employee_id">
@@ -578,6 +583,139 @@ class OutletController extends Controller
             return response(['status' => 'error', 'msg' => 'Outlet not Assigned!']);
         } catch (Exception $e) {
             return response(['status' => 'error', 'msg' => $e->getMessage()]);
+        }
+    }
+
+
+
+    public function RechargeCh($id)
+    {
+
+        try {
+            $outlet = Outlet::find($id);
+            if (!empty($outlet)) {
+                $data['recharge_charges'] = $outlet->recharge_charges;
+                $data['id'] = $outlet->_id;
+                return view('admin.outlet.recharge_charges', $data);
+            }
+            return redirect('500');
+        } catch (Exception $e) {
+            return redirect('500');
+        }
+    }
+
+
+    public function AddRechargeCh(BankChargesValidation $request)
+    {
+        try {
+
+            $outlet_id = $request->id;
+            $outlet = Outlet::find($outlet_id);
+
+            $recharge_charges = $outlet->recharge_charges;
+            if (!empty($recharge_charges)) {
+                foreach ($recharge_charges as $charge) {
+                    if ($charge['from_amount'] == $request->from_amount && $charge['to_amount'] == $request->to_amount)
+                        return response(['status' => 'error', 'msg' => 'This Amount Slab is already Added.']);
+                }
+            }
+
+            $recharge_charges_val = array();
+            if (!empty($outlet->recharge_charges) && is_array($outlet->recharge_charges))
+                $recharge_charges_val = $outlet->recharge_charges;
+
+            $recharge_charges_val[] = [
+                'from_amount' => $request->from_amount,
+                'to_amount'   => $request->to_amount,
+                'type'        => $request->type,
+                'charges'     => $request->charges,
+                'status'      => 1
+            ];
+
+            $outlet->recharge_charges = $recharge_charges_val;
+            if ($outlet->save())
+                return response(['status' => 'success', 'msg' => 'Bank Charges Added Successfully!']);
+
+            return response(['status' => 'error', 'msg' => 'Bank Charges not Added Successfully!']);
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
+        }
+    }
+
+
+    public function EditRechargeCh(Request $request, $id)
+    {
+        try {
+            $outlet = Outlet::select('recharge_charges')->find($id);
+            $key = $request->key;
+            $recharge_charges = $outlet->recharge_charges[$key];
+
+            return response(['status' => 'success', 'data' => $recharge_charges]);
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
+        }
+    }
+
+
+    public function UpdateRechargeCh(BankChargesValidation $request)
+    {
+        try {
+            $key = $request->key;
+
+            $id = $request->id;
+            $outlet = Outlet::find($id);
+
+            $recharge_charges = $outlet->recharge_charges;
+
+            foreach ($recharge_charges as $nkey => $charge) {
+                if ($charge['from_amount'] == $request->from_amount && $charge['to_amount'] == $request->to_amount && $key != $nkey)
+                    return response(['status' => 'error', 'msg' => 'This Amount Slab is already Exist.']);
+            }
+
+            $recharge_charges = array();
+            if (!empty($outlet->recharge_charges) && is_array($outlet->recharge_charges))
+                $recharge_charges = $outlet->recharge_charges;
+
+            //check name and value is not empry
+            $recharge_charges[$key]['from_amount'] = $request->from_amount;
+            $recharge_charges[$key]['to_amount']  = $request->to_amount;
+            $recharge_charges[$key]['type']       = $request->type;
+            $recharge_charges[$key]['charges']    = $request->charges;
+
+            $outlet->recharge_charges          = $recharge_charges;
+
+            if ($outlet->save())
+                return response(['status' => 'success', 'msg' => 'Field Updated successfully!']);
+
+
+            return response(['status' => 'error', 'msg' => 'Field not Updated Field!']);
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
+        }
+    }
+
+
+    public function RechargeChStatus($id, $key, $status)
+    {
+        try {
+            $outlet = Outlet::find($id);
+
+            $recharge_charges = array();
+            if (!empty($outlet->recharge_charges) && is_array($outlet->recharge_charges))
+                $recharge_charges = $outlet->recharge_charges;
+
+            $recharge_charges[$key]['status']   = (int)$status;
+
+            $outlet->recharge_charges          = $recharge_charges;
+
+            $outlet->save();
+
+            if ($recharge_charges[$key]['status'] == 1)
+                return response(['status' => 'success', 'msg' => 'Recharge Charges is Active!', 'val' => $recharge_charges[$key]['status']]);
+
+            return response(['status' => 'success', 'msg' => 'Recharge Charges is Inactive!', 'val' => $recharge_charges[$key]['status']]);
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => 'Something went wrong!!']);
         }
     }
 }

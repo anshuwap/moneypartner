@@ -189,7 +189,8 @@
     .form-group.mb-3 {
       padding: 0px 50px 0px 50px;
     }
-     .select2-selection__choice {
+
+    .select2-selection__choice {
       background-color: #2fc296 !important;
       border-color: #07a979 !important;
       font-size: 12px !important;
@@ -349,6 +350,7 @@
   <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
 
   <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+
 
   <script>
     //filter open and close

@@ -682,7 +682,7 @@ class TransactionController extends Controller
             if ($details->status == 'failed' || $details->status == 'process' || $details->status == 'pending')
                 $table .= '<td>Action:</td>
                 <td>
-                        <a href="javascript:void(0);" payment_mode="' . $details->payment_mode . '" class="btn btn-danger btn-xs retailer_trans" _id="' .$transaction1_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>
+                        <a href="javascript:void(0);" payment_mode="' . $details->payment_mode . '" class="btn btn-danger btn-xs retailer_trans" _id="' . $transaction1_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>
                 </td>';
 
             $update_utr = '';
@@ -1404,7 +1404,8 @@ class TransactionController extends Controller
                     'status'           => $transaction->status,
                     'payment_channel'  => $transaction->payment_channel,
                     'created'          => date('d M,Y', $transaction->created),
-                    'response'         => $transaction->response
+                    'response'         => $transaction->response,
+                    'ip_address'       => $transaction->ip_address
 
                 ];
             }
@@ -1439,6 +1440,7 @@ class TransactionController extends Controller
                             'payment_channel'  => $val['payment_channel'],
                             'created'          => $val['created'],
                             'response'         => $val['response'],
+                            'ip_address'       => $val['ip_address'],
                             'username'         => '-' //!empty($val['response']->UserName['full_name']) ?$val['response']->UserName['full_name'] : '';
                         ];
                     }

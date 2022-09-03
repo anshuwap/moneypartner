@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+
     public function index(Request $request)
     {
         $query = Transaction::query()->where('retailer_id', Auth::user()->_id);
@@ -181,4 +182,6 @@ class DashboardController extends Controller
 
         return view('retailer.dashboard', $data);
     }
+
+
 }

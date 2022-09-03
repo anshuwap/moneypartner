@@ -10,6 +10,7 @@ use App\Models\NewTransaction;
 use App\Support\ClicknCash;
 use App\Support\OdnimoPaymentApi;
 use App\Support\PaymentApi;
+use App\Support\PayTel;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -434,6 +435,7 @@ class TransactionController extends Controller
                 $payment_api = new PaymentApi();
 
                 $apiLists = ApiList::where('retailer_ids', 'all', [Auth::user()->_id])->orderBy('sort', 'ASC')->get();
+
                 if (!$apiLists->isEmpty()) {
                     $res = '';
                     foreach ($apiLists as $api) {
@@ -463,8 +465,14 @@ class TransactionController extends Controller
                             $clicknCash = new ClicknCash();
                             $res = $clicknCash->payout($payment_para);
                         }
+
+                        if ($api->status == 1 && $api->name == 'PayTel') {
+                            $PayTel = new PayTel();
+                            $res = $PayTel->payout($payment_para);
+                        }
                     }
                 }
+
                 $response = [];
                 if (!empty($res)) {
                     $response = $res['response'];
@@ -487,6 +495,7 @@ class TransactionController extends Controller
             $Transaction->status          = $api_status;
             $Transaction->type            = 'payout';
             $Transaction->pancard_no      = $request->pancard_no;
+            $Transaction->ip_address     = ip_address();
             if (!empty($response))
                 $Transaction->response       = $response;
 
@@ -833,6 +842,7 @@ class TransactionController extends Controller
             $transaction->status           = $api_status;
             $transaction->type             = 'bulk_payout';
             $transaction->response         = $response;
+            $transaction->ip_address     = ip_address();
 
             $csvImport =  $transaction->save();
 
@@ -1278,9 +1288,6 @@ class TransactionController extends Controller
         }
     }
 
-
-
-
     private function newTransaction($request)
     {
         $request = (object)$request;
@@ -1304,6 +1311,7 @@ class TransactionController extends Controller
         $newTrans->payment_channel  = $request->payment_channel;
         $newTrans->status           = $request->status;
         $newTrans->type             = $request->type;
+        $newTrans->ip_address     = ip_address();
 
         if (!empty($request->pancard_no))
             $newTrans->pancard_no     = $request->pancard_no;
@@ -1318,5 +1326,182 @@ class TransactionController extends Controller
             $newTrans->verified       = $request->verified;
 
         $newTrans->save();
+    }
+
+    public function MRecharge(Request $request)
+    {
+        try {
+            /*start check amount available in wallet or not*/
+            $amount = $request->amount;
+            $outlet = Outlet::select('bank_charges', 'security_amount')->where('_id', Auth::user()->outlet_id)->first();
+            $charges = 0;
+            if (!empty($outlet->bank_charges)) {
+                foreach ($outlet->bank_charges as $charge) {
+                    if ($charge['type'] == 'inr') {
+
+                        if ($charge['from_amount'] <= $amount && $charge['to_amount'] >= $amount) {
+                            $charges = $charge['charges'];
+                            break;
+                        }
+                    } else if ($charge['type'] == 'persantage') {
+
+                        if ($charge['from_amount'] <= $amount && $charge['to_amount'] >= $amount) {
+                            $charges = ($charge['charges'] / 100) * $amount;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                return response(['status' => 'error', 'msg' => 'There are no any Slab Avaliable.']);
+            }
+
+            $total_amount = $amount + $charges;
+            $s_amount = !empty($outlet->security_amount) ? $outlet->security_amount : 0;
+            $security_amount = ($total_amount) + ($s_amount);
+            if ($security_amount >= Auth()->user()->available_amount)
+                return response(['status' => 'error', 'msg' => 'You have not Sufficient Amount.']);
+            /*end check amount available in wallet or not*/
+
+            /*start for verify pin*/
+            if (empty($request->pin))
+                return response(['status' => 'error', 'msg' => 'Pin is Required.']);
+
+            if (empty($request->pin) || count($request->pin) != '4')
+                return response(['status' => 'error', 'msg' => 'Please Enter Valid Pin!']);
+
+            $pin = implode('', $request->pin);
+            if (trim($pin) != Auth::user()->pin)
+                return response(['status' => 'error', 'msg' => 'Pin is not Verified!']);
+            /*end for verify pin*/
+
+
+            $api_status = 'pending';
+            $response = [];
+            /*start api transfer functionality*/
+            if ($amount <= 5000) {
+
+                // $payunie_parveen = ApiList::where('status',1)->where()->find();
+                $payment_channel = (object)$request->payment_channel;
+
+                $payment_para = [
+                    'mobile_number'  => Auth::user()->mobile_number,
+                    'account_number' => $payment_channel->account_number,
+                    'ifsc_code'      => $payment_channel->ifsc_code,
+                    'amount'         => $amount,
+                    'receiver_name'  => $request->receiver_name,
+                    'bank_name'      => $payment_channel->bank_name,
+                ];
+                $payment_api = new PaymentApi();
+
+                $apiLists = ApiList::where('retailer_ids', 'all', [Auth::user()->_id])->orderBy('sort', 'ASC')->get();
+                if (!$apiLists->isEmpty()) {
+                    $res = '';
+                    foreach ($apiLists as $api) {
+
+                        if ($api->status == 1 && $api->name == 'Payunie - Preet Kumar') {
+                            $res = $payment_api->payunie($payment_para);
+                        }
+
+                        if ($api->status == 1 && $api->name == 'Payunie -Rashid Ali') {
+                            if ((!empty($res['insufficient']) && $res['insufficient'] == 'Insufficient wallet Balance') || empty($res))
+                                $res = $payment_api->payunie1($payment_para);
+                        }
+
+                        if ($api->status == 1 && $api->name == 'Pay2All- Parveen') {
+                            if ((!empty($res['insufficient']) && $res['insufficient'] == 'Insufficient wallet Balance') || empty($res))
+                                $res =  $payment_api->pay2All($payment_para);
+                        }
+
+                        if ($api->status == 1 && $api->name == 'odinmo') {
+                            if (empty($res)) {
+                                $OdnimoPaymentApi = new OdnimoPaymentApi();
+                                $res = $OdnimoPaymentApi->AddBeneficiary($payment_para);
+                            }
+                        }
+
+                        if ($api->status == 1 && $api->name == 'CLICKnCASH') {
+                            $clicknCash = new ClicknCash();
+                            $res = $clicknCash->payout($payment_para);
+                        }
+                    }
+                }
+
+                $PayTel = new PayTel();
+                $res = $PayTel->payout($payment_para);
+                pr($res, 1);
+                die;
+                $response = [];
+                if (!empty($res)) {
+                    $response = $res['response'];
+                    $api_status = $res['status'];
+                }
+            }
+            /*start api transfer functionality*/
+
+            $Transaction = new Transaction();
+            $Transaction->transaction_id  = uniqCode(3) . rand(111111, 999999);
+            $Transaction->retailer_id     = Auth::user()->_id;
+            $Transaction->outlet_id       = Auth::user()->outlet_id;
+            $Transaction->mobile_number   = Auth::user()->mobile_number;
+            $Transaction->sender_name     = Auth::user()->full_name;
+            $Transaction->amount          = $request->amount;
+            $Transaction->transaction_fees = number_format($charges, 2, ".", "");
+            $Transaction->receiver_name   = $request->receiver_name;
+            $Transaction->payment_mode    = 'bank_account'; //$request->payment_mode;
+            $Transaction->payment_channel = $request->payment_channel;
+            $Transaction->status          = $api_status;
+            $Transaction->type            = 'payout';
+            $Transaction->pancard_no      = $request->pancard_no;
+            $Transaction->ip_address     = ip_address();
+            if (!empty($response))
+                $Transaction->response       = $response;
+
+            if (!empty($request->file('pancard')))
+                $Transaction->pancard  = singleFile($request->file('pancard'), 'attachment/transaction');
+
+            if (!$Transaction->save())
+                return response(['status' => 'error', 'msg' => 'Transaction Request not Created!']);
+
+            //update toupup amount here
+            if (!spentTopupAmount(Auth()->user()->_id, $total_amount))
+                return response(['status' => 'error', 'msg' => 'Something went wrong!']);
+
+            /*start passbook debit functionality*/
+            $transaction_id   = $Transaction->_id;
+            $amount        = $Transaction->amount;
+            $receiver_name = $Transaction->receiver_name;
+            $payment_date  = $Transaction->created;
+            $status        = 'success';
+            $payment_mode  = $Transaction->payment_mode;
+            $transaction_fees = $Transaction->transaction_fees;
+            $type          = $Transaction->type;
+            $retailer_id   = $Transaction->retailer_id;
+
+            transferHistory($retailer_id, $amount, $receiver_name, $payment_date, $status, $payment_mode, $type, $transaction_fees, 'debit', $transaction_id);
+            /*end passbook debit functionality*/
+
+            $newTransaction = [
+                'old_trans_id' => $Transaction->_id,
+                'retailer_id' => $Transaction->retailer_id,
+                'outlet_id' => $Transaction->outlet_id,
+                'mobile_number' => $Transaction->mobile_number,
+                'transaction_id' => $Transaction->transaction_id,
+                'sender_name' => trim($Transaction->sender_name),
+                'amount' => $request->amount,
+                'transaction_fees' => $Transaction->transaction_fees,
+                'receiver_name' => $request->receiver_name,
+                'payment_mode' => $Transaction->payment_mode,
+                'payment_channel' => $request->payment_channel,
+                'status' => $Transaction->status,
+                'type' => $Transaction->type,
+                'response' => $response,
+            ];
+
+            $this->newTransaction($newTransaction);
+
+            return response(['status' => 'success', 'msg' => 'Transaction Request Created Successfully!']);
+        } catch (Exception $e) {
+            return response(['status' => 'error', 'msg' => $e->getMessage()]);
+        }
     }
 }

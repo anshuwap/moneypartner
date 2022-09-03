@@ -329,9 +329,27 @@
                             <input type="checkbox" name="money_transfer_option[payout_api]" <?= (!empty($outlet->money_transfer_option["payout_api"]) && $outlet->money_transfer_option["payout_api"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Payout API<br>
                             <input type="checkbox" name="money_transfer_option[online_payout_api]" <?= (!empty($outlet->money_transfer_option["online_payout_api"]) && $outlet->money_transfer_option["online_payout_api"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Online Payout Api<br>
                             <input type="checkbox" name="money_transfer_option[e_collection]" <?= (!empty($outlet->money_transfer_option["e_collection"]) && $outlet->money_transfer_option["e_collection"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;E-Collection<br>
+                            <input type="checkbox" name="money_transfer_option[recharge]" <?= (!empty($outlet->money_transfer_option["recharge"]) && $outlet->money_transfer_option["recharge"] == 1) ? "checked" : "" ?>  value="1">&nbsp;&nbsp;Recharge<br>
                             <span id="money_transfer_option_msg" class="custom-text-danger"></span>
                         </div>
-
+                        <hr>
+                        <div class="form-group">
+                            <label>Video</label>
+                            @if(!empty($outlet->video))
+                            <div class="col-md-7 text-right">
+                                <iframe width="270" height="245" autoplay="false" src="{{ asset('attachment/video/'.$outlet->video)}}">
+                                </iframe>
+                            </div>
+                            @endif
+                            <div class="input-group ">
+                                <div class="custom-file">
+                                    <input type="file" name="video" class="custom-file-input custom-file-input-sm" id="imgInp" accept="video/mp4,video/x-m4v,video/*">
+                                    <br>
+                                    <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                </div>
+                            </div>
+                            <div><span id="video_msg" class="custom-text-danger"></span></div>
+                        </div>
                         <div class="">
                             <input type="submit" value="Update" class="btn btn-sm btn-success">
                             <a href="{{ url('admin/outlets') }}" class="btn btn-sm btn-warning">Back</a>
@@ -389,7 +407,10 @@
 
                 //for reset all field
                 if (res.status == 'success') {
-                    $('form#add-outlet')[0].reset();
+
+                    setTimeout(function() {
+                        location.reload();
+                    })
                 }
             }
         });

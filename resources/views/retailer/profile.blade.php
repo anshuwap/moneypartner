@@ -92,6 +92,7 @@
               <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">Outlet Information</a></li>
               <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Identity Information</a></li>
               <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Personal Information</a></li>
+              <li class="nav-item"><a class="nav-link" href="#video" data-toggle="tab">Video Uploade</a></li>
             </ul>
           </div><!-- /.card-header -->
           <div class="card-body">
@@ -297,6 +298,7 @@
                     </div>
                   </div>
 
+
                   <!-- <div class="form-group row">
                     <label for="" class="col-sm-2 col-form-label">Old Password</label>
                     <div class="col-sm-10">
@@ -339,15 +341,56 @@
                 </form>
               </div>
               <!-- /.tab-pane -->
+
+
+              <div class="tab-pane" id="video">
+                <form class="form-horizontal" id="upload-profile" action="{{ url('retailer/video-uploade') }}" method="post" enctype="multipart/form-data">
+                  @csrf
+                  <input type="hidden" name="id" value="{{$outlet->_id}}">
+
+                  <div class="row">
+                    <div class="form-group col-md-5">
+                      <label class="">Uploade Video Here</label>
+                      <div class="input-group ">
+                        <div class="custom-file">
+                          <input type="file" name="video" class="custom-file-input custom-file-input-sm" id="imgInp" accept="video/mp4,video/x-m4v,video/*">
+                          <br>
+                          <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                        </div>
+
+                      </div>
+                      <div><span id="video_msg" class="custom-text-danger"></span></div>
+
+                      <div><button type="submit" class="btn btn-success">Uploade</button></div>
+                    </div>
+
+                    @if(!empty($outlet->video))
+                    <div class="col-md-7 text-right">
+                      <iframe width="420" height="345" src="{{ asset('attachment/video/'.$outlet->video)}}">
+                      </iframe>
+                    </div>
+                    @endif
+                  </div>
+
+
+                  <!-- <div class="form-group row">
+                    <div class="offset-sm-2 col-sm-10">
+
+                    </div> -->
+                </form>
+              </div>
+
             </div>
-            <!-- /.tab-content -->
-          </div><!-- /.card-body -->
-        </div>
-        <!-- /.card -->
+
+          </div>
+          <!-- /.tab-content -->
+        </div><!-- /.card-body -->
       </div>
-      <!-- /.col -->
+      <!-- /.card -->
     </div>
-    <!-- /.row -->
+    <!-- /.col -->
+  </div>
+  <!-- /.row -->
   </div><!-- /.container-fluid -->
 </section>
 <!-- /.content -->
