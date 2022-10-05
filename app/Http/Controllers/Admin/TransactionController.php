@@ -11,6 +11,7 @@ use App\Models\TransactionComment;
 use App\Support\ClicknCash;
 use App\Support\OdnimoPaymentApi;
 use App\Support\PaymentApi;
+use App\Support\PayTel;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -368,6 +369,11 @@ class TransactionController extends Controller
             $res = $clicknCash->payout($payment_para);
         }
 
+        if ($request->api == 'PayTel') {
+            $PayTel = new PayTel();
+            $res = $PayTel->payout($payment_para);
+        }
+
         // if (!empty($res) && $res['status'] == 'error')
         // return response(['status' => 'error', 'msg' => $res['msg']]);
 
@@ -508,6 +514,11 @@ class TransactionController extends Controller
             if ($request->api == 'clickncash') {
                 $clicknCash = new ClicknCash();
                 $res = $clicknCash->payout($payment_para);
+            }
+
+            if ($request->api == 'PayTel') {
+                $PayTel = new PayTel();
+                $res = $PayTel->payout($payment_para);
             }
 
             if (!empty($res) && ($res['status'] == 'error' || $res['status'] == 'process'))

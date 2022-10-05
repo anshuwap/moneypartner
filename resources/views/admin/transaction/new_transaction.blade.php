@@ -490,11 +490,9 @@
             $('#action').html(`<div class="form-group">
                <select class="form-control form-control-sm" name="api" id="api" required>
                <option value=''>Select</option>
-               <option value="payunie_preet_kumar">Payunie - PREET KUMAR</option>
-               <option value="payunie_rashid_ali">Payunie -Rashid Ali</option>
-               <option value="pay2all">Pay2ALL - PRAVEEN</option>
-               <option value="odnimo">Odnimo</option>
-               <option value="clickncash">ClicknCash</option>
+               @foreach(config('my_config.apiList') as $key=>$list)
+               <option value="{{$key}}">{{$list}}</option>
+               @endforeach
                </select>
                </div>`);
         }
@@ -867,11 +865,9 @@
                                 <label>Select Api</label>
                                 <select class="form-control form-control-sm" name="api" id="api" required>
                                     <option value=''>Select</option>
-                                    <option value="payunie_preet_kumar">Payunie - PREET KUMAR</option>
-                                    <option value="payunie_rashid_ali">Payunie -Rashid Ali</option>
-                                    <option value="pay2all">Pay2ALL - PRAVEEN</option>
-                                    <option value="odnimo">Odnimo</option>
-                                    <option value="clickncash">ClicknCash</option>
+                                    @foreach(config('my_config.apiList') as $key=>$list)
+                                    <option value="{{$key}}">{{$list}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

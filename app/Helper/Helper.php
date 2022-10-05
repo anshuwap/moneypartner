@@ -363,3 +363,16 @@ function ip_address()
 {
     return !empty($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
 }
+
+
+function checkOperator($val)
+{
+    $operator = ['1' => 'AIRTEL', '2' => 'IDEA', '3' => 'BSNL Topup', '4' => 'BSNL Special', '5' => 'JIO', '6' => 'VODAFONE', '7' => 'AIRTEL DTH', '8' => 'DISH TV', '9' => 'SUN DIRECT', '10' => 'TATA SKY', '12' => 'VIDEOCON D2H'];
+    return $operator[$val];
+}
+
+function rechargeOperator()
+{
+    $operator = ['1' => 'AIRTEL', '2' => 'IDEA', '3' => 'BSNL Topup', '4' => 'BSNL Special', '5' => 'JIO', '6' => 'VODAFONE', '7' => 'AIRTEL DTH', '8' => 'DISH TV', '9' => 'SUN DIRECT', '10' => 'TATA SKY', '12' => 'VIDEOCON D2H'];
+    return $operator;
+}

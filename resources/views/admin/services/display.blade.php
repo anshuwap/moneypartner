@@ -1,34 +1,28 @@
-@extends('retailer.layouts.app')
+@extends('admin.layouts.app')
 
 @section('content')
-@section('page_heading', 'Retailer List')
+@section('page_heading', 'Recharge List')
 
 <div class="row">
     <div class="col-12 mt-2">
         <div class="card">
 
             <div class="card-header">
-                <h3 class="card-title">Recharge List</h3>
+                <h3 class="card-title">Transaction List</h3>
                 <div class="card-tools">
-
-                    @if(!empty(MoneyPartnerOption()->recharge) && MoneyPartnerOption()->recharge ==1)
-                    <a href="javascript:void(0);" id="mobileRecharge" class="btn btn-sm btn-success"><i class="fas fa-cloud-upload-alt"></i>&nbsp;Mobile Recharge</a>
-                    @endif
-
-                    <a href="{{ url('retailer/service-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
+                    <a href="{{ url('admin/service-export') }}{{ !empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="btn btn-sm btn-success"><i class="fas fa-cloud-download-alt"></i>&nbsp;Export</a>
                     @if(!empty($filter))
-                    <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
+                    <a href="javascript:void(0);" class="btn btn-sm btn-success" id="filter-btn"><i class="far fa-times-circle"></i>&nbsp;Close</a>
                     @else
-                    <a href="javascript:void(0);" class="btn btn-sm btn-success " id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a>
+                    <a href="javascript:void(0);" class="btn btn-sm btn-success" id="filter-btn"><i class="fas fa-filter"></i>&nbsp;Filter</a>
                     @endif
-
                 </div>
             </div>
 
 
             <div class="row pl-2 pr-2" id="filter" <?= (empty($filter)) ? "style='display:none'" : "" ?>>
                 <div class="col-md-12 ml-auto">
-                    <form action="{{ url('retailer/services') }}">
+                    <form action="{{ url('admin/services') }}">
                         <div class="form-row">
 
                             <div class="form-group col-md-2">
@@ -53,6 +47,16 @@
                             </div>
 
                             <div class="form-group col-md-2">
+                                <label>Outlet Name</label>
+                                <select class="form-control-sm form-control" name="outlet_id">
+                                    <option value="">All</option>
+                                    @foreach($outlets as $outlet)
+                                    <option value="{{$outlet->_id}}" {{ (!empty($filter['outlet_id']) && $filter['outlet_id'] == $outlet->_id)?"selected":""}}>{{ ucwords($outlet->outlet_name)}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-2">
                                 <label>Operator</label>
                                 <select class="form-control form-control-sm" name="operator">
                                     <option value="">All</option>
@@ -74,7 +78,7 @@
 
                             <div class="form-group mt-4">
                                 <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-search"></i>&nbsp;Search</button>
-                                <a href="{{ url('retailer/services') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
+                                <a href="{{ url('admin/services') }}" class="btn btn-danger btn-sm"><i class="fas fa-eraser"></i>&nbsp;Clear</a>
                             </div>
                         </div>
                     </form>
@@ -88,6 +92,7 @@
                         <tr>
                             <th>Sr No.</th>
                             <th>Transaction Id</th>
+                            <th>Outlet Name</th>
                             <th>Recharge Amount</th>
                             <th>Commission Amount</th>
                             <th>Paid Amount</th>
@@ -109,9 +114,12 @@
                         } else {
                             $status = '<span class="tag-small-warning"><a href="javascript:void(0)" class="text-dark">Pending</a></span>';
                         } ?>
+
+
                         <tr>
                             <td>{{++$key}}</td>
                             <td>{{$val->txn_id}}</td>
+                            <td>{{!empty($val->RetailerName['outlet_name']) ? $val->RetailerName['outlet_name'] : ''}}</td>
                             <td>{{$val->amount}}</td>
                             <td>{{$val->commission_fees}}</td>
                             <td>{{$val->paid_amount}}</td>
@@ -126,7 +134,7 @@
                     </tbody>
 
                 </table>
-                {{ $recharges->appends($_GET)->links()}}
+ {{ $recharges->appends($_GET)->links()}}
             </div>
             <!-- /.card-body -->
 

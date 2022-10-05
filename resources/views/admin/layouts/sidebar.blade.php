@@ -116,6 +116,25 @@
       </ul>
     </li>
 
+    <li class="nav-item {{ (url()->full() == url('admin/services'))?'menu-is-opening menu-open':''}}">
+      <a href="javascript:void(0);" class="nav-link">
+        <i class="fa-brands fa-servicestack nav-icon"></i>
+        <p>Services
+          <i class="right fas fa-angle-left"></i>
+        </p>
+      </a>
+      <ul class="nav nav-treeview">
+        <li class="nav-item {{ (url()->full() == url('admin/services'))?'d-block':''}}">
+          <a href="{{ url('admin/services') }}" class="nav-link {{ (url()->full() == url('admin/services'))? 'active':''}}">
+            <i class="fa-brands fa-servicestack nav-icon"></i>
+            <p>Recharge</p>
+          </a>
+        </li>
+
+      </ul>
+    </li>
+
+
     <!-- <li class="nav-item {{ (url()->full() == url('admin/a-customer-trans') || url()->full() == url('admin/a-retailer-trans'))?'menu-is-opening menu-open':''}}">
       <a href="javascript:void(0);" class="nav-link ">
         <i class="fas fa-list-ul nav-icon text-primary"></i>

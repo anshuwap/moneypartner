@@ -329,7 +329,7 @@
                             <input type="checkbox" name="money_transfer_option[payout_api]" <?= (!empty($outlet->money_transfer_option["payout_api"]) && $outlet->money_transfer_option["payout_api"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Payout API<br>
                             <input type="checkbox" name="money_transfer_option[online_payout_api]" <?= (!empty($outlet->money_transfer_option["online_payout_api"]) && $outlet->money_transfer_option["online_payout_api"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Online Payout Api<br>
                             <input type="checkbox" name="money_transfer_option[e_collection]" <?= (!empty($outlet->money_transfer_option["e_collection"]) && $outlet->money_transfer_option["e_collection"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;E-Collection<br>
-                            <input type="checkbox" name="money_transfer_option[recharge]" <?= (!empty($outlet->money_transfer_option["recharge"]) && $outlet->money_transfer_option["recharge"] == 1) ? "checked" : "" ?>  value="1">&nbsp;&nbsp;Recharge<br>
+                            <input type="checkbox" name="money_transfer_option[recharge]" <?= (!empty($outlet->money_transfer_option["recharge"]) && $outlet->money_transfer_option["recharge"] == 1) ? "checked" : "" ?> value="1">&nbsp;&nbsp;Recharge<br>
                             <span id="money_transfer_option_msg" class="custom-text-danger"></span>
                         </div>
                         <hr>

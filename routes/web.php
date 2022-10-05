@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\ProfileController       as AdminProfile;
 use App\Http\Controllers\Admin\EarnHistoryController   as AdminEarnHistory;
 use App\Http\Controllers\Admin\WithdrawalController    as AdminWithdrawal;
 use App\Http\Controllers\Admin\SettingController       as AdminSetting;
+use App\Http\Controllers\Admin\ServicesController      as AdminServices;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\MaintainanceController;
 
@@ -240,6 +241,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
   Route::resource('withdrawal',     AdminWithdrawal::class);
 
   Route::resource('setting',   AdminSetting::class);
+  Route::get('services',  [AdminServices::class, 'index']);
+  Route::get('service-export', [AdminServices::class, 'serviceExport']);
 
   Route::post('logout',  [AdminLogin::class, 'logout']);
 });
@@ -316,6 +319,7 @@ Route::group(['prefix' => 'retailer', 'middleware' => 'retailer'], function () {
 
   Route::get('services',  [Services::class, 'index']);
   Route::post('m-recharge',  [Services::class, 'Mrecharge']);
+  Route::get('service-export', [Services::class, 'serviceExport']);
 
   Route::post('logout',  [AdminLogin::class, 'logout']);
 });

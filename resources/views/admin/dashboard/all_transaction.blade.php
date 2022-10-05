@@ -114,7 +114,7 @@
                         $status = '<span class="tag-small-warning"><a href="javascript:void(0)" class="text-dark" data-toggle="tooltip" data-placement="bottom" title="' . $comment . '">' . ucwords($trans->status) . '</a></span>';
                         $action = '<a href="javascript:void(0);" payment_mode="' . $trans->payment_mode . '" class="btn btn-danger btn-xs retailer_trans" _id="' . $trans->_id . '"><i class="fas fa-radiation-alt"></i>&nbsp;Action</a>';
                         // if ($trans->amount >= 5000)
-                            $action .= '<a href="javascript:void(0);" class="ml-2 btn btn-success btn-sm split" _id="' . $trans->_id . '"><i class="fas fa-solid fa-splotch"></i>&nbsp;Split</a>';
+                        $action .= '<a href="javascript:void(0);" class="ml-2 btn btn-success btn-sm split" _id="' . $trans->_id . '"><i class="fas fa-solid fa-splotch"></i>&nbsp;Split</a>';
                     } ?>
                   <tr>
                       <td>
@@ -308,11 +308,9 @@
               $('#action').html(`<div class="form-group">
                <select class="form-control form-control-sm" name="api" id="api" required>
                <option value=''>Select</option>
-               <option value="payunie_preet_kumar">Payunie - PREET KUMAR</option>
-               <option value="payunie_rashid_ali">Payunie -Rashid Ali</option>
-               <option value="pay2all">Pay2ALL - PRAVEEN</option>
-               <option value="odnimo">Odnimo</option>
-               <option value="clickncash">ClicknCash</option>
+               @foreach(config('my_config.apiList') as $key=>$list)
+               <option value="{{$key}}">{{$list}}</option>
+               @endforeach
                </select>
                </div>`);
           }
@@ -519,12 +517,10 @@
                               <div class="form-group">
                                   <label>Select Api</label>
                                   <select class="form-control form-control-sm" name="api" id="api" required>
-                                      <option value=' '>Select</option>
-                                      <option value="payunie_preet_kumar">Payunie - PREET KUMAR</option>
-                                      <option value="payunie_rashid_ali">Payunie -Rashid Ali</option>
-                                      <option value="pay2all">Pay2ALL - PRAVEEN</option>
-                                      <option value="odnimo">Odnimo</option>
-                                      <option value="clickncash">ClicknCash</option>
+                                      <option value=''>Select</option>
+                                      @foreach(config('my_config.apiList') as $key=>$list)
+                                      <option value="{{$key}}">{{$list}}</option>
+                                      @endforeach
                                   </select>
                               </div>
                           </div>
